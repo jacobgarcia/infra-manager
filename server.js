@@ -39,20 +39,20 @@ app.use('/static',
 
 
 app.post('/webhook', (req, res) => {
-  console.log('Webhook triggered...')
+  winston.log('Webhook triggered...')
 
-  exec('yarn; yarn build', (error, stdout, stderr) => {
+  exec('git pull; yarn; yarn build', (error, stdout, stderr) => {
     if (error) {
-      console.log(error)
+      winston.log(error)
     }
 
     if (stdout) {
-      console.log(stdout)
-      exec('yarn restart all')
+      winston.log(stdout)
+      exec('yarn restart')
     }
 
     if (stderr) {
-      console.log(stderr)
+      winston.log(stderr)
     }
   })
 
