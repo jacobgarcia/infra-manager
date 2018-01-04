@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
-// import { Nav } from '../components'
+import { Dashboard } from './'
+import { Navigator } from '../components'
 // import { NetworkOperation } from '../lib/NetworkOperation'
 
 class App extends Component {
@@ -17,13 +18,11 @@ class App extends Component {
     return (
       <div id="app">
         <Helmet>
-          <title>React Boilerplate</title>
+          <title>Connus</title>
         </Helmet>
-        {/* <Nav /> */}
-        <h1>React Boilerplate App</h1>
-        <p>React, Redux, HotReload, Axios, React Router, Express and more</p>
+        <Navigator />
         <Switch>
-          {/* TODO Add routes */}
+          <Route exact path="/" component={Dashboard}/>
         </Switch>
       </div>
     )

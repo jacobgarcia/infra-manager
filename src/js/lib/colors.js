@@ -1,6 +1,4 @@
-export default {
-  rodents: '#815610',
-  birds: '#9649d9',
-  insects: '#63e030',
-  wildlife: '#E40072'
-}
+export const red = '#CB373E'
+export const yellow = '#D2B82B'
+export const green = '#1EF3A2'
+export const blue = '#00c0ff'

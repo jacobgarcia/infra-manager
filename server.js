@@ -48,5 +48,5 @@ app.get('*', (req, res) =>
 
 // Start server
 app.listen(PORT, () =>
-  winston.info(`React Boilerplate server is listening on port: ${PORT}!`)
+  winston.info(`Connus server is listening on port: ${PORT}!`)
 )
