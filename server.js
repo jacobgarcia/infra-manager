@@ -52,9 +52,9 @@ app.post('/webhook', (req, res) => {
     if (stderr) {
       console.log(stderr)
     }
-
-    return res.status(200).json({ message: 'Webhook recieved' })
   })
+
+  return res.status(200).json({ message: 'Webhook recieved' })
 })
 
 // Bundles
