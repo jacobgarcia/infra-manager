@@ -39,7 +39,7 @@ app.use('/static',
 
 
 app.post('/webhook', (req, res) => {
-  exec('yarn build; yarn restart', (error, stdout, stderr) => {
+  exec('yarn; yarn build; yarn restart all', (error, stdout, stderr) => {
     if (error) {
       console.log(error)
       return res.status(500).json({ error })
