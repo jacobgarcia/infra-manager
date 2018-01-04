@@ -19,6 +19,9 @@ class Statistics extends Component {
             <input type="button" value="Periodo" />
             <input type="button" value="Buscar" />
           </div>
+          <div>
+            
+          </div>
         </div>
       </div>
     )

@@ -48,7 +48,7 @@ class Dashboard extends Component {
             <div className="graph">
               <PieChart width={170} height={170}>
                 <Pie
-                  isAnimationActive={false}
+                  animationBegin={0}
                   data={data}
                   cx={80}
                   cy={80}
@@ -81,9 +81,9 @@ class Dashboard extends Component {
              <YAxis width={20}/>
              <CartesianGrid stroke="#424953"/>
              <Tooltip/>
-             <Bar dataKey="pv" fill={red} />
-             <Bar dataKey="amt" fill={yellow} />
-             <Bar dataKey="uv" fill={green} />
+             <Bar dataKey="pv" fill={red} animationBegin={0} />
+             <Bar dataKey="amt" fill={yellow} animationBegin={0} />
+             <Bar dataKey="uv" fill={green} animationBegin={0} />
             </BarChart>
           </div>
         </div>

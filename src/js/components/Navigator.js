@@ -43,7 +43,7 @@ class Navigator extends Component {
         <ul className="user-container">
           <li className="date"><span>{date.toLocaleDateString('es-MX')}</span><span>{date.toLocaleTimeString('es-MX')}</span></li>
           <img src="" alt=""/>
-          <li>John Appleseed</li>
+          <li><NavLink to="/settings">John Appleseed</NavLink></li>
         </ul>
       </ul>
     )

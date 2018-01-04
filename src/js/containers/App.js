@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
-import { Dashboard, Services, Sites, Users, Statistics } from './'
+import { Dashboard, Services, Sites, Users, Statistics, Settings } from './'
 import { Navigator } from '../components'
 // import { NetworkOperation } from '../lib/NetworkOperation'
 
@@ -27,6 +27,7 @@ class App extends Component {
           <Route path="/sites" component={Sites}/>
           <Route path="/users" component={Users}/>
           <Route path="/statistics" component={Statistics}/>
+          <Route path="/settings" component={Settings}/>
         </Switch>
       </div>
     )

@@ -37,14 +37,26 @@ html, body, #root, #app {
 }
 
 button, input, .button {
-  color: $lighter-gray;
+  color: white;
+  font-size: 1rem;
   border: 1px solid $lighter-gray;
-  padding: 3px 30px;
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  font-weight: 600;
+  padding: 3px 10px;
   display: inline-block;
   background-color: $gray;
+}
+button, input[type="button"], .button {
+  padding: 3px 30px;
+  text-transform: uppercase;
+  color: $lighter-gray;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+label {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: $lighter-gray;
+  text-transform: uppercase;
 }
 
 p span {
@@ -55,6 +67,7 @@ p span {
   display: flex;
   width: 100%;
   justify-content: space-between;
+  max-height: 25px;
 }
 
 .app-content {
@@ -75,6 +88,11 @@ p span {
     background-color: $gray;
     padding-top: 70px;
     flex: 1;
+    &.vertical {
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+    }
   }
 }
 
@@ -171,6 +189,9 @@ p span {
     &:last-child {
       margin-right: 0;
     }
+    &.active {
+      color: $blue;
+    }
     a {
       opacity: 0.5;
       &:hover {
@@ -186,6 +207,18 @@ ul.mini-nav {
   position: relative;
   width: auto;
   height: auto;
+  background-color: transparent;
+  color: $lighter-gray;
+  &.vertical {
+    flex-direction: column;
+    width: auto;
+    align-items: flex-end;
+    justify-content: flex-start;
+    li {
+      margin-right: 0;
+      margin-bottom: 20px;
+    }
+  }
   li {
     font-size: 0.85rem;
   }
@@ -249,8 +282,56 @@ ul.mini-nav {
 
 
 /*
-  USERS
+  SETTINGS
  */
+
+
+.settings {
+  .content {
+    display: flex;
+  }
+  form, .mini-nav {
+    min-height: 400px;
+  }
+  form {
+    flex-basis: 600px;
+    border-left: 1px solid $light-gray;
+    padding-left: 30px;
+    .field {
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      input {
+        flex-grow: 1;
+      }
+      label {
+        margin-right: 10px;
+        width: 100px;
+        text-align: right;
+        display: inline-block;
+        font-size: 0.7rem;
+      }
+    }
+    span.rule {
+      margin-left: 110px;
+      margin-bottom: 10px;
+      margin-top: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: .67rem;
+      color: $lighter-gray;
+      display: inline-block;
+    }
+  }
+  .mini-nav {
+    margin-right: 50px;
+  }
+}
+
+
+ /*
+   USERS
+  */
 
 .users {
   .table {
