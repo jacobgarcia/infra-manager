@@ -38,7 +38,7 @@ app.use('/static',
 // TODO add API
 
 
-app.post('/hook', (req, res) => {
+app.post('/webhook', (req, res) => {
   exec('yarn build; yarn restart', (error, stdout, stderr) => {
     if (error) {
       console.log(error)
