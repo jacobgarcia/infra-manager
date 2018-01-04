@@ -39,6 +39,8 @@ app.use('/static',
 
 
 app.post('/webhook', (req, res) => {
+  console.log('Webhook triggered...')
+
   exec('yarn; yarn build', (error, stdout, stderr) => {
     if (error) {
       console.log(error)
