@@ -7,6 +7,7 @@ const bodyParser = require('body-parser')
 const compression = require('compression') // Files compresion
 const winston = require('winston') // Logger
 const hpp = require('hpp')
+const { exec } = require('child_process')
 const app = express()
 
 const webpackDevServer = require(path.resolve('config/webpackDevServer')) // Dev server
@@ -35,6 +36,27 @@ app.use('/static',
 )
 
 // TODO add API
+
+
+app.post('/hook', (req, res) => {
+  exec('yarn build; yarn restart', (error, stdout, stderr) => {
+    if (error) {
+      console.log(error)
+      return res.status(500).json({ error })
+    }
+
+    if (stdout) {
+      console.log(stdout)
+      return res.status(200).json({ stdout })
+    }
+
+    if (stderr) {
+      console.log(stderr)
+      return res.status(400).json({ stderr })
+    }
+
+  })
+})
 
 // Bundles
 app.use('/dist',
