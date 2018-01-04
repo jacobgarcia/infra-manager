@@ -15,7 +15,10 @@ class Statistics extends Component {
     return (
       <div className="statistics app-content">
         <div className="content">
-
+          <div className="actions-bar">
+            <input type="button" value="Periodo" />
+            <input type="button" value="Buscar" />
+          </div>
         </div>
       </div>
     )

@@ -51,6 +51,12 @@ p span {
   font-weight: 600;
 }
 
+.actions-bar {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
 .app-content {
   padding-top: 58px;
   background-color: $dark-gray;
