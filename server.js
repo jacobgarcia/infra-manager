@@ -52,17 +52,16 @@ function slackMessage(body) {
 }
 
 app.post('/webhook', (req, res) => {
-
   console.log('Build started...')
   slackMessage({
-    text: 'Build started'
+    text: '*Build started*'
   })
 
   exec('git pull; yarn; yarn build', (error, stdout, stderr) => {
     if (error) {
       console.log('Error', error)
       slackMessage({
-        text: `Build errored\nOutput: ${error}`
+        text: `*Build errored*\nOutput: ${error}`
       })
     }
 
@@ -70,14 +69,14 @@ app.post('/webhook', (req, res) => {
       console.log('Build succeed')
       exec('yarn restart')
       slackMessage({
-        text: `Build succeed!\nOutput: ${stdout}`
+        text: `*Build succeed!*\nYou're awersome`
       })
     }
 
     if (stderr) {
       console.log('Error', stderr)
       slackMessage({
-        text: `Build failed\nOutput: ${stderr}`
+        text: `*Build failed*\nOutput: ${stderr}`
       })
     }
   })
