@@ -7,6 +7,7 @@ const bodyParser = require('body-parser')
 const compression = require('compression') // Files compresion
 const winston = require('winston') // Logger
 const hpp = require('hpp')
+const request = require('request')
 const { exec } = require('child_process')
 const app = express()
 
@@ -39,20 +40,56 @@ app.use('/static',
 
 
 app.post('/webhook', (req, res) => {
-  winston.log('Webhook triggered...')
+  request({
+    url: 'https://hooks.slack.com/services/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',
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: {
+      text: 'Build started...'
+    }
+  })
 
   exec('git pull; yarn; yarn build', (error, stdout, stderr) => {
     if (error) {
-      winston.log(error)
+      request({
+        url: 'https://hooks.slack.com/services/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',
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: {
+          text: `Build failed\nOutput:${error}`
+        }
+      })
     }
 
     if (stdout) {
-      winston.log(stdout)
       exec('yarn restart')
+      request({
+        url: 'https://hooks.slack.com/services/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',
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: {
+          text: `Build succeed!\nOutput: ${stdout}`
+        }
+      })
     }
 
     if (stderr) {
-      winston.log(stderr)
+      request({
+        url: 'https://hooks.slack.com/services/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',
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: {
+          text: `Build failed\nOutput: ${stderr}`
+        }
+      })
     }
   })
 
