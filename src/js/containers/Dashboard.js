@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { PieChart, Pie, Cell, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Bar } from 'recharts'
+import { PieChart, Pie, Cell, AreaChart, XAxis, CartesianGrid, Tooltip, ReferenceLine, Area } from 'recharts'
 
-import { green, yellow, red } from '../lib/colors'
+import { green, yellow, red, lightestBlue } from '../lib/colors'
 
 const data = [
   { name: 'workings', value: 96.1 },
@@ -11,13 +11,13 @@ const data = [
 ]
 
 const barData = [
-      {name: 'Page A', uv: 40, pv: 20, amt: 40},
-      {name: 'Page B', uv: 30, pv: 18, amt: 20},
-      {name: 'Page C', uv: 20, pv: 90, amt: 20},
-      {name: 'Page D', uv: 28, pv: 38, amt: 94},
-      {name: 'Page E', uv: 19, pv: 40, amt: 11},
-      {name: 'Page F', uv: 29, pv: 30, amt: 50},
-      {name: 'Page G', uv: 39, pv: 40, amt: 10},
+      {name: '0:00 AM', pv: 76 },
+      {name: '0:00 AM', pv: 88 },
+      {name: '0:00 AM', pv: 90 },
+      {name: '0:00 AM', pv: 78 },
+      {name: '0:00 AM', pv: 58 },
+      {name: '0:00 AM', pv: 67 },
+      {name: '0:00 AM', pv: 74 }
 ]
 
 function getColor(name) {
@@ -75,16 +75,14 @@ class Dashboard extends Component {
             </div>
           </div>
           <div className="historical">
-            <BarChart width={500} height={150} data={barData}
+            <AreaChart width={500} height={150} data={barData}
             margin={{top: 5, right: 30, left: 20, bottom: 5}}>
              <XAxis dataKey="name" height={20} />
-             <YAxis width={20}/>
-             <CartesianGrid stroke="#424953"/>
+             <CartesianGrid stroke="#424953" strokeDasharray="3 3" horizontal={false} />
+             <ReferenceLine y={40} stroke="red" strokeDasharray="3 3" />
              <Tooltip/>
-             <Bar dataKey="pv" fill={red} animationBegin={0} />
-             <Bar dataKey="amt" fill={yellow} animationBegin={0} />
-             <Bar dataKey="uv" fill={green} animationBegin={0} />
-            </BarChart>
+             <Area dataKey="pv" fill={lightestBlue} animationBegin={0} type="monotone" stroke={green}/>
+           </AreaChart>
           </div>
         </div>
         <div className="content">
