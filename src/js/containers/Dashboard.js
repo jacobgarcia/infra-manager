@@ -71,7 +71,6 @@ class Dashboard extends Component {
             margin={{top: 5, right: 30, left: 20, bottom: 5}}>
              <XAxis dataKey="name" height={20} />
              <CartesianGrid stroke="#424953" strokeDasharray="3 3" horizontal={false} />
-             <ReferenceLine y={40} stroke="red" strokeDasharray="3 3" />
              <Tooltip/>
              <defs>
               <linearGradient id="colorUv" x1="1" y1="0" x2="0" y2="0">
@@ -80,6 +79,7 @@ class Dashboard extends Component {
               </linearGradient>
             </defs>
              <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0} type="monotone" stroke={green}/>
+             <ReferenceLine y={40} stroke="red" strokeDasharray="3 3" />
            </AreaChart>
           </div>
         </div>
@@ -101,7 +101,7 @@ class Dashboard extends Component {
             </div>
             <div className="table-body">
               {
-                [0,0,0,0,0,0].map((element, index) =>
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0].map((element, index) =>
                   <div className="table-item" key={index}>
                     <div className="medium">3 enero <span>7:45 AM</span></div>
                     <div className="large">Detección de movimiento</div>

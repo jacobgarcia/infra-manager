@@ -156,6 +156,7 @@ p span {
   position: fixed;
   width: 100%;
   height: 58px;
+  z-index: 1000;
   > ul {
     display: flex;
     padding: 20px;
