@@ -16,6 +16,13 @@ class Users extends Component {
       <div className="users app-content">
         <div className="content">
           <div className="table">
+            <div className="table-actions">
+              <div />
+              <div>
+                <input type="button" value="Buscar" />
+                <input type="button" value="Añadir" />
+              </div>
+            </div>
             <div className="table-header">
               <div className="table-item">
                 <div>Nombre</div>
