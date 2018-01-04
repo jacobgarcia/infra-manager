@@ -46,6 +46,7 @@ app.post('/webhook', (req, res) => {
     headers: {
       'Content-type': 'application/json'
     },
+    json: true,
     body: {
       text: 'Build started...'
     }
@@ -59,6 +60,7 @@ app.post('/webhook', (req, res) => {
         headers: {
           'Content-type': 'application/json'
         },
+        json: true,
         body: {
           text: `Build failed\nOutput:${error}`
         }
@@ -73,6 +75,7 @@ app.post('/webhook', (req, res) => {
         headers: {
           'Content-type': 'application/json'
         },
+        json: true,
         body: {
           text: `Build succeed!\nOutput: ${stdout}`
         }
@@ -86,6 +89,7 @@ app.post('/webhook', (req, res) => {
         headers: {
           'Content-type': 'application/json'
         },
+
         body: {
           text: `Build failed\nOutput: ${stderr}`
         }
