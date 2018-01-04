@@ -137,6 +137,18 @@ p span {
     padding: 20px;
     &.user-container {
       color: $lighter-gray;
+      display: flex;
+      align-items: center;
+      li {
+        text-transform: capitalize;
+      }
+      img {
+        width: 25px;
+        height: 25px;
+        margin-right: 10px;
+        border-radius: 50%;
+        background-color: white;
+      }
       .date span {
         width: 70px;
         font-kerning: none;
@@ -229,6 +241,48 @@ ul.mini-nav {
   }
 }
 
+
+/*
+  USERS
+ */
+
+.users {
+  .table {
+    .zone {
+      padding-top: 5px;
+      padding-bottom: 5px;
+      cursor: pointer;
+      &:hover {
+        padding-bottom: 3px;
+        border-bottom: 2px solid $blue;
+        position: relative;
+        &::after {
+          display: block;
+          content: 'MODIFICAR';
+          font-size: 0.75rem;
+          font-weight: 600;
+          bottom: 24px;
+          left: 4px;
+          background-color: $blue;
+          box-shadow: 0px 0px 5px rgba(#000, 0.2);
+          padding: 3px 10px;
+          position: absolute;
+        }
+        &::before {
+          content: '';
+          display: block;
+          width: 15px;
+          height: 15px;
+          background-color: $blue;
+          position: absolute;
+          transform: rotate(45deg);
+          bottom: 20px;
+          left: 38px;
+        }
+      }
+    }
+  }
+}
 
 /*
   SERVICES

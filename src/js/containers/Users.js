@@ -39,7 +39,7 @@ class Users extends Component {
                     <div className="bold">Nombre Apellido</div>
                     <div>nombre@dominio.com</div>
                     <div>+52 55 983 89 23</div>
-                    <div>Centro, Sur</div>
+                    <div className="zone">Centro, Sur</div>
                     <div>Accesos, Flujo vehícular</div>
                   </div>
                 )
