@@ -71,9 +71,11 @@ p span {
     opacity: 0.8;
     text-transform: uppercase;
     font-size: 0.75rem;
+    color: $lighter-gray;
   }
   .table-body {
     padding-top: 45px;
+    color: white;
   }
   .table-item {
     display: flex;
@@ -83,6 +85,10 @@ p span {
     align-items: center;
     > div {
       flex-basis: 200px;
+      &.bold {
+        font-weight: 600;
+        color: white;
+      }
       &.medium {
         flex-basis: 400px;
       }
@@ -111,7 +117,12 @@ p span {
     display: flex;
     padding: 20px;
     &.user-container {
-      color: rgba(#ffffff, 0.5)
+      color: $lighter-gray;
+      .date span {
+        width: 70px;
+        font-kerning: none;
+        display: inline-block;
+      }
     }
   }
 

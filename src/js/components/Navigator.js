@@ -7,11 +7,30 @@ class Navigator extends Component {
     super(props)
 
     this.state = {
-
+      time: 0
     }
+
+    // this.tick = this.tick.bind(this)
+  }
+
+  tick() {
+    this.setState(prev => ({
+      time: prev.time + 1000
+    }))
+  }
+
+  componentDidMount() {
+    this.setState({
+      time: new Date().getTime()
+    }, () => {
+      this.interval = setInterval(() => this.tick(), 1000)
+    })
   }
 
   render() {
+    const { state, props } = this
+
+    const date = new Date(state.time)
     return (
       <ul className="navigator">
         <ul>
@@ -22,7 +41,7 @@ class Navigator extends Component {
           <li><NavLink to="/statistics">Estadísticas</NavLink></li>
         </ul>
         <ul className="user-container">
-          <li>3 enero 2017 09:23 PM</li>
+          <li className="date"><span>{date.toLocaleDateString('es-MX')}</span><span>{date.toLocaleTimeString('es-MX')}</span></li>
           <li>John Appleseed</li>
         </ul>
       </ul>
