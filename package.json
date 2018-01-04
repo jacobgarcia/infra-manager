@@ -1,5 +1,5 @@
 {
-  "name": "react-boilerplate",
+  "name": "connus",
   "version": "0.1.0",
   "description": "React, Redux, Hot-Reload, SCSS, Stage 2, ESLint, Express, ES2015",
   "main": "server.js",
@@ -7,11 +7,11 @@
     "build": "webpack --config ./config/webpack.prod.js",
     "test": "echo \"Error: no test specified\" && exit 0",
     "restart": "pm2 restart all",
-    "start": "pm2 start server.js --name boilerplate",
+    "start": "pm2 start server.js --name connus",
     "start:dev": "NODE_ENV=\"development\" nodemon --config ./config/nodemon.json"
   },
   "author": "nure,",
-  "license": "MIT",
+  "license": "none",
   "dependencies": {
     "axios": "^0.17.1",
     "eslint": "^4.14.0",

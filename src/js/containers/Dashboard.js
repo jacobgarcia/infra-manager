@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { PieChart, Pie, Cell } from 'recharts'
+import { PieChart, Pie, Cell, BarChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Bar } from 'recharts'
 
 import { green, yellow, red } from '../lib/colors'
 
@@ -8,6 +8,16 @@ const data = [
   { name: 'workings', value: 96.1 },
   { name: 'alerts', value: 2.8 },
   { name: 'damaged', value: 1.1 }
+]
+
+const barData = [
+      {name: 'Page A', uv: 40, pv: 20, amt: 40},
+      {name: 'Page B', uv: 30, pv: 18, amt: 20},
+      {name: 'Page C', uv: 20, pv: 90, amt: 20},
+      {name: 'Page D', uv: 28, pv: 38, amt: 94},
+      {name: 'Page E', uv: 19, pv: 40, amt: 11},
+      {name: 'Page F', uv: 29, pv: 30, amt: 50},
+      {name: 'Page G', uv: 39, pv: 40, amt: 10},
 ]
 
 function getColor(name) {
@@ -65,7 +75,16 @@ class Dashboard extends Component {
             </div>
           </div>
           <div className="historical">
-            Nivel actual del serivicio
+            <BarChart width={500} height={150} data={barData}
+            margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+             <XAxis dataKey="name" height={20} />
+             <YAxis width={20}/>
+             <CartesianGrid stroke="#424953"/>
+             <Tooltip/>
+             <Bar dataKey="pv" fill={red} />
+             <Bar dataKey="amt" fill={yellow} />
+             <Bar dataKey="uv" fill={green} />
+            </BarChart>
           </div>
         </div>
         <div className="content">

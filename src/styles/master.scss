@@ -13,6 +13,8 @@ html, body, #root, #app {
 
 .inline-nav {
   display: flex;
+  color: $lightest-gray;
+  margin-bottom: 30px;
   li {
     margin-right: 30px;
     text-transform: uppercase;
@@ -34,10 +36,16 @@ html, body, #root, #app {
   }
 }
 
+p span {
+  font-weight: 600;
+}
 
 .app-content {
   padding-top: 58px;
   background-color: $dark-gray;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
   .overall-container {
     background-color: $dark-gray;
     padding: 20px;
@@ -80,6 +88,8 @@ html, body, #root, #app {
       }
       &.large {
         flex-basis: 600px;
+        color: white;
+        font-weight: 600;
       }
     }
   }
@@ -89,7 +99,7 @@ html, body, #root, #app {
   NAVIGATOR
  */
 
-.navigator {
+.navigator, ul.mini-nav {
   background-color: $dark-gray;
   color: white;
   display: flex;
@@ -103,24 +113,33 @@ html, body, #root, #app {
     &.user-container {
       color: rgba(#ffffff, 0.5)
     }
-    li {
-      text-transform: uppercase;
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-right: 40px;
-      &:last-child {
-        margin-right: 0;
+  }
+
+  > ul li, li {
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-right: 40px;
+    &:last-child {
+      margin-right: 0;
+    }
+    a {
+      opacity: 0.5;
+      &:hover {
+        opacity: 0.2;
       }
-      a {
-        opacity: 0.5;
-        &:hover {
-          opacity: 0.2;
-        }
-        &.active, &:active {
-          opacity: 1;
-        }
+      &.active, &:active {
+        opacity: 1;
       }
     }
+  }
+}
+ul.mini-nav {
+  position: relative;
+  width: auto;
+  height: auto;
+  li {
+    font-size: 0.85rem;
   }
 }
 
@@ -140,8 +159,24 @@ html, body, #root, #app {
         p {
           margin-top: 20px;
           margin-right: 10px;
+          span {
+            margin-right: 5px;
+            margin-left: 10px;
+          }
+          &:first-child span {
+            margin-left: 0;
+          }
           &:last-child {
             margin-right: 0;
+          }
+          &:nth-child(1) span {
+            color: $green;
+          }
+          &:nth-child(2) span {
+            color: $yellow;
+          }
+          &:nth-child(3) span {
+            color: $red;
           }
         }
       }
@@ -157,11 +192,21 @@ html, body, #root, #app {
       }
     }
     .historical {
-      height: 100px;
-      background-color: $gray;
-      width: 400px;
-      opacity: 0.3;
+      height: 150px;
+      // background-color: $gray;
+      width: 500px;
     }
+  }
+}
+
+
+/*
+  SERVICES
+ */
+
+.services {
+  .mini-nav {
+    padding: 40px 0px 20px;
   }
 }
 
@@ -171,6 +216,9 @@ html, body, #root, #app {
     .content {
       padding-right: 50px;
       padding-left: 50px;
+    }
+    .overall-container {
+      padding: 20px 40px;
     }
   }
   /*
@@ -190,5 +238,16 @@ html, body, #root, #app {
 
   .dashboard {
 
+  }
+
+
+  /*
+    SERVICES
+   */
+
+  .services {
+    .mini-nav {
+      padding: 40px 30px 20px;
+    }
   }
 }
