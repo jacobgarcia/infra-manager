@@ -40,21 +40,22 @@ app.use('/static',
 
 app.post('/webhook', (req, res) => {
   exec('yarn; yarn build', (error, stdout, stderr) => {
+    res.status(200).json({ message: 'Webhook recieved' })
+
     if (error) {
       console.log(error)
-      return res.status(500).json({ error })
+      return
     }
 
     if (stdout) {
       console.log(stdout)
       exec('yarn restart all')
-      res.status(200).json({ stdout })
       return
     }
 
     if (stderr) {
       console.log(stderr)
-      return res.status(400).json({ stderr })
+      return
     }
 
   })
