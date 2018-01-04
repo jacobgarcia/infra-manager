@@ -38,6 +38,19 @@ html, body, #root, #app {
 .app-content {
   padding-top: 58px;
   background-color: $dark-gray;
+  .overall-container {
+    background-color: $dark-gray;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .content {
+    padding: 20px;
+    background-color: $gray;
+    padding-top: 70px;
+    flex: 1;
+  }
 }
 
 .table {
@@ -119,11 +132,6 @@ html, body, #root, #app {
 .dashboard {
   color: white;
   .overall-container {
-    background-color: $dark-gray;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
     .graph-container {
       display: flex;
       position: relative;
@@ -155,16 +163,16 @@ html, body, #root, #app {
       opacity: 0.3;
     }
   }
-  .content {
-    padding: 20px;
-    background-color: $gray;
-    padding-top: 70px;
-    flex: 1;
-  }
 }
 
 
 @media screen and (min-width: 800px) {
+  .app-content {
+    .content {
+      padding-right: 50px;
+      padding-left: 50px;
+    }
+  }
   /*
     NAVIGATOR
    */
@@ -181,9 +189,6 @@ html, body, #root, #app {
    */
 
   .dashboard {
-    .content {
-      padding-right: 50px;
-      padding-left: 50px;
-    }
+
   }
 }

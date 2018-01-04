@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 
-import { App } from './containers'
+import { App, Services } from './containers'
 
 // Redux
 import appReducer from './reducers'
