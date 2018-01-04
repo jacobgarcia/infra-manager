@@ -39,7 +39,7 @@ app.use('/static',
 // TODO add API
 
 
-app.post('/webhook', (req, res) => {
+function slackMessage(body) {
   request({
     url: 'https://hooks.slack.com/services/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',
     method: 'POST',
@@ -47,57 +47,42 @@ app.post('/webhook', (req, res) => {
       'Content-type': 'application/json'
     },
     json: true,
-    body: {
-      text: 'Build started...'
-    }
+    body
+  })
+}
+
+app.post('/webhook', (req, res) => {
+
+  console.log('Build started...')
+  slackMessage({
+    text: 'Build started'
   })
 
   exec('git pull; yarn; yarn build', (error, stdout, stderr) => {
     if (error) {
-      request({
-        url: 'https://hooks.slack.com/services/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',
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        json: true,
-        body: {
-          text: `Build failed\nOutput:${error}`
-        }
+      console.log('Error', error)
+      slackMessage({
+        text: `Build errored\nOutput: ${error}`
       })
     }
 
     if (stdout) {
+      console.log('Build succeed')
       exec('yarn restart')
-      request({
-        url: 'https://hooks.slack.com/services/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',
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-        json: true,
-        body: {
-          text: `Build succeed!\nOutput: ${stdout}`
-        }
+      slackMessage({
+        text: `Build succeed!\nOutput: ${stdout}`
       })
     }
 
     if (stderr) {
-      request({
-        url: 'https://hooks.slack.com/services/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',
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json'
-        },
-
-        body: {
-          text: `Build failed\nOutput: ${stderr}`
-        }
+      console.log('Error', stderr)
+      slackMessage({
+        text: `Build failed\nOutput: ${stderr}`
       })
     }
   })
 
-  return res.status(200).json({ message: 'Webhook recieved' })
+  res.status(200).json({ message: 'Webhook recieved' })
 })
 
 // Bundles
