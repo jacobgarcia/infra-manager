@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { PieChart, Pie, Cell, AreaChart, XAxis, CartesianGrid, Tooltip, ReferenceLine, Area } from 'recharts'
 
-import { green, yellow, red, lightestBlue } from '../lib/colors'
+import { green, yellow, red, blue } from '../lib/colors'
 
 const data = [
   { name: 'workings', value: 96.1 },
@@ -30,14 +30,6 @@ function getColor(name) {
 }
 
 class Dashboard extends Component {
-  constructor(props) {
-    super(props)
-
-    this.state = {
-
-    }
-  }
-
   render() {
     const { state, props } = this
 
@@ -81,7 +73,13 @@ class Dashboard extends Component {
              <CartesianGrid stroke="#424953" strokeDasharray="3 3" horizontal={false} />
              <ReferenceLine y={40} stroke="red" strokeDasharray="3 3" />
              <Tooltip/>
-             <Area dataKey="pv" fill={lightestBlue} animationBegin={0} type="monotone" stroke={green}/>
+             <defs>
+              <linearGradient id="colorUv" x1="1" y1="0" x2="0" y2="0">
+                <stop offset="0%" stopColor={blue} stopOpacity={0.8}/>
+                <stop offset="100%" stopColor={blue} stopOpacity={0.1}/>
+              </linearGradient>
+            </defs>
+             <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0} type="monotone" stroke={green}/>
            </AreaChart>
           </div>
         </div>
