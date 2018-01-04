@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config ./config/webpack.prod.js",
     "test": "echo \"Error: no test specified\" && exit 0",
-    "restart": "pm2 reload",
+    "restart": "pm2 reload all -i max",
     "start": "pm2 start server.js --name connus -i max",
     "start:dev": "NODE_ENV=\"development\" nodemon --config ./config/nodemon.json"
   },

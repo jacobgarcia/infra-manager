@@ -166,6 +166,9 @@ p span {
       li {
         text-transform: capitalize;
       }
+      li a.active {
+        color: white;
+      }
       img {
         width: 25px;
         height: 25px;
