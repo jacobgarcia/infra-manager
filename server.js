@@ -76,7 +76,7 @@ app.post('/webhook', (req, res) => {
     if (stderr) {
       console.log('Console errors and warnings', stderr)
       slackMessage({
-        text: `*Error and warnings:*\n${stderr}`
+        text: `*Errors and warnings:*\n${stderr}`
       })
     }
   })
