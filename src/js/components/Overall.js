@@ -75,7 +75,6 @@ class Overall extends PureComponent {
     return (
       <div className="overall">
         <div className="content">
-          <div className={`tooltip ${props.isCreating && 'hidden'}`} onClick={props.onVisibleToggle}/>
           <div className="mini-header">
             <span>{props.selectedType !== 'GENERAL' && <Link to={this.getBackLink(props)}>Regresar</Link>}</span>
             <span className="pop-window">Hacer ventana</span>

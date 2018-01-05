@@ -375,6 +375,7 @@ p span {
     left: 0;
     right: 0;
     bottom: 0;
+    background-color: #191919;
   }
   .overall, .alerts {
     padding-top: 50px;
@@ -532,11 +533,24 @@ p span {
     }
   }
 }
+.chart-container {
+  display: flex;
+  position: relative;
+  p {
+    margin-top: 23px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    position: absolute;
+    font-size: 1.1rem;
+  }
+}
 .leaflet-tooltip .tooltip {
   text-align: center;
   position: relative;
   height: 50px;
   height: 50px;
+  color: white;
   .content {
     border-radius: 4px;
     padding: 7px 5px;
@@ -706,55 +720,21 @@ p span {
   }
 }
 $dark: #1d212d;
-$light-dark: hsl(225, 21%, 24%);
-
 #app {
-  background-color: #1d212d;
-  transition: ease 0.8s;
-  color: #fff;
-  input {
-    border-color: #fff;
-    background-color: #1d212d;
-    color: #fff;
-  }
-  .app-content {
-    background-color: #1d212d;
-    transition: 1s ease 0.8s;
-  }
-  button, .button, .tooltip, .overall {
-    background-color: $dark;
-    color: #fff;
-  }
-  .overall, .alerts {
-    .content {
-      background-color: $light-dark;
-      .status.list {
-        background-color: $dark;
-      }
-    }
-    .content .tooltip {
-      background-color: $light-dark;
-      overflow: hidden;
-      background-image: url();
-      &:before {
-        width: 35px;
-        height: 35px;
-        content: '';
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        background-color: $connus-blue;
-        -webkit-mask-image: url("/static/img/icons/tower.svg");
-        mask-image: url("/static/img/icons/tower.svg");
-      }
+  .overall {
+    top: 70px;
+    left: 20px;
+    padding-top: 0;
+    max-height: 700px;
+    border-radius: 5px;
+    overflow: hidden;
+    color: white;
+    .content .status.list {
+      background-color: $dark-gray;
     }
   }
   .leaflet-pane .tooltip .content {
-    background-color: $dark;
-  }
-  .alerts .content .tooltip:before {
-    -webkit-mask-image: url("/static/img/icons/attention.svg");
-    mask-image: url("/static/img/icons/attention.svg");
+    background-color: $dark-gray;
   }
   button, input {
     &.destructive {
@@ -765,7 +745,7 @@ $light-dark: hsl(225, 21%, 24%);
     border-color: black;
   }
   .leaflet-control-zoom a {
-    background-color: $dark;
+    background-color: $dark-gray;
     color: white;
     border-color: black;
   }
