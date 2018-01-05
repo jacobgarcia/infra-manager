@@ -9,7 +9,7 @@ export { default as StatusesContainer } from './StatusesContainer'
 
 export { default as Polygon } from './Polygon'
 export { default as Marker } from './Marker'
-// export { default as ElementStatus } from './ElementStatus'
+export { default as ElementStatus } from './ElementStatus'
 
 // export { default as Prompt } from './Prompt'
 export { default as Search } from './Search'

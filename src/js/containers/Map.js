@@ -119,6 +119,7 @@ class MapContainer extends Component {
   getElementsToRender(props) {
     const { zoneId = null, subzoneId = null, siteId = null } = props.match.params
 
+    console.log('ZONES', this.props.zones);
     if (!this.props.zones || this.props.zones.length === 0) return { elements: [], shadow: null }
 
     if (siteId) {
@@ -266,7 +267,6 @@ class MapContainer extends Component {
           onHover={this.onElementOver}
           elements={state.elements}
           selectedType={selectedSite ? 'SITE' : selectedSubzone ? 'SUBZONE' : selectedZone ? 'ZONE' : 'GENERAL'}
-          isVisible={state.showing === 'OVERALL'}
           onVisibleToggle={() => this.toggleVisible('OVERALL')}
           reports={this.getElementReports()}
           element={state.element}

@@ -4,14 +4,55 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
+import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
 import { Dashboard, Services, Map, Users, Statistics, Settings } from './'
 import { Navigator } from '../components'
-// import { NetworkOperation } from '../lib/NetworkOperation'
+import { NetworkOperation } from '../lib'
 
 class App extends Component {
   componentWillMount() {
-    // TODO Verify auth
-    // TODO Get user
+    const token = localStorage.getItem('token')
+    const path = `${this.props.location.pathname}${this.props.location.search}`
+
+    if (!token) {
+      localStorage.removeItem('token')
+      this.props.history.replace(`/login?return=${path}`)
+      return
+    }
+
+    this.props.setLoading()
+
+    NetworkOperation.getSelf()
+    .then(({data}) => {
+      this.props.setCredentials({...data.user, token})
+
+      // Start socket connection
+      // this.initSocket(this.props, token)
+
+      return NetworkOperation.getExhaustive()
+    })
+    .then(({data}) => {
+      console.log({data})
+      // Set all zones
+      this.props.setExhaustive(data.zones)
+
+      this.props.setComplete()
+    })
+    .catch(error => {
+      console.error(error)
+      let { response = {} } = error
+      this.props.setComplete()
+
+      switch (response.status) {
+        case 401:
+        case 400:
+          this.props.history.replace(`/login?return=${path}`)
+          break
+        default:
+          // TODO Display error
+          break
+      }
+    })
   }
 
   render() {
@@ -42,11 +83,30 @@ App.propTypes = {
 }
 
 function mapDispatchToProps(dispatch) {
-  return {}
+  return {
+    setReport: report => {
+      dispatch(setReport(report))
+    },
+    setCredentials: user => {
+      dispatch(setCredentials(user))
+    },
+    setLoading: () => {
+      dispatch(setLoading())
+    },
+    setComplete: () => {
+      dispatch(setComplete())
+    },
+    setExhaustive: zones => {
+      dispatch(setExhaustive(zones))
+    }
+  }
 }
 
-function mapStateToProps() {
-  return {}
+function mapStateToProps({loading, credentials}) {
+  return {
+    loading,
+    credentials
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

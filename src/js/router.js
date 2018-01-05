@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 
-import { App, Services } from './containers'
+import { App, Login } from './containers'
 
 // Redux
 import appReducer from './reducers'
@@ -14,7 +14,7 @@ function Routes() {
     <Provider store={store}>
       <Router>
         <Switch>
-          {/* <Route exact path="/login" component={Login}/> */}
+          <Route exact path="/login" component={Login}/>
           <Route path="/" component={App}/>
         </Switch>
       </Router>

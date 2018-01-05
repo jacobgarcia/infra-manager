@@ -11,3 +11,5 @@ export { default as Users } from './Users'
 export { default as Services } from './Services'
 
 export { default as Settings } from './Settings'
+
+export { default as Login } from './Login'

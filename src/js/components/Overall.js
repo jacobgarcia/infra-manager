@@ -73,7 +73,7 @@ class Overall extends PureComponent {
     // console.log('GET ELEMENTS', elements)
 
     return (
-      <div className={`overall ${!props.isVisible && 'hidden'}`}>
+      <div className="overall">
         <div className="content">
           <div className={`tooltip ${props.isCreating && 'hidden'}`} onClick={props.onVisibleToggle}/>
           <div className="mini-header">

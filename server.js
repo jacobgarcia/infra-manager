@@ -2,7 +2,6 @@
 const express = require('express')
 const path = require('path')
 const helmet = require('helmet') // Basic headers protection
-
 const bodyParser = require('body-parser')
 const compression = require('compression') // Files compresion
 const winston = require('winston') // Logger
@@ -11,6 +10,7 @@ const request = require('request')
 const { exec } = require('child_process')
 const app = express()
 
+const v1 = require(path.resolve('router/v1'))
 const webpackDevServer = require(path.resolve('config/webpackDevServer')) // Dev server
 
 const PORT = process.env.PORT || 8080
@@ -37,7 +37,8 @@ app.use('/static',
 )
 
 // TODO add API
-
+// Resolve API v1
+app.use('/v1', v1)
 
 function slackMessage(body) {
   request({
