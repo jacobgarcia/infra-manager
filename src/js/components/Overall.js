@@ -48,10 +48,10 @@ class Overall extends PureComponent {
 
   getBackLink({selectedType: type, params}) {
     switch (type) {
-      case 'ZONE': return '/'
-      case 'SUBZONE': return `/zones/${params.zoneId}`
-      case 'SITE': return `/zones/${params.zoneId}/${params.subzoneId}`
-      default: return '/'
+      case 'ZONE': return '/sites'
+      case 'SUBZONE': return `/sites/${params.zoneId}`
+      case 'SITE': return `/sites/${params.zoneId}/${params.subzoneId}`
+      default: return '/sites'
     }
   }
 

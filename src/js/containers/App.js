@@ -65,7 +65,7 @@ class App extends Component {
         <Switch>
           <Route exact path="/" component={Dashboard}/>
           <Route path="/services" component={Services}/>
-          <Route path="/sites" component={Map}/>
+          <Route path="/sites/:zoneId?/:subzoneId?/:siteId?" component={Map} />
           <Route path="/users" component={Users}/>
           <Route path="/statistics" component={Statistics}/>
           <Route path="/settings" component={Settings}/>

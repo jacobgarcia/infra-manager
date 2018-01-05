@@ -628,6 +628,89 @@ p span {
     position: relative;
   }
 }
+.statuses-container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  .statuses-container-nav {
+    display: flex;
+    padding: 10px;
+    margin-bottom: 10px;
+    li {
+      cursor: pointer;
+      margin-right: 20px;
+      padding: 0 3px;
+      padding-bottom: 5px;
+      &.active {
+        font-weight: 500;
+        border-bottom: 2px solid #000;
+      }
+    }
+  }
+  .content {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    .info {
+      &.readonly {
+        input {
+          border-bottom: none;
+        }
+      }
+      > div {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 30px;
+      }
+      label, h4 {
+        font-weight: 600;
+        display: block;
+      }
+      input {
+        background-color: transparent;
+        padding-right: 0;
+        padding-left: 0;
+        &[readonly] {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
+// Zone, subzone, site, sensor status
+.content .status, .search .status {
+  display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
+  padding: 10px 15px;
+  background-color: #fff;
+  margin-bottom: 10px;
+  box-shadow: 0px 0px 7px rgba(#000, 0.08);
+  &:hover {
+    box-shadow: 0px 0px 7px rgba(#000, 0.25);
+  }
+  span span {
+    font-size: 0.8rem;
+    color: $gray;
+  }
+  .status-text {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+    .main {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+  }
+}
+
+
+
+
+
+
 
 
 
