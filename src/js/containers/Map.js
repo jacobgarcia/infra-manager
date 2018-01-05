@@ -26,14 +26,9 @@ class MapContainer extends Component {
       states: [],
       isSearching: false,
       elementHover: null,
-
       visibleMarkers: false,
-
-      // For area creation
-      hoverPosition: [],
-
-      // New element
-      newPositions: [],
+      hoverPosition: [], // For area creation
+      newPositions: [], // New element
       newElementName: '',
       isNewElementValid: false
     }
@@ -71,6 +66,10 @@ class MapContainer extends Component {
     if (zoom > 12) {
       this.setState({
         visibleMarkers: true
+      })
+    } else {
+      this.setState({
+        visibleMarkers: false
       })
     }
   }
