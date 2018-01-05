@@ -33,7 +33,7 @@ class StatusesContainer extends PureComponent {
     switch (type) {
       case 'GENERAL': return 'Zona'
       case 'ZONE': return 'Subzona'
-      case 'SUBZONE': return 'Sitio'
+      case 'SUBZONE': return ''
       case 'SITE': return 'Sensor'
       default: return `Otro`
     }
