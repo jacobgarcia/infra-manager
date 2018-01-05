@@ -77,7 +77,7 @@ class Overall extends PureComponent {
         <div className="content">
           <div className="mini-header">
             <span>{props.selectedType !== 'GENERAL' && <Link to={this.getBackLink(props)}>Regresar</Link>}</span>
-            <span className="pop-window">Hacer ventana</span>
+            {/* <span className="pop-window">Hacer ventana</span> */}
           </div>
           <div className="overall-header">
             <h3>{this.getTitle(props.params, props.element && props.element.name)}</h3>

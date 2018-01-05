@@ -47,9 +47,9 @@ class Alerts extends Component {
       <div className={`alerts ${!props.isVisible && 'hidden'}`}>
         <div className="content">
           <div className={`tooltip ${props.isCreating && 'hidden'}`} onClick={props.onVisibleToggle}/>
-          <div className="mini-header">
+          {/* <div className="mini-header">
             <span className="pop-window">Hacer ventana</span>
-          </div>
+          </div> */}
           <div>
             {
               state.alerts.today.map((alert, index) =>

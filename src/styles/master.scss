@@ -388,6 +388,7 @@ p span {
     transition: ease 0.3s transform;
     > .content {
       padding: 20px 10px;
+      padding-bottom: 10px;
       position: relative;
       display: flex;
       flex-direction: column;
