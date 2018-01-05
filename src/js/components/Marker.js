@@ -41,6 +41,9 @@ function SiteMarker(props) {
         // shadowAnchor: [20, 40],
         popupAnchor: [40, 0]
       })}>
+      {
+      (props.isTooltipVisible || props.isHighlighted)
+      &&
       <Tooltip permanent opacity={1}>
         <div className={`tooltip site ${(props.isHighlighted && !props.deactivated) ? 'active' : ''}`}>
           <div className="content">
@@ -48,7 +51,7 @@ function SiteMarker(props) {
               <div className="icons">
                 { alerts > 0 ? <span className="alerts-icon" /> : null }
               </div>
-              <h3>{props.title || props.site.name || props.site.key}</h3>
+                <h3>{props.site.key || props.title || props.site.name }</h3>
             </div>
             <div className="hidable sensors">
               {
@@ -86,7 +89,7 @@ function SiteMarker(props) {
           </div>
           {/* <span className="hidable">{getStatus(status).normalPercentage * 100}%</span> */}
         </div>
-      </Tooltip>
+      </Tooltip>}
     </Marker>
   )
 }

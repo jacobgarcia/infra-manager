@@ -27,6 +27,8 @@ class MapContainer extends Component {
       isSearching: false,
       elementHover: null,
 
+      visibleMarkers: false,
+
       // For area creation
       hoverPosition: [],
 
@@ -41,7 +43,7 @@ class MapContainer extends Component {
     this.toggleVisible = this.toggleVisible.bind(this)
     this.onToggleSearch = this.onToggleSearch.bind(this)
     this.toggleCreate = this.toggleCreate.bind(this)
-
+    this.onViewportChanged = this.onViewportChanged.bind(this)
     // MAP
     this.onMapClick = this.onMapClick.bind(this)
     this.onElementNameChange = this.onElementNameChange.bind(this)
@@ -63,6 +65,14 @@ class MapContainer extends Component {
         this.props.setReport(report)
       })
     })
+  }
+
+  onViewportChanged({zoom}) {
+    if (zoom > 12) {
+      this.setState({
+        visibleMarkers: true
+      })
+    }
   }
 
   componentDidMount() {
@@ -120,7 +130,6 @@ class MapContainer extends Component {
   getElementsToRender(props) {
     const { zoneId = null, subzoneId = null, siteId = null } = props.match.params
 
-    console.log('ZONES', this.props.zones);
     if (!this.props.zones || this.props.zones.length === 0) return { elements: [], shadow: null }
 
     if (siteId) {
@@ -293,6 +302,7 @@ class MapContainer extends Component {
           }}
           zoom={state.currentZoom}
           onClick={this.onMapClick}
+          onViewportChanged={this.onViewportChanged}
           onMouseMove={({latlng}) => state.isCreating && this.setState({ hoverPosition: [latlng.lat, latlng.lng] })}
           animate
         >
@@ -366,6 +376,7 @@ class MapContainer extends Component {
                 reports={this.props.reports.filter(({site: reportSite}) =>
                   reportSite.key === element.key
                 )}
+                isTooltipVisible={state.visibleMarkers}
                 isHighlighted={this.state.hoverElement === element._id}
                 onMouseHover={this.onElementOver}
                 isSite={selectedSubzone !== null}
