@@ -12,11 +12,7 @@ class Alerts extends Component {
       }
     }
   }
-
-  componentDidMount() {
-
-  }
-
+  
   componentWillReceiveProps(nextProps) {
     if (this.props.alerts.length === nextProps.alerts.length) return
 
