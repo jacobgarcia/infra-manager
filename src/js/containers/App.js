@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
+import io from 'socket.io-client'
 
 import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
 import { Dashboard, Services, Map, Users, Statistics, Settings } from './'
@@ -26,8 +27,8 @@ class App extends Component {
     .then(({data}) => {
       this.props.setCredentials({...data.user, token})
 
-      // Start socket connection
-      // this.initSocket(this.props, token)
+      /// Start socket connection
+      this.initSockets(this.props, token)
 
       return NetworkOperation.getExhaustive()
     })
@@ -52,6 +53,23 @@ class App extends Component {
           // TODO Display error
           break
       }
+    })
+  }
+
+  initSockets(props, token) {
+    this.socket = io()
+    // this.socket.emit('join', token)
+
+    this.socket.on('connect', () => {
+      this.socket.emit('join', token)
+    })
+
+    this.socket.on('reload', () => {
+      console.log('Got reload')
+    })
+
+    this.socket.on('report', report => {
+      props.setReport(report)
     })
   }
 
