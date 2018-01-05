@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Map, TileLayer, Polygon as LeafletPolygon, Circle } from 'react-leaflet'
 import { connect } from 'react-redux'
+import { Helmet } from 'react-helmet'
 
 import { Overall, Alerts, Polygon, Marker, Search, CreateElementBar } from '../components'
 import { NetworkOperation } from '../lib'
@@ -261,6 +262,9 @@ class MapContainer extends Component {
 
     return (
       <div id="map-container" className={state.isCreating ? 'creating-element' : ''}>
+        <Helmet>
+          <title>Connus | Sitios</title>
+        </Helmet>
         <Overall
           params={props.match.params}
           alerts={null}
