@@ -1,5 +1,5 @@
-export const red = '#D43A41'
-export const yellow = '#D2B82B'
+export const red = '#FB1425'
+export const yellow = '#FED416'
 export const green = '#1EF3A2'
 export const blue = '#00c0ff'
 export const lightestBlue = 'rgba(0, 192, 255, 0.3)'
