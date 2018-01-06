@@ -1,5 +1,7 @@
 export { default as Navigator } from './Navigator'
 
+export { default as Card } from './Card'
+
 export { default as Alerts } from './Alerts'
 export { default as Overall } from './Overall'
 

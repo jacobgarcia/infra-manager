@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { PieChart, Pie, Cell, AreaChart, XAxis, CartesianGrid, Tooltip, ReferenceLine, Area, ResponsiveContainer } from 'recharts'
 
+import { Card } from '../components'
 import { yellow, red, blue } from '../lib/colors'
 
 const data = [
@@ -37,7 +38,7 @@ class Dashboard extends Component {
       <div className="dashboard app-content">
         <div className="overall-container">
           <div className="horizontal-container">
-            <div className="graph-container card">
+            <Card className="graph-container" title="Rendimiento general">
               <div className="graph">
                 <PieChart width={200} height={200}>
                   <Pie
@@ -65,13 +66,13 @@ class Dashboard extends Component {
                   <p><span>1.1%</span> dañado</p>
                 </div>
               </div>
-            </div>
-            <div className="historical card">
+            </Card>
+            <Card className="historical" title="Media de servicio">
               <ResponsiveContainer width={600} height="100%">
                 <AreaChart data={barData}
                 margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                  <XAxis dataKey="name" height={20} mirror />
-                 <CartesianGrid stroke="#424953" strokeDasharray="3 3" horizontal={false} />
+                 <CartesianGrid stroke="#424953" strokeDasharray="5 5" horizontal={false} />
                  <Tooltip/>
                  <defs>
                   <linearGradient id="colorUv" x1="1" y1="0" x2="0" y2="0">
@@ -79,43 +80,49 @@ class Dashboard extends Component {
                     <stop offset="100%" stopColor={blue} stopOpacity={0.1}/>
                   </linearGradient>
                 </defs>
-                 <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0} type="monotone" stroke={blue}/>
-                 <ReferenceLine y={40} stroke="red" strokeDasharray="3 3" />
+                 <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0} type="natural" stroke={blue} strokeWidth={2}/>
+                 <ReferenceLine y={40} stroke="red" strokeDasharray="5 5" />
                </AreaChart>
              </ResponsiveContainer>
-            </div>
+            </Card>
           </div>
-          <div className="card">
-            <div className="events-container">
-              <ul className="inline-nav">
-                <li className="active">Historial de sucesos</li>
-                <li>Alertas</li>
-              </ul>
-              <div className="table">
-                <div className="table-header">
-                  <div className="table-item">
-                    <div className="medium">Tiempo</div>
-                    <div className="large">Suceso</div>
-                    <div>Zona</div>
-                    <div>Sitio</div>
-                    <div>Riesgo</div>
-                    <div className="medium">Acción</div>
-                  </div>
+          <div className="horizontal-container">
+            <Card title="Afluencia de personas">
+
+            </Card>
+            <Card title="Flujo vehicular">
+
+            </Card>
+          </div>
+          <div className="events-container">
+            <ul className="inline-nav">
+              <li className="active">Historial de sucesos</li>
+              <li>Alertas</li>
+            </ul>
+            <div className="table">
+              <div className="table-header">
+                <div className="table-item">
+                  <div className="medium">Tiempo</div>
+                  <div className="large">Suceso</div>
+                  <div>Zona</div>
+                  <div>Sitio</div>
+                  <div>Riesgo</div>
+                  <div className="medium">Acción</div>
                 </div>
-                <div className="table-body">
-                  {
-                    [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0].map((element, index) =>
-                      <div className="table-item" key={index}>
-                        <div className="medium">3 enero <span>7:45 AM</span></div>
-                        <div className="large">Detección de movimiento</div>
-                        <div>Norte</div>
-                        <div>45</div>
-                        <div>III</div>
-                        <div className="medium">Vigilancia</div>
-                      </div>
-                    )
-                  }
-                </div>
+              </div>
+              <div className="table-body">
+                {
+                  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0].map((element, index) =>
+                    <div className="table-item" key={index}>
+                      <div className="medium">3 enero <span>7:45 AM</span></div>
+                      <div className="large">Detección de movimiento</div>
+                      <div>Norte</div>
+                      <div>45</div>
+                      <div>III</div>
+                      <div className="medium">Vigilancia</div>
+                    </div>
+                  )
+                }
               </div>
             </div>
           </div>

@@ -57,7 +57,7 @@ class Navigator extends Component {
       <ul className={`navigator ${state.isHidden ? 'hidden' : ''}`}>
         <li className="sandwitch-icon" onClick={() => this.setState(prev => ({isHidden: !prev.isHidden}))}/>
         <ul>
-          <li className="username"><NavLink to="/settings" className="fade"><span>Estatus</span>John Appleseed</NavLink><img src="" alt="" className="fade"/></li>
+          <li className="username"><NavLink to="/settings" className="fade"><span>Administrador</span>John Appleseed</NavLink><img src="" alt="" className="fade"/></li>
           <li onClick={() => this.closeNavigator()}>
             <NavLink exact to="/">
               <span className="status fade">Estatus</span>
@@ -90,6 +90,9 @@ class Navigator extends Component {
 Navigator.defaultProps = {
   services: [
     {
+      title: 'Sitios',
+      name: 'sites'
+    }, {
       title: 'Accesos',
       name: 'accesses'
     }, {

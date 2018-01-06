@@ -23,13 +23,16 @@ class App extends Component {
 
     this.props.setLoading()
 
+    console.log('GETTING...');
+
     NetworkOperation.getSelf()
     .then(({data}) => {
+      console.log('MORE...')
       this.props.setCredentials({...data.user, token})
 
       /// Start socket connection
-      this.initSockets(this.props, token)
-
+      // this.initSockets(this.props, token)
+      console.log('EXHAUSTIVE')
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
