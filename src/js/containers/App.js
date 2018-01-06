@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
 import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
-import { Dashboard, Services, Map, Users, Statistics, Settings } from './'
+import { Dashboard, Services, Map, Users, Statistics, Settings, Accesses, VehicularFlow, Perimeter, FacialRecognition, Cctv, Reports } from './'
 import { Navigator } from '../components'
 import { NetworkOperation } from '../lib'
 
@@ -23,27 +23,21 @@ class App extends Component {
 
     this.props.setLoading()
 
-    console.log('GETTING...');
-
     NetworkOperation.getSelf()
     .then(({data}) => {
-      console.log('MORE...')
       this.props.setCredentials({...data.user, token})
 
-      /// Start socket connection
+      // Start socket connection
       // this.initSockets(this.props, token)
-      console.log('EXHAUSTIVE')
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
-      console.log({data})
       // Set all zones
       this.props.setExhaustive(data.zones)
 
       this.props.setComplete()
     })
     .catch(error => {
-      console.error(error)
       let { response = {} } = error
       this.props.setComplete()
 
@@ -67,9 +61,9 @@ class App extends Component {
       this.socket.emit('join', token)
     })
 
-    this.socket.on('reload', () => {
-      console.log('Got reload')
-    })
+    // this.socket.on('reload', () => {
+    //   console.log('Got reload')
+    // })
 
     this.socket.on('report', report => {
       props.setReport(report)
@@ -85,10 +79,15 @@ class App extends Component {
         <Navigator />
         <Switch>
           <Route exact path="/" component={Dashboard}/>
-          <Route path="/services" component={Services}/>
           <Route path="/sites/:zoneId?/:subzoneId?/:siteId?" component={Map} />
           <Route path="/users" component={Users}/>
+          <Route path="/accesses" component={Accesses}/>
+          <Route path="/vehicular-flow" component={VehicularFlow}/>
+          <Route path="/perimeter" component={Perimeter}/>
+          <Route path="/facial-recognition" component={FacialRecognition}/>
           <Route path="/statistics" component={Statistics}/>
+          <Route path="/cctv" component={Cctv}/>
+          <Route path="/reports" component={Reports}/>
           <Route path="/settings" component={Settings}/>
         </Switch>
       </div>

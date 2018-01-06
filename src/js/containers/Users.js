@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
 class Users extends Component {
   constructor(props) {
@@ -14,6 +15,9 @@ class Users extends Component {
     const { state, props } = this
     return (
       <div className="users app-content">
+        <Helmet>
+          <title>Connus | Usuarios</title>
+        </Helmet>
         <div className="content">
           <div className="table">
             <div className="table-actions">

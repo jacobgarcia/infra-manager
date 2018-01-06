@@ -99,7 +99,7 @@ Navigator.defaultProps = {
       name: 'accesses'
     }, {
       title: 'Flujo vehícular',
-      name: 'vehicles'
+      name: 'vehicular-flow'
     }, {
       title: 'Perímetro',
       name: 'perimeter'

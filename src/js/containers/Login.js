@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import queryString from 'query-string'
+import { Helmet } from 'react-helmet'
 
 import { NetworkOperation } from '../lib'
 import { setCredentials } from '../actions'
@@ -66,6 +67,9 @@ class Login extends Component {
     const { state } = this
     return (
       <div className="login">
+        <Helmet>
+          <title>Connus | Login</title>
+        </Helmet>
         <div id="logo">
           <img src="/static/img/iso.svg" alt="" className="iso" />
           <img src="/static/img/logo.svg" alt="" className="logo" />

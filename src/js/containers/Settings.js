@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
 class Settings extends Component {
   constructor(props) {
@@ -14,6 +15,9 @@ class Settings extends Component {
     const { state, props } = this
     return (
       <div className="settings app-content">
+        <Helmet>
+          <title>Connus | Ajustes</title>
+        </Helmet>
         <div className="content vertical">
           <ul className="mini-nav vertical">
             <li className="active">Perfil</li>
