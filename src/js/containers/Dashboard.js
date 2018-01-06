@@ -109,7 +109,7 @@ class Dashboard extends Component {
                     <XAxis dataKey="name" height={15} axisLine={false} tickLine={false} />
                     <YAxis width={15} tickLine={false} />
                     <Tooltip/>
-                    <Bar dataKey="uv" barSize={30} fill={gray}/>
+                    <Bar dataKey="uv" barSize={30} fill="rgba(255,255,255,0.15)"/>
                     <Line type="linear" dataKey="uv" stroke={blue}
                       strokeDasharray="5 5"
                       dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }}
