@@ -391,7 +391,7 @@ p span {
     max-width: 500px;
     width: 100%;
     height: 100%;
-    background-color: $light-gray;
+    background-color: $dark-gray;
     z-index: 500;
     transition: ease 0.3s transform;
     > .content {
@@ -470,7 +470,7 @@ p span {
         > div {
           transition: ease 0.3s width;
         }
-        .normal { background-color: $green; }
+        .normal { background-color: $connus-blue; }
         .alert { background-color: $red; }
       }
       .leyend {
@@ -740,7 +740,7 @@ $dark: #1d212d;
     overflow: hidden;
     color: white;
     .content .status.list {
-      background-color: $dark-gray;
+      background-color: $darker-gray;
     }
   }
   .leaflet-pane .tooltip .content {

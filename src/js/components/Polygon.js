@@ -55,6 +55,7 @@ function ZonePolygon(props) {
                     animationEase="ease"
                     animationDuration={501}
                     animationBegin={0}
+                    stroke={false}
                   >
                   <Cell fill={colors(percentage)} />
                   <Cell fill="#e3e3e3" />

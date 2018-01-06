@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell } from 'recharts'
 
 function colors(value) {
   if (value > 75) {
-    return '#50E3C2'
+    return '#00adee'
   } else if (value < 40) {
     return '#ed2a20'
   }
@@ -49,7 +49,7 @@ class ElementStatus extends Component {
                 strokeWidth={0}
               >
               <Cell fill={colors(props.percentage)} />
-              <Cell fill="#e3e3e3" />
+              <Cell fill="#303640" />
               </Pie>
             </PieChart>
           </div>

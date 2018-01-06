@@ -71,13 +71,13 @@ function SiteMarker(props) {
                           innerRadius={12}
                           startAngle={-45}
                           endAngle={225}
-                          fill=""
                           animationEase="ease"
                           animationDuration={300}
                           animationBegin={0}
+                          stroke={false}
                         >
                         <Cell fill={constants.colors(percentage)} />
-                        <Cell fill="#e3e3e3" />
+                        <Cell fill="#424953" />
                         </Pie>
                       </PieChart>
                       <p>{sensor.key}</p>
