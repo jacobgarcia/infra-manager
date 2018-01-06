@@ -13,6 +13,18 @@ module.exports = merge(common, {
       }
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin()
+    new webpack.optimize.AggressiveMergingPlugin(),
+    new webpack.BannerPlugin(
+`
+Developed and mantained by:
+ _  _
+| \ | |_   _ _ __ ___
+|  \| | | | | '__/ _ \\
+| |\  | |_| | | |  __/
+|_| \_|\\__,_|_|  \\___|
+
+Visit: nure.mx
+We're hiring!
+`)
   ]
 })
