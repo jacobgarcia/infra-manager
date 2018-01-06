@@ -5,7 +5,13 @@ import { PieChart, Pie, Cell, AreaChart, XAxis, CartesianGrid, Tooltip, Referenc
 import { Card } from '../components'
 import { yellow, red, blue } from '../lib/colors'
 
-const data = [{name: 'Page A', uv: 590, pv: 800, amt: 1400},
+const data = [
+  { name: 'workings', value: 96.1 },
+  { name: 'alerts', value: 2.8 },
+  { name: 'damaged', value: 1.1 }
+]
+
+const data2 = [{name: 'Page A', uv: 590, pv: 800, amt: 1400},
               {name: 'Page B', uv: 868, pv: 967, amt: 1506},
               {name: 'Page C', uv: 1397, pv: 1098, amt: 989},
               {name: 'Page D', uv: 1480, pv: 1200, amt: 1228},
@@ -93,7 +99,7 @@ class Dashboard extends Component {
           </div>
           <div className="horizontal-container">
             <Card title="Afluencia de personas">
-              <ComposedChart width={400} height={200} data={data}
+              <ComposedChart width={600} height={400} data={data2}
                     margin={{top: 20, right: 20, bottom: 20, left: 20}}>
                   <XAxis dataKey="name"/>
                   <YAxis />
