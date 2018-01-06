@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { PieChart, Pie, Cell, AreaChart, XAxis, CartesianGrid, Tooltip, ReferenceLine, Area, ResponsiveContainer,ComposedChart, YAxis, Bar, Line } from 'recharts'
 
 import { Card } from '../components'
-import { yellow, red, blue } from '../lib/colors'
+import { yellow, red, blue, gray } from '../lib/colors'
 
 const data = [
   { name: 'workings', value: 96.1 },
@@ -11,12 +11,15 @@ const data = [
   { name: 'damaged', value: 1.1 }
 ]
 
-const data2 = [{name: 'Page A', uv: 590, pv: 800, amt: 1400},
-              {name: 'Page B', uv: 868, pv: 967, amt: 1506},
-              {name: 'Page C', uv: 1397, pv: 1098, amt: 989},
-              {name: 'Page D', uv: 1480, pv: 1200, amt: 1228},
-              {name: 'Page E', uv: 1520, pv: 1108, amt: 1100},
-              {name: 'Page F', uv: 1400, pv: 680, amt: 1700}]
+const data2 = [{ name: '1:00 AM', uv: 590 },
+              { name: '2:00 AM', uv: 868 },
+              { name: '3:00 AM', uv: 1397 },
+              { name: '4:00 AM', uv: 1480 },
+              { name: '5:00 AM', uv: 1520 },
+              { name: '6:00 AM', uv: 1400 },
+              { name: '7:00 AM', uv: 1400 },
+              { name: '8:00 AM', uv: 1400 },
+              { name: '9:00 AM', uv: 1400 }]
 
 const barData = [
       {name: '0:00 AM', pv: 76 },
@@ -99,15 +102,16 @@ class Dashboard extends Component {
           </div>
           <div className="horizontal-container">
             <Card title="Afluencia de personas">
-              <ComposedChart width={600} height={400} data={data2}
-                    margin={{top: 20, right: 20, bottom: 20, left: 20}}>
-                  <XAxis dataKey="name"/>
-                  <YAxis />
-                  <Tooltip/>
-                  <CartesianGrid stroke='#f5f5f5'/>
-                  <Bar dataKey='uv' barSize={20} fill='#413ea0'/>
-                  <Line type='monotone' dataKey='uv' stroke='#ff7300'/>
-               </ComposedChart>
+              <ResponsiveContainer width="100%" height={150}>
+                <ComposedChart data={data2}
+                      margin={{top: 20, right: 20, bottom: 20, left: 20}}>
+                    <XAxis dataKey="name" height={1} axisLine={false} tickLine={false} />
+                    <YAxis width={15} axisLine={false} tickLine={false} />
+                    <Tooltip/>
+                    <Bar dataKey="uv" barSize={30} fill={gray}/>
+                    <Line type="linear" dataKey="uv" stroke={blue} strokeDasharray="5 5" />
+                 </ComposedChart>
+               </ResponsiveContainer>
             </Card>
             <Card title="Flujo vehicular">
 
