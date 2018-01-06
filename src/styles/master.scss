@@ -794,7 +794,7 @@ $dark: #1d212d;
  */
 .navigator {
   z-index: 1000;
-  box-shadow: 0px 0px 5px rgba(#000,0.3);
+  box-shadow: 0px 0px 10px rgba(#000, 0.3);
   flex-direction: column;
 }
 .navigator, ul.mini-nav {
@@ -819,6 +819,7 @@ $dark: #1d212d;
     min-width: 20px;
   }
   &.hidden {
+    box-shadow: 0px 0px 5px rgba(#000, 0.2);
     *.fade {
       opacity: 1;
       transition: opacity 0.3s, visibility 0 0.4s;
@@ -982,8 +983,7 @@ ul.mini-nav {
       flex: 1;
       max-width: 100%;
       margin-right: 20px;
-      background-color: $dark-gray;
-      box-shadow: 0px 0px 7px rgba(#000, 0.3);
+      background-color: #20252d;
       border-radius: 5px;
       display: flex;
       flex-direction: column;

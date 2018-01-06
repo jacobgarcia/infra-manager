@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { PieChart, Pie, Cell, AreaChart, XAxis, CartesianGrid, Tooltip, ReferenceLine, Area, ResponsiveContainer,ComposedChart, YAxis, Bar, Line } from 'recharts'
 
 import { Card } from '../components'
-import { yellow, red, blue, gray } from '../lib/colors'
+import { yellow, red, blue, gray, darkGray } from '../lib/colors'
 
 const data = [
   { name: 'workings', value: 96.1 },
@@ -77,16 +77,12 @@ class Dashboard extends Component {
                 </div>
               </div>
             </Card>
-            <Card className="historical horizontal" title="Media de servicio">
-              <div>
-                <h1>98%</h1>
-                <h3>12</h3>
-              </div>
+            <Card className="historical" title="Media de servicio">
               <ResponsiveContainer width="100%" height={150}>
                 <AreaChart data={barData}
                 margin={{top: 5, right: 30, left: 20, bottom: 5}}>
                  <XAxis dataKey="name" height={20} mirror axisLine={false} padding={{right: 50}}/>
-                 <CartesianGrid stroke="#424953" strokeDasharray="5 5" horizontal={false} />
+                 <CartesianGrid stroke="#424953" horizontal={false} strokeWidth={0.5} />
                  <Tooltip/>
                  <defs>
                   <linearGradient id="colorUv" x1="1" y1="0" x2="0" y2="0">
@@ -94,22 +90,30 @@ class Dashboard extends Component {
                     <stop offset="100%" stopColor={blue} stopOpacity={0.1}/>
                   </linearGradient>
                 </defs>
-                 <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0} type="natural" stroke={blue} strokeWidth={2}/>
+                 <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0} type="natural" stroke={blue} strokeWidth={2}
+                   activeDot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
                  <ReferenceLine y={40} stroke="red" strokeDasharray="5 5" />
                </AreaChart>
              </ResponsiveContainer>
             </Card>
           </div>
           <div className="horizontal-container">
-            <Card title="Afluencia de personas">
-              <ResponsiveContainer width="100%" height={150}>
+            <Card title="Afluencia de personas" className="horizontal">
+              <div>
+                <h1>105</h1>
+                <p>7 personas por hora</p>
+              </div>
+              <ResponsiveContainer width="100%" height={200}>
                 <ComposedChart data={data2}
                       margin={{top: 20, right: 20, bottom: 20, left: 20}}>
-                    <XAxis dataKey="name" height={1} axisLine={false} tickLine={false} />
-                    <YAxis width={15} axisLine={false} tickLine={false} />
+                    <XAxis dataKey="name" height={15} axisLine={false} tickLine={false} />
+                    <YAxis width={15} tickLine={false} />
                     <Tooltip/>
                     <Bar dataKey="uv" barSize={30} fill={gray}/>
-                    <Line type="linear" dataKey="uv" stroke={blue} strokeDasharray="5 5" />
+                    <Line type="linear" dataKey="uv" stroke={blue}
+                      strokeDasharray="5 5"
+                      dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }}
+                      activeDot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
                  </ComposedChart>
                </ResponsiveContainer>
             </Card>
