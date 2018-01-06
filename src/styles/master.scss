@@ -388,7 +388,7 @@ p span {
   .overall {
     padding-top: 50px;
     position: absolute;
-    max-width: 500px;
+    max-width: 420px;
     width: 100%;
     height: 100%;
     background-color: $dark-gray;
@@ -435,7 +435,6 @@ p span {
   .overall {
     top: 0;
     left: 0;
-    border-right: 1px solid $gray;
     &.hidden {
       transform: translateX(-500px);
       .tooltip {
@@ -462,7 +461,7 @@ p span {
       margin: 30px 0;
       .bar-container {
         width: 100%;
-        height: 12px;
+        height: 9px;
         border-radius: 6px;
         overflow: hidden;
         display: flex;
@@ -471,7 +470,7 @@ p span {
           transition: ease 0.3s width;
         }
         .normal { background-color: $connus-blue; }
-        .alert { background-color: $red; }
+        .alert { background-color: $gray; }
       }
       .leyend {
         text-align: right;
@@ -731,12 +730,14 @@ p span {
 $dark: #1d212d;
 #app {
   .overall {
-    top: 30px;
-    right: 15px;
+    top: 0;
+    margin-top: 30px;
+    right: 0;
     left: auto;
     padding-top: 0;
+    height: 100%;
     max-height: 700px;
-    border-radius: 5px;
+    border-radius: 5px 0 0 5px;
     overflow: hidden;
     color: white;
     .content .status.list {
@@ -839,12 +840,17 @@ $dark: #1d212d;
       visibility: hidden;
     }
   }
-  li:not(.username,.hr) {
+  li {
     height: 25px;
     position: relative;
     padding-left: 30px;
     display: flex;
     align-items: center;
+    &.hr {
+      height: 0px;
+      width: 100%;
+      display: block !important;
+    }
     a::before {
       position: absolute;
       content: '';
@@ -854,6 +860,12 @@ $dark: #1d212d;
       width: 25px;
       height: 25px;
       background-color: red;
+    }
+  }
+  li.username, li.hr {
+    display: none;
+    a::before {
+      display: none;
     }
   }
   li.sandwitch-icon {
@@ -930,7 +942,7 @@ $dark: #1d212d;
       }
     }
     a {
-      opacity: 0.5;
+      opacity: 0.35;
       &:hover {
         opacity: 0.2;
       }

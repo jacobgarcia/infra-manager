@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 import { StatusesContainer } from './'
+import Constants from '../lib/constants'
 import { substractReportValues, getStatus } from '../lib/specialFunctions'
 
 class Overall extends PureComponent {
@@ -81,11 +82,11 @@ class Overall extends PureComponent {
           </div>
           <div className="overall-header">
             <h3>{this.getTitle(props.params, props.element && props.element.name)}</h3>
+            <span className="leyend">{state.percentage}%</span>
             <div className="bar-container">
-              <div className="normal" style={{width: `${state.percentage}%`}} />
+              <div className="normal" style={{width: `${state.percentage}%`, backgroundColor: Constants.colors(state.percentage)}} />
               <div className="alert" style={{width: `${100 - state.percentage}%`}} />
             </div>
-            <span className="leyend">{state.percentage}% de funcionalidad, {state.data.alarms.length} alarmas en total.</span>
           </div>
           <StatusesContainer
             params={props.params}

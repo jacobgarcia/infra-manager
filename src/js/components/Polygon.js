@@ -24,7 +24,7 @@ function ZonePolygon(props) {
   return (
     <Polygon
       color="#666"
-      fillColor="#fff"
+      fillColor="rgba(255,255,255,0.5)"
       weight={1}
       positions={props.zone.positions || [[]]}
       fillOpacity={props.highlighted ? 0.7 : 0.4}
@@ -58,7 +58,7 @@ function ZonePolygon(props) {
                     stroke={false}
                   >
                   <Cell fill={colors(percentage)} />
-                  <Cell fill="#e3e3e3" />
+                  <Cell fill="#303640" />
                   </Pie>
                 </PieChart>
               }
