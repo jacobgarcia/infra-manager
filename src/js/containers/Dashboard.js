@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { PieChart, Pie, Cell, AreaChart, XAxis, CartesianGrid, Tooltip, ReferenceLine, Area, ResponsiveContainer,ComposedChart, YAxis, Bar, Line } from 'recharts'
 
 import { Card } from '../components'
-import { yellow, red, blue, gray, darkGray } from '../lib/colors'
+import { yellow, red, blue, darkGray } from '../lib/colors'
 
 const data = [
   { name: 'workings', value: 96.1 },
@@ -41,6 +41,13 @@ function getColor(name) {
 }
 
 class Dashboard extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      selected: 0
+    }
+  }
   render() {
     const { state, props } = this
 
@@ -53,6 +60,7 @@ class Dashboard extends Component {
                 <PieChart width={200} height={200}>
                   <Pie
                     animationBegin={0}
+                    dataKey="value"
                     data={data}
                     cx={95} cy={95}
                     innerRadius={60}
@@ -111,20 +119,23 @@ class Dashboard extends Component {
                     <Tooltip/>
                     <Bar dataKey="uv" barSize={30} fill="rgba(255,255,255,0.15)"/>
                     <Line type="linear" dataKey="uv" stroke={blue}
-                      strokeDasharray="5 5"
-                      dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }}
+                      strokeWidth={0.5}
+                      dot={{ strokeWidth: 0, fill: blue }}
                       activeDot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
                  </ComposedChart>
                </ResponsiveContainer>
             </Card>
-            <Card title="Flujo vehicular">
-
+            <Card title="Flujo vehicular" className="horizontal">
+              <div>
+                <h1>210</h1>
+                <p>15 vehículos por hora</p>
+              </div>
             </Card>
           </div>
           <div className="events-container">
             <ul className="inline-nav">
-              <li className="active">Historial de sucesos</li>
-              <li>Alertas</li>
+              <li className={state.selected ? '' : 'active'} onClick={() => this.setState({ selected: 0 })}>Historial de sucesos</li>
+              <li className={state.selected ? 'active' : ''} onClick={() => this.setState({ selected: 1 })}>Alertas</li>
             </ul>
             <div className="table">
               <div className="table-header">
@@ -139,13 +150,26 @@ class Dashboard extends Component {
               </div>
               <div className="table-body">
                 {
-                  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0].map((element, index) =>
+                  state.selected
+                  ?
+                  [0,0,0,0,0].map((element, index) =>
                     <div className="table-item" key={index}>
                       <div className="medium">3 enero <span>7:45 AM</span></div>
                       <div className="large">Detección de movimiento</div>
                       <div>Norte</div>
                       <div>45</div>
                       <div>III</div>
+                      <div className="medium">Vigilancia</div>
+                    </div>
+                  )
+                  :
+                  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0].map((element, index) =>
+                    <div className="table-item" key={index}>
+                      <div className="medium">3 enero <span>7:45 AM</span></div>
+                      <div className="large">Detección de movimiento</div>
+                      <div>Norte</div>
+                      <div>45</div>
+                      <div>{index % 3}</div>
                       <div className="medium">Vigilancia</div>
                     </div>
                   )

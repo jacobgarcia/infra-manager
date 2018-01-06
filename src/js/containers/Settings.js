@@ -22,6 +22,10 @@ class Settings extends Component {
           </ul>
           <form action="">
             <div className="field">
+              <label htmlFor="name">Foto</label>
+              <input type="file" />
+            </div>
+            <div className="field">
               <label htmlFor="name">Nombre</label>
               <input type="text" placeholder="Nombre"/>
             </div>
@@ -39,9 +43,10 @@ class Settings extends Component {
               <input type="text" placeholder=""/>
             </div>
             <div className="field">
-              <label htmlFor="name">Repetir contraseña</label>
+              <label htmlFor="name">Nueva contraseña</label>
               <input type="text" placeholder=""/>
             </div>
+            <input type="submit" value="Guardar" className="action"/>
           </form>
         </div>
       </div>

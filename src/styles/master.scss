@@ -43,6 +43,7 @@ button, input, .button {
   border: 1px solid $lighter-gray;
   padding: 3px 10px;
   display: inline-block;
+  border-radius: 3px;
   background-color: $gray;
 }
 button, input[type="button"], .button {
@@ -88,8 +89,10 @@ p span {
       width: 100%;
       align-items: stretch;
       justify-content: space-between;
-      margin-bottom: 20px;
       flex-wrap: wrap;
+      .card {
+        margin-bottom: 20px;
+      }
     }
   }
   > .content {
@@ -751,6 +754,11 @@ $dark: #1d212d;
     &.destructive {
       background-color: $connus-blue;
     }
+    &.action {
+      border: none;
+      padding: 5px 20px;
+      background-color: $connus-blue;
+    }
   }
   .button.create {
     border-color: black;
@@ -942,12 +950,12 @@ $dark: #1d212d;
       }
     }
     a {
-      opacity: 0.35;
+      opacity: 0.35 !important;
       &:hover {
         opacity: 0.2;
       }
       &.active, &:active {
-        opacity: 1;
+        opacity: 1 !important;
       }
     }
   }
@@ -987,7 +995,7 @@ ul.mini-nav {
       width: 100%;
       margin-top: 50px;
       .table-body {
-        max-height: 400px;
+        height: 400px;
         overflow-y: scroll;
       }
     }
@@ -1002,6 +1010,15 @@ ul.mini-nav {
       padding: 20px;
       padding-top: 15px;
       max-height: 300px;
+      tspan {
+        font-weight: 500;
+        color: white;
+        font-size: 0.8rem;
+      }
+      p {
+        font-weight: 600;
+        color: $lighter-gray;
+      }
       &:last-child {
         margin-right: 0;
       }
@@ -1172,7 +1189,7 @@ ul.mini-nav {
       padding-left: 50px;
     }
     .overall-container {
-      padding: 20px 40px;
+      padding: 30px 30px 20px;
     }
   }
   /*
