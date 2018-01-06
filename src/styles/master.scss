@@ -89,6 +89,7 @@ p span {
       align-items: stretch;
       justify-content: space-between;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
   }
   > .content {
@@ -807,9 +808,8 @@ $dark: #1d212d;
   padding: 30px 32px;
   padding-right: 20px;
   height: 100%;
-  transition: 0.5s;
+  transition: 0.4s;
   overflow: hidden;
-  z-index: 998;
   *.fade {
     min-width: 200px;
     opacity: 1;
@@ -980,6 +980,7 @@ ul.mini-nav {
     }
     .card {
       flex: 1;
+      max-width: 100%;
       margin-right: 20px;
       background-color: $dark-gray;
       box-shadow: 0px 0px 7px rgba(#000, 0.3);
@@ -988,8 +989,13 @@ ul.mini-nav {
       flex-direction: column;
       padding: 20px;
       padding-top: 15px;
+      max-height: 300px;
       &:last-child {
         margin-right: 0;
+      }
+      &.horizontal .content {
+        flex-direction: column;
+        justify-content: space-between;
       }
       .title {
         font-weight: 600;

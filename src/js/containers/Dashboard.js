@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { PieChart, Pie, Cell, AreaChart, XAxis, CartesianGrid, Tooltip, ReferenceLine, Area, ResponsiveContainer } from 'recharts'
+import { PieChart, Pie, Cell, AreaChart, XAxis, CartesianGrid, Tooltip, ReferenceLine, Area, ResponsiveContainer,ComposedChart, YAxis, Bar, Line } from 'recharts'
 
 import { Card } from '../components'
 import { yellow, red, blue } from '../lib/colors'
 
-const data = [
-  { name: 'workings', value: 96.1 },
-  { name: 'alerts', value: 2.8 },
-  { name: 'damaged', value: 1.1 }
-]
+const data = [{name: 'Page A', uv: 590, pv: 800, amt: 1400},
+              {name: 'Page B', uv: 868, pv: 967, amt: 1506},
+              {name: 'Page C', uv: 1397, pv: 1098, amt: 989},
+              {name: 'Page D', uv: 1480, pv: 1200, amt: 1228},
+              {name: 'Page E', uv: 1520, pv: 1108, amt: 1100},
+              {name: 'Page F', uv: 1400, pv: 680, amt: 1700}]
 
 const barData = [
       {name: '0:00 AM', pv: 76 },
@@ -67,11 +68,15 @@ class Dashboard extends Component {
                 </div>
               </div>
             </Card>
-            <Card className="historical" title="Media de servicio">
-              <ResponsiveContainer width={600} height="100%">
+            <Card className="historical horizontal" title="Media de servicio">
+              <div>
+                <h1>98%</h1>
+                <h3>12</h3>
+              </div>
+              <ResponsiveContainer width="100%" height={150}>
                 <AreaChart data={barData}
                 margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                 <XAxis dataKey="name" height={20} mirror />
+                 <XAxis dataKey="name" height={20} mirror axisLine={false} padding={{right: 50}}/>
                  <CartesianGrid stroke="#424953" strokeDasharray="5 5" horizontal={false} />
                  <Tooltip/>
                  <defs>
@@ -88,7 +93,15 @@ class Dashboard extends Component {
           </div>
           <div className="horizontal-container">
             <Card title="Afluencia de personas">
-
+              <ComposedChart width={400} height={200} data={data}
+                    margin={{top: 20, right: 20, bottom: 20, left: 20}}>
+                  <XAxis dataKey="name"/>
+                  <YAxis />
+                  <Tooltip/>
+                  <CartesianGrid stroke='#f5f5f5'/>
+                  <Bar dataKey='uv' barSize={20} fill='#413ea0'/>
+                  <Line type='monotone' dataKey='uv' stroke='#ff7300'/>
+               </ComposedChart>
             </Card>
             <Card title="Flujo vehicular">
 
