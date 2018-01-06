@@ -11,7 +11,7 @@ import { Navigator } from '../components'
 import { NetworkOperation } from '../lib'
 
 class App extends Component {
-  componentWillMount() {
+  componentDidMount() {
     const token = localStorage.getItem('token')
     const path = `${this.props.location.pathname}${this.props.location.search}`
 

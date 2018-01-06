@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { PieChart, Pie, Cell, AreaChart, XAxis, CartesianGrid, Tooltip, ReferenceLine, Area } from 'recharts'
 
-import { green, yellow, red, blue } from '../lib/colors'
+import { yellow, red, blue } from '../lib/colors'
 
 const data = [
   { name: 'workings', value: 96.1 },
@@ -22,10 +22,10 @@ const barData = [
 
 function getColor(name) {
   switch (name) {
-    case 'working': return green
+    case 'working': return blue
     case 'alerts': return yellow
     case 'damaged': return red
-    default: return green
+    default: return blue
   }
 }
 
@@ -78,7 +78,7 @@ class Dashboard extends Component {
                 <stop offset="100%" stopColor={blue} stopOpacity={0.1}/>
               </linearGradient>
             </defs>
-             <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0} type="monotone" stroke={green}/>
+             <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0} type="monotone" stroke={blue}/>
              <ReferenceLine y={40} stroke="red" strokeDasharray="3 3" />
            </AreaChart>
           </div>

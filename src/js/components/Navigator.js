@@ -7,10 +7,11 @@ class Navigator extends Component {
     super(props)
 
     this.state = {
-      time: 0
+      time: 0,
+      isHidden: true
     }
 
-    // this.tick = this.tick.bind(this)
+    this.onKeyDown = this.onKeyDown.bind(this)
   }
 
   tick() {
@@ -19,7 +20,28 @@ class Navigator extends Component {
     }))
   }
 
+  closeNavigator() {
+    this.setState({
+      isHidden: true
+    })
+  }
+
+  onKeyDown({ctrlKey, key}) {
+    // TODO verify is not from input
+    if (key === 'm') {
+      this.setState(prev => ({
+        isHidden: !prev.isHidden
+      }))
+    }
+  }
+
+  componentWillUnmount() {
+    document.addEventListener('keydown', this.onKeyDown)
+  }
+
   componentDidMount() {
+    document.addEventListener('keydown', this.onKeyDown)
+
     this.setState({
       time: new Date().getTime()
     }, () => {
@@ -29,25 +51,61 @@ class Navigator extends Component {
 
   render() {
     const { state, props } = this
-
     const date = new Date(state.time)
+
     return (
-      <ul className="navigator">
+      <ul className={`navigator ${state.isHidden ? 'hidden' : ''}`}>
+        <li className="sandwitch-icon" onClick={() => this.setState(prev => ({isHidden: !prev.isHidden}))}/>
         <ul>
-          <li><NavLink exact to="/">Estatus</NavLink></li>
-          <li><NavLink to="/services">Servicios</NavLink></li>
-          <li><NavLink to="/sites">Sitios</NavLink></li>
-          <li><NavLink to="/users">Usuarios</NavLink></li>
-          <li><NavLink to="/statistics">Estadísticas</NavLink></li>
+          <li className="username"><NavLink to="/settings" className="fade"><span>Estatus</span>John Appleseed</NavLink><img src="" alt="" className="fade"/></li>
+          <li onClick={() => this.closeNavigator()}>
+            <NavLink exact to="/">
+              <span className="status fade">Estatus</span>
+            </NavLink>
+          </li>
+          <li className="hr" />
+          {
+            props.services.map(({title, name}) =>
+              <li key={name} onClick={() => this.closeNavigator()}>
+                <NavLink to={`/${name}`}>
+                  <span className="access fade">{title}</span>
+                </NavLink>
+              </li>
+            )
+          }
+          <li className="hr" />
+          <li className="hr" />
+          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/users"><span className="users">Usuarios</span></NavLink></li>
+          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/reports"><span className="reports">Reportes</span></NavLink></li>
+          <li className="hr" />
+          <li className="hr" />
+          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/settings"><span className="settings">Ajustes</span></NavLink></li>
         </ul>
-        <ul className="user-container">
-          <li className="date"><span>{date.toLocaleDateString('es-MX')}</span><span>{date.toLocaleTimeString('es-MX')}</span></li>
-          <img src="" alt=""/>
-          <li><NavLink to="/settings">John Appleseed</NavLink></li>
-        </ul>
+        <li className="fade"><span className="settings">Cerrar sesión</span></li>
       </ul>
     )
   }
+}
+
+Navigator.defaultProps = {
+  services: [
+    {
+      title: 'Accesos',
+      name: 'accesses'
+    }, {
+      title: 'Flujo vehícular',
+      name: 'vehicles'
+    }, {
+      title: 'Perímetro',
+      name: 'perimeter'
+    }, {
+      title: 'FR',
+      name: 'facial-recognition'
+    }, {
+      title: 'CCTV',
+      name: 'cctv'
+    }
+  ]
 }
 
 export default Navigator

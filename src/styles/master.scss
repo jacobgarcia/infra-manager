@@ -72,7 +72,7 @@ p span {
 }
 
 .app-content {
-  padding-top: 58px;
+  padding-left: 58px;
   background-color: $dark-gray;
   min-height: 100%;
   display: flex;
@@ -170,7 +170,7 @@ p span {
   max-height: 100%;
   overflow-y: hidden;
   display: flex;
-  padding-top: 50px;
+  padding-left: 50px;
   position: relative;
   overflow-x: hidden;
   &.creating-element .leaflet-container {
@@ -270,7 +270,7 @@ p span {
   .bar-actions {
       position: absolute;
       z-index: 999;
-      top: 75px;
+      top: 30px;
       width: 100%;
       display: flex;
       justify-content: space-between;
@@ -377,7 +377,7 @@ p span {
     bottom: 0;
     background-color: #191919;
   }
-  .overall, .alerts {
+  .overall {
     padding-top: 50px;
     position: absolute;
     max-width: 500px;
@@ -723,8 +723,9 @@ p span {
 $dark: #1d212d;
 #app {
   .overall {
-    top: 70px;
-    left: 20px;
+    top: 30px;
+    right: 30px;
+    left: auto;
     padding-top: 0;
     max-height: 700px;
     border-radius: 5px;
@@ -783,54 +784,139 @@ $dark: #1d212d;
 /*
   NAVIGATOR
  */
-
+.navigator {
+  z-index: 1000;
+  box-shadow: 0px 0px 5px rgba(#000,0.3);
+  flex-direction: column;
+}
 .navigator, ul.mini-nav {
   background-color: $dark-gray;
   color: white;
   display: flex;
   justify-content: space-between;
   position: fixed;
+  max-width: 350px;
   width: 100%;
-  height: 58px;
-  z-index: 1000;
-  > ul {
-    display: flex;
-    padding: 20px;
-    &.user-container {
-      color: $lighter-gray;
-      display: flex;
-      align-items: center;
-      li {
-        text-transform: capitalize;
+  padding: 30px 35px;
+  padding-right: 20px;
+  height: 100%;
+  transition: 0.5s;
+  overflow: hidden;
+  z-index: 998;
+  *.fade {
+    min-width: 200px;
+    opacity: 1;
+    transition: opacity 0.3s, box-shadow 0.3s;
+  }
+  img.fade {
+    min-width: 20px;
+  }
+  &.hidden {
+    *.fade {
+      opacity: 1;
+      transition: opacity 0.3s, visibility 0 0.4s;
+    }
+    li.sandwitch-icon {
+      &:before {
+        top: 7px;
+        transform: rotate(0);
       }
-      li a.active {
-        color: white;
-      }
-      img {
-        width: 25px;
-        height: 25px;
-        margin-right: 10px;
-        border-radius: 50%;
-        background-color: white;
-      }
-      .date span {
-        width: 70px;
-        font-kerning: none;
-        display: inline-block;
+      &:after {
+        top: 19px;
+        transform: rotate(0);
       }
     }
+    *.fade {
+      opacity: 0;
+      visibility: hidden;
+    }
   }
-
+  li:not(.username,.hr) {
+    height: 20px;
+    position: relative;
+    padding-left: 30px;
+    a::before {
+      position: absolute;
+      content: '';
+      left: 0;
+      display: block;
+      width: 20px;
+      height: 20px;
+      background-color: red;
+    }
+  }
+  li.sandwitch-icon {
+    background-color: $dark-gray;
+    position: fixed;
+    top: 25px;
+    z-index: 999;
+    left: 32px;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    &::before, &::after {
+      transition: 0.5s;
+      width: 100%;
+      position: absolute;
+      height: 3px;
+      content: '';
+      display: block;
+      background-color: $light-gray;
+      top: 0;
+      left: 0;
+    }
+    &:before {
+      // top: 7px;
+      top: 13px;
+      transform: rotate(45deg);
+    }
+    &:after {
+      // top: 19px;
+      top: 13px;
+      transform: rotate(-45deg);
+    }
+  }
+  &.hidden {
+    max-width: 90px;
+  }
+  > ul {
+    display: flex;
+    flex-direction: column;
+  }
   > ul li, li {
+    width: 100%;
     text-transform: uppercase;
     font-size: 0.9rem;
     font-weight: 500;
-    margin-right: 40px;
+    margin-bottom: 20px;
     &:last-child {
       margin-right: 0;
     }
     &.active {
       color: $blue;
+    }
+    &.username {
+      height: 20px;
+      font-size: 0.7rem;
+      margin-bottom: 30px;
+      text-align: right;
+      text-transform: capitalize;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-left: 40px;
+      overflow: hidden;
+      span {
+        opacity: 0.6;
+        margin-right: 10px;
+      }
+      img {
+        width: 20px;
+        height: 20px;
+        margin-left: 5px;
+        border-radius: 50%;
+        background-color: white;
+      }
     }
     a {
       opacity: 0.5;
@@ -1037,12 +1123,6 @@ ul.mini-nav {
     NAVIGATOR
    */
 
-  .navigator {
-    > ul {
-      display: flex;
-      padding: 20px 50px;
-    }
-  }
 
   /*
     DASHBOARD
