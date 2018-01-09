@@ -994,14 +994,13 @@ $dark: #1d212d;
   z-index: 1000;
   box-shadow: 0px 0px 10px rgba(#000, 0.3);
   flex-direction: column;
-  li.logout {
-    margin-top: auto;
-    background-position: -225px;
-  }
-  li a::before, li.logout {
+  li a::before {
     background-repeat: no-repeat;
     background-image: url('/static/img/icons/sprite-sheet.svg');
     background-size: 250px 25px;
+  }
+  li.logout {
+    margin-top: auto;
   }
   .navigator-header {
     display: flex;
@@ -1017,6 +1016,7 @@ $dark: #1d212d;
 
   .users::before { background-position: -175px; }
   .reports::before { background-position: -200px; }
+  .logout::before { background-position: -225px; }
   h2 {
     font-weight: 600;
     color: $gray;
@@ -1215,6 +1215,9 @@ ul.mini-nav {
       .table-body {
         height: 400px;
         overflow-y: scroll;
+      }
+      .table-header {
+        background-color: $dark-gray;
       }
     }
     .card {

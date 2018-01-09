@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
 import { } from '../actions'
 
@@ -18,6 +19,9 @@ class Cctv extends Component {
 
     return (
       <div className="app-content cctv small-padding">
+        <Helmet>
+          <title>Connus | CCTV</title>
+        </Helmet>
         <div className="content">
           <h2>CCTV</h2>
         </div>

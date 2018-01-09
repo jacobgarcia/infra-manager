@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
 import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
-import { Dashboard, Services, Map, Users, Statistics, Settings, Accesses, VehicularFlow, Perimeter, FacialRecognition, Cctv, Reports } from './'
+import { Dashboard, Map, Users, Statistics, Settings, Accesses, VehicularFlow, Perimeter, FacialRecognition, Cctv, Reports } from './'
 import { Navigator } from '../components'
 import { NetworkOperation } from '../lib'
 
@@ -21,11 +21,14 @@ class App extends Component {
   }
   componentDidMount() {
     const token = localStorage.getItem('token')
-    const path = `${this.props.location.pathname}${this.props.location.search}`
+    let path = ''
+    if (this.props.location.pathname !== '/') {
+      path = `?return=${this.props.location.pathname}${this.props.location.search}`
+    }
 
     if (!token) {
       localStorage.removeItem('token')
-      this.props.history.replace(`/login?return=${path}`)
+      this.props.history.replace(`/login${path}`)
       return
     }
 
@@ -46,13 +49,13 @@ class App extends Component {
       this.props.setComplete()
     })
     .catch(error => {
-      let { response = {} } = error
+      const { response = {} } = error
       this.props.setComplete()
 
       switch (response.status) {
         case 401:
         case 400:
-          this.props.history.replace(`/login?return=${path}`)
+          this.props.history.replace(`/login${path}`)
           break
         default:
           // TODO Display error
@@ -126,7 +129,11 @@ App.propTypes = {
   setCredentials: PropTypes.func,
   history: PropTypes.object,
   user: PropTypes.object,
-  credentials: PropTypes.object
+  credentials: PropTypes.object,
+  location: PropTypes.object,
+  setLoading: PropTypes.func,
+  setExhaustive: PropTypes.func,
+  setComplete: PropTypes.func
 }
 
 function mapDispatchToProps(dispatch) {

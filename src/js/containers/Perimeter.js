@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
 import { Table } from '../components'
 import { } from '../actions'
@@ -31,6 +32,9 @@ class Perimeter extends Component {
 
     return (
       <div className="app-content perimeter small-padding">
+        <Helmet>
+          <title>Connus | Perímetro</title>
+        </Helmet>
         <div className="content">
           <h2>Perímetro</h2>
           <Table

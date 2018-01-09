@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { Helmet } from 'react-helmet'
 import PropTypes from 'prop-types'
 import DayPicker from 'react-day-picker'
 
@@ -34,6 +35,9 @@ class VehicularFlow extends Component {
 
     return (
       <div className="app-content vehicular-flow small-padding">
+        <Helmet>
+          <title>Connus | Flujo Vehicular</title>
+        </Helmet>
         <div className="content">
           <h2>Flujo Vehicular</h2>
           <Table

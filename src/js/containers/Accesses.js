@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
 import { Table } from '../components'
 import { } from '../actions'
@@ -19,6 +20,9 @@ class Accesses extends Component {
 
     return (
       <div className="app-content accesses small-padding">
+        <Helmet>
+          <title>Connus | Accesos</title>
+        </Helmet>
         <div className="content">
           <h2>Accesos</h2>
           <Table
