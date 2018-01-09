@@ -6,6 +6,7 @@
 html, body, #root, #app {
   width: 100%;
   height: 100%;
+  background-color: $dark-gray;
 }
 
 /*
@@ -15,7 +16,7 @@ html, body, #root, #app {
 .inline-nav {
   display: flex;
   color: $lightest-gray;
-  margin-bottom: 30px;
+  margin: 30px 0 20px;
   li {
     margin-right: 30px;
     text-transform: uppercase;
@@ -78,6 +79,17 @@ p span {
   min-height: 100%;
   display: flex;
   flex-direction: column;
+  &.small-padding .content {
+    padding-top: 30px;
+  }
+  h2 {
+    font-weight: 400;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: white;
+    opacity: 0.8;
+  }
   .overall-container {
     background-color: $dark-gray;
     padding: 20px;
@@ -126,7 +138,11 @@ p span {
     text-transform: uppercase;
     font-size: 0.75rem;
     color: $lighter-gray;
-    background-color: $dark-gray;
+    // background-color: $dark-gray;
+    .table-item  .large {
+      color: $lighter-gray;
+      font-weight: 500 !important;
+    }
   }
   .table-body {
     padding-top: 45px;
@@ -138,8 +154,22 @@ p span {
     justify-content: space-between;
     border-bottom: 1px solid $light-gray;
     align-items: center;
+    cursor: pointer;
+    &.selected {
+      background-color: $light-gray;
+      box-shadow: 0px 0px 7px rgba(#000, 0.25);
+      border: 1px solid $lighter-gray;
+      border-left: 0;
+      border-right: 0;
+    }
     > div {
       flex-basis: 200px;
+      &:first-child {
+        padding-left: 20px;
+      }
+      &:last-child {
+        padding-right: 20px;
+      }
       &.bold {
         font-weight: 600;
         color: white;
@@ -155,14 +185,107 @@ p span {
     }
   }
 }
+.log-detail-container {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  max-width: 400px;
+  width: 100%;
+  height: 100%;
+  padding: 20px 0px 20px 0;
+  transition: max-width 0.4s;
+  color: white;
+  z-index: 1001;
+  .close {
+    cursor: pointer;
+  }
+  &.hidden {
+    max-width: 0px;
+  }
+  .content {
+    border-radius: 5px;
+    background-color: $light-gray;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0px 0px 7px rgba(#000, 0.25);
+    padding: 20px;
+    min-width: 350px;
+  }
+  .time-location {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+  }
+  .image-slider {
+    width: 100%;
+    height: 250px;
+    background-color: $dark-gray;
+  }
+  .action {
+    margin: 15px 0;
+    p {
+      font-size: 1rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+  }
+  .details-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    .detail {
+      min-width: 120px;
+      margin-bottom: 25px;
+      span {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        color: $lighter-gray;
+        text-transform: uppercase;
+      }
+      img {
+        width: 100%;
+        height: 70px;
+        background-color: $gray;
+        &.profile-picture {
+          height: 170px;
+        }
+      }
+    }
+  }
+}
 
 
 
 
 
 
+/*
 
+      R E C H A R T S
 
+*/
+
+.tooltip {
+  background-color: $darker-gray;
+  padding: 7px;
+  border-radius: 4px;
+  width: 100px;
+  color: white;
+  font-size: 0.8rem;
+  span {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: $lighter-gray;
+    margin-bottom: 5px;
+    display: block;
+  }
+  p {
+    color: white !important;
+  }
+}
 
 
 
@@ -819,6 +942,7 @@ $dark: #1d212d;
   height: 100%;
   transition: 0.4s;
   overflow: hidden;
+  overflow-y: scroll;
   *.fade {
     min-width: 200px;
     opacity: 1;
@@ -854,6 +978,7 @@ $dark: #1d212d;
     padding-left: 30px;
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     &.hr {
       height: 0px;
       width: 100%;

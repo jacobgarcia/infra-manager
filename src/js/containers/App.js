@@ -70,6 +70,13 @@ class App extends Component {
     })
   }
 
+  componentDidCatch(error, info) {
+    // Display fallback UI
+    console.error(error, info)
+    // You can also log the error to an error reporting service
+    // logErrorToMyService(error, info);
+  }
+
   render() {
     return (
       <div id="app">

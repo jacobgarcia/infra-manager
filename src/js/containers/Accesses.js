@@ -17,9 +17,9 @@ class Accesses extends Component {
     const { state, props } = this
 
     return (
-      <div className="app-content accesses">
+      <div className="app-content accesses small-padding">
         <div className="content">
-          <h1>Accesos</h1>
+          <h2>Accesos</h2>
         </div>
       </div>
     )
