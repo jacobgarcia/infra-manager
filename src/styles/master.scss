@@ -867,6 +867,8 @@ p span {
     display: flex;
     flex-grow: 1;
     flex-direction: column;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar { width: 0 !important }
     .info {
       &.readonly {
         input {
@@ -994,6 +996,8 @@ $dark: #1d212d;
   z-index: 1000;
   box-shadow: 0px 0px 10px rgba(#000, 0.3);
   flex-direction: column;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { width: 0 !important }
   li a::before {
     background-repeat: no-repeat;
     background-image: url('/static/img/icons/sprite-sheet.svg');
