@@ -260,7 +260,6 @@ p span {
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
     -ms-overflow-style: none;
-    overflow: -moz-scrollbars-none;
     &::-webkit-scrollbar { width: 0 !important }
   }
   .time-location {
@@ -415,7 +414,6 @@ p span {
         transition: max-height ease 0.5s;
         -webkit-overflow-scrolling: touch;
         -ms-overflow-style: none;
-        overflow: -moz-scrollbars-none;
         &::-webkit-scrollbar { width: 0 !important }
         &.hidden {
           overflow: hidden;
@@ -561,7 +559,6 @@ p span {
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
         -ms-overflow-style: none;
-        overflow: -moz-scrollbars-none;
         &::-webkit-scrollbar { width: 0 !important }
         .sites-container {
           padding: 20px;
@@ -1052,7 +1049,6 @@ $dark: #1d212d;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
   -ms-overflow-style: none;
-  overflow: -moz-scrollbars-none;
   &::-webkit-scrollbar { width: 0 !important }
   *.fade {
     min-width: 200px;
@@ -1234,7 +1230,6 @@ ul.mini-nav {
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
         -ms-overflow-style: none;
-        overflow: -moz-scrollbars-none;
         &::-webkit-scrollbar { width: 0 !important }
       }
       .table-header {
