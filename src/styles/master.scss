@@ -257,11 +257,16 @@ p span {
     box-shadow: 0px 0px 7px rgba(#000, 0.25);
     padding: 20px;
     min-width: 350px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
   }
   .time-location {
     display: flex;
     justify-content: space-between;
     margin: 10px 0;
+    p:last-child {
+      text-transform: uppercase;
+    }
   }
   .image-slider {
     width: 100%;
@@ -270,6 +275,21 @@ p span {
   }
   .action {
     margin: 15px 0;
+    &.destructive {
+      color: white;
+      cursor: pointer;
+      p {
+        padding: 10px;
+        // text-align: center;
+        border-radius: 3px;
+        // background-color: $red;
+        font-weight: 700;
+        color: $red;
+        &:hover {
+          // background-color: darken($red, 10)
+        }
+      }
+    }
     p {
       font-size: 1rem;
       font-weight: 500;
@@ -280,24 +300,24 @@ p span {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    .detail {
-      min-width: 120px;
-      margin-bottom: 25px;
-      span {
-        display: block;
-        margin-bottom: 4px;
-        font-weight: 600;
-        font-size: 0.75rem;
-        color: $lighter-gray;
-        text-transform: uppercase;
-      }
-      img {
-        width: 100%;
-        height: 70px;
-        background-color: $gray;
-        &.profile-picture {
-          height: 170px;
-        }
+  }
+  .detail {
+    min-width: 120px;
+    margin-bottom: 25px;
+    span {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: $lighter-gray;
+      text-transform: uppercase;
+    }
+    img {
+      width: 100%;
+      height: 70px;
+      background-color: $gray;
+      &.profile-picture {
+        height: 170px;
       }
     }
   }
