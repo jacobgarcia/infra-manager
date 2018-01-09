@@ -848,6 +848,8 @@ p span {
   flex-direction: column;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { width: 0 !important }
   .statuses-container-nav {
     display: flex;
     padding: 10px;
@@ -867,8 +869,6 @@ p span {
     display: flex;
     flex-grow: 1;
     flex-direction: column;
-    -ms-overflow-style: none;
-    overflow: -moz-scrollbars-none;
     &::-webkit-scrollbar { width: 0 !important }
     .info {
       &.readonly {
@@ -997,9 +997,6 @@ $dark: #1d212d;
   z-index: 1000;
   box-shadow: 0px 0px 10px rgba(#000, 0.3);
   flex-direction: column;
-  -ms-overflow-style: none;
-  overflow: -moz-scrollbars-none;
-  &::-webkit-scrollbar { width: 0 !important }
   li a::before {
     background-repeat: no-repeat;
     background-image: url('/static/img/icons/sprite-sheet.svg');
@@ -1043,6 +1040,10 @@ $dark: #1d212d;
   transition: 0.4s;
   overflow: hidden;
   overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
+  &::-webkit-scrollbar { width: 0 !important }
   *.fade {
     min-width: 200px;
     opacity: 1;
