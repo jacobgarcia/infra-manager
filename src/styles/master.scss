@@ -259,6 +259,9 @@ p span {
     min-width: 350px;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
+    &::-webkit-scrollbar { width: 0 !important }
   }
   .time-location {
     display: flex;
@@ -410,6 +413,10 @@ p span {
         width: 200px;
         overflow-y: scroll;
         transition: max-height ease 0.5s;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        overflow: -moz-scrollbars-none;
+        &::-webkit-scrollbar { width: 0 !important }
         &.hidden {
           overflow: hidden;
           max-height: 0px;
@@ -553,6 +560,9 @@ p span {
       .results {
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        overflow: -moz-scrollbars-none;
+        &::-webkit-scrollbar { width: 0 !important }
         .sites-container {
           padding: 20px;
           border-bottom: 1px solid $gray;
@@ -1222,6 +1232,10 @@ ul.mini-nav {
       .table-body {
         height: 400px;
         overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        overflow: -moz-scrollbars-none;
+        &::-webkit-scrollbar { width: 0 !important }
       }
       .table-header {
         background-color: $dark-gray;
