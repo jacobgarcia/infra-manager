@@ -14,19 +14,22 @@ class Table extends Component {
     const { state, props } = this
 
     return (
-      <div>
-        <ul className="inline-nav">
-          {
-            props.elements.map(({title}, index) =>
-              <li
-                key={index}
-                className={state.selected === index ? 'active' : ''}
-                onClick={() => this.setState({ selected: index })}
-                >{title}
-              </li>
-            )
-          }
-        </ul>
+      <div className="table-container">
+        <div className="table-container-header">
+          <ul className="inline-nav">
+            {
+              props.elements.map(({title}, index) =>
+                <li
+                  key={index}
+                  className={state.selected === index ? 'active' : ''}
+                  onClick={() => this.setState({ selected: index })}
+                  >{title}
+                </li>
+              )
+            }
+          </ul>
+          { props.actionsContainer }
+        </div>
         <div className="table">
           <div className="table-header">
             <div className="table-item">
@@ -43,9 +46,18 @@ class Table extends Component {
           </div>
           <div className="table-body">
             {
-              props.elements[state.selected].elements.map((element, index) => {
-                return props.element(element, index, state.selected)
-              })
+              (props.elements
+                && props.elements.length - 1 > state.selected
+                && props.elements[state.selected]
+              )
+              &&
+              (props.elements[state.selected].elements && props.elements[state.selected].elements.length > 1)
+              ?
+              props.elements[state.selected].elements.map((element, index) =>
+                props.element(element, index, state.selected)
+              )
+              :
+              <p className="no-info">Sin información</p>
             }
           </div>
         </div>

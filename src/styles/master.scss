@@ -16,7 +16,7 @@ html, body, #root, #app {
 .inline-nav {
   display: flex;
   color: $lightest-gray;
-  margin: 30px 0 20px;
+  padding: 30px 0 20px;
   li {
     margin-right: 30px;
     text-transform: uppercase;
@@ -46,6 +46,7 @@ button, input, .button {
   display: inline-block;
   border-radius: 3px;
   background-color: $gray;
+  cursor: pointer;
 }
 button, input[type="button"], .button {
   padding: 3px 30px;
@@ -54,16 +55,46 @@ button, input[type="button"], .button {
   font-size: 0.85rem;
   font-weight: 600;
 }
-
+h2 {
+  font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: white;
+  opacity: 0.8;
+}
 label {
   font-weight: 600;
   font-size: 0.8rem;
   color: $lighter-gray;
   text-transform: uppercase;
 }
-
 p span {
   font-weight: 600;
+}
+
+.error-screen {
+  color: white;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  .legend {
+    position: fixed;
+    bottom: 20px;
+    display: block;
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+  .message {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .actions-bar {
@@ -81,14 +112,6 @@ p span {
   flex-direction: column;
   &.small-padding .content {
     padding-top: 30px;
-  }
-  h2 {
-    font-weight: 400;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-    color: white;
-    opacity: 0.8;
   }
   .overall-container {
     background-color: $dark-gray;
@@ -120,6 +143,21 @@ p span {
   }
 }
 
+.table-container {
+  .table-container-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .button {
+    display: inline-block;
+    border-color: $blue;
+    margin-left: 10px;
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
 .table {
   position: relative;
   width: 100%;
@@ -147,6 +185,14 @@ p span {
   .table-body {
     padding-top: 45px;
     color: white;
+  }
+  .no-info {
+    width: 100%;
+    font-size: 1.2rem;
+    opacity: 0.5;
+    font-weight: 500;
+    text-align: center;
+    padding: 30px;
   }
   .table-item {
     display: flex;
@@ -268,7 +314,7 @@ p span {
 
 */
 
-.tooltip {
+.recharts-wrapper .tooltip {
   background-color: $darker-gray;
   padding: 7px;
   border-radius: 4px;
@@ -928,6 +974,12 @@ $dark: #1d212d;
   z-index: 1000;
   box-shadow: 0px 0px 10px rgba(#000, 0.3);
   flex-direction: column;
+  h2 {
+    font-weight: 600;
+    color: $gray;
+    margin-left: 30px;
+    margin-bottom: 10px;
+  }
 }
 .navigator, ul.mini-nav {
   background-color: $dark-gray;
@@ -1099,6 +1151,9 @@ ul.mini-nav {
     li {
       margin-right: 0;
       margin-bottom: 20px;
+      text-align: right;
+      display: inline-block;
+      cursor: pointer;
     }
   }
   li {

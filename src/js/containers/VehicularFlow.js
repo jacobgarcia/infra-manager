@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import DayPicker from 'react-day-picker'
 
 import { } from '../actions'
 import { Table } from '../components'
@@ -36,10 +37,12 @@ class VehicularFlow extends Component {
         <div className="content">
           <h2>Flujo Vehicular</h2>
           <Table
-            elements={[
-              { title: 'Registros', elements: state.logs},
-              { title: 'Alertas', elements: state.alerts}
-            ]}
+            actionsContainer={
+              <div>
+                <p className="button action">Enero 3 - Hoy</p>
+                <p className="button action">Filtrar</p>
+              </div>
+            }
             selectedElementIndex={state.selectedElementIndex}
             element={(item, index, sectionIndex) =>
               <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
@@ -53,6 +56,10 @@ class VehicularFlow extends Component {
                 <div>Proveedor</div>
               </div>
             }
+            elements={[
+              { title: 'Registros', elements: state.logs},
+              { title: 'Alertas', elements: state.alerts}
+            ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
               {title: 'Tipo de vehículo', className: 'medium'},

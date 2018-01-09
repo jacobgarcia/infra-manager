@@ -11,6 +11,14 @@ import { Navigator } from '../components'
 import { NetworkOperation } from '../lib'
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      error: false
+    }
+
+  }
   componentDidMount() {
     const token = localStorage.getItem('token')
     const path = `${this.props.location.pathname}${this.props.location.search}`
@@ -71,13 +79,25 @@ class App extends Component {
   }
 
   componentDidCatch(error, info) {
-    // Display fallback UI
+    console.log('ERROR')
     console.error(error, info)
-    // You can also log the error to an error reporting service
-    // logErrorToMyService(error, info);
+
+    this.setState({
+      error: true
+    })
   }
 
   render() {
+    if (this.state.error) {
+      return (
+        <div className="error-screen">
+          <h1>Error en la aplicación</h1>
+          <p onClick={() => window.location.reload()} className="message">Favor de recargar la página</p>
+          <p className="legend">Si el problema persiste, favor de reportarlo a <a href="mailto:soporte@connus.mx">soporte@connus.mx</a></p>
+        </div>
+      )
+    }
+
     return (
       <div id="app">
         <Helmet>

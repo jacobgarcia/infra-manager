@@ -17,9 +17,9 @@ class Reports extends Component {
     const { state, props } = this
 
     return (
-      <div className="app-content reports">
+      <div className="app-content reports small-padding">
         <div className="content">
-          <h1>Reportes</h1>
+          <h2>Reportes</h2>
         </div>
       </div>
     )

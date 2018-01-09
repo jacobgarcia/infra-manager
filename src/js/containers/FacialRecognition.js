@@ -17,9 +17,9 @@ class FacialRecognition extends Component {
     const { state, props } = this
 
     return (
-      <div className="app-content facial-recognition">
+      <div className="app-content facial-recognition small-padding">
         <div className="content">
-          <h1>Reconocimiento Facial</h1>
+          <h2>Reconocimiento Facial</h2>
         </div>
       </div>
     )

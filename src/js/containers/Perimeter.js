@@ -17,9 +17,9 @@ class Perimeter extends Component {
     const { state, props } = this
 
     return (
-      <div className="app-content perimeter">
+      <div className="app-content perimeter small-padding">
         <div className="content">
-          <h1>Perímetro</h1>
+          <h2>Perímetro</h2>
         </div>
       </div>
     )

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { PieChart, Pie, Cell, AreaChart, XAxis, LineChart, CartesianGrid, Tooltip as RechartsTooltip, ReferenceLine, Area, ResponsiveContainer,ComposedChart, YAxis, Bar, Line } from 'recharts'
 
-import { Card } from '../components'
+import { Card, Table } from '../components'
 import { yellow, red, blue, darkGray, violet } from '../lib/colors'
 
 const Tooltip = ({payload, label}) => (
@@ -72,7 +72,10 @@ class Dashboard extends Component {
     super(props)
 
     this.state = {
-      selected: 0
+      selected: 0,
+      logs: [0,0,0,0,0,0,0,0,0],
+      alerts: [],
+      selectedElementIndex: [null, null]
     }
   }
   render() {
@@ -152,8 +155,8 @@ class Dashboard extends Component {
                     <Bar dataKey="uv" fill="rgba(255,255,255,0.15)"/>
                     <Line type="linear" dataKey="uv" stroke={blue}
                       strokeWidth={1}
-                      dot={{ strokeWidth: 0, fill: blue }}
-                      activeDot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
+                      activeDot={{ strokeWidth: 0, fill: blue }}
+                      dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
                  </ComposedChart>
                </ResponsiveContainer>
             </Card>
@@ -186,49 +189,39 @@ class Dashboard extends Component {
             </Card>
           </div>
           <div className="events-container">
-            <ul className="inline-nav">
-              <li className={state.selected ? '' : 'active'} onClick={() => this.setState({ selected: 0 })}>Historial de sucesos</li>
-              <li className={state.selected ? 'active' : ''} onClick={() => this.setState({ selected: 1 })}>Alertas</li>
-            </ul>
-            <div className="table">
-              <div className="table-header">
-                <div className="table-item">
-                  <div className="medium">Tiempo</div>
-                  <div className="large">Suceso</div>
-                  <div>Zona</div>
-                  <div>Sitio</div>
-                  <div>Riesgo</div>
-                  <div className="medium">Acción</div>
+            <Table
+              // actionsContainer={
+              //   <div>
+              //     <p className="button action">Enero 3 - Hoy</p>
+              //     <p className="button action">Filtrar</p>
+              //   </div>
+              // }
+              selectedElementIndex={state.selectedElementIndex}
+              element={(item, index, sectionIndex) =>
+                <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
+                  key={index}
+                  onClick={() => this.onLogSelect(item, index, sectionIndex)}>
+                  <div className="medium">3 enero <span>7:45 AM</span></div>
+                  <div className="medium">Camioneta</div>
+                  <div>50</div>
+                  <div>1 Norte</div>
+                  <div className="medium">Andrés López</div>
+                  <div>Proveedor</div>
                 </div>
-              </div>
-              <div className="table-body">
-                {
-                  state.selected
-                  ?
-                  [0,0,0,0,0].map((element, index) =>
-                    <div className="table-item" key={index}>
-                      <div className="medium">3 enero <span>7:45 AM</span></div>
-                      <div className="large">Detección de movimiento</div>
-                      <div>Norte</div>
-                      <div>45</div>
-                      <div>III</div>
-                      <div className="medium">Vigilancia</div>
-                    </div>
-                  )
-                  :
-                  [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0].map((element, index) =>
-                    <div className="table-item" key={index}>
-                      <div className="medium">3 enero <span>7:45 AM</span></div>
-                      <div className="large">Detección de movimiento</div>
-                      <div>Norte</div>
-                      <div>45</div>
-                      <div>{index % 3}</div>
-                      <div className="medium">Vigilancia</div>
-                    </div>
-                  )
-                }
-              </div>
-            </div>
+              }
+              elements={[
+                { title: 'Historial', elements: state.logs},
+                { title: 'Alertas', elements: state.alerts}
+              ]}
+              titles={[
+                {title: 'Tiempo', className: 'medium'},
+                {title: 'Tipo de vehículo', className: 'medium'},
+                {title: 'Sitio'},
+                {title: 'Acceso'},
+                {title: 'Persona autorizada', className: 'medium'},
+                {title: 'Tipo de acceso'}
+              ]}
+            />
           </div>
         </div>
       </div>

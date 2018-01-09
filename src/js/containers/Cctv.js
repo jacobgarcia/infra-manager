@@ -17,9 +17,9 @@ class Cctv extends Component {
     const { state, props } = this
 
     return (
-      <div className="app-content cctv">
+      <div className="app-content cctv small-padding">
         <div className="content">
-          <h1>CCTV</h1>
+          <h2>CCTV</h2>
         </div>
       </div>
     )

@@ -25,6 +25,7 @@
     "mongoose": "^5.0.0-rc2",
     "query-string": "^5.0.1",
     "react": "^16.2.0",
+    "react-day-picker": "^7.0.6",
     "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",
     "react-leaflet": "^1.7.8",

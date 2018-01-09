@@ -65,7 +65,13 @@ class Navigator extends Component {
               <span className="status fade">Estatus</span>
             </NavLink>
           </li>
+          <li onClick={() => this.closeNavigator()}>
+            <NavLink exact to="/sites">
+              <span className="status fade">Sitios</span>
+            </NavLink>
+          </li>
           <li className="hr" />
+          <h2 className="fade">Servicios</h2>
           {
             props.services.map(({title, name}) =>
               <li key={name} onClick={() => this.closeNavigator()}>
@@ -92,9 +98,6 @@ class Navigator extends Component {
 Navigator.defaultProps = {
   services: [
     {
-      title: 'Sitios',
-      name: 'sites'
-    }, {
       title: 'Accesos',
       name: 'accesses'
     }, {
