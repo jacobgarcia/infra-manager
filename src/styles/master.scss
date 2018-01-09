@@ -868,6 +868,7 @@ p span {
     flex-grow: 1;
     flex-direction: column;
     -ms-overflow-style: none;
+    overflow: -moz-scrollbars-none;
     &::-webkit-scrollbar { width: 0 !important }
     .info {
       &.readonly {
@@ -997,6 +998,7 @@ $dark: #1d212d;
   box-shadow: 0px 0px 10px rgba(#000, 0.3);
   flex-direction: column;
   -ms-overflow-style: none;
+  overflow: -moz-scrollbars-none;
   &::-webkit-scrollbar { width: 0 !important }
   li a::before {
     background-repeat: no-repeat;
