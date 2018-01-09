@@ -1164,11 +1164,11 @@ $dark: #1d212d;
       }
     }
     a {
-      opacity: 0.35 !important;
+      opacity: 0.35;
       &:hover {
         opacity: 0.2;
       }
-      &.active, &:active {
+      &.active {
         opacity: 1 !important;
       }
     }
