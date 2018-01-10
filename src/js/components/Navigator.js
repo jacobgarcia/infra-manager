@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
+import { getAccessTitle } from '../lib/CodeExtractor'
+
 class Navigator extends Component {
   constructor(props) {
     super(props)
@@ -12,12 +14,6 @@ class Navigator extends Component {
     }
 
     this.onKeyDown = this.onKeyDown.bind(this)
-  }
-
-  tick() {
-    this.setState(prev => ({
-      time: prev.time + 1000
-    }))
   }
 
   closeNavigator() {
@@ -35,34 +31,23 @@ class Navigator extends Component {
     }
   }
 
-  componentWillUnmount() {
-    document.addEventListener('keydown', this.onKeyDown)
-  }
-
   logOut() {
     localStorage.removeItem('token')
   }
 
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown)
-
-    this.setState({
-      time: new Date().getTime()
-    }, () => {
-      this.interval = setInterval(() => this.tick(), 1000)
-    })
   }
 
   render() {
     const { state, props } = this
-    const date = new Date(state.time)
 
     return (
       <ul className={`navigator ${state.isHidden ? 'hidden' : ''}`}>
         <ul className="navigator-header">
           <li className="sandwitch-icon" onClick={() => this.setState(prev => ({isHidden: !prev.isHidden}))}/>
           <li className="username" onClick={() => this.closeNavigator()}>
-            <NavLink to="/settings" className="fade"><span className="fade">Administrador</span>John Appleseed</NavLink><img src="/static/img/dummy/att-icon.png" alt="Company Icon" className="fade"/>
+            <NavLink to="/settings" className="fade"><span className="fade">{getAccessTitle(props.credentials.user && props.credentials.user.access)}</span>{props.credentials.user && props.credentials.user.name}</NavLink><img src="/static/img/dummy/att-icon.png" alt="Company Icon" className="fade"/>
           </li>
         </ul>
         <ul>
@@ -98,7 +83,7 @@ class Navigator extends Component {
         {/* <li className=""><span className="logout">Cerrar sesión</span></li> */}
         <li onClick={() => this.closeNavigator()} className="fade logout">
           <NavLink exact to="/login" className="logout" onClick={this.logOut}>
-            <span>Sitios</span>
+            <span>Cerrar sesión</span>
           </NavLink>
         </li>
       </ul>

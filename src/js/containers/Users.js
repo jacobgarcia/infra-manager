@@ -2,13 +2,24 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
+import { NetworkOperation } from '../lib'
+
 class Users extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-
+      users: []
     }
+  }
+
+  componentDidMount() {
+    NetworkOperation.getCompanyUsers()
+    .then(({data}) => {
+      this.setState({
+        users: data.users
+      })
+    })
   }
 
   render() {
@@ -39,13 +50,13 @@ class Users extends Component {
             </div>
             <div className="table-body">
               {
-                [0,0,0,0,0,0,0].map((user, index) =>
+                state.users.map((user, index) =>
                   <div className="table-item" key={index}>
-                    <div className="bold">Nombre Apellido</div>
-                    <div>nombre@dominio.com</div>
-                    <div>+52 55 983 89 23</div>
-                    <div className="zone">Centro, Sur</div>
-                    <div>Accesos, Flujo vehícular</div>
+                    <div className="bold">{user.name}</div>
+                    <div>{user.email}</div>
+                    <div>{user.phone}</div>
+                    <div className="zone">{user.zones.map(({name}) => name)}</div>
+                    <div></div>
                   </div>
                 )
               }

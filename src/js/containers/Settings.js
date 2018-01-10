@@ -75,7 +75,7 @@ class Settings extends Component {
           <form onSubmit={this.onSave}>
             <div className="field">
               <label htmlFor="">Foto</label>
-              <label htmlFor="photo" className="photo" style={{backgroundImage: `url(${state.photo || (this.props.credentials.user && this.props.credentials.user.photo)})`, backgroundColor: state.photo ? 'white' : 'transparent' }} />
+              <label htmlFor="photo" className="photo" style={{backgroundImage: `url(${state.photo || (this.props.credentials.user && this.props.credentials.user.photoUrl)})`, backgroundColor: state.photo ? 'white' : 'transparent' }} />
               <input type="file" id="photo" accept="image/png, image/jpg, image/jpeg" onChange={this.onPhotoSelect}/>
             </div>
             <div className="field">

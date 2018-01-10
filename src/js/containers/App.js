@@ -36,7 +36,6 @@ class App extends Component {
 
     NetworkOperation.getSelf()
     .then(({data}) => {
-      console.log({data})
       this.props.setCredentials({...data.user, token})
 
       // Start socket connection
@@ -44,6 +43,7 @@ class App extends Component {
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
+      console.log('exhaustive', data)
       // Set all zones
       this.props.setExhaustive(data.zones)
 
@@ -54,12 +54,10 @@ class App extends Component {
       this.props.setComplete()
 
       switch (response.status) {
-        case 401:
-        case 400:
+        case 404: case 401: case 400:
           this.props.history.replace(`/login${path}`)
           break
-        default:
-          // TODO Display error
+        default: // TODO Display error
           break
       }
     })
@@ -107,7 +105,7 @@ class App extends Component {
         <Helmet>
           <title>Connus</title>
         </Helmet>
-        <Navigator />
+        <Navigator credentials={this.props.credentials} />
         <Switch>
           <Route exact path="/" component={Dashboard}/>
           <Route path="/sites/:zoneId?/:subzoneId?/:siteId?" component={Map} />

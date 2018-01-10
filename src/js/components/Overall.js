@@ -19,10 +19,10 @@ class Overall extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('!this.props.reports', !this.props.reports)
+    // console.log('!this.props.reports', !this.props.reports)
     if (!this.props.reports) return
 
-    console.log('Different lengths', nextProps.reports.length !== this.props.reports.length)
+    // console.log('Different lengths', nextProps.reports.length !== this.props.reports.length)
     if (nextProps.reports.length !== this.props.reports.length) {
       this.setState({
         data: substractReportValues(nextProps.reports)

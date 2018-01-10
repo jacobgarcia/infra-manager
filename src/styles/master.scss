@@ -105,7 +105,7 @@ p span {
 }
 
 .app-content {
-  padding-left: 90px;
+  padding-left: 68px;
   background-color: $dark-gray;
   min-height: 100%;
   display: flex;
@@ -1041,7 +1041,7 @@ $dark: #1d212d;
   position: fixed;
   max-width: 350px;
   width: 100%;
-  padding: 30px 32px;
+  padding: 30px 18px;
   padding-right: 20px;
   height: 100%;
   transition: 0.4s;
@@ -1135,7 +1135,7 @@ $dark: #1d212d;
     }
   }
   &.hidden {
-    max-width: 90px;
+    max-width: 68px;
   }
   > ul {
     display: flex;

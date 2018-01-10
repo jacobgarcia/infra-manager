@@ -21,7 +21,7 @@ mongoose.connect(config.database)
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'static/uploads/')
+    cb(null, 'static/uploads/profile-pictures/')
   },
   filename: (req, file, cb) => {
     cb(null, `${req._user._id}.${mime.extension(file.mimetype)}`)
@@ -100,7 +100,8 @@ router.route('/users/self')
 .get((req, res) => {
 
   // Get user id by its
-  User.findById(req._user._id, '-password')
+  User.findById(req._user._id)
+  .select({password: 0})
   .populate('company', '_id logo name')
   .exec((error, user) => {
     if (error) {
@@ -118,7 +119,7 @@ router.route('/users/self/photo')
   if (!req.file) return res.status(400).json({ error: { message: 'Could not get file info'} })
 
 
-  const imagePath = `static/uploads/${req.file.filename}`
+  const imagePath = `/static/uploads/profile-pictures/${req.file.filename}`
   return imagemin([imagePath], 'static/uploads', {
     plugins: [
       imageminMozjpeg(),
@@ -126,7 +127,7 @@ router.route('/users/self/photo')
     ]
   })
   .then(() => {
-    return User.findByIdAndUpdate(req._user._id, {$set: { photo: imagePath }})
+    return User.findByIdAndUpdate(req._user._id, {$set: { photoUrl: imagePath }})
   })
   .then(() => {
     return res.status(201).json({ message: 'Uploaded and saved, could not compress', photo: imagePath })

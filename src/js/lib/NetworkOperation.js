@@ -62,6 +62,10 @@ class NetworkOperation {
   static getGeneralAlarms(from, to) {
     return axios.get(`${baseUrl}/alarms?from=${from}&to=${to}`)
   }
+
+  static getCompanyUsers() {
+    return axios.get(`${baseUrl}/users`)
+  }
 }
 
 export default NetworkOperation

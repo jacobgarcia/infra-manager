@@ -9,14 +9,15 @@ const Zone = require(path.resolve('models/Zone'))
 const Subzone = require(path.resolve('models/Subzone'))
 const User = require(path.resolve('models/User'))
 
-router.route('/users')
-.get((req, res) => {
-  const company = req._user.cmp
+const { hasAccess } = require(path.resolve('router/v1/lib/middleware-functions'))
 
-  // TODO verify user has sufficient permissions
+router.route('/users')
+.get(hasAccess(4), (req, res) => {
+  const company = req._user.cmp
   // TODO add monitoring zones or subzones
   User.find({ company })
-  .select('email name surname access')
+  .select('email name surname access zones')
+  .populate('zones', 'name')
   .then(users => {
     return res.status(200).json({ users })
   })

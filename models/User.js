@@ -10,13 +10,9 @@ const schema = new Schema({
   access: Number,
   name: String,
   surname: String,
-  photo: String,
-  // TODO add this
-  zones: [{ type: Schema.Types.ObjectId, ref: 'Zone' }]
-})
-
-schema.virtual('fullName').get(function() {
-  return this.name + ' ' + this.surname
+  photoUrl: { type: String },
+  zones: [{ type: Schema.Types.ObjectId, ref: 'Zone' }],
+  services: [String]
 })
 
 module.exports = mongoose.model('User', schema)
