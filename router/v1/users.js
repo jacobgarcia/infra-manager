@@ -100,8 +100,7 @@ router.route('/users/self')
 .get((req, res) => {
 
   // Get user id by its
-  User.findById(req._user._id)
-  .select('-password')
+  User.findById(req._user._id, '-password')
   .populate('company', '_id logo name')
   .exec((error, user) => {
     if (error) {
