@@ -16,6 +16,7 @@ const schema = new Schema({
   surname: String,
   zone: { type: Schema.Types.ObjectId, ref: 'Zone' },
   subzone: { type: Schema.Types.ObjectId, ref: 'Subzone' },
+  photo: String,
   // TODO add this
   subzones: [{ type: Schema.Types.ObjectId, ref: 'Subzone' }],
   zones: [{ type: Schema.Types.ObjectId, ref: 'Zone' }],

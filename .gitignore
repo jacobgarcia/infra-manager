@@ -1,6 +1,11 @@
 # Bundles
 dist/**
 
+**.DS_Store
+
+# Uploads
+static/uploads/**
+
 yarn.lock
 
 # Logs

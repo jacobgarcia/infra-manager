@@ -53,6 +53,12 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/stats?from=${from}&to=${to}`)
   }
 
+  static uploadProfilePhoto(photoFile) {
+    const formData = new FormData()
+    formData.append('photo', photoFile)
+    return axios.post(`${baseUrl}/users/self/photo`, formData)
+  }
+
   static getGeneralAlarms(from, to) {
     return axios.get(`${baseUrl}/alarms?from=${from}&to=${to}`)
   }

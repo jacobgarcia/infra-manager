@@ -36,6 +36,7 @@ class App extends Component {
 
     NetworkOperation.getSelf()
     .then(({data}) => {
+      console.log({data})
       this.props.setCredentials({...data.user, token})
 
       // Start socket connection

@@ -18,7 +18,8 @@ function credentials(state = {}, action) {
           _id: action.user._id,
           email: action.user.email,
           fullName: `${action.user.name} ${action.user.surname}`,
-          access: action.user.access
+          access: action.user.access,
+          photo: action.user.photo
         },
         token: action.user.token,
         company: action.user.company,
