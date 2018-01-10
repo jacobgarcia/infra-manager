@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import PropTypes from 'prop-types'
 import DayPicker from 'react-day-picker'
+import Slider from 'react-slick'
 
 import { } from '../actions'
 import { Table } from '../components'
@@ -80,9 +81,18 @@ class VehicularFlow extends Component {
                 <p>3 Enero 07:45 PM</p>
                 <p>Zona <span>Norte</span> Sitio <span>5</span></p>
               </div>
-              <div className="image-slider">
-
-              </div>
+              <Slider>
+                <div className="image-slider 2">
+                  <img src="https://i.ytimg.com/vi/PJ5xXXcfuTc/maxresdefault.jpg" alt=""/>
+                </div>
+                <div className="image-slider 3">
+                  <img src="https://ak7.picdn.net/shutterstock/videos/27691087/thumb/1.jpg" alt=""/>
+                </div>
+                <div className="image-slider 4">
+                  <img src="https://www.gannett-cdn.com/-mm-/31a9e27e0f932508d2f38a8878fb2df3cab6c7c9/c=0-0-699-524&r=x404&c=534x401/local/-/media/2015/06/24/DesMoines/B9317848452Z.1_20150624231249_000_GUAB62DVM.1-0.jpg" alt=""/>
+                </div>
+                {/* <div className="image-slider 5"></div> */}
+              </Slider>
               <div className="action">
                 <p>Acceso denegado</p>
               </div>
