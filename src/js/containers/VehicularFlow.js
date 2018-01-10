@@ -6,7 +6,7 @@ import DayPicker from 'react-day-picker'
 import Slider from 'react-slick'
 
 import { } from '../actions'
-import { Table } from '../components'
+import { Table, RiskBar } from '../components'
 
 class VehicularFlow extends Component {
   constructor(props) {
@@ -55,9 +55,9 @@ class VehicularFlow extends Component {
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                 <div className="medium">3 enero <span>7:45 AM</span></div>
                 <div className="medium">Camioneta</div>
+                <div>Norte</div>
                 <div>50</div>
-                <div>1 Norte</div>
-                <div className="medium">Andrés López</div>
+                <div><RiskBar risk={index % 4 + 1}/></div>
                 <div>Proveedor</div>
               </div>
             }
@@ -68,9 +68,9 @@ class VehicularFlow extends Component {
             titles={[
               {title: 'Tiempo', className: 'medium'},
               {title: 'Tipo de vehículo', className: 'medium'},
+              {title: 'Zona'},
               {title: 'Sitio'},
-              {title: 'Acceso'},
-              {title: 'Persona autorizada', className: 'medium'},
+              {title: 'Riesgo'},
               {title: 'Tipo de acceso'}
             ]}
           />
