@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
 import { } from '../actions'
 
@@ -17,9 +18,12 @@ class Reports extends Component {
     const { state, props } = this
 
     return (
-      <div className="app-content reports">
+      <div className="app-content reports small-padding">
+        <Helmet>
+          <title>Connus | Reportes</title>
+        </Helmet>
         <div className="content">
-          <h1>Reportes</h1>
+          <h2>Reportes</h2>
         </div>
       </div>
     )

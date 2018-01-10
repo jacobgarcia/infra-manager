@@ -6,18 +6,29 @@ import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
 import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
-import { Dashboard, Services, Map, Users, Statistics, Settings, Accesses, VehicularFlow, Perimeter, FacialRecognition, Cctv, Reports } from './'
+import { Dashboard, Map, Users, Statistics, Settings, Accesses, VehicularFlow, Perimeter, FacialRecognition, Cctv, Reports } from './'
 import { Navigator } from '../components'
 import { NetworkOperation } from '../lib'
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      error: false
+    }
+
+  }
   componentDidMount() {
     const token = localStorage.getItem('token')
-    const path = `${this.props.location.pathname}${this.props.location.search}`
+    let path = ''
+    if (this.props.location.pathname !== '/') {
+      path = `?return=${this.props.location.pathname}${this.props.location.search}`
+    }
 
     if (!token) {
       localStorage.removeItem('token')
-      this.props.history.replace(`/login?return=${path}`)
+      this.props.history.replace(`/login${path}`)
       return
     }
 
@@ -38,13 +49,13 @@ class App extends Component {
       this.props.setComplete()
     })
     .catch(error => {
-      let { response = {} } = error
+      const { response = {} } = error
       this.props.setComplete()
 
       switch (response.status) {
         case 401:
         case 400:
-          this.props.history.replace(`/login?return=${path}`)
+          this.props.history.replace(`/login${path}`)
           break
         default:
           // TODO Display error
@@ -70,7 +81,26 @@ class App extends Component {
     })
   }
 
+  componentDidCatch(error, info) {
+    console.log('ERROR')
+    console.error(error, info)
+
+    this.setState({
+      error: true
+    })
+  }
+
   render() {
+    if (this.state.error) {
+      return (
+        <div className="error-screen">
+          <h1>Error en la aplicación</h1>
+          <p onClick={() => window.location.reload()} className="message">Favor de recargar la página</p>
+          <p className="legend">Si el problema persiste, favor de reportarlo a <a href="mailto:soporte@connus.mx">soporte@connus.mx</a></p>
+        </div>
+      )
+    }
+
     return (
       <div id="app">
         <Helmet>
@@ -99,7 +129,11 @@ App.propTypes = {
   setCredentials: PropTypes.func,
   history: PropTypes.object,
   user: PropTypes.object,
-  credentials: PropTypes.object
+  credentials: PropTypes.object,
+  location: PropTypes.object,
+  setLoading: PropTypes.func,
+  setExhaustive: PropTypes.func,
+  setComplete: PropTypes.func
 }
 
 function mapDispatchToProps(dispatch) {

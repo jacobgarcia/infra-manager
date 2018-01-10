@@ -39,6 +39,10 @@ class Navigator extends Component {
     document.addEventListener('keydown', this.onKeyDown)
   }
 
+  logOut() {
+    localStorage.removeItem('token')
+  }
+
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown)
 
@@ -55,21 +59,29 @@ class Navigator extends Component {
 
     return (
       <ul className={`navigator ${state.isHidden ? 'hidden' : ''}`}>
-        <li className="sandwitch-icon" onClick={() => this.setState(prev => ({isHidden: !prev.isHidden}))}/>
-        <ul>
+        <ul className="navigator-header">
+          <li className="sandwitch-icon" onClick={() => this.setState(prev => ({isHidden: !prev.isHidden}))}/>
           <li className="username" onClick={() => this.closeNavigator()}>
-            <NavLink to="/settings" className="fade"><span>Administrador</span>John Appleseed</NavLink><img src="" alt="" className="fade"/>
+            <NavLink to="/settings" className="fade"><span className="fade">Administrador</span>John Appleseed</NavLink><img src="/static/img/dummy/att-icon.png" alt="Company Icon" className="fade"/>
           </li>
+        </ul>
+        <ul>
           <li onClick={() => this.closeNavigator()}>
-            <NavLink exact to="/">
+            <NavLink exact to="/" className="status">
               <span className="status fade">Estatus</span>
             </NavLink>
           </li>
+          <li onClick={() => this.closeNavigator()}>
+            <NavLink exact to="/sites" className="sites">
+              <span className="status fade">Sitios</span>
+            </NavLink>
+          </li>
           <li className="hr" />
+          <h2 className="fade">Servicios</h2>
           {
             props.services.map(({title, name}) =>
               <li key={name} onClick={() => this.closeNavigator()}>
-                <NavLink to={`/${name}`}>
+                <NavLink to={`/${name}`} className={name}>
                   <span className="access fade">{title}</span>
                 </NavLink>
               </li>
@@ -77,13 +89,18 @@ class Navigator extends Component {
           }
           <li className="hr" />
           <li className="hr" />
-          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/users"><span className="users">Usuarios</span></NavLink></li>
-          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/reports"><span className="reports">Reportes</span></NavLink></li>
+          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/users" className="users"><span>Usuarios</span></NavLink></li>
+          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/reports" className="reports"><span>Reportes</span></NavLink></li>
           <li className="hr" />
           <li className="hr" />
-          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/settings"><span className="settings">Ajustes</span></NavLink></li>
+          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/settings" className="settings"><span className="settings">Ajustes</span></NavLink></li>
         </ul>
-        <li className="fade"><span className="settings">Cerrar sesión</span></li>
+        {/* <li className=""><span className="logout">Cerrar sesión</span></li> */}
+        <li onClick={() => this.closeNavigator()} className="fade logout">
+          <NavLink exact to="/login" className="logout" onClick={this.logOut}>
+            <span>Sitios</span>
+          </NavLink>
+        </li>
       </ul>
     )
   }
@@ -92,9 +109,6 @@ class Navigator extends Component {
 Navigator.defaultProps = {
   services: [
     {
-      title: 'Sitios',
-      name: 'sites'
-    }, {
       title: 'Accesos',
       name: 'accesses'
     }, {

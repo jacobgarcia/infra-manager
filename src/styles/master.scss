@@ -6,6 +6,7 @@
 html, body, #root, #app {
   width: 100%;
   height: 100%;
+  background-color: $dark-gray;
 }
 
 /*
@@ -15,7 +16,7 @@ html, body, #root, #app {
 .inline-nav {
   display: flex;
   color: $lightest-gray;
-  margin-bottom: 30px;
+  padding: 30px 0 20px;
   li {
     margin-right: 30px;
     text-transform: uppercase;
@@ -45,6 +46,7 @@ button, input, .button {
   display: inline-block;
   border-radius: 3px;
   background-color: $gray;
+  cursor: pointer;
 }
 button, input[type="button"], .button {
   padding: 3px 30px;
@@ -53,16 +55,46 @@ button, input[type="button"], .button {
   font-size: 0.85rem;
   font-weight: 600;
 }
-
+h2 {
+  font-weight: 400;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  color: white;
+  opacity: 0.8;
+}
 label {
   font-weight: 600;
   font-size: 0.8rem;
   color: $lighter-gray;
   text-transform: uppercase;
 }
-
 p span {
   font-weight: 600;
+}
+
+.error-screen {
+  color: white;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  .legend {
+    position: fixed;
+    bottom: 20px;
+    display: block;
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+  .message {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .actions-bar {
@@ -78,6 +110,9 @@ p span {
   min-height: 100%;
   display: flex;
   flex-direction: column;
+  &.small-padding .content {
+    padding-top: 30px;
+  }
   .overall-container {
     background-color: $dark-gray;
     padding: 20px;
@@ -108,6 +143,21 @@ p span {
   }
 }
 
+.table-container {
+  .table-container-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .button {
+    display: inline-block;
+    border-color: $blue;
+    margin-left: 10px;
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
 .table {
   position: relative;
   width: 100%;
@@ -126,11 +176,23 @@ p span {
     text-transform: uppercase;
     font-size: 0.75rem;
     color: $lighter-gray;
-    background-color: $dark-gray;
+    // background-color: $dark-gray;
+    .table-item  .large {
+      color: $lighter-gray;
+      font-weight: 500 !important;
+    }
   }
   .table-body {
     padding-top: 45px;
     color: white;
+  }
+  .no-info {
+    width: 100%;
+    font-size: 1.2rem;
+    opacity: 0.5;
+    font-weight: 500;
+    text-align: center;
+    padding: 30px;
   }
   .table-item {
     display: flex;
@@ -138,8 +200,22 @@ p span {
     justify-content: space-between;
     border-bottom: 1px solid $light-gray;
     align-items: center;
+    cursor: pointer;
+    &.selected {
+      background-color: $light-gray;
+      box-shadow: 0px 0px 7px rgba(#000, 0.25);
+      border: 1px solid $lighter-gray;
+      border-left: 0;
+      border-right: 0;
+    }
     > div {
       flex-basis: 200px;
+      &:first-child {
+        padding-left: 20px;
+      }
+      &:last-child {
+        padding-right: 20px;
+      }
       &.bold {
         font-weight: 600;
         color: white;
@@ -155,14 +231,129 @@ p span {
     }
   }
 }
+.log-detail-container {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  max-width: 400px;
+  width: 100%;
+  height: 100%;
+  padding: 20px 0px 20px 0;
+  transition: max-width 0.4s;
+  color: white;
+  z-index: 1001;
+  .close {
+    cursor: pointer;
+  }
+  &.hidden {
+    max-width: 0px;
+  }
+  .content {
+    border-radius: 5px;
+    background-color: $light-gray;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0px 0px 7px rgba(#000, 0.25);
+    padding: 20px;
+    min-width: 350px;
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar { width: 0 !important }
+  }
+  .time-location {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    p:last-child {
+      text-transform: uppercase;
+    }
+  }
+  .image-slider {
+    width: 100%;
+    height: 250px;
+    background-color: $dark-gray;
+  }
+  .action {
+    margin: 15px 0;
+    &.destructive {
+      color: white;
+      cursor: pointer;
+      p {
+        padding: 10px;
+        // text-align: center;
+        border-radius: 3px;
+        // background-color: $red;
+        font-weight: 700;
+        color: $red;
+        &:hover {
+          // background-color: darken($red, 10)
+        }
+      }
+    }
+    p {
+      font-size: 1rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+  }
+  .details-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .detail {
+    min-width: 120px;
+    margin-bottom: 25px;
+    span {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: $lighter-gray;
+      text-transform: uppercase;
+    }
+    img {
+      width: 100%;
+      height: 70px;
+      background-color: $gray;
+      &.profile-picture {
+        height: 170px;
+      }
+    }
+  }
+}
 
 
 
 
 
 
+/*
 
+      R E C H A R T S
 
+*/
+
+.recharts-wrapper .tooltip {
+  background-color: $darker-gray;
+  padding: 7px;
+  border-radius: 4px;
+  width: 100px;
+  color: white;
+  font-size: 0.8rem;
+  span {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: $lighter-gray;
+    margin-bottom: 5px;
+    display: block;
+  }
+  p {
+    color: white !important;
+  }
+}
 
 
 
@@ -221,6 +412,9 @@ p span {
         width: 200px;
         overflow-y: scroll;
         transition: max-height ease 0.5s;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar { width: 0 !important }
         &.hidden {
           overflow: hidden;
           max-height: 0px;
@@ -364,6 +558,8 @@ p span {
       .results {
         overflow-y: scroll;
         -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar { width: 0 !important }
         .sites-container {
           padding: 20px;
           border-bottom: 1px solid $gray;
@@ -659,6 +855,8 @@ p span {
   flex-direction: column;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { width: 0 !important }
   .statuses-container-nav {
     display: flex;
     padding: 10px;
@@ -678,6 +876,7 @@ p span {
     display: flex;
     flex-grow: 1;
     flex-direction: column;
+    &::-webkit-scrollbar { width: 0 !important }
     .info {
       &.readonly {
         input {
@@ -805,12 +1004,40 @@ $dark: #1d212d;
   z-index: 1000;
   box-shadow: 0px 0px 10px rgba(#000, 0.3);
   flex-direction: column;
+  li a::before {
+    background-repeat: no-repeat;
+    background-image: url('/static/img/icons/sprite-sheet.svg');
+    background-size: 250px 25px;
+  }
+  li.logout {
+    margin-top: auto;
+  }
+  .navigator-header {
+    display: flex;
+    flex-direction: row;
+  }
+  .sites::before { background-position: -25px; }
+  .accesses::before { background-position: -50px; }
+  .vehicular-flow::before { background-position: -125px; }
+  .perimeter::before { background-position: -75px; }
+  .perimeter::before { background-position: -75px; }
+  .cctv::before { background-position: -150px; }
+  .facial-recognition::before { background-position: -100px; }
+
+  .users::before { background-position: -175px; }
+  .reports::before { background-position: -200px; }
+  .logout::before { background-position: -225px; }
+  h2 {
+    font-weight: 600;
+    color: $gray;
+    margin-left: 30px;
+    margin-bottom: 10px;
+  }
 }
 .navigator, ul.mini-nav {
   background-color: $dark-gray;
   color: white;
   display: flex;
-  justify-content: space-between;
   position: fixed;
   max-width: 350px;
   width: 100%;
@@ -819,6 +1046,10 @@ $dark: #1d212d;
   height: 100%;
   transition: 0.4s;
   overflow: hidden;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar { width: 0 !important }
   *.fade {
     min-width: 200px;
     opacity: 1;
@@ -854,6 +1085,7 @@ $dark: #1d212d;
     padding-left: 30px;
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     &.hr {
       height: 0px;
       width: 100%;
@@ -867,7 +1099,6 @@ $dark: #1d212d;
       display: block;
       width: 25px;
       height: 25px;
-      background-color: red;
     }
   }
   li.username, li.hr {
@@ -878,10 +1109,6 @@ $dark: #1d212d;
   }
   li.sandwitch-icon {
     background-color: $dark-gray;
-    position: fixed;
-    top: 25px;
-    z-index: 999;
-    left: 30px;
     width: 30px;
     height: 30px;
     cursor: pointer;
@@ -927,15 +1154,15 @@ $dark: #1d212d;
       color: $blue;
     }
     &.username {
-      height: 20px;
       font-size: 0.7rem;
-      margin-bottom: 30px;
       text-align: right;
+      padding-left: 0;
       text-transform: capitalize;
       display: flex;
+      width: auto;
+      margin-left: auto;
       align-items: center;
       justify-content: flex-end;
-      padding-left: 40px;
       overflow: hidden;
       span {
         opacity: 0.6;
@@ -950,11 +1177,11 @@ $dark: #1d212d;
       }
     }
     a {
-      opacity: 0.35 !important;
+      opacity: 0.35;
       &:hover {
         opacity: 0.2;
       }
-      &.active, &:active {
+      &.active {
         opacity: 1 !important;
       }
     }
@@ -966,6 +1193,7 @@ ul.mini-nav {
   height: auto;
   background-color: transparent;
   color: $lighter-gray;
+  justify-content: space-between;
   &.vertical {
     flex-direction: column;
     width: auto;
@@ -974,6 +1202,9 @@ ul.mini-nav {
     li {
       margin-right: 0;
       margin-bottom: 20px;
+      text-align: right;
+      display: inline-block;
+      cursor: pointer;
     }
   }
   li {
@@ -997,6 +1228,12 @@ ul.mini-nav {
       .table-body {
         height: 400px;
         overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: none;
+        &::-webkit-scrollbar { width: 0 !important }
+      }
+      .table-header {
+        background-color: $dark-gray;
       }
     }
     .card {
@@ -1010,6 +1247,9 @@ ul.mini-nav {
       padding: 20px;
       padding-top: 15px;
       max-height: 300px;
+      // .recharts-responsive-container {
+      //   max-width: 500px;
+      // }
       tspan {
         font-weight: 500;
         color: white;

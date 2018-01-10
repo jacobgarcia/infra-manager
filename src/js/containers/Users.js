@@ -14,11 +14,12 @@ class Users extends Component {
   render() {
     const { state, props } = this
     return (
-      <div className="users app-content">
+      <div className="users app-content small-padding">
         <Helmet>
           <title>Connus | Usuarios</title>
         </Helmet>
         <div className="content">
+          <h2>Usuarios</h2>
           <div className="table">
             <div className="table-actions">
               <div />
