@@ -69,7 +69,7 @@ class Settings extends Component {
         <div className="content vertical">
           <ul className="mini-nav vertical">
             <li className="active">Perfil</li>
-            <li>Personalizar</li>
+            {/* <li>Personalizar</li> */}
             <li>Lista negra</li>
           </ul>
           <form onSubmit={this.onSave}>

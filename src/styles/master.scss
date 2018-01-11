@@ -38,7 +38,15 @@ html, body, #root, #app {
     }
   }
 }
-
+input[type="text"].search {
+  text-align: center;
+  width: 117px;
+  transition: width 0.3s;
+  &:focus {
+    width: 200px;
+    text-align: left;
+  }
+}
 button, input, .button {
   color: white;
   font-size: 1rem;
@@ -371,6 +379,52 @@ p span {
         height: 170px;
       }
     }
+  }
+}
+
+.popover {
+  position: fixed;
+  background-color: rgba(0,0,0,0.3);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2000;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  cursor: pointer;
+  .popover-content {
+    color: white;
+    background-color: $gray;
+    width: 100%;
+    max-width: 500px;
+    height: 500px;
+    border-radius: 4px;
+    padding: 20px;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+  }
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  form div > div {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -1001,6 +1055,12 @@ $dark: #1d212d;
   button, input {
     &.destructive {
       background-color: $connus-blue;
+    }
+    &.red {
+      background-color: transparent;
+      color: $red;
+      font-weight: 600;
+      border: 0;
     }
     &.action {
       border: none;
