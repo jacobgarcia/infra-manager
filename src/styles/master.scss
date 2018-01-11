@@ -38,6 +38,20 @@ html, body, #root, #app {
     }
   }
 }
+input[type="checkbox"] {
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border-color: $lighter-gray;
+  border-radius: 6px;
+  padding: 0;
+  transition: 0.2s;
+  &:checked {
+    background-color: $connus-blue;
+    border-color: $connus-blue;
+  }
+}
 input[type="text"].search {
   text-align: center;
   width: 117px;
@@ -57,12 +71,21 @@ button, input, .button {
   background-color: $dark-gray;
   cursor: pointer;
 }
-button, input[type="button"], .button {
+button, input[type="button"], input[type="submit"], .button {
   padding: 3px 30px;
   text-transform: uppercase;
   color: $lighter-gray;
   font-size: 0.85rem;
   font-weight: 600;
+  &.action {
+    border: none;
+    padding: 5px 20px;
+    background-color: $connus-blue;
+    color: white;
+  }
+  &.disabled {
+    opacity: 0.3;
+  }
 }
 h2 {
   font-weight: 400;
@@ -81,7 +104,74 @@ label {
 p span {
   font-weight: 600;
 }
+.drop-down {
+  height: 28px;
+  position: relative;
+  &.active ul {
+    max-height: 200px;
+    overflow-y: scroll;
+  }
+  ul {
+    transition: max-height 0.5s;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border: 1px solid $lighter-gray;
+    border-radius: 3px;
+    padding: 0 8px;
+    overflow: hidden;
+    display: block;
+    max-height: 28px;
+    background-color: $dark-gray;
+    li:first-child {
+      margin-right: 30px;
+      display: inline-block;
+      align-items: center;
+      padding-top: 3px;
+      width: calc(100% - 25px);
+    }
+    li {
+      border-bottom: 1px solid $light-gray;
+      font-weight: 500;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      input[type="checkbox"] {
+        margin-right: 5px;
+      }
+    }
+  }
+}
 
+.loading-screen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  text-transform: uppercase;
+  color: $lighter-gray;
+  position: fixed;
+  z-index: 2000;
+  width: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: $dark-gray;
+  transition: 0.3s;
+  &.dismissed {
+    opacity: 0;
+  }
+}
 .error-screen {
   color: white;
   height: 100%;
@@ -421,7 +511,7 @@ p span {
     justify-content: space-between;
     flex-grow: 1;
   }
-  form div > div {
+  form > div > div {
     margin-top: 15px;
     display: flex;
     flex-direction: column;
@@ -429,6 +519,79 @@ p span {
 }
 
 
+/*
+
+      L O G I N
+
+*/
+
+
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+  z-index: 1000;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  img {
+    width: 150px;
+    margin-bottom: 20px;
+  }
+  form {
+    position: relative;
+    background-color: $gray;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 100%;
+    max-width: 300px;
+    opacity: 1;
+    border-radius: 10px;
+    input {
+      border-width: 0;
+      margin-bottom: 10px;
+    }
+    input[type="submit"] {
+      align-self: center;
+      margin-bottom: 0;
+    }
+  }
+  .error {
+    position: absolute;
+    background-color: $red;
+    padding: 5px 12px;
+    margin: 10px 20px 0;
+    font-size: 0.9rem;
+    color: #fff;
+    font-weight: 600;
+    bottom: -40px;
+    transform: translateY(18px);
+    text-align: center;
+    border-radius: 5px;
+    p {
+      position: relative;
+      &:before {
+        position: absolute;
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: 16px solid transparent;
+        border-right: 16px solid transparent;
+        border-bottom: 16px solid $red;
+        left: 50%;
+        transform: translateX(-16px) translateY(-14px);
+        top: 0;
+      }
+    }
+  }
+}
 
 
 
@@ -1061,11 +1224,6 @@ $dark: #1d212d;
       color: $red;
       font-weight: 600;
       border: 0;
-    }
-    &.action {
-      border: none;
-      padding: 5px 20px;
-      background-color: $connus-blue;
     }
   }
   .button.create {

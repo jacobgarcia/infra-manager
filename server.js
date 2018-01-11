@@ -106,5 +106,5 @@ const socket = io.connect('https://connus.be')
 
 socket.on('alert', function () {
   // socket connected
-console.log("Alert recieved from external server")
+  console.log("Alert recieved from external server")
 })

@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import queryString from 'query-string'
 import { Helmet } from 'react-helmet'
+import Particles from 'react-particles-js'
 
 import { NetworkOperation } from '../lib'
 import { setCredentials } from '../actions'
+import * as particleParams from '../lib/particlesjs-config.json'
 
 class Login extends Component {
   constructor(props) {
@@ -70,9 +72,21 @@ class Login extends Component {
         <Helmet>
           <title>Connus | Login</title>
         </Helmet>
+        <Particles
+          style={{
+            width: '100%',
+            height: '100%',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: -1
+          }}
+          params={particleParams}
+        />
         <div id="logo">
           <img src="/static/img/iso.svg" alt="" className="iso" />
-          <img src="/static/img/logo.svg" alt="" className="logo" />
         </div>
         <form onSubmit={this.onSubmit}>
           <input
@@ -80,7 +94,7 @@ class Login extends Component {
             name="email"
             onChange={this.onChange}
             value={state.email}
-            placeholder="Correo electrónico"
+            placeholder="Usuario"
             required
           />
           <input
@@ -91,7 +105,11 @@ class Login extends Component {
             placeholder="Contraseña"
             required
           />
-          <input type="submit" value="Listo" className={`button destructive ${(!state.email || !state.password) && 'disabled' }`} />
+          <input
+            type="submit"
+            value="Iniciar sesión"
+            className={`button action ${(!state.email || !state.password) && 'disabled'}`}
+          />
           {
             state.error
             &&

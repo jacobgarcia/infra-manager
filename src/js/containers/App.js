@@ -15,7 +15,9 @@ class App extends Component {
     super(props)
 
     this.state = {
-      error: false
+      error: false,
+      isLoading: true,
+      willCompleteLoad: false
     }
 
   }
@@ -36,6 +38,14 @@ class App extends Component {
 
     NetworkOperation.getSelf()
     .then(({data}) => {
+      this.setState({
+        willCompleteLoad: true
+      })
+      setTimeout(() => {
+        this.setState({
+          isLoading: false
+        })
+      }, 300)
       this.props.setCredentials({...data.user, token})
 
       // Start socket connection
@@ -43,7 +53,7 @@ class App extends Component {
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
-      console.log('exhaustive', data)
+      console.log('EXHAUSTIVE', {data})
       // Set all zones
       this.props.setExhaustive(data.zones)
 
@@ -102,6 +112,13 @@ class App extends Component {
 
     return (
       <div id="app">
+        {
+          this.state.isLoading
+          &&
+          <div className={`loading-screen ${this.state.willCompleteLoad ? 'dismissed' : ''}`}>
+            <h1>Cargando...</h1>
+          </div>
+        }
         <Helmet>
           <title>Connus</title>
         </Helmet>

@@ -64,7 +64,7 @@ class Navigator extends Component {
           <li className="hr" />
           <h2 className="fade">Servicios</h2>
           {
-            props.services.map(({title, name}) =>
+            props.services.filter(service => props.credentials.company ? props.credentials.company.services.some($0 => $0 === service._id) : false).map(({title, name}) =>
               <li key={name} onClick={() => this.closeNavigator()}>
                 <NavLink to={`/${name}`} className={name}>
                   <span className="access fade">{title}</span>
@@ -95,19 +95,24 @@ Navigator.defaultProps = {
   services: [
     {
       title: 'Accesos',
-      name: 'accesses'
+      name: 'accesses',
+      _id: '01'
     }, {
       title: 'Flujo vehícular',
-      name: 'vehicular-flow'
+      name: 'vehicular-flow',
+      _id: '02'
     }, {
       title: 'Perímetro',
-      name: 'perimeter'
+      name: 'perimeter',
+      _id: '03'
     }, {
       title: 'FR',
-      name: 'facial-recognition'
+      name: 'facial-recognition',
+      _id: '04'
     }, {
       title: 'CCTV',
-      name: 'cctv'
+      name: 'cctv',
+      _id: '05'
     }
   ]
 }

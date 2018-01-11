@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
+import { connect } from 'react-redux'
 
 import { NetworkOperation } from '../lib'
+import { getServiceName } from '../lib/CodeExtractor'
+import { DropDown } from '../components'
 
 class Users extends Component {
   constructor(props) {
@@ -29,6 +32,7 @@ class Users extends Component {
 
   render() {
     const { state, props } = this
+
     return (
       <div className="users app-content small-padding">
         <Helmet>
@@ -52,9 +56,15 @@ class Users extends Component {
                   </div>
                   <div>
                     <label htmlFor="email">Zonas</label>
+                    <DropDown
+                      elements={props.zones}
+                    />
                   </div>
                   <div>
                     <label htmlFor="email">Servicios</label>
+                    <DropDown
+                      elements={props.credentials.company ? props.credentials.company.services.map(getServiceName) : [] }
+                    />
                   </div>
                   <div>
                     <label htmlFor="email">Permisos</label>
@@ -107,8 +117,15 @@ class Users extends Component {
   }
 }
 
+function mapStateToProps({zones, credentials}) {
+  return {
+    zones,
+    credentials
+  }
+}
+
 Users.propTypes = {
 
 }
 
-export default Users
+export default connect(mapStateToProps)(Users)
