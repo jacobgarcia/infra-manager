@@ -7,7 +7,6 @@ const compression = require('compression') // Files compresion
 const winston = require('winston') // Logger
 const hpp = require('hpp')
 const request = require('request')
-const io = require('socket.io-client')
 const { exec } = require('child_process')
 const app = express()
 
@@ -100,11 +99,3 @@ app.get('*', (req, res) =>
 app.listen(PORT, () =>
   winston.info(`Connus server is listening on port: ${PORT}!`)
 )
-
-// Socket section. TODO moce to another file
-const socket = io.connect('https://connus.be')
-
-socket.on('alert', function () {
-  // socket connected
-console.log("Alert recieved from external server")
-})
