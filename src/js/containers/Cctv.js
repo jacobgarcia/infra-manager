@@ -12,7 +12,8 @@ class Cctv extends Component {
 
     this.state = {
       logs: [0,0,0,0,0,0],
-      alerts: []
+      alerts: [],
+      selectedElementIndex: [null,null]
     }
   }
 

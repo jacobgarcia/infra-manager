@@ -3,9 +3,10 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import PropTypes from 'prop-types'
 import DayPicker from 'react-day-picker'
+import Slider from 'react-slick'
 
 import { } from '../actions'
-import { Table } from '../components'
+import { Table, RiskBar } from '../components'
 
 class VehicularFlow extends Component {
   constructor(props) {
@@ -54,9 +55,9 @@ class VehicularFlow extends Component {
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                 <div className="medium">3 enero <span>7:45 AM</span></div>
                 <div className="medium">Camioneta</div>
+                <div>Norte</div>
                 <div>50</div>
-                <div>1 Norte</div>
-                <div className="medium">Andrés López</div>
+                <div><RiskBar risk={index % 4 + 1}/></div>
                 <div>Proveedor</div>
               </div>
             }
@@ -67,9 +68,9 @@ class VehicularFlow extends Component {
             titles={[
               {title: 'Tiempo', className: 'medium'},
               {title: 'Tipo de vehículo', className: 'medium'},
+              {title: 'Zona'},
               {title: 'Sitio'},
-              {title: 'Acceso'},
-              {title: 'Persona autorizada', className: 'medium'},
+              {title: 'Riesgo'},
               {title: 'Tipo de acceso'}
             ]}
           />
@@ -80,9 +81,12 @@ class VehicularFlow extends Component {
                 <p>3 Enero 07:45 PM</p>
                 <p>Zona <span>Norte</span> Sitio <span>5</span></p>
               </div>
-              <div className="image-slider">
-
-              </div>
+              <Slider nextArrow={<button>{'>'}</button>}  prevArrow={<button>{'<'}</button>}>
+                <div className="image-slider" style={{backgroundImage: `url(https://i.ytimg.com/vi/PJ5xXXcfuTc/maxresdefault.jpg)`}} />
+                <div className="image-slider" style={{backgroundImage: `url(https://ak7.picdn.net/shutterstock/videos/27691087/thumb/1.jpg)`}} />
+                <div className="image-slider" style={{backgroundImage: `url(https://www.gannett-cdn.com/-mm-/31a9e27e0f932508d2f38a8878fb2df3cab6c7c9/c=0-0-699-524&r=x404&c=534x401/local/-/media/2015/06/24/DesMoines/B9317848452Z.1_20150624231249_000_GUAB62DVM.1-0.jpg)`}}/>
+                {/* <div className="image-slider 5"></div> */}
+              </Slider>
               <div className="action">
                 <p>Acceso denegado</p>
               </div>
@@ -101,13 +105,13 @@ class VehicularFlow extends Component {
                 </div>
                 <div className="detail">
                   <span>Placa delantera</span>
-                  <img src="" alt=""/>
-                  <p>MPK-36-36</p>
+                  <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
+                  <p>NAA-77-41</p>
                 </div>
                 <div className="detail">
                   <span>Placa trasera</span>
-                  <img src="" alt=""/>
-                  <p>MPK-36-36</p>
+                  <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
+                  <p>NAA-77-41</p>
                 </div>
                 <div className="detail">
                   <span>Personas visibles</span>
@@ -115,7 +119,7 @@ class VehicularFlow extends Component {
                 </div>
                 <div className="detail">
                   <span>Conductor autorizado</span>
-                  <img src="" alt="" className="profile-picture"/>
+                  <div className="profile-photo" style={{backgroundImage: `url(https://cap.stanford.edu/profiles/viewImage?profileId=19141&type=square&ts=1509532892453)`}}></div>
                   <p>Omar García</p>
                 </div>
               </div>

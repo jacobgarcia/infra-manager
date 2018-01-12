@@ -3,15 +3,32 @@ const express = require('express')
 const path = require('path')
 const winston = require('winston')
 const router = new express.Router()
+const multer = require('multer')
+const mime = require('mime')
 const mongoose = require('mongoose')
 const nev = require('email-verification')(mongoose)
 
+// Image optimization
+const imagemin = require('imagemin')
+const imageminMozjpeg = require('imagemin-mozjpeg')
+const imageminPngquant = require('imagemin-pngquant')
+
 const Guest = require(path.resolve('models/Guest'))
 const User = require(path.resolve('models/User'))
-
 const config = require(path.resolve('config/config'))
 
 mongoose.connect(config.database)
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'static/uploads/profile-pictures/')
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${req._user._id}.${mime.extension(file.mimetype)}`)
+  }
+})
+
+const upload = multer({ storage })
 
 nev.configure({
   verificationURL: 'https://demo.kawlantid.com/signup/${URL}',
@@ -81,11 +98,9 @@ router.route('/users/invite')
 
 router.route('/users/self')
 .get((req, res) => {
-
-  // Get user id by its
   User.findById(req._user._id)
-  .select('-password')
-  .populate('company', '_id logo name')
+  .select({password: 0})
+  .populate('company', '_id logo name services')
   .exec((error, user) => {
     if (error) {
       winston.error(error)
@@ -94,6 +109,29 @@ router.route('/users/self')
 
     if (!user) return res.status(404).json({ error: { message: 'User not found' } })
     return res.status(200).json({user})
+  })
+})
+
+router.route('/users/self/photo')
+.post(upload.single('photo'), (req, res) => {
+  if (!req.file) return res.status(400).json({ error: { message: 'Could not get file info'} })
+
+
+  const imagePath = `/static/uploads/profile-pictures/${req.file.filename}`
+  return imagemin([imagePath], 'static/uploads', {
+    plugins: [
+      imageminMozjpeg(),
+      imageminPngquant({ quality: '70-80' })
+    ]
+  })
+  .then(() => {
+    return User.findByIdAndUpdate(req._user._id, {$set: { photoUrl: imagePath }})
+  })
+  .then(() => {
+    return res.status(201).json({ message: 'Uploaded and saved, could not compress', photo: imagePath })
+  })
+  .catch(() => {
+    return res.status(201).json({ message: 'Uploaded and saved, could not compress', photo: imagePath })
   })
 })
 

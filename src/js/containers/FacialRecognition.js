@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import { Table } from '../components'
+import { Table, RiskBar } from '../components'
 import { } from '../actions'
 
 import { NetworkOperation } from '../lib'
@@ -43,8 +43,8 @@ class FacialRecognition extends Component {
           <Table
             actionsContainer={
               <div>
-                <p className="button action">Enero 3 - Hoy</p>
-                <p className="button action">Filtrar</p>
+                <p className="button">Enero 3 - Hoy</p>
+                <p className="button">Filtrar</p>
               </div>
             }
             selectedElementIndex={state.selectedElementIndex}
@@ -52,12 +52,12 @@ class FacialRecognition extends Component {
               <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">3 enero <span>7:45 AM</span></div>
-                <div className="medium">Camioneta</div>
-                <div>50</div>
-                <div>1 Norte</div>
-                <div className="medium">Andrés López</div>
-                <div>Proveedor</div>
+                <div className="medium">3 Enero <span>7:45 AM</span></div>
+                <div className="large">Placas registradas con el vehiculo no coinciden</div>
+                <div>Norte</div>
+                <div>{index + 10}</div>
+                <div><RiskBar risk={(index % 4) + 1} /></div>
+                <div className="medium">Acceso denegado</div>
               </div>
             }
             elements={[
@@ -66,11 +66,11 @@ class FacialRecognition extends Component {
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
-              {title: 'Tipo de vehículo', className: 'medium'},
+              {title: 'Suceso', className: 'large'},
+              {title: 'Zona'},
               {title: 'Sitio'},
-              {title: 'Acceso'},
-              {title: 'Persona autorizada', className: 'medium'},
-              {title: 'Tipo de acceso'}
+              {title: 'Riesgo'},
+              {title: 'Estatus o acción', className: 'medium'}
             ]}
           />
           <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>

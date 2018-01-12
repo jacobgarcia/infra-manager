@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
+import { getAccessTitle } from '../lib/CodeExtractor'
+
 class Navigator extends Component {
   constructor(props) {
     super(props)
@@ -12,12 +14,6 @@ class Navigator extends Component {
     }
 
     this.onKeyDown = this.onKeyDown.bind(this)
-  }
-
-  tick() {
-    this.setState(prev => ({
-      time: prev.time + 1000
-    }))
   }
 
   closeNavigator() {
@@ -35,34 +31,23 @@ class Navigator extends Component {
     }
   }
 
-  componentWillUnmount() {
-    document.addEventListener('keydown', this.onKeyDown)
-  }
-
   logOut() {
     localStorage.removeItem('token')
   }
 
   componentDidMount() {
     document.addEventListener('keydown', this.onKeyDown)
-
-    this.setState({
-      time: new Date().getTime()
-    }, () => {
-      this.interval = setInterval(() => this.tick(), 1000)
-    })
   }
 
   render() {
     const { state, props } = this
-    const date = new Date(state.time)
 
     return (
       <ul className={`navigator ${state.isHidden ? 'hidden' : ''}`}>
         <ul className="navigator-header">
           <li className="sandwitch-icon" onClick={() => this.setState(prev => ({isHidden: !prev.isHidden}))}/>
           <li className="username" onClick={() => this.closeNavigator()}>
-            <NavLink to="/settings" className="fade"><span className="fade">Administrador</span>John Appleseed</NavLink><img src="/static/img/dummy/att-icon.png" alt="Company Icon" className="fade"/>
+            <NavLink to="/settings" className="fade"><span className="fade">{getAccessTitle(props.credentials.user && props.credentials.user.access)}</span>{props.credentials.user && props.credentials.user.name}</NavLink><img src="/static/img/dummy/att-icon.png" alt="Company Icon" className="fade"/>
           </li>
         </ul>
         <ul>
@@ -79,7 +64,7 @@ class Navigator extends Component {
           <li className="hr" />
           <h2 className="fade">Servicios</h2>
           {
-            props.services.map(({title, name}) =>
+            props.services.filter(service => props.credentials.company ? props.credentials.company.services.some($0 => $0 === service._id) : false).map(({title, name}) =>
               <li key={name} onClick={() => this.closeNavigator()}>
                 <NavLink to={`/${name}`} className={name}>
                   <span className="access fade">{title}</span>
@@ -98,7 +83,7 @@ class Navigator extends Component {
         {/* <li className=""><span className="logout">Cerrar sesión</span></li> */}
         <li onClick={() => this.closeNavigator()} className="fade logout">
           <NavLink exact to="/login" className="logout" onClick={this.logOut}>
-            <span>Sitios</span>
+            <span>Cerrar sesión</span>
           </NavLink>
         </li>
       </ul>
@@ -110,19 +95,24 @@ Navigator.defaultProps = {
   services: [
     {
       title: 'Accesos',
-      name: 'accesses'
+      name: 'accesses',
+      _id: '01'
     }, {
       title: 'Flujo vehícular',
-      name: 'vehicular-flow'
+      name: 'vehicular-flow',
+      _id: '02'
     }, {
       title: 'Perímetro',
-      name: 'perimeter'
+      name: 'perimeter',
+      _id: '03'
     }, {
       title: 'FR',
-      name: 'facial-recognition'
+      name: 'facial-recognition',
+      _id: '04'
     }, {
       title: 'CCTV',
-      name: 'cctv'
+      name: 'cctv',
+      _id: '05'
     }
   ]
 }

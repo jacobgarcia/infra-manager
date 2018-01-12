@@ -7,7 +7,7 @@ import { getStatus, substractReportValues } from '../lib/specialFunctions'
 
 function colors(value) {
   if (value > 75) {
-    return '#50E3C2'
+    return '#00adee'
   } else if (value < 40) {
     return '#ed2a20'
   }

@@ -247,19 +247,19 @@ class MapContainer extends Component {
       .then(({data}) => {
         this.setState({ newPositions: [], newElementName: '', isCreating: null, showing: null })
         this.props.setSite(data.site.zone ,data.site.subzone, data.site._id, data.site.key, data.site.name, data.site.position)
-      }).catch(console.log)
+      }).catch(console.error)
     } else if (selectedZone) {
       NetworkOperation.setSubzone(selectedZone, newElementName, newPositions)
       .then(({data}) => {
         this.setState({ newPositions: [], newElementName: '', isCreating: null, showing: null })
         this.props.setSubzone(data.subzone.parentZone, data.subzone._id, data.subzone.name, data.subzone.positions)
-      }).catch(console.log)
+      }).catch(console.error)
     } else {
       NetworkOperation.setZone(newElementName, newPositions)
       .then(({data}) => {
         this.setState({ newPositions: [], newElementName: '', isCreating: null, showing: null })
         this.props.setZone(data.zone._id, data.zone.name, data.zone.positions)
-      }).catch(console.log)
+      }).catch(console.error)
     }
   }
 
