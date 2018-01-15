@@ -57,8 +57,8 @@ class FacialRecognition extends Component {
               </div>
             }
             elements={[
-              { title: 'Registros', elements: state.logs},
-              { title: 'Alertas', elements: state.alerts}
+              { title: 'Registros', elements: state.logs },
+              { title: 'Alertas', elements: state.alerts }
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},

@@ -50,14 +50,15 @@ class VehicularFlow extends Component {
             }
             selectedElementIndex={state.selectedElementIndex}
             element={(item, index, sectionIndex) =>
-              <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
+              <div
+                className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                 <div className="medium">3 enero <span>7:45 AM</span></div>
                 <div className="medium">Camioneta</div>
                 <div>Norte</div>
                 <div>50</div>
-                <div><RiskBar risk={index % 4 + 1}/></div>
+                <div><RiskBar risk={(index % 4) + 1}/></div>
                 <div>Proveedor</div>
               </div>
             }
