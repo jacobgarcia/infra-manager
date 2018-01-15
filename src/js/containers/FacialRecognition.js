@@ -39,8 +39,8 @@ class FacialRecognition extends Component {
           <Table
             actionsContainer={
               <div>
-                <p className="button">Enero 3 - Hoy</p>
-                <p className="button">Filtrar</p>
+                <input type="button" value="Enero 3 - Hoy" />
+                <input type="button" value="filtrar"/>
               </div>
             }
             selectedElementIndex={state.selectedElementIndex}
