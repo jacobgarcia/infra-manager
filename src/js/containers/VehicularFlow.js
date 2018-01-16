@@ -13,7 +13,7 @@ class VehicularFlow extends Component {
     super(props)
 
     this.state = {
-      logs: [0,0,0,0,0,0,0,0,0],
+      logs: this.props.vehicularReports,
       alerts: [0,0,0,0,0],
       selectedLog: null,
       showLogDetail: false,
@@ -67,12 +67,12 @@ class VehicularFlow extends Component {
                 className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">3 enero <span>7:45 AM</span></div>
-                <div className="medium">Camioneta</div>
-                <div>Norte</div>
-                <div>50</div>
-                <div><RiskBar risk={(index % 4) + 1}/></div>
-                <div>Proveedor</div>
+                <div className="medium">{this.state.logs[index].day} <span>{this.state.logs[index].hour}</span></div>
+                <div className="large">{this.state.logs[index].vehicle}</div>
+                <div>{this.state.logs[index].zone}</div>
+                <div>{this.state.logs[index].site}</div>
+                <div>{this.state.logs[index].authorized}</div>
+                <div>{this.state.logs[index].access}</div>
               </div>
             }
             elements={[
@@ -84,7 +84,7 @@ class VehicularFlow extends Component {
               {title: 'Tipo de vehículo', className: 'medium'},
               {title: 'Zona'},
               {title: 'Sitio'},
-              {title: 'Riesgo'},
+              {title: 'Persona Autorizada'},
               {title: 'Tipo de acceso'}
             ]}
           />
@@ -139,12 +139,12 @@ class VehicularFlow extends Component {
 }
 
 VehicularFlow.propTypes = {
-
+  vehicularReports: PropTypes.func
 }
 
-function mapStateToProps({}) {
+function mapStateToProps({vehicularReports}) {
   return {
-
+    vehicularReports
   }
 }
 

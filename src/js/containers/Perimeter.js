@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
 
-import { Table, DateRangePicker } from '../components'
+import { Table, RiskBar, DateRangePicker } from '../components'
 import { } from '../actions'
 
 class Perimeter extends Component {
@@ -12,7 +12,7 @@ class Perimeter extends Component {
     super(props)
 
     this.state = {
-      logs: [0,0,0,0,0,0],
+      logs: this.props.perimeterReports,
       alerts: [],
       selectedElementIndex: [null, null],
       showLogDetail: false,
@@ -63,12 +63,12 @@ class Perimeter extends Component {
               <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">3 enero <span>7:45 AM</span></div>
-                <div className="medium">Camioneta</div>
-                <div>50</div>
-                <div>1 Norte</div>
-                <div className="medium">Andrés López</div>
-                <div>Proveedor</div>
+                <div className="medium">{this.state.logs[index].day} <span>{this.state.logs[index].hour}</span></div>
+                <div className="large">{this.state.logs[index].event}</div>
+                <div>{this.state.logs[index].zone}</div>
+                <div>{this.state.logs[index].site}</div>
+                <div><RiskBar risk={this.state.logs[index].risk} /></div>
+                <div className="medium">{this.state.logs[index].status}</div>
               </div>
             }
             elements={[
@@ -77,11 +77,11 @@ class Perimeter extends Component {
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
-              {title: 'Tipo de vehículo', className: 'medium'},
+              {title: 'Suceso', className: 'large'},
+              {title: 'Zona'},
               {title: 'Sitio'},
-              {title: 'Acceso'},
-              {title: 'Persona autorizada', className: 'medium'},
-              {title: 'Tipo de acceso'}
+              {title: 'Riesgo'},
+              {title: 'Estatus o acción', className: 'medium'}
             ]}
           />
         </div>
@@ -112,12 +112,12 @@ class Perimeter extends Component {
 }
 
 Perimeter.propTypes = {
-
+  perimeterReports: PropTypes.func
 }
 
-function mapStateToProps({}) {
+function mapStateToProps({perimeterReports}) {
   return {
-
+    perimeterReports
   }
 }
 
