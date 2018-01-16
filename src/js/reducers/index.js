@@ -345,7 +345,7 @@ const dumbCameraReports = [
     zone: 'Centro',
     site: 'DIFXCH1293',
     risk: 0,
-    status: 'Detección de movimiento inofensiva. Personal de trabajo foráneo cerca del área de trabajo'
+    status: 'Detección inofensiva. Personal de trabajo foráneo'
   },
   {
     day: '10 de Enero',
@@ -553,6 +553,70 @@ function facialReports(state = dumbFacialReports, action) {
   }
 }
 
+function accessReports(state = dumbAccessesReports, action) {
+  switch (action.type) {
+    case 'SET_ACCESS_REPORT':
+      return [...state, {
+        day: action.day,
+        hour: action.hour,
+        event: action.positions,
+        site: action.site,
+        risk: action.risk,
+        status: action.status,
+      }]
+    default:
+      return state
+  }
+}
+
+function vehicularReports(state = dumbVehicularReports, action) {
+  switch (action.type) {
+    case 'SET_VEHICULAR_REPORT':
+      return [...state, {
+        day: action.day,
+        hour: action.hour,
+        vehicle: action.vehicle,
+        site: action.site,
+        authorized: action.authorized,
+        access: action.access,
+      }]
+    default:
+      return state
+  }
+}
+
+function cameraReports(state = dumbCameraReports, action) {
+  switch (action.type) {
+    case 'SET_CAMERA_REPORT':
+      return [...state, {
+        day: action.day,
+        hour: action.hour,
+        event: action.positions,
+        site: action.site,
+        risk: action.risk,
+        status: action.status,
+      }]
+    default:
+      return state
+  }
+}
+
+function perimeterReports(state = dumbPerimeterReports, action) {
+  switch (action.type) {
+    case 'SET_PERIMETER_REPORT':
+      return [...state, {
+        day: action.day,
+        hour: action.hour,
+        event: action.positions,
+        site: action.site,
+        risk: action.risk,
+        status: action.status,
+      }]
+    default:
+      return state
+  }
+}
+
 function administrators(state = [], action) {
   switch (action.type) {
     default:
@@ -565,6 +629,10 @@ const appReducer = combineReducers({
   credentials,
   zones,
   facialReports,
+  accessReports,
+  cameraReports,
+  perimeterReports,
+  vehicularReports,
   administrators,
   appAlert,
   reports

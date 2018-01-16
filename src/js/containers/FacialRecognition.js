@@ -151,8 +151,7 @@ class FacialRecognition extends Component {
 
 FacialRecognition.propTypes = {
   setLog: PropTypes.func,
-  facialReports: PropTypes.array,
-  zones: PropTypes.array
+  facialReports: PropTypes.array
 }
 
 function mapStateToProps({ zones, facialReports}) {
