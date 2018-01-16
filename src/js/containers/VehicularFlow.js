@@ -50,6 +50,7 @@ class VehicularFlow extends Component {
         <div className="content">
           <h2>Flujo Vehicular</h2>
           <Table
+            className={state.showLogDetail ? 'detailed' : ''}
             actionsContainer={
               <div>
                 <DateRangePicker
@@ -57,7 +58,7 @@ class VehicularFlow extends Component {
                   to={state.to}
                   onDayClick={this.onDayClick}
                 />
-                <p className="button action">Filtrar</p>
+                <p className="button action disabled">Filtrar</p>
               </div>
             }
             selectedElementIndex={state.selectedElementIndex}
@@ -100,8 +101,16 @@ class VehicularFlow extends Component {
                 <div className="image-slider" style={{backgroundImage: `url(https://www.gannett-cdn.com/-mm-/31a9e27e0f932508d2f38a8878fb2df3cab6c7c9/c=0-0-699-524&r=x404&c=534x401/local/-/media/2015/06/24/DesMoines/B9317848452Z.1_20150624231249_000_GUAB62DVM.1-0.jpg)`}}/>
                 {/* <div className="image-slider 5"></div> */}
               </Slider>
+              <div className="car-details">
+                <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
+                <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
+                <div className="detail">
+                  <div className="profile-photo" style={{backgroundImage: `url(https://cap.stanford.edu/profiles/viewImage?profileId=19141&type=square&ts=1509532892453)`}}></div>
+                  <p>Omar García</p>
+                </div>
+              </div>
               <div className="action">
-                <p>Acceso denegado</p>
+                <p className="warning">Acceso denegado</p>
               </div>
               <div className="details-container">
                 <div className="detail">
@@ -117,23 +126,8 @@ class VehicularFlow extends Component {
                   <p>Kia</p>
                 </div>
                 <div className="detail">
-                  <span>Placa delantera</span>
-                  <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
-                  <p>NAA-77-41</p>
-                </div>
-                <div className="detail">
-                  <span>Placa trasera</span>
-                  <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
-                  <p>NAA-77-41</p>
-                </div>
-                <div className="detail">
                   <span>Personas visibles</span>
                   <p>3</p>
-                </div>
-                <div className="detail">
-                  <span>Conductor autorizado</span>
-                  <div className="profile-photo" style={{backgroundImage: `url(https://cap.stanford.edu/profiles/viewImage?profileId=19141&type=square&ts=1509532892453)`}}></div>
-                  <p>Omar García</p>
                 </div>
               </div>
             </div>
