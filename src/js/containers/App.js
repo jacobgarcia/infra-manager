@@ -49,7 +49,7 @@ class App extends Component {
       this.props.setCredentials({...data.user, token})
 
       // Start socket connection
-      // this.initSockets(this.props, token)
+      this.initSockets(this.props, token)
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
@@ -74,19 +74,14 @@ class App extends Component {
   }
 
   initSockets(props, token) {
-    this.socket = io()
-    // this.socket.emit('join', token)
+    this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
       this.socket.emit('join', token)
     })
 
-    // this.socket.on('reload', () => {
-    //   console.log('Got reload')
-    // })
-
-    this.socket.on('report', report => {
-      props.setReport(report)
+    this.socket.on('alert', report => {
+      console.log("Alert recieved from external server")
     })
   }
 

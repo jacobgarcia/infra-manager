@@ -7,6 +7,10 @@ import { DateUtils } from 'react-day-picker'
 import { Table, RiskBar, DateRangePicker } from '../components'
 import { } from '../actions'
 
+import { NetworkOperation } from '../lib'
+import io from 'socket.io-client'
+
+
 class FacialRecognition extends Component {
   constructor(props) {
     super(props)
@@ -140,7 +144,7 @@ class FacialRecognition extends Component {
 }
 
 FacialRecognition.propTypes = {
-
+  setLog: PropTypes.func
 }
 
 function mapStateToProps({}) {
@@ -151,7 +155,9 @@ function mapStateToProps({}) {
 
 function mapDispatchToProps(dispatch) {
   return {
-
+    setLog: report => {
+      dispatch(setLog(report))
+    }
   }
 }
 
