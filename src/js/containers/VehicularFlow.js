@@ -68,7 +68,7 @@ class VehicularFlow extends Component {
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                 <div className="medium">{this.state.logs[index].day} <span>{this.state.logs[index].hour}</span></div>
-                <div className="large">{this.state.logs[index].vehicle}</div>
+                <div className="medium">{this.state.logs[index].vehicle}</div>
                 <div>{this.state.logs[index].zone}</div>
                 <div>{this.state.logs[index].site}</div>
                 <div>{this.state.logs[index].authorized}</div>
@@ -93,7 +93,7 @@ class VehicularFlow extends Component {
               <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
               <div className="time-location">
                 <p>3 Enero 07:45 PM</p>
-                <p>Zona <span>Norte</span> Sitio <span>5</span></p>
+                <p>Zona <span>{state.selectedLog.zone}</span> Sitio <span>{state.selectedLog.site}</span></p>
               </div>
               <Slider nextArrow={<button>{'>'}</button>} prevArrow={<button>{'<'}</button>}>
                 <div className="image-slider" style={{backgroundImage: `url(https://i.ytimg.com/vi/PJ5xXXcfuTc/maxresdefault.jpg)`}} />
@@ -114,20 +114,32 @@ class VehicularFlow extends Component {
               </div>
               <div className="details-container">
                 <div className="detail">
-                  <span>Marca</span>
-                  <p>Kia</p>
+                  <span>Tipo</span>
+                  <p>{state.selectedLog.vehicle}</p>
                 </div>
                 <div className="detail">
                   <span>Marca</span>
                   <p>Kia</p>
                 </div>
                 <div className="detail">
-                  <span>Marca</span>
-                  <p>Kia</p>
+                  <span>Modelio</span>
+                  <p>Rio</p>
                 </div>
                 <div className="detail">
-                  <span>Personas visibles</span>
-                  <p>3</p>
+                  <span>Color</span>
+                  <p>Azul</p>
+                </div>
+                <div className="detail">
+                  <span>Placa delantera</span>
+                  <p>P 287 GKK</p>
+                </div>
+                <div className="detail">
+                  <span>Placa trasera</span>
+                  <p>P 287 GKK</p>
+                </div>
+                <div className="detail">
+                  <span>Conductor autorizado</span>
+                  <p>{state.selectedLog.authorized}</p>
                 </div>
               </div>
             </div>
