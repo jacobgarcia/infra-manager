@@ -13,9 +13,6 @@ export default {
 export const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
 export function getFriendlyDateRange(from, to) {
-  const isFromToday = from.toLocaleDateString() === new Date().toLocaleDateString()
-  const isToToday = to.toLocaleDateString() === new Date().toLocaleDateString()
-
   if (!from && !to) {
     return 'Seleccionar'
   }
@@ -26,6 +23,9 @@ export function getFriendlyDateRange(from, to) {
     }
     return `- ${to.toLocaleDateString()}`
   }
+
+  const isFromToday = from.toLocaleDateString() === new Date().toLocaleDateString()
+  const isToToday = to.toLocaleDateString() === new Date().toLocaleDateString()
 
   if (isFromToday && isToToday) return `Hoy`
 

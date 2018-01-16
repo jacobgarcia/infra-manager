@@ -5,7 +5,7 @@ import { Map, TileLayer, Polygon as LeafletPolygon, Circle } from 'react-leaflet
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
-import { Overall, Alerts, Polygon, Marker, Search, CreateElementBar } from '../components'
+import { Overall, Polygon, Marker, Search, CreateElementBar } from '../components'
 import { NetworkOperation } from '../lib'
 import { setLoading, setComplete, setReport, setSubzone, setZone, setSite } from '../actions'
 import { getAreaCenter } from '../lib/specialFunctions'
@@ -247,19 +247,22 @@ class MapContainer extends Component {
       .then(({data}) => {
         this.setState({ newPositions: [], newElementName: '', isCreating: null, showing: null })
         this.props.setSite(data.site.zone ,data.site.subzone, data.site._id, data.site.key, data.site.name, data.site.position)
-      }).catch(console.error)
+      })
+      .catch(console.warn)
     } else if (selectedZone) {
       NetworkOperation.setSubzone(selectedZone, newElementName, newPositions)
       .then(({data}) => {
         this.setState({ newPositions: [], newElementName: '', isCreating: null, showing: null })
         this.props.setSubzone(data.subzone.parentZone, data.subzone._id, data.subzone.name, data.subzone.positions)
-      }).catch(console.error)
+      })
+      .catch(console.warn)
     } else {
       NetworkOperation.setZone(newElementName, newPositions)
       .then(({data}) => {
         this.setState({ newPositions: [], newElementName: '', isCreating: null, showing: null })
         this.props.setZone(data.zone._id, data.zone.name, data.zone.positions)
-      }).catch(console.error)
+      })
+      .catch(console.warn)
     }
   }
 
@@ -468,7 +471,10 @@ MapContainer.propTypes = {
   zones: PropTypes.array,
   match: PropTypes.object,
   reports: PropTypes.array,
-  setReport: PropTypes.func
+  setReport: PropTypes.func,
+  setSite: PropTypes.func,
+  setZone: PropTypes.func,
+  setSubzone: PropTypes.func
 }
 
 function mapStateToProps({zones, reports}) {

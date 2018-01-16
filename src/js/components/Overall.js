@@ -14,15 +14,14 @@ class Overall extends PureComponent {
         alarms: []
       },
       percentage: 0,
-      status: null
+      status: null,
+      isHidden: false
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('!this.props.reports', !this.props.reports)
     if (!this.props.reports) return
 
-    // console.log('Different lengths', nextProps.reports.length !== this.props.reports.length)
     if (nextProps.reports.length !== this.props.reports.length) {
       this.setState({
         data: substractReportValues(nextProps.reports)
@@ -36,16 +35,6 @@ class Overall extends PureComponent {
       })
     }
   }
-
-  // getElements(type, props) {
-  //   switch (type) {
-  //     case 'GENERAL': return props.zone || []
-  //     case 'ZONE': return (props.zone && props.zone.subzones) || []
-  //     case 'SUBZONE': return (props.subzone && props.subzone.sites) || []
-  //     case 'SITE': return (props.element && props.element.sensors) || []
-  //     default: return []
-  //   }
-  // }
 
   getBackLink({selectedType: type, params}) {
     switch (type) {
@@ -69,12 +58,10 @@ class Overall extends PureComponent {
 
   render() {
     const { state, props } = this
-    // Elements (or sensors) to be rendered
-    // const elements = this.getElements(props.selectedType, this.props)
-    // console.log('GET ELEMENTS', elements)
 
     return (
-      <div className="overall">
+      <div className={`overall ${state.isHidden ? 'hidden' : ''}`}>
+        <div className="tooltip" onClick={() => this.setState(prev => ({ isHidden: !prev.isHidden }))} />
         <div className="content">
           <div className="mini-header">
             <span>{props.selectedType !== 'GENERAL' && <Link to={this.getBackLink(props)}>Regresar</Link>}</span>

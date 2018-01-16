@@ -72,7 +72,7 @@ button, input, .button {
   background-color: $dark-gray;
   cursor: pointer;
 }
-button, input[type="button"], input[type="submit"], .button {
+button, input[type="button"], input[type="submit"], .button, input[type="text"].search {
   padding: 3px 30px;
   text-transform: uppercase;
   color: $lighter-gray;
@@ -87,6 +87,9 @@ button, input[type="button"], input[type="submit"], .button {
   &.disabled {
     opacity: 0.3;
   }
+}
+input[type="text"], input[type="password"], input[type="search"] {
+  cursor: text;
 }
 h2 {
   font-weight: 400;
@@ -347,6 +350,7 @@ p span {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
+    margin-top: 30px;
     input {
       margin-right: 15px;
     }
@@ -1019,29 +1023,36 @@ p span {
     top: 0;
     left: 0;
     &.hidden {
-      transform: translateX(-500px);
+      transform: translateX(420px);
       .tooltip {
-        background-image: url("/static/img/icons/tower.svg")
+        transform: rotate(0deg);
+        border-radius: 4px 0 0 4px;
+        background-position: 2px center;
       }
     }
     .tooltip {
       background-size: 30px;
       background-repeat: no-repeat;
       background-position: center;
-      background-image: url("/static/img/icons/large-back.png");
-      transition: transform ease 0.5s;
+      cursor: pointer;
+      top: 20px;
+      left: -25px;
+      width: 25px;
+      height: 60px;
+      border-radius: 0 4px 4px 0;
+      background-color: $dark-gray;
+      position: absolute;
+      background-image: url("/static/img/icons/back-arrow.svg");
+      background-size: 20px;
+      background-position: 0px center;
+      transform: rotate(180deg);
       &.hidden {
         transform: translateX(0px) !important;
       }
     }
-    .content .tooltip {
-      right: 0;
-      transform: translateX(45px);
-      border-left: 0;
-    }
     .overall-header {
       flex-shrink: 0;
-      margin: 30px 0;
+      margin: 10px 0 20px;
       .bar-container {
         width: 100%;
         height: 9px;
@@ -1324,7 +1335,6 @@ $dark: #1d212d;
     height: 100%;
     max-height: 700px;
     border-radius: 5px 0 0 5px;
-    overflow: hidden;
     color: white;
     .content .status.list {
       background-color: $darker-gray;
@@ -1753,6 +1763,28 @@ ul.mini-nav {
           border-radius: 3px;
           background-size: cover;
           background-position: center;
+          position: relative;
+          cursor: pointer;
+          &:hover::after {
+            opacity: 1;
+          }
+          &::after {
+            overflow: hidden;
+            opacity: 0;
+            transition: 0.3s;
+            position: absolute;
+            height: 98px;
+            width: 99px;
+            top: 0px;
+            left: 0px;
+            background-color: transparentize($darker-gray, 0.1);
+            z-index: 100;
+            content: '';
+            display: block;
+            backdrop-filter: blur(2px);
+            -webkit-backdrop-filter: blur(2px);
+            background-image: url('/static/img/icons/upload-icon.svg');
+          }
         }
       }
     }

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
+import { DateUtils } from 'react-day-picker'
 
 import { } from '../actions'
 import { Table, DateRangePicker, RiskBar } from '../components'
@@ -13,8 +14,18 @@ class Cctv extends Component {
     this.state = {
       logs: this.props.cameraReports,
       alerts: [],
-      selectedElementIndex: [null,null]
+      selectedElementIndex: [null,null],
+      from: new Date(),
+      to: new Date()
     }
+
+    this.onDayClick = this.onDayClick.bind(this)
+  }
+
+  onDayClick(day) {
+    // TODO Network operation for selected period
+    const range = DateUtils.addDayToRange(day, this.state)
+    this.setState(range)
   }
 
   render() {
@@ -30,8 +41,12 @@ class Cctv extends Component {
           <Table
             actionsContainer={
               <div>
-                <p className="button action">Enero 3 - Hoy</p>
-                <p className="button action">Filtrar</p>
+                <DateRangePicker
+                  from={state.from}
+                  to={state.to}
+                  onDayClick={this.onDayClick}
+                />
+                <p className="button action disabled">Filtrar</p>
               </div>
             }
             selectedElementIndex={state.selectedElementIndex}

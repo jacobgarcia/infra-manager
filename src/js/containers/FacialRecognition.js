@@ -10,7 +10,6 @@ import { } from '../actions'
 import { NetworkOperation } from '../lib'
 import io from 'socket.io-client'
 
-
 class FacialRecognition extends Component {
   constructor(props) {
     super(props)

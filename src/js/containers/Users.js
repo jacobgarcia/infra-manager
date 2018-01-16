@@ -82,11 +82,8 @@ class Users extends Component {
           <h2>Usuarios</h2>
           <div className="table">
             <div className="table-actions">
-              <div />
-              <div>
-                <input type="text" placeholder="Buscar" className="search" />
-                <input type="button" value="Añadir" onClick={() => this.setState({ isAddingUser: true })} />
-              </div>
+              <input type="text" placeholder="Buscar" className="search action" />
+              <input type="button" className="action" value="Añadir" onClick={() => this.setState({ isAddingUser: true })} />
             </div>
             <div className="table-header">
               <div className="table-item">
