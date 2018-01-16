@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
+import { DateUtils } from 'react-day-picker'
 
-import { Table } from '../components'
+import { Table, DateRangePicker } from '../components'
 import { } from '../actions'
 
 class Perimeter extends Component {
@@ -14,10 +15,13 @@ class Perimeter extends Component {
       logs: [0,0,0,0,0,0],
       alerts: [],
       selectedElementIndex: [null, null],
-      showLogDetail: false
+      showLogDetail: false,
+      from: new Date(),
+      to: new Date()
     }
 
     this.onLogSelect = this.onLogSelect.bind(this)
+    this.onDayClick = this.onDayClick.bind(this)
   }
 
   onLogSelect(item) {
@@ -25,6 +29,12 @@ class Perimeter extends Component {
       showLogDetail: true,
       selectedLog: item
     })
+  }
+
+  onDayClick(day) {
+    // TODO Network operation for selected period
+    const range = DateUtils.addDayToRange(day, this.state)
+    this.setState(range)
   }
 
   render() {
@@ -40,8 +50,12 @@ class Perimeter extends Component {
           <Table
             actionsContainer={
               <div>
-                <p className="button action">Enero 3 - Hoy</p>
-                <p className="button action">Filtrar</p>
+                <DateRangePicker
+                  from={state.from}
+                  to={state.to}
+                  onDayClick={this.onDayClick}
+                />
+                <p className="button action disabled">Filtrar</p>
               </div>
             }
             selectedElementIndex={state.selectedElementIndex}
