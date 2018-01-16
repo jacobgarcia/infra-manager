@@ -58,7 +58,7 @@ app.post('/webhook', (req, res) => {
     text: '*Build started*'
   })
 
-  exec('git pull; yarn; yarn build', (error, stdout, stderr) => {
+  exec('git pull; yarn; yarn build:prod', (error, stdout, stderr) => {
     if (error) {
       console.log('Error', error)
       slackMessage({
@@ -68,7 +68,7 @@ app.post('/webhook', (req, res) => {
 
     if (stdout) {
       console.log('Build succeed')
-      exec('yarn restart')
+      exec('yarn reload:prod')
       slackMessage({
         text: `*Build succeed!*\nYou're awersome`
       })
