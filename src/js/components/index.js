@@ -20,3 +20,5 @@ export { default as ElementStatus } from './ElementStatus'
 export { default as Prompt } from './Prompt'
 export { default as Search } from './Search'
 export { default as CreateElementBar } from './CreateElementBar'
+
+export { default as DateRangePicker } from './DateRangePicker'

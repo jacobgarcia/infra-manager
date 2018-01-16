@@ -2,6 +2,7 @@
 @import "./normalize.scss";
 @import "./colors.scss";
 @import "./leaflet.css";
+@import '../../node_modules/react-day-picker/lib/style.css';
 @import "../../node_modules/slick-carousel/slick/slick.css";
 
 html, body, #root, #app {
@@ -78,10 +79,10 @@ button, input[type="button"], input[type="submit"], .button {
   font-size: 0.85rem;
   font-weight: 600;
   &.action {
-    border: none;
+    border: 1px solid $connus-blue;
     padding: 5px 20px;
-    background-color: $connus-blue;
-    color: white;
+    background-color: transparent;
+    color: $connus-blue;
   }
   &.disabled {
     opacity: 0.3;
@@ -148,7 +149,41 @@ p span {
     }
   }
 }
-
+.range-select-container {
+  position: relative;
+  display: inline-block;
+  p {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  &.hidden {
+    .DayPicker {
+      display: none;
+    }
+  }
+  .DayPicker {
+    position: absolute;
+    right: 0;
+    background-color: $gray;
+    top: 38px;
+    z-index: 800;
+    box-shadow: 0px 0px 7px rgba(black, 0.3);
+    border-radius: 5px;
+    * {
+      color: white;
+    }
+    &::before {
+      position: absolute;
+      content: '';
+      top: -6px;
+      width: 20px;
+      height: 20px;
+      right: 20px;
+      background-color: $gray;
+      transform: rotate(45deg);
+    }
+  }
+}
 .loading-screen {
   display: flex;
   justify-content: center;
@@ -276,6 +311,11 @@ p span {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    > div {
+      > * {
+        margin-left: 20px;
+      }
+    }
   }
   input[type="button"] {
     display: inline-block;
@@ -621,7 +661,39 @@ p span {
   }
 }
 
+/*
 
+      D A Y   P I C K E R
+
+*/
+
+
+.DayPicker-Day--selected {
+  background-color: $connus-blue !important;
+  border-radius: 0 !important;
+  &.DayPicker-Day--start {
+    border-radius: 50% 0 0 50% !important;
+  }
+  &.DayPicker-Day--end {
+    border-radius: 0 50% 50% 0 !important;
+  }
+  &.DayPicker-Day--start.DayPicker-Day--end {
+    border-radius: 50% !important;
+  }
+}
+.DayPicker-WeekdaysRow {
+  // font-weight: 600;
+  letter-spacing: -1px;
+}
+.DayPicker-Day--outside {
+  color: rgba(white, 0.3) !important;
+}
+.DayPicker-Day--outside.DayPicker-Day--selected {
+  background-color: transparentize($connus-blue, 0.5) !important;
+}
+.DayPicker:not(.DayPicker--interactionDisabled) .DayPicker-Day:not(.DayPicker-Day--disabled):not(.DayPicker-Day--selected):not(.DayPicker-Day--outside):hover {
+  background-color: transparentize($connus-blue, 0.5);
+}
 
 
 
@@ -1757,6 +1829,7 @@ ul.mini-nav {
     padding-bottom: 70px;
     overflow-y: scroll;
     transition: 0;
+    max-width: 100%;
     ul {
       flex-shrink: 0;
     }
@@ -1783,6 +1856,7 @@ ul.mini-nav {
       border: 1px solid $light-gray;
       box-shadow: 0px 0px 10px transparentize($connus-blue, 0.5);
       margin: 0;
+      transition: 0.5s;
       &::before, &::after {
         width: 31px;
         height: 3px;

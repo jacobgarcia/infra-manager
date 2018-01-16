@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import PropTypes from 'prop-types'
-import DayPicker from 'react-day-picker'
+import { DateUtils } from 'react-day-picker'
 import Slider from 'react-slick'
 
 import { } from '../actions'
-import { Table, RiskBar } from '../components'
+import { Table, RiskBar, DateRangePicker } from '../components'
 
 class VehicularFlow extends Component {
   constructor(props) {
@@ -17,9 +17,12 @@ class VehicularFlow extends Component {
       alerts: [0,0,0,0,0],
       selectedLog: null,
       showLogDetail: false,
-      selectedElementIndex: [null,null]
+      selectedElementIndex: [null,null],
+      from: new Date(),
+      to: new Date()
     }
 
+    this.onDayClick = this.onDayClick.bind(this)
     this.onLogSelect = this.onLogSelect.bind(this)
   }
 
@@ -29,6 +32,11 @@ class VehicularFlow extends Component {
       showLogDetail: true,
       selectedElementIndex: [elementIndex, sectionIndex]
     })
+  }
+
+  onDayClick(day) {
+    const range = DateUtils.addDayToRange(day, this.state)
+    this.setState(range)
   }
 
   render() {
@@ -44,7 +52,11 @@ class VehicularFlow extends Component {
           <Table
             actionsContainer={
               <div>
-                <p className="button action">Enero 3 - Hoy</p>
+                <DateRangePicker
+                  from={state.from}
+                  to={state.to}
+                  onDayClick={this.onDayClick}
+                />
                 <p className="button action">Filtrar</p>
               </div>
             }
@@ -82,7 +94,7 @@ class VehicularFlow extends Component {
                 <p>3 Enero 07:45 PM</p>
                 <p>Zona <span>Norte</span> Sitio <span>5</span></p>
               </div>
-              <Slider nextArrow={<button>{'>'}</button>}  prevArrow={<button>{'<'}</button>}>
+              <Slider nextArrow={<button>{'>'}</button>} prevArrow={<button>{'<'}</button>}>
                 <div className="image-slider" style={{backgroundImage: `url(https://i.ytimg.com/vi/PJ5xXXcfuTc/maxresdefault.jpg)`}} />
                 <div className="image-slider" style={{backgroundImage: `url(https://ak7.picdn.net/shutterstock/videos/27691087/thumb/1.jpg)`}} />
                 <div className="image-slider" style={{backgroundImage: `url(https://www.gannett-cdn.com/-mm-/31a9e27e0f932508d2f38a8878fb2df3cab6c7c9/c=0-0-699-524&r=x404&c=534x401/local/-/media/2015/06/24/DesMoines/B9317848452Z.1_20150624231249_000_GUAB62DVM.1-0.jpg)`}}/>

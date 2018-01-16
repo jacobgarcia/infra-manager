@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
+import { DateUtils } from 'react-day-picker'
 
-import { Table, RiskBar } from '../components'
+import { Table, RiskBar, DateRangePicker } from '../components'
 import { } from '../actions'
 
 class FacialRecognition extends Component {
@@ -13,10 +14,13 @@ class FacialRecognition extends Component {
     this.state = {
       logs: [0,0,0,0,0,0,0],
       selectedElementIndex: [null,null],
-      showLogDetail: false
+      showLogDetail: false,
+      from: new Date(),
+      to: new Date()
     }
 
     this.onLogSelect = this.onLogSelect.bind(this)
+    this.onDayClick = this.onDayClick.bind(this)
   }
 
   onLogSelect(item) {
@@ -24,6 +28,11 @@ class FacialRecognition extends Component {
       showLogDetail: true,
       selectedLog: item
     })
+  }
+
+  onDayClick(day) {
+    const range = DateUtils.addDayToRange(day, this.state)
+    this.setState(range)
   }
 
   render() {
@@ -39,8 +48,12 @@ class FacialRecognition extends Component {
           <Table
             actionsContainer={
               <div>
-                <input type="button" value="Enero 3 - Hoy" />
-                <input type="button" value="filtrar"/>
+                <DateRangePicker
+                  from={state.from}
+                  to={state.to}
+                  onDayClick={this.onDayClick}
+                />
+                <p className="button action">Filtrar</p>
               </div>
             }
             selectedElementIndex={state.selectedElementIndex}
