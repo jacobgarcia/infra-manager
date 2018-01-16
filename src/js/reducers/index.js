@@ -1,5 +1,71 @@
 import { combineReducers } from 'redux'
 
+const dumbAccessesReports = []
+const dumbAccessesAlerts = []
+const dumbVehicularReports = []
+const dumbVehicularAlerts = []
+const dumbPermiterReports = []
+const dumbPermiterAlerts = []
+const dumbFacialReports = [
+  {
+    day: '9 de Enero',
+    hour: '10:14',
+    event: 'Registro de personal exitoso',
+    zone: 'Centro',
+    site: 'MEXTLB1260',
+    risk: 0,
+    status: 'Registro satisfactorio'
+  },
+  {
+    day: '10 de Enero',
+    hour: '10:25',
+    event: 'Intento de registro de personal',
+    zone: 'Centro',
+    site: 'MEXTLB1260',
+    risk: 1,
+    status: 'Regsitro denegado. Fallo en la detección de rostro'
+  },
+  {
+    day: '10 de Enero',
+    hour: '11:34',
+    event: 'Registro de personal exitoso',
+    zone: 'Centro',
+    site: 'MEXATZ0973',
+    risk: 0,
+    status: 'Registro satisfactorio'
+  },
+  {
+    day: '11 de Enero',
+    hour: '14:37',
+    event: 'Inicio de sesión exitoso',
+    zone: 'Centro',
+    site: 'DIFXCH1293',
+    risk: 0,
+    status: 'Acceso autorizado. Sensorización desactivada'
+  },
+  {
+    day: '11 de Enero',
+    hour: '15:00',
+    event: 'Registro de salida exitosa',
+    zone: 'Centro',
+    site: 'DIFXCH1293',
+    risk: 0,
+    status: 'Acceso autorizado. Sensorización reactivada'
+  },
+  {
+    day: '15 de Enero',
+    hour: '08:16',
+    event: 'Intento de inicio de sesión',
+    zone: 'Centro',
+    site: 'MEXJIL1152',
+    risk: 2,
+    status: 'Acceso autorizado. Sensorización desactivada'
+  }
+]
+const dumbFacialAlerts = []
+const dumbCameraReports = []
+const dumbCameraAlerts = []
+
 // Loading state
 function loading(state = 0, action) {
   switch (action.type) {
@@ -175,6 +241,22 @@ function zones(state = [], action) {
       )
     default:
     return state
+  }
+}
+
+function facialReports(state = dumbFacialReports, action) {
+  switch (action.type) {
+    case 'SET_FACIAL_REPORT':
+      return [...state, {
+        day: action.day,
+        hour: action.hour,
+        event: action.positions,
+        site: action.site,
+        risk: action.risk,
+        status: action.status,
+      }]
+    default:
+      return state
   }
 }
 

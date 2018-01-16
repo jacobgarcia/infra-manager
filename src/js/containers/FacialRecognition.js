@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
 
 import { Table, RiskBar, DateRangePicker } from '../components'
-import { } from '../actions'
+import { setFacialReport } from '../actions'
 
 import { NetworkOperation } from '../lib'
 import io from 'socket.io-client'
@@ -25,6 +25,8 @@ class FacialRecognition extends Component {
 
     this.onLogSelect = this.onLogSelect.bind(this)
     this.onDayClick = this.onDayClick.bind(this)
+
+    
   }
 
   onLogSelect(item) {
@@ -141,12 +143,13 @@ class FacialRecognition extends Component {
 }
 
 FacialRecognition.propTypes = {
-  setLog: PropTypes.func
+  setLog: PropTypes.func,
+  facialReports: PropTypes.array
 }
 
-function mapStateToProps({}) {
+function mapStateToProps({reports}) {
   return {
-
+    reports
   }
 }
 
@@ -154,7 +157,10 @@ function mapDispatchToProps(dispatch) {
   return {
     setLog: report => {
       dispatch(setLog(report))
-    }
+    },
+    setFacialReport: report => {
+      dispatch(setFacialReport(report))
+    },
   }
 }
 
