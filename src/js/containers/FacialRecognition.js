@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
 
 import { Table, RiskBar, DateRangePicker } from '../components'
-import { setFacialReport } from '../actions'
+import { } from '../actions'
 
 import { NetworkOperation } from '../lib'
 import io from 'socket.io-client'
@@ -16,7 +16,7 @@ class FacialRecognition extends Component {
     super(props)
 
     this.state = {
-      logs: [0,0,0,0,0,0,0],
+      logs: this.props.facialReports,
       selectedElementIndex: [null,null],
       showLogDetail: false,
       from: new Date(),
@@ -26,7 +26,11 @@ class FacialRecognition extends Component {
     this.onLogSelect = this.onLogSelect.bind(this)
     this.onDayClick = this.onDayClick.bind(this)
 
-    
+
+  }
+
+  componentDidMount(){
+    console.log(this.props.facialReports)
   }
 
   onLogSelect(item, index, sectionIndex) {
@@ -70,12 +74,12 @@ class FacialRecognition extends Component {
               <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">3 Enero <span>7:45 AM</span></div>
-                <div className="large">Placas registradas con el vehiculo no coinciden</div>
-                <div>Norte</div>
-                <div>{index + 10}</div>
-                <div><RiskBar risk={(index % 4) + 1} /></div>
-                <div className="medium">Acceso denegado</div>
+                <div className="medium">{this.state.logs[index].day} <span>{this.state.logs[index].hour}</span></div>
+                <div className="large">{this.state.logs[index].event}</div>
+                <div>{this.state.logs[index].zone}</div>
+                <div>{this.state.logs[index].site}</div>
+                <div><RiskBar risk={this.state.logs[index].risk} /></div>
+                <div className="medium">{this.state.logs[index].status}</div>
               </div>
             }
             elements={[
@@ -147,12 +151,14 @@ class FacialRecognition extends Component {
 
 FacialRecognition.propTypes = {
   setLog: PropTypes.func,
-  facialReports: PropTypes.array
+  facialReports: PropTypes.array,
+  zones: PropTypes.array
 }
 
-function mapStateToProps({reports}) {
+function mapStateToProps({ zones, facialReports}) {
   return {
-    reports
+    zones,
+    facialReports
   }
 }
 
@@ -160,10 +166,7 @@ function mapDispatchToProps(dispatch) {
   return {
     setLog: report => {
       dispatch(setLog(report))
-    },
-    setFacialReport: report => {
-      dispatch(setFacialReport(report))
-    },
+    }
   }
 }
 

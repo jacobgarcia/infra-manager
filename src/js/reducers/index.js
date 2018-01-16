@@ -271,6 +271,7 @@ const appReducer = combineReducers({
   loading,
   credentials,
   zones,
+  facialReports,
   administrators,
   appAlert,
   reports

@@ -137,15 +137,3 @@ export function dismissReport(reportId) {
     report: reportId
   }
 }
-
-/*
-
-        F A C E  R E C O G N I T I O N
-
- */
- export function setFacialReport(report) {
-   return {
-     type: 'SET_FACIAL_REPORT',
-     report
-   }
- }
