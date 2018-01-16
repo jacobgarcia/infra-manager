@@ -14,7 +14,7 @@ class Table extends Component {
     const { state, props } = this
 
     return (
-      <div className="table-container">
+      <div className={`table-container ${props.className}`}>
         <div className="table-container-header">
           <ul className="inline-nav">
             {

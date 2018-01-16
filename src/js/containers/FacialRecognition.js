@@ -23,14 +23,16 @@ class FacialRecognition extends Component {
     this.onDayClick = this.onDayClick.bind(this)
   }
 
-  onLogSelect(item) {
+  onLogSelect(item, index, sectionIndex) {
     this.setState({
       showLogDetail: true,
-      selectedLog: item
+      selectedLog: item,
+      selectedElementIndex: [index, sectionIndex]
     })
   }
 
   onDayClick(day) {
+    // TODO Network operation for selected period
     const range = DateUtils.addDayToRange(day, this.state)
     this.setState(range)
   }
@@ -46,6 +48,7 @@ class FacialRecognition extends Component {
         <div className="content">
           <h2>Reconocimiento Facial</h2>
           <Table
+            className={state.showLogDetail ? 'detailed' : ''}
             actionsContainer={
               <div>
                 <DateRangePicker
@@ -53,7 +56,7 @@ class FacialRecognition extends Component {
                   to={state.to}
                   onDayClick={this.onDayClick}
                 />
-                <p className="button action">Filtrar</p>
+                <p className="button action disabled">Filtrar</p>
               </div>
             }
             selectedElementIndex={state.selectedElementIndex}
