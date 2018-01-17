@@ -104,7 +104,7 @@ class FacialRecognition extends Component {
               </div>
               <div className="detail">
                 <span>Rostro detectado</span>
-                <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/frm-01.jpg)`}} />
+                <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/frm-0` + this.state.selectedElementIndex[0] +`.jpg)`}} />
               </div>
               <div className="details-container">
                 <div className="detail">
@@ -113,26 +113,23 @@ class FacialRecognition extends Component {
                 </div>
                 <div className="detail">
                   <span>Tipo de ingreso</span>
-                  <p>{this.state.logs[this.state.selectedElementIndex[0]].event}</p>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].access}</p>
                 </div>
                 <div className="detail">
-                  <span>Método de ingreso</span>
-                  <p>Kia</p>
+                  <span>Usuario Autorizado</span>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].authorized}</p>
                 </div>
                 <div className="detail">
                   <span>Coincide con registro</span>
-                  <p>Si</p>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].match}</p>
                 </div>
                 <div className="detail">
                   <span>Estatus</span>
-                  <p>Continua dentro</p>
-                </div>
-                <div className="detail">
-                  <span>Huella dactilar</span>
-                  <img src="" alt=""/>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].status}</p>
                 </div>
                 <div className="detail">
                   <span>Código único de identificación</span>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].id}</p>
                   <img src="" alt=""/>
                 </div>
               </div>

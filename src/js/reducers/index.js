@@ -279,7 +279,11 @@ const dumbFacialReports = [
     zone: 'Centro',
     site: 'MEXJIL1152',
     risk: 2,
-    status: 'Acceso denegado. Almacenando y analizando rostro desconocido'
+    status: 'Acceso denegado. Almacenando y analizando rostro desconocido',
+    id: '5a4e717750fdf1191fc0fe2c',
+    access: 'Inicio de sesión',
+    match: 'No',
+    authorized: '4MEB8C2C15'
   },
   {
     day: '11 de Enero',
@@ -288,7 +292,11 @@ const dumbFacialReports = [
     zone: 'Centro',
     site: 'DIFXCH1293',
     risk: 0,
-    status: 'Acceso autorizado. Sensorización reactivada'
+    status: 'Acceso autorizado. Sensorización reactivada',
+    id: '5a4e5ac250fdf1191fc0fbf6',
+    access: 'Cierre de sesión',
+    match: 'Si',
+    authorized: 'eWRhpRV'
   },
   {
     day: '11 de Enero',
@@ -297,7 +305,11 @@ const dumbFacialReports = [
     zone: 'Centro',
     site: 'DIFXCH1293',
     risk: 0,
-    status: 'Acceso autorizado. Sensorización desactivada'
+    status: 'Acceso autorizado. Sensorización desactivada',
+    id: '5a4e6de850fdf1191fc0fde4',
+    access: 'Inicio de sesión',
+    match: 'Si',
+    authorized: 'eWRhpRV'
   },
   {
     day: '10 de Enero',
@@ -306,7 +318,11 @@ const dumbFacialReports = [
     zone: 'Centro',
     site: 'MEXATZ0973',
     risk: 0,
-    status: 'Registro satisfactorio'
+    status: 'Registro satisfactorio',
+    id: '5a4ea71050fdf1191fc100f7',
+    access: 'Registro',
+    match: 'Si',
+    authorized: '23TplPdS'
   },
   {
     day: '10 de Enero',
@@ -315,7 +331,11 @@ const dumbFacialReports = [
     zone: 'Centro',
     site: 'MEXTLB1260',
     risk: 1,
-    status: 'Regsitro denegado. Fallo en la detección de rostro'
+    status: 'Regsitro denegado. Fallo en la detección de rostro',
+    id: '5a4e717750fdf1191fc0fe2c',
+    access: 'Registro',
+    match: 'No',
+    authorized: '46Juzcyx'
   },
   {
     day: '9 de Enero',
@@ -324,7 +344,11 @@ const dumbFacialReports = [
     zone: 'Centro',
     site: 'MEXTLB1260',
     risk: 0,
-    status: 'Registro satisfactorio'
+    status: 'Registro satisfactorio',
+    id: '5a4eac1e50fdf1191fc10119',
+    access: 'Registro',
+    match: 'Si',
+    authorized: 'eWRhpRV'
   }
 ]
 const dumbFacialAlerts = []
