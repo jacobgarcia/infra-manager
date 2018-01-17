@@ -279,7 +279,7 @@ const dumbFacialReports = [
     zone: 'Centro',
     site: 'MEXJIL1152',
     risk: 2,
-    status: 'Acceso autorizado. Sensorización desactivada'
+    status: 'Acceso denegado. Almacenando y analizando rostro desconocido'
   },
   {
     day: '11 de Enero',

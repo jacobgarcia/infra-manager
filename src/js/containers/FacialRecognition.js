@@ -94,27 +94,26 @@ class FacialRecognition extends Component {
               {title: 'Estatus o acción', className: 'medium'}
             ]}
           />
-          <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
+          { this.state.logs[this.state.selectedElementIndex[0]] ?
+            <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
             <div className="content">
               <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
               <div className="time-location">
-                <p>3 Enero 07:45 PM</p>
-                <p>Zona <span>Norte</span> Sitio <span>5</span></p>
+                <p>{this.state.logs[this.state.selectedElementIndex[0]].day} {this.state.logs[this.state.selectedElementIndex[0]].hour}</p>
+                <p>Zona <span>{this.state.logs[this.state.selectedElementIndex[0]].zone}</span> Sitio <span>{this.state.logs[this.state.selectedElementIndex[0]].site}</span></p>
               </div>
               <div className="detail">
                 <span>Rostro detectado</span>
-                <div className="image-slider">
-
-                </div>
+                <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/frm-01.jpg)`}} />
               </div>
               <div className="details-container">
                 <div className="detail">
                   <span>Hora del suceso</span>
-                  <p>Kia</p>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].hour}</p>
                 </div>
                 <div className="detail">
                   <span>Tipo de ingreso</span>
-                  <p>Kia</p>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].event}</p>
                 </div>
                 <div className="detail">
                   <span>Método de ingreso</span>
@@ -141,7 +140,9 @@ class FacialRecognition extends Component {
                 <p>Contactar seguridad</p>
               </div>
             </div>
-          </div>
+            </div>
+            : <div></div>
+          }
         </div>
       </div>
     )
