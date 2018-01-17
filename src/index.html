@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Page description. No longer than 155 characters." />
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#303640"/>
     <!-- Twitter Card data -->
     <meta name="twitter:card" value="Connus International">
         <!-- Open Graph data -->
@@ -12,9 +14,19 @@
     <meta property="og:url" content="https://app.connus.mx/" />
     <!-- <meta property="og:image" content="http://example.com/image.jpg" /> -->
     <meta property="og:description" content="Connus International" />
+    <noscript>
+        <style>
+            noscript {
+                display: flex;
+                height: 100%;
+                width: 100%;
+            }
+        </style>
+    </noscript>
   </head>
   <body>
     <div id="root"></div>
     <script src="/dist/bundle.min.js" charset="utf-8"></script>
+    <noscript><h1>JavaScript es necesario para utilizar el App</h1></noscript>
   </body>
 </html>

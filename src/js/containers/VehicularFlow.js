@@ -68,7 +68,7 @@ class VehicularFlow extends Component {
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                 <div className="medium">{this.state.logs[index].day} <span>{this.state.logs[index].hour}</span></div>
-                <div className="large">{this.state.logs[index].vehicle}</div>
+                <div className="medium">{this.state.logs[index].vehicle}</div>
                 <div>{this.state.logs[index].zone}</div>
                 <div>{this.state.logs[index].site}</div>
                 <div>{this.state.logs[index].authorized}</div>
@@ -89,48 +89,63 @@ class VehicularFlow extends Component {
             ]}
           />
           <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
-            <div className="content">
-              <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
-              <div className="time-location">
-                <p>3 Enero 07:45 PM</p>
-                <p>Zona <span>Norte</span> Sitio <span>5</span></p>
-              </div>
-              <Slider nextArrow={<button>{'>'}</button>} prevArrow={<button>{'<'}</button>}>
-                <div className="image-slider" style={{backgroundImage: `url(https://i.ytimg.com/vi/PJ5xXXcfuTc/maxresdefault.jpg)`}} />
-                <div className="image-slider" style={{backgroundImage: `url(https://ak7.picdn.net/shutterstock/videos/27691087/thumb/1.jpg)`}} />
-                <div className="image-slider" style={{backgroundImage: `url(https://www.gannett-cdn.com/-mm-/31a9e27e0f932508d2f38a8878fb2df3cab6c7c9/c=0-0-699-524&r=x404&c=534x401/local/-/media/2015/06/24/DesMoines/B9317848452Z.1_20150624231249_000_GUAB62DVM.1-0.jpg)`}}/>
-                {/* <div className="image-slider 5"></div> */}
-              </Slider>
-              <div className="car-details">
-                <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
-                <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
-                <div className="detail">
-                  <div className="profile-photo" style={{backgroundImage: `url(https://cap.stanford.edu/profiles/viewImage?profileId=19141&type=square&ts=1509532892453)`}}></div>
-                  <p>Omar García</p>
+            {
+              state.selectedLog &&
+              <div className="content">
+                <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
+                <div className="time-location">
+                  <p>3 Enero 07:45 PM</p>
+                  <p>Zona <span>{state.selectedLog.zone}</span> Sitio <span>{state.selectedLog.site}</span></p>
+                </div>
+                <Slider nextArrow={<button>{'>'}</button>} prevArrow={<button>{'<'}</button>}>
+                  <div className="image-slider" style={{backgroundImage: `url(https://i.ytimg.com/vi/PJ5xXXcfuTc/maxresdefault.jpg)`}} />
+                  <div className="image-slider" style={{backgroundImage: `url(https://ak7.picdn.net/shutterstock/videos/27691087/thumb/1.jpg)`}} />
+                  <div className="image-slider" style={{backgroundImage: `url(https://www.gannett-cdn.com/-mm-/31a9e27e0f932508d2f38a8878fb2df3cab6c7c9/c=0-0-699-524&r=x404&c=534x401/local/-/media/2015/06/24/DesMoines/B9317848452Z.1_20150624231249_000_GUAB62DVM.1-0.jpg)`}}/>
+                  {/* <div className="image-slider 5"></div> */}
+                </Slider>
+                <div className="car-details">
+                  <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
+                  <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
+                  <div className="detail">
+                    <div className="profile-photo" style={{backgroundImage: `url(https://cap.stanford.edu/profiles/viewImage?profileId=19141&type=square&ts=1509532892453)`}}></div>
+                    <p>Omar García</p>
+                  </div>
+                </div>
+                <div className="action">
+                  <p className="warning">Acceso denegado</p>
+                </div>
+                <div className="details-container">
+                  <div className="detail">
+                    <span>Tipo</span>
+                    <p>{state.selectedLog.vehicle}</p>
+                  </div>
+                  <div className="detail">
+                    <span>Marca</span>
+                    <p>Kia</p>
+                  </div>
+                  <div className="detail">
+                    <span>Modelio</span>
+                    <p>Rio</p>
+                  </div>
+                  <div className="detail">
+                    <span>Color</span>
+                    <p>Azul</p>
+                  </div>
+                  <div className="detail">
+                    <span>Placa delantera</span>
+                    <p>P 287 GKK</p>
+                  </div>
+                  <div className="detail">
+                    <span>Placa trasera</span>
+                    <p>P 287 GKK</p>
+                  </div>
+                  <div className="detail">
+                    <span>Conductor autorizado</span>
+                    <p>{state.selectedLog.authorized}</p>
+                  </div>
                 </div>
               </div>
-              <div className="action">
-                <p className="warning">Acceso denegado</p>
-              </div>
-              <div className="details-container">
-                <div className="detail">
-                  <span>Marca</span>
-                  <p>Kia</p>
-                </div>
-                <div className="detail">
-                  <span>Marca</span>
-                  <p>Kia</p>
-                </div>
-                <div className="detail">
-                  <span>Marca</span>
-                  <p>Kia</p>
-                </div>
-                <div className="detail">
-                  <span>Personas visibles</span>
-                  <p>3</p>
-                </div>
-              </div>
-            </div>
+            }
           </div>
         </div>
       </div>

@@ -383,15 +383,6 @@ const dumbCameraReports = [
 ]
 const dumbCameraAlerts = []
 
-// Loading state
-function loading(state = 0, action) {
-  switch (action.type) {
-    case 'SET_LOADING': return state + 1
-    case 'SET_COMPLETE': return state - 1
-    default: return state
-  }
-}
-
 // Authentication, initial state from localStorage
 function credentials(state = {}, action) {
   switch (action.type) {
@@ -649,7 +640,6 @@ function administrators(state = [], action) {
 }
 
 const appReducer = combineReducers({
-  loading,
   credentials,
   zones,
   facialReports,
