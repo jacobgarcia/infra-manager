@@ -313,6 +313,19 @@ const dumbFacialReports = [
   },
   {
     day: '10 de Enero',
+    hour: '20:25',
+    event: 'Intento de registro de personal',
+    zone: 'Centro',
+    site: 'MEXTLB1260',
+    risk: 1,
+    status: 'Regsitro denegado. Fallo en la detección de rostro',
+    id: '5a4e717750fdf1191fc0fe2c',
+    access: 'Registro',
+    match: 'No',
+    authorized: '46Juzcyx'
+  },
+  {
+    day: '10 de Enero',
     hour: '11:34',
     event: 'Registro de personal exitoso',
     zone: 'Centro',
@@ -323,19 +336,6 @@ const dumbFacialReports = [
     access: 'Registro',
     match: 'Si',
     authorized: '23TplPdS'
-  },
-  {
-    day: '10 de Enero',
-    hour: '10:25',
-    event: 'Intento de registro de personal',
-    zone: 'Centro',
-    site: 'MEXTLB1260',
-    risk: 1,
-    status: 'Regsitro denegado. Fallo en la detección de rostro',
-    id: '5a4e717750fdf1191fc0fe2c',
-    access: 'Registro',
-    match: 'No',
-    authorized: '46Juzcyx'
   },
   {
     day: '9 de Enero',
@@ -356,7 +356,7 @@ const dumbCameraReports = [
   {
     day: '14 de Enero',
     hour: '00:45',
-    event: 'Movimiento detectado',
+    event: 'Movimiento inusual detectado',
     zone: 'Centro',
     site: 'MEXCOB0992',
     risk: 2,
@@ -365,20 +365,20 @@ const dumbCameraReports = [
   {
     day: '11 de Enero',
     hour: '02:12',
-    event: 'Reporte de analíticos',
-    zone: 'Centro',
-    site: 'DIFXCH1293',
+    event: 'Detección de movimiento',
+    zone: 'Norte',
+    site: 'CONHQ9094',
     risk: 0,
-    status: 'Detección inofensiva. Personal de trabajo foráneo'
+    status: 'Detección inofensiva. Personal de paqueteria'
   },
   {
     day: '10 de Enero',
-    hour: '10:50',
-    event: 'Movimiento detectado en periodo no autorizado',
-    zone: 'Centro',
-    site: 'DIFXCH1293',
+    hour: '22:50',
+    event: 'Ingreso de personal detectado en horario fuera de trabajo',
+    zone: 'Norte',
+    site: 'CONHQ8189',
     risk: 1,
-    status: 'Análisis de video en proceso'
+    status: 'Grabación de video'
   }
 ]
 const dumbCameraAlerts = []

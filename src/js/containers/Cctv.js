@@ -20,6 +20,16 @@ class Cctv extends Component {
     }
 
     this.onDayClick = this.onDayClick.bind(this)
+    this.onLogSelect = this.onLogSelect.bind(this)
+
+  }
+
+  onLogSelect(item, index, sectionIndex) {
+    this.setState({
+      showLogDetail: true,
+      selectedLog: item,
+      selectedElementIndex: [index, sectionIndex]
+    })
   }
 
   onDayClick(day) {
@@ -76,27 +86,26 @@ class Cctv extends Component {
             ]}
           />
         </div>
-        <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
-          <div className="content">
-            <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
-            <div className="time-location">
-              <p>3 Enero 07:45 PM</p>
-              <p>Zona <span>Norte</span> Sitio <span>5</span></p>
-            </div>
-            <div className="image-slider">
-
-            </div>
-            <div className="detail">
-              <span>Galería</span>
-              <div className="image-slider">
-
+        { this.state.logs[this.state.selectedElementIndex[0]] ?
+          <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
+            <div className="content">
+              <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
+              <div className="time-location">
+                <p>{this.state.logs[this.state.selectedElementIndex[0]].day} {this.state.logs[this.state.selectedElementIndex[0]].hour}</p>
+                <p>Zona <span>{this.state.logs[this.state.selectedElementIndex[0]].zone}</span> Sitio <span>{this.state.logs[this.state.selectedElementIndex[0]].site}</span></p>
+              </div>
+              <div>
+                <video width="360" height="240" controls loop muted autoplay>
+                  <source src={"/static/video/dummy/cctv-0" + this.state.selectedElementIndex[0] + ".mp4"} type="video/mp4"/>
+                </video>
+              </div>
+              <div className="action destructive">
+                <p>Contactar seguridad</p>
               </div>
             </div>
-            <div className="action destructive">
-              <p>Contactar seguridad</p>
-            </div>
-          </div>
         </div>
+        : <div></div>
+      }
       </div>
     )
   }
