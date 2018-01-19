@@ -329,6 +329,9 @@ p span {
   transition: padding-right 0.4s;
   &.detailed {
     padding-right: 380px;
+    * .hiddable {
+      display: none;
+    }
   }
   .table-container-header {
     display: flex;

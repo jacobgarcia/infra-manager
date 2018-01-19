@@ -58,7 +58,7 @@ class FacialRecognition extends Component {
         <div className="content">
           <h2>Reconocimiento Facial</h2>
           <Table
-            className={state.showLogDetail ? 'detailed' : ''}
+            className={`${state.showLogDetail ? 'detailed' : ''}`}
             actionsContainer={
               <div>
                 <DateRangePicker
@@ -76,10 +76,10 @@ class FacialRecognition extends Component {
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                 <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
                 <div className="large">{item.event}</div>
-                <div>{item.zone}</div>
-                <div>{item.site}</div>
+                <div className="hiddable">{item.zone}</div>
+                <div className="hiddable">{item.site}</div>
                 <div><RiskBar risk={item.risk} /></div>
-                <div className="large">{item.status}</div>
+                <div className="large hiddable">{item.status}</div>
               </div>
             }
             elements={[
@@ -89,10 +89,10 @@ class FacialRecognition extends Component {
             titles={[
               {title: 'Tiempo', className: 'medium'},
               {title: 'Suceso', className: 'large'},
-              {title: 'Zona'},
-              {title: 'Sitio'},
+              {title: 'Zona', className: 'hiddable'},
+              {title: 'Sitio', className: 'hiddable'},
               {title: 'Riesgo'},
-              {title: 'Estatus o acción', className: 'large'}
+              {title: 'Estatus o acción', className: 'large hiddable'}
             ]}
           />
           { state.selectedLog !== null

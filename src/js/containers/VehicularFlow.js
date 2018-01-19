@@ -67,12 +67,12 @@ class VehicularFlow extends Component {
                 className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">{this.state.logs[index].day} <span>{this.state.logs[index].hour}</span></div>
-                <div className="medium">{this.state.logs[index].vehicle}</div>
-                <div>{this.state.logs[index].zone}</div>
-                <div>{this.state.logs[index].site}</div>
-                <div>{this.state.logs[index].authorized}</div>
-                <div>{this.state.logs[index].access}</div>
+                <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
+                <div className="medium">{item.vehicle}</div>
+                <div>{item.zone}</div>
+                <div>{item.site}</div>
+                <div>{item.authorized}</div>
+                <div>{item.access}</div>
               </div>
             }
             elements={[
