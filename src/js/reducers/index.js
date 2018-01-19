@@ -237,7 +237,7 @@ const dumbPerimeterReports = [
     day: '15 de Enero',
     hour: '05:37',
     event: 'Personal de seguridad detectado',
-    zone: 'Bajío',
+    zone: 'Bajio',
     site: 'SANCAR7621',
     risk: 0,
     status: 'Detección inofensiva'
@@ -246,7 +246,7 @@ const dumbPerimeterReports = [
     day: '14 de Enero',
     hour: '08:46',
     event: 'Perro detectado',
-    zone: 'Bajío',
+    zone: 'Bajio',
     site: 'MONRAZ3322',
     risk: 0,
     status: 'Detección de movimiento inofensiva'
@@ -255,7 +255,7 @@ const dumbPerimeterReports = [
     day: '8 de Enero',
     hour: '15:24',
     event: 'Peatón cruzando acceso',
-    zone: 'Bajío',
+    zone: 'Bajio',
     site: 'SANCAR7621',
     risk: 0,
     status: 'Detección inofensiva'
@@ -264,7 +264,7 @@ const dumbPerimeterReports = [
     day: '4 de Enero',
     hour: '17:28',
     event: 'Personal de limpieza detectado',
-    zone: 'Bajío',
+    zone: 'Bajio',
     site: 'MONRAZ3322',
     risk: 0,
     status: 'Detección inofensiva'
