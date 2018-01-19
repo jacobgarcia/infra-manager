@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
+import Slider from 'react-slick'
+
 
 import { Table, RiskBar, DateRangePicker } from '../components'
 import { } from '../actions'
@@ -24,10 +26,11 @@ class Perimeter extends Component {
     this.onDayClick = this.onDayClick.bind(this)
   }
 
-  onLogSelect(item) {
+  onLogSelect(item, index, sectionIndex) {
     this.setState({
       showLogDetail: true,
-      selectedLog: item
+      selectedLog: item,
+      selectedElementIndex: [index, sectionIndex]
     })
   }
 
@@ -85,27 +88,36 @@ class Perimeter extends Component {
             ]}
           />
         </div>
+        { this.state.logs[this.state.selectedElementIndex[0]] ?
         <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
           <div className="content">
             <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
             <div className="time-location">
-              <p>3 Enero 07:45 PM</p>
-              <p>Zona <span>Norte</span> Sitio <span>5</span></p>
+              <p>{this.state.logs[this.state.selectedElementIndex[0]].day} {this.state.logs[this.state.selectedElementIndex[0]].hour}</p>
+              <p>Zona <span>{this.state.logs[this.state.selectedElementIndex[0]].zone}</span> Sitio <span>{this.state.logs[this.state.selectedElementIndex[0]].site}</span></p>
             </div>
-            <div className="image-slider">
-
+            <div>
+              <video width="360" height="240" loop muted autoPlay>
+                <source src={"/static/video/dummy/perimeter-0" + this.state.selectedElementIndex[0] + ".mp4"} type="video/mp4"/>
+              </video>
             </div>
             <div className="detail">
               <span>Galería</span>
-              <div className="image-slider">
+              <Slider nextArrow={<button>{'>'}</button>} prevArrow={<button>{'<'}</button>}>
+                <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/perimterg-0` + this.state.selectedElementIndex[0] +`.png)`}} />
+                <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/perimterg-1` + this.state.selectedElementIndex[0] +`.png)`}} />
+                <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/perimterg-2` + this.state.selectedElementIndex[0] +`.png)`}}/>
+                <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/perimterg-3` + this.state.selectedElementIndex[0] +`.png)`}}/>
 
-              </div>
+              </Slider>
             </div>
             <div className="action destructive">
               <p>Contactar seguridad</p>
             </div>
           </div>
         </div>
+        : <div></div>
+      }
       </div>
     )
   }

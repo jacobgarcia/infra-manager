@@ -96,7 +96,7 @@ class Cctv extends Component {
                 {/* <p>Zona <span>{this.state.logs[this.state.selectedElementIndex[0]].zone}</span> Sitio <span>{this.state.logs[this.state.selectedElementIndex[0]] && this.state.logs[this.state.selectedElementIndex[0]].site.name}</span></p> */}
               </div>
               <div>
-                <video width="360" height="240" controls loop muted autoplay>
+                <video width="360" height="240" controls loop muted autoPlay>
                   <source src={"/static/video/dummy/cctv-0" + this.state.selectedElementIndex[0] + ".mp4"} type="video/mp4"/>
                 </video>
               </div>
