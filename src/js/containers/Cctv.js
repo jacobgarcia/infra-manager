@@ -12,8 +12,7 @@ class Cctv extends Component {
     super(props)
 
     this.state = {
-      logs: this.props.cameraReports,
-      alerts: [],
+      selectedLog: null,
       selectedElementIndex: [null,null],
       from: new Date(),
       to: new Date()
@@ -42,13 +41,14 @@ class Cctv extends Component {
     const { state, props } = this
 
     return (
-      <div className="app-content cctv small-padding">
+      <div className="app-content facial-recognition small-padding">
         <Helmet>
           <title>Connus | CCTV</title>
         </Helmet>
         <div className="content">
           <h2>CCTV</h2>
           <Table
+            className={`${state.showLogDetail ? 'detailed' : ''}`}
             actionsContainer={
               <div>
                 <DateRangePicker
@@ -66,34 +66,33 @@ class Cctv extends Component {
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                 { item.timestamp ? <div className="medium">{item.timestamp.toLocaleDateString()} {item.timestamp.toLocaleTimeString()}</div> : <div />}
                 <div className="large">{item.event}</div>
-                <div>{item.zone.name}</div>
-                <div>{item.site && item.site}</div>
+                <div className="hiddable">{item.zone.name}</div>
+                <div className="hiddable">{item.site && item.site}</div>
                 <div><RiskBar risk={item.risk} /></div>
-                <div className="medium">{item.status}</div>
+                <div className="medium hiddable">{item.status}</div>
               </div>
             }
             elements={[
-              { title: 'Registros', elements: state.logs},
-              { title: 'Alertas', elements: state.alerts}
+              { title: 'Registros', elements: props.cameraReports},
+              { title: 'Alertas', elements: props.cameraReports.filter($0 => $0.risk > 2)}
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
               {title: 'Suceso', className: 'large'},
-              {title: 'Zona'},
-              {title: 'Sitio'},
+              {title: 'Zona', className: 'hiddable'},
+              {title: 'Sitio', className: 'hiddable'},
               {title: 'Riesgo'},
-              {title: 'Estatus o acción', className: 'medium'}
+              {title: 'Estatus o acción', className: 'medium hiddable'}
             ]}
           />
-        </div>
-        { this.state.logs[this.state.selectedElementIndex[0]]
+        { state.selectedLog !== null
           &&
           <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
             <div className="content">
               <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
               <div className="time-location">
-                {/* <p>{this.state.logs[this.state.selectedElementIndex[0]].day} {this.state.logs[this.state.selectedElementIndex[0]].hour}</p> */}
-                {/* <p>Zona <span>{this.state.logs[this.state.selectedElementIndex[0]].zone}</span> Sitio <span>{this.state.logs[this.state.selectedElementIndex[0]] && this.state.logs[this.state.selectedElementIndex[0]].site.name}</span></p> */}
+                <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
+                <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
               </div>
               <div>
                 <video width="360" height="240" controls loop muted autoPlay>
@@ -107,6 +106,7 @@ class Cctv extends Component {
         </div>
       }
       </div>
+    </div>
     )
   }
 }

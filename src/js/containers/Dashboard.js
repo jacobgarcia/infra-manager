@@ -232,7 +232,7 @@ class Dashboard extends Component {
                   {title: 'Tiempo' },
                   {title: 'Suceso', className: 'medium'},
                   {title: 'Estatus', className: 'medium'},
-                  {title: 'Riezgo'},
+                  {title: 'Riesgo'},
                   {title: 'Sitio'}
                 ]}
               />

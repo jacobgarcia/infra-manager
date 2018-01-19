@@ -68,23 +68,25 @@ class VehicularFlow extends Component {
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                 <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
-                <div className="medium">{item.vehicle}</div>
-                <div>{item.zone}</div>
-                <div>{item.site}</div>
-                <div>{item.authorized}</div>
+                <div>{item.vehicle}</div>
+                <div><RiskBar risk={item.risk} /></div>
+                <div className="hiddable">{item.zone}</div>
+                <div className="hiddable">{item.site}</div>
+                <div className="hiddable">{item.authorized}</div>
                 <div>{item.access}</div>
               </div>
             }
             elements={[
-              { title: 'Registros', elements: state.logs},
-              { title: 'Alertas', elements: state.alerts}
+              { title: 'Registros', elements: this.props.vehicularReports},
+              { title: 'Alertas', elements: this.props.vehicularReports.filter($0 => $0.risk > 2)}
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
-              {title: 'Tipo de vehículo', className: 'medium'},
-              {title: 'Zona'},
-              {title: 'Sitio'},
-              {title: 'Persona Autorizada'},
+              {title: 'Tipo de vehículo'},
+              {title: 'Riesgo'},
+              {title: 'Zona', className: 'hiddable'},
+              {title: 'Sitio', className: 'hiddable'},
+              {title: 'Persona Autorizada', className: 'hiddable'},
               {title: 'Tipo de acceso'}
             ]}
           />

@@ -47,11 +47,10 @@ class Table extends Component {
           <div className="table-body">
             {
               (props.elements
-                && props.elements.length - 1 > state.selected
                 && props.elements[state.selected]
               )
               &&
-              (props.elements[state.selected].elements && props.elements[state.selected].elements.length > 1)
+              (props.elements[state.selected].elements && props.elements[state.selected].elements.length > 0)
               ?
               props.elements[state.selected].elements.map((element, index) =>
                 props.element(element, index, state.selected)

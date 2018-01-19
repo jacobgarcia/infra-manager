@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import { Table, RiskBar } from '../components'
+import { Table, RiskBar, DateRangePicker } from '../components'
 import { } from '../actions'
 
 class Accesses extends Component {
@@ -11,16 +11,24 @@ class Accesses extends Component {
     super(props)
 
     this.state = {
-      logs: this.props.accessReports,
       selectedElementIndex: [null,null],
       showLogDetail: false,
       from: new Date(),
-      to: new Date()
+      to: new Date(),
+      selectedLog: null
     }
   }
 
-  componentDidMount(){
-    console.log(this.props.accessReports)
+  onLogSelect(item, index, sectionIndex) {
+    this.setState({
+      showLogDetail: true,
+      selectedLog: item,
+      selectedElementIndex: [index, sectionIndex]
+    })
+  }
+
+  componentDidMount() {
+    // console.log(this.props.accessReports)
   }
 
   render() {
@@ -34,10 +42,15 @@ class Accesses extends Component {
         <div className="content">
           <h2>Accesos</h2>
           <Table
+            className={`${state.showLogDetail ? 'detailed' : ''}`}
             actionsContainer={
               <div>
-                <p className="button action">Enero 3 - Hoy</p>
-                <p className="button action">Filtrar</p>
+                <DateRangePicker
+                  from={state.from}
+                  to={state.to}
+                  onDayClick={this.onDayClick}
+                />
+                <p className="button action disabled">Filtrar</p>
               </div>
             }
             selectedElementIndex={state.selectedElementIndex}
@@ -45,27 +58,43 @@ class Accesses extends Component {
               <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">{this.state.logs[index].day} <span>{this.state.logs[index].hour}</span></div>
-                <div className="large">{this.state.logs[index].event}</div>
-                <div>{this.state.logs[index].zone}</div>
-                <div>{this.state.logs[index].site}</div>
-                <div><RiskBar risk={this.state.logs[index].risk} /></div>
-                <div className="medium">{this.state.logs[index].status}</div>
+                <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
+                <div className="medium bold">{item.event}</div>
+                <div className="hiddable">{item.zone.name}</div>
+                <div className="hiddable">{item.site}</div>
+                <div><RiskBar risk={item.risk} /></div>
+                <div className="medium hiddable">{item.status}</div>
               </div>
             }
             elements={[
-              { title: 'Registros', elements: state.logs},
-              { title: 'Alertas', elements: state.alerts}
+              { title: 'Registros', elements: props.accessReports},
+              { title: 'Alertas', elements: props.accessReports.filter($0 => $0.risk > 2)}
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
-              {title: 'Suceso', className: 'large'},
-              {title: 'Zona'},
-              {title: 'Sitio'},
+              {title: 'Suceso', className: 'medium'},
+              {title: 'Zona', className: 'hiddable'},
+              {title: 'Sitio', className: 'hiddable'},
               {title: 'Riesgo'},
-              {title: 'Estatus o acción', className: 'medium'}
+              {title: 'Estatus o acción', className: 'medium hiddable'}
             ]}
           />
+          {
+            state.selectedLog !== null
+            &&
+            <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
+              <div className="content">
+                <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
+                <div className="time-location">
+                  <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString('es-MX')}`}</p>
+                  <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
+                </div>
+                <div className="detail">
+
+                </div>
+              </div>
+            </div>
+          }
         </div>
       </div>
     )

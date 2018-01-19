@@ -49,6 +49,8 @@ class FacialRecognition extends Component {
 
   render() {
     const { state, props } = this
+    console.log('ALERTS')
+    console.log(props.facialReports.filter($0 => $0.risk >= 3))
 
     return (
       <div className="app-content facial-recognition small-padding">
@@ -98,47 +100,47 @@ class FacialRecognition extends Component {
           { state.selectedLog !== null
             &&
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
-            <div className="content">
-              <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
-              <div className="time-location">
-                <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
-                <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
+              <div className="content">
+                <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
+                <div className="time-location">
+                  <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
+                  <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
+                </div>
+                <div className="detail">
+                  <span>Rostro detectado</span>
+                  <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/frm-0` + this.state.selectedElementIndex[0] +`.jpg)`}} />
+                </div>
+                <div className="details-container">
+                  <div className="detail">
+                    <span>Hora del suceso</span>
+                    <p>{state.selectedLog.hour}</p>
+                  </div>
+                  <div className="detail">
+                    <span>Tipo de ingreso</span>
+                    <p>{state.selectedLog.access}</p>
+                  </div>
+                  <div className="detail">
+                    <span>Usuario Autorizado</span>
+                    <p>{state.selectedLog.authorized}</p>
+                  </div>
+                  <div className="detail">
+                    <span>Coincide con registro</span>
+                    <p>{state.selectedLog.match}</p>
+                  </div>
+                  <div className="detail">
+                    <span>Estatus</span>
+                    <p>{state.selectedLog.status}</p>
+                  </div>
+                  <div className="detail">
+                    <span>Código único de identificación</span>
+                    <p>{state.selectedLog.id}</p>
+                    <img src="" alt=""/>
+                  </div>
+                </div>
+                <div className="action destructive">
+                  <p>Contactar seguridad</p>
+                </div>
               </div>
-              <div className="detail">
-                <span>Rostro detectado</span>
-                <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/frm-0` + this.state.selectedElementIndex[0] +`.jpg)`}} />
-              </div>
-              <div className="details-container">
-                <div className="detail">
-                  <span>Hora del suceso</span>
-                  <p>{state.selectedLog.hour}</p>
-                </div>
-                <div className="detail">
-                  <span>Tipo de ingreso</span>
-                  <p>{state.selectedLog.access}</p>
-                </div>
-                <div className="detail">
-                  <span>Usuario Autorizado</span>
-                  <p>{state.selectedLog.authorized}</p>
-                </div>
-                <div className="detail">
-                  <span>Coincide con registro</span>
-                  <p>{state.selectedLog.match}</p>
-                </div>
-                <div className="detail">
-                  <span>Estatus</span>
-                  <p>{state.selectedLog.status}</p>
-                </div>
-                <div className="detail">
-                  <span>Código único de identificación</span>
-                  <p>{state.selectedLog.id}</p>
-                  <img src="" alt=""/>
-                </div>
-              </div>
-              <div className="action destructive">
-                <p>Contactar seguridad</p>
-              </div>
-            </div>
             </div>
           }
         </div>

@@ -330,8 +330,16 @@ p span {
   &.detailed {
     padding-right: 380px;
     * .hiddable {
-      display: none;
+      opacity: 0;
+      max-width: 0px;
+      overflow: hidden;
+      white-space: nowrap;
     }
+  }
+  * .hiddable {
+    opacity: 1;
+    transition: 0.5s;
+    max-width: 500px;
   }
   .table-container-header {
     display: flex;

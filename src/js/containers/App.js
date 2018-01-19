@@ -118,7 +118,9 @@ class App extends Component {
         </Helmet>
         <Navigator credentials={this.props.credentials} />
         <Switch>
+          {/* MAYBE TODO lazy load this component  */}
           <Route exact path="/" component={Dashboard}/>
+          {/* TODO lazy load this component  */}
           <Route path="/sites/:zoneId?/:subzoneId?/:siteId?" component={Map} />
           <Route path="/users" component={Users}/>
           <Route path="/accesses" component={Accesses}/>
