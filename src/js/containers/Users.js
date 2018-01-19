@@ -40,7 +40,7 @@ class Users extends Component {
 
     this.setState({
       query,
-      filteredUsers: value.length > 0 ? this.state.users.filter($0 => JSON.stringify($0).toLowerCase().search(regEx) >= 0) : prev.users
+      filteredUsers: value.length > 0 ? this.state.users.filter($0 => JSON.stringify($0).toLowerCase().search(regEx) >= 0) : this.state.users
     })
   }
 

@@ -19,7 +19,8 @@ class FacialRecognition extends Component {
       selectedElementIndex: [null,null],
       showLogDetail: false,
       from: new Date(),
-      to: new Date()
+      to: new Date(),
+      selectedLog: null
     }
 
     this.onLogSelect = this.onLogSelect.bind(this)
@@ -73,17 +74,17 @@ class FacialRecognition extends Component {
               <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">{this.state.logs[index].day} <span>{this.state.logs[index].hour}</span></div>
-                <div className="large">{this.state.logs[index].event}</div>
-                <div>{this.state.logs[index].zone}</div>
-                <div>{this.state.logs[index].site}</div>
-                <div><RiskBar risk={this.state.logs[index].risk} /></div>
-                <div className="medium">{this.state.logs[index].status}</div>
+                <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
+                <div className="large">{item.event}</div>
+                <div>{item.zone}</div>
+                <div>{item.site}</div>
+                <div><RiskBar risk={item.risk} /></div>
+                <div className="large">{item.status}</div>
               </div>
             }
             elements={[
-              { title: 'Registros', elements: state.logs },
-              { title: 'Alertas', elements: state.alerts }
+              { title: 'Registros', elements: props.facialReports },
+              { title: 'Alertas', elements: props.facialReports.filter($0 => $0.risk >= 3) }
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
@@ -91,16 +92,17 @@ class FacialRecognition extends Component {
               {title: 'Zona'},
               {title: 'Sitio'},
               {title: 'Riesgo'},
-              {title: 'Estatus o acción', className: 'medium'}
+              {title: 'Estatus o acción', className: 'large'}
             ]}
           />
-          { this.state.logs[this.state.selectedElementIndex[0]] ?
+          { state.selectedLog !== null
+            &&
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
             <div className="content">
               <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
               <div className="time-location">
-                <p>{this.state.logs[this.state.selectedElementIndex[0]].day} {this.state.logs[this.state.selectedElementIndex[0]].hour}</p>
-                <p>Zona <span>{this.state.logs[this.state.selectedElementIndex[0]].zone}</span> Sitio <span>{this.state.logs[this.state.selectedElementIndex[0]].site}</span></p>
+                <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
+                <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
               </div>
               <div className="detail">
                 <span>Rostro detectado</span>
@@ -109,27 +111,27 @@ class FacialRecognition extends Component {
               <div className="details-container">
                 <div className="detail">
                   <span>Hora del suceso</span>
-                  <p>{this.state.logs[this.state.selectedElementIndex[0]].hour}</p>
+                  <p>{state.selectedLog.hour}</p>
                 </div>
                 <div className="detail">
                   <span>Tipo de ingreso</span>
-                  <p>{this.state.logs[this.state.selectedElementIndex[0]].access}</p>
+                  <p>{state.selectedLog.access}</p>
                 </div>
                 <div className="detail">
                   <span>Usuario Autorizado</span>
-                  <p>{this.state.logs[this.state.selectedElementIndex[0]].authorized}</p>
+                  <p>{state.selectedLog.authorized}</p>
                 </div>
                 <div className="detail">
                   <span>Coincide con registro</span>
-                  <p>{this.state.logs[this.state.selectedElementIndex[0]].match}</p>
+                  <p>{state.selectedLog.match}</p>
                 </div>
                 <div className="detail">
                   <span>Estatus</span>
-                  <p>{this.state.logs[this.state.selectedElementIndex[0]].status}</p>
+                  <p>{state.selectedLog.status}</p>
                 </div>
                 <div className="detail">
                   <span>Código único de identificación</span>
-                  <p>{this.state.logs[this.state.selectedElementIndex[0]].id}</p>
+                  <p>{state.selectedLog.id}</p>
                   <img src="" alt=""/>
                 </div>
               </div>
@@ -138,7 +140,6 @@ class FacialRecognition extends Component {
               </div>
             </div>
             </div>
-            : <div></div>
           }
         </div>
       </div>

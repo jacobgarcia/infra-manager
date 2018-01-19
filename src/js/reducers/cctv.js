@@ -2,7 +2,7 @@ const dumbCctvLogs = [
   {
     timestamp: new Date(),
     event: 'Movimiento detectado',
-    zone: 'Centro',
+    zone: {name: 'Centro', _id: null},
     site: 'MEXCOB0992',
     risk: 2,
     status: 'Análisis de video en proceso'
@@ -10,7 +10,7 @@ const dumbCctvLogs = [
   {
     timestamp: new Date(),
     event: 'Reporte de analíticos',
-    zone: 'Centro',
+    zone: {name: 'Centro', _id: null},
     site: 'DIFXCH1293',
     risk: 0,
     status: 'Detección inofensiva. Personal de trabajo foráneo'
@@ -18,8 +18,8 @@ const dumbCctvLogs = [
   {
     timestamp: new Date(),
     event: 'Movimiento detectado en periodo no autorizado',
-    zone: {name: 'Centro'},
-    site: {name: 'DIFXCH1293'},
+    zone: {name: 'Centro', _id: null},
+    site: 'DIFXCH1293',
     risk: 3,
     status: 'Análisis de video en proceso'
   }

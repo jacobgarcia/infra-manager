@@ -64,12 +64,12 @@ class Cctv extends Component {
               <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">{this.state.logs[index].day} <span>{this.state.logs[index].hour}</span></div>
-                <div className="large">{this.state.logs[index].event}</div>
-                <div>{this.state.logs[index].zone}</div>
-                <div>{this.state.logs[index].site}</div>
-                <div><RiskBar risk={this.state.logs[index].risk} /></div>
-                <div className="medium">{this.state.logs[index].status}</div>
+                { item.timestamp ? <div className="medium">{item.timestamp.toLocaleDateString()} {item.timestamp.toLocaleTimeString()}</div> : <div />}
+                <div className="large">{item.event}</div>
+                <div>{item.zone.name}</div>
+                <div>{item.site && item.site}</div>
+                <div><RiskBar risk={item.risk} /></div>
+                <div className="medium">{item.status}</div>
               </div>
             }
             elements={[
@@ -86,13 +86,14 @@ class Cctv extends Component {
             ]}
           />
         </div>
-        { this.state.logs[this.state.selectedElementIndex[0]] ?
+        { this.state.logs[this.state.selectedElementIndex[0]]
+          &&
           <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
             <div className="content">
               <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
               <div className="time-location">
-                <p>{this.state.logs[this.state.selectedElementIndex[0]].day} {this.state.logs[this.state.selectedElementIndex[0]].hour}</p>
-                <p>Zona <span>{this.state.logs[this.state.selectedElementIndex[0]].zone}</span> Sitio <span>{this.state.logs[this.state.selectedElementIndex[0]].site}</span></p>
+                {/* <p>{this.state.logs[this.state.selectedElementIndex[0]].day} {this.state.logs[this.state.selectedElementIndex[0]].hour}</p> */}
+                {/* <p>Zona <span>{this.state.logs[this.state.selectedElementIndex[0]].zone}</span> Sitio <span>{this.state.logs[this.state.selectedElementIndex[0]] && this.state.logs[this.state.selectedElementIndex[0]].site.name}</span></p> */}
               </div>
               <div>
                 <video width="360" height="240" controls loop muted autoplay>
@@ -104,7 +105,6 @@ class Cctv extends Component {
               </div>
             </div>
         </div>
-        : <div></div>
       }
       </div>
     )
@@ -112,7 +112,7 @@ class Cctv extends Component {
 }
 
 Cctv.propTypes = {
-  cameraReports: PropTypes.func
+  cameraReports: PropTypes.array
 }
 
 function mapStateToProps({cameraReports}) {

@@ -63,12 +63,12 @@ class Perimeter extends Component {
               <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">{this.state.logs[index].day} <span>{this.state.logs[index].hour}</span></div>
-                <div className="large">{this.state.logs[index].event}</div>
-                <div>{this.state.logs[index].zone}</div>
-                <div>{this.state.logs[index].site}</div>
-                <div><RiskBar risk={this.state.logs[index].risk} /></div>
-                <div className="medium">{this.state.logs[index].status}</div>
+                <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
+                <div className="large">{item.event}</div>
+                <div>{item.zone}</div>
+                <div>{item.site}</div>
+                <div><RiskBar risk={item.risk} /></div>
+                <div className="medium">{item.status}</div>
               </div>
             }
             elements={[
