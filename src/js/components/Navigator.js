@@ -24,7 +24,7 @@ class Navigator extends Component {
 
   onKeyDown({ctrlKey, key}) {
     // TODO verify is not from input
-    if (key === 'm') {
+    if (key === 'm' && ctrlKey) {
       this.setState(prev => ({
         isHidden: !prev.isHidden
       }))
@@ -65,7 +65,7 @@ class Navigator extends Component {
           <h2 className="fade">Servicios</h2>
           {
             props.services.filter(service => props.credentials.company ? props.credentials.company.services.some($0 => $0 === service._id) : false).map(({title, name}) =>
-              <li key={name} onClick={() => this.closeNavigator()}>
+              <li key={name} onClick={() => this.closeNavigator()} className="alerted">
                 <NavLink to={`/${name}`} className={name}>
                   <span className="access fade">{title}</span>
                 </NavLink>

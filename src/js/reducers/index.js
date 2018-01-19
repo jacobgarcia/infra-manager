@@ -552,86 +552,6 @@ function zones(state = [], action) {
   }
 }
 
-function facialReports(state = dumbFacialReports, action) {
-  switch (action.type) {
-    case 'SET_FACIAL_REPORT':
-      return [...state, {
-        day: action.day,
-        hour: action.hour,
-        event: action.positions,
-        site: action.site,
-        risk: action.risk,
-        status: action.status,
-      }]
-    default:
-      return state
-  }
-}
-
-function accessReports(state = dumbAccessesReports, action) {
-  switch (action.type) {
-    case 'SET_ACCESS_REPORT':
-      return [...state, {
-        day: action.day,
-        hour: action.hour,
-        event: action.positions,
-        site: action.site,
-        risk: action.risk,
-        status: action.status,
-      }]
-    default:
-      return state
-  }
-}
-
-function vehicularReports(state = dumbVehicularReports, action) {
-  switch (action.type) {
-    case 'SET_VEHICULAR_REPORT':
-      return [...state, {
-        day: action.day,
-        hour: action.hour,
-        vehicle: action.vehicle,
-        site: action.site,
-        authorized: action.authorized,
-        access: action.access,
-      }]
-    default:
-      return state
-  }
-}
-
-function cameraReports(state = dumbCameraReports, action) {
-  switch (action.type) {
-    case 'SET_CAMERA_REPORT':
-      return [...state, {
-        day: action.day,
-        hour: action.hour,
-        event: action.positions,
-        site: action.site,
-        risk: action.risk,
-        status: action.status,
-      }]
-    default:
-      return state
-  }
-}
-
-function perimeterReports(state = dumbPerimeterReports, action) {
-  switch (action.type) {
-    case 'SET_PERIMETER_REPORT':
-      return [...state, {
-        day: action.day,
-        hour: action.hour,
-        event: action.positions,
-        site: action.site,
-        risk: action.risk,
-        status: action.status,
-      }]
-    default:
-      return state
-  }
-}
-
 function administrators(state = [], action) {
   switch (action.type) {
     default:
@@ -639,17 +559,22 @@ function administrators(state = [], action) {
   }
 }
 
-const appReducer = combineReducers({
+import facialRecognitionLogs from './facialRecognition'
+import cctvLogs from './cctv'
+import vehicularFlowLogs from './vehicularFlow'
+import accessLogs from './access'
+import perimeterLogs from './perimeter'
+
+
+export default combineReducers({
   credentials,
   zones,
-  facialReports,
-  accessReports,
-  cameraReports,
-  perimeterReports,
-  vehicularReports,
+  facialReports: facialRecognitionLogs,
+  accessReports: accessLogs,
+  cameraReports: cctvLogs,
+  perimeterReports: perimeterLogs,
+  vehicularReports: vehicularFlowLogs,
   administrators,
   appAlert,
   reports
 })
-
-export default appReducer

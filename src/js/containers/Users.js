@@ -13,16 +13,34 @@ class Users extends Component {
 
     this.state = {
       users: [],
-      isAddingUser: false
+      isAddingUser: false,
+      query: '',
+      filteredUsers: []
     }
+
+    this.onQuerySearch = this.onQuerySearch.bind(this)
   }
 
   componentDidMount() {
     NetworkOperation.getCompanyUsers()
     .then(({data}) => {
       this.setState({
-        users: data.users
+        users: data.users,
+        filteredUsers: data.users
       })
+    })
+  }
+
+  onQuerySearch(event) {
+    event.stopPropagation()
+    const { value } = event.target
+    const query = value.toLowerCase()
+
+    const regEx = new RegExp(`${query}`)
+
+    this.setState({
+      query,
+      filteredUsers: value.length > 0 ? this.state.users.filter($0 => JSON.stringify($0).toLowerCase().search(regEx) >= 0) : prev.users
     })
   }
 
@@ -82,7 +100,12 @@ class Users extends Component {
           <h2>Usuarios</h2>
           <div className="table">
             <div className="table-actions">
-              <input type="text" placeholder="Buscar" className="search action" />
+              <input
+                type="text"
+                placeholder="Buscar"
+                className="search action"
+                onChange={this.onQuerySearch}
+              />
               <input type="button" className="action" value="Añadir" onClick={() => this.setState({ isAddingUser: true })} />
             </div>
             <div className="table-header">
@@ -96,7 +119,7 @@ class Users extends Component {
             </div>
             <div className="table-body">
               {
-                state.users.map((user, index) =>
+                state.filteredUsers.map((user, index) =>
                   <div className="table-item" key={index}>
                     <div className="bold">{user.name}</div>
                     <div>{user.email}</div>

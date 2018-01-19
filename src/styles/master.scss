@@ -280,6 +280,13 @@ p span {
       background-repeat: no-repeat;
       padding: 10px 0;
       background-size: 20px;
+      display: flex;
+      justify-content: space-between;
+      z-index: 1000;
+      > div {
+        margin-right: 40px;
+        z-index: 1000;
+      }
     }
     &.vertical {
       flex-direction: row;
@@ -1410,6 +1417,20 @@ $dark: #1d212d;
     background-image: url('/static/img/icons/sprite-sheet.svg');
     background-size: 250px 25px;
   }
+  li {
+    position: relative;
+  }
+  li.alerted::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: $red;
+    display: block;
+    left: -12px;
+    top: 10px;
+    position: absolute;
+  }
   li.logout {
     margin-top: auto;
   }
@@ -1718,6 +1739,16 @@ ul.mini-nav {
       .graph {
         margin-right: 40px;
         position: relative;
+        h1 {
+          position: absolute;
+          width: 100%;
+          top: 50%;
+          transform: translateY(-27px);
+          height: 35px;
+          font-weight: 600;
+          left: 0;
+          text-align: center;
+        }
       }
     }
   }
