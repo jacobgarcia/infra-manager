@@ -94,46 +94,42 @@ class FacialRecognition extends Component {
               {title: 'Estatus o acción', className: 'medium'}
             ]}
           />
-          <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
+          { this.state.logs[this.state.selectedElementIndex[0]] ?
+            <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
             <div className="content">
               <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
               <div className="time-location">
-                <p>3 Enero 07:45 PM</p>
-                <p>Zona <span>Norte</span> Sitio <span>5</span></p>
+                <p>{this.state.logs[this.state.selectedElementIndex[0]].day} {this.state.logs[this.state.selectedElementIndex[0]].hour}</p>
+                <p>Zona <span>{this.state.logs[this.state.selectedElementIndex[0]].zone}</span> Sitio <span>{this.state.logs[this.state.selectedElementIndex[0]].site}</span></p>
               </div>
               <div className="detail">
                 <span>Rostro detectado</span>
-                <div className="image-slider">
-
-                </div>
+                <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/frm-0` + this.state.selectedElementIndex[0] +`.jpg)`}} />
               </div>
               <div className="details-container">
                 <div className="detail">
                   <span>Hora del suceso</span>
-                  <p>Kia</p>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].hour}</p>
                 </div>
                 <div className="detail">
                   <span>Tipo de ingreso</span>
-                  <p>Kia</p>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].access}</p>
                 </div>
                 <div className="detail">
-                  <span>Método de ingreso</span>
-                  <p>Kia</p>
+                  <span>Usuario Autorizado</span>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].authorized}</p>
                 </div>
                 <div className="detail">
                   <span>Coincide con registro</span>
-                  <p>Si</p>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].match}</p>
                 </div>
                 <div className="detail">
                   <span>Estatus</span>
-                  <p>Continua dentro</p>
-                </div>
-                <div className="detail">
-                  <span>Huella dactilar</span>
-                  <img src="" alt=""/>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].status}</p>
                 </div>
                 <div className="detail">
                   <span>Código único de identificación</span>
+                  <p>{this.state.logs[this.state.selectedElementIndex[0]].id}</p>
                   <img src="" alt=""/>
                 </div>
               </div>
@@ -141,7 +137,9 @@ class FacialRecognition extends Component {
                 <p>Contactar seguridad</p>
               </div>
             </div>
-          </div>
+            </div>
+            : <div></div>
+          }
         </div>
       </div>
     )
