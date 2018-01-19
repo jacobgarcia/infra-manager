@@ -17,7 +17,9 @@ const dumbFacialLogs = [
   {
     timestamp: new Date('2018-01-15T10:16:00'),
     event: 'Intento de inicio de sesión',
-    zone: 'Centro',
+    zone: {
+      name: 'Centro'
+    },
     site: 'MEXJIL1152',
     risk: 2,
     status: 'Acceso denegado. Almacenando y analizando rostro desconocido',
@@ -30,7 +32,9 @@ const dumbFacialLogs = [
   {
     timestamp: new Date('2018-01-11T15:00:00'),
     event: 'Registro de salida exitosa',
-    zone: 'Centro',
+    zone: {
+      name: 'Centro'
+    },
     site: 'DIFXCH1293',
     risk: 0,
     status: 'Acceso autorizado. Sensorización reactivada',
@@ -43,7 +47,9 @@ const dumbFacialLogs = [
   {
     timestamp: new Date('2018-01-11T14:37:00'),
     event: 'Inicio de sesión exitoso',
-    zone: 'Centro',
+    zone: {
+      name: 'Centro'
+    },
     site: 'DIFXCH1293',
     risk: 0,
     status: 'Acceso autorizado. Sensorización desactivada',
@@ -56,7 +62,9 @@ const dumbFacialLogs = [
   {
     timestamp: new Date('2018-01-10T20:25:00'),
     event: 'Intento de registro de personal',
-    zone: 'Centro',
+    zone: {
+      name: 'Centro'
+    },
     site: 'MEXTLB1260',
     risk: 1,
     status: 'Regsitro denegado. Fallo en la detección de rostro',
@@ -69,7 +77,9 @@ const dumbFacialLogs = [
   {
     timestamp: new Date('2018-01-10T11:34:00'),
     event: 'Registro de personal exitoso',
-    zone: 'Centro',
+    zone: {
+      name: 'Centro'
+    },
     site: 'MEXATZ0973',
     risk: 0,
     status: 'Registro satisfactorio',
@@ -82,7 +92,9 @@ const dumbFacialLogs = [
   {
     timestamp: new Date('2018-01-09T10:14:00'),
     event: 'Registro de personal exitoso',
-    zone: 'Centro',
+    zone: {
+      name: 'Centro'
+    },
     site: 'MEXTLB1260',
     risk: 0,
     status: 'Registro satisfactorio',
