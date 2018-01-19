@@ -120,15 +120,15 @@ class Dashboard extends Component {
                       </Pie>
                       <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                     </PieChart>
-                    <h1>96%</h1>
+                    <h1>96.1%</h1>
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
                     <p>120 sitios</p>
                     <div className="stats">
                       <p><span>96.1%</span> funcionando</p>
-                      <p><span>2.8%</span> alertado</p>
-                      <p><span>1.1%</span> dañado</p>
+                      <p className="border button warning"><span>2.8%</span> alertado</p>
+                      <p className="border button error"><span>1.1%</span> dañado</p>
                     </div>
                   </div>
                 </Card>
@@ -184,7 +184,7 @@ class Dashboard extends Component {
                     <h1>105</h1>
                     <p>7 personas por hora</p>
                   </div>
-                  <ResponsiveContainer width="100%" height={190}>
+                  <ResponsiveContainer width="100%" height={220}>
                     <ComposedChart data={data2}
                           syncId="dashboard"
                           margin={{top: 20, right: 20, bottom: 20, left: 20}}>

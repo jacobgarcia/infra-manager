@@ -91,6 +91,12 @@ button, input[type="button"], input[type="submit"], .button, input[type="text"].
   &.disabled {
     opacity: 0.3;
   }
+  &.warning {
+    border-color: $yellow;
+  }
+  &.error {
+    border-color: $red;
+  }
 }
 input[type="text"], input[type="password"], input[type="search"] {
   cursor: text;
@@ -1692,6 +1698,35 @@ ul.mini-nav {
       padding: 20px;
       padding-top: 15px;
       padding-bottom: 0;
+      .button {
+        width: 160px;
+        padding-left: 5px;
+        display: block;
+        position: relative;
+        background-color: transparent;
+        padding-right: 10px;
+        text-transform: capitalize;
+        color: white;
+        font-weight: 400;
+        &::before, &::after {
+          content: '';
+          position: absolute;
+          width: 10px;
+          height: 2px;
+          background-color: $lighter-gray;
+          display: block;
+          right: 5px;
+          border-radius: 2px;
+        }
+        &::before {
+          transform: rotate(45deg);
+          top: 7px;
+        }
+        &::after {
+          transform: rotate(-45deg);
+          bottom: 7px;
+        }
+      }
       tspan {
         font-weight: 500;
         color: white;
