@@ -53,7 +53,6 @@ class App extends Component {
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
-      console.log('EXHAUSTIVE', {data})
       // Set all zones
       this.props.setExhaustive(data.zones)
 
