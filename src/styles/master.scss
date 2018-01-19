@@ -62,6 +62,10 @@ input[type="text"].search {
     text-align: left;
   }
 }
+p.red {
+  font-weight: 700 !important;
+  color: $red !important;
+}
 button, input, .button {
   color: white;
   font-size: 1rem;
@@ -253,18 +257,28 @@ p span {
   }
   .overall-container {
     background-color: $dark-gray;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
     .horizontal-container {
       display: flex;
       width: 100%;
+      flex-direction: row;
       align-items: stretch;
       justify-content: space-between;
       flex-wrap: wrap;
+      flex-wrap: wrap;
       .card {
-        margin-bottom: 20px;
+        margin-bottom: 14px;
+      }
+    }
+    .vertical-container {
+      display: flex;
+      flex-direction: column;
+      flex-wrap: wrap;
+      width: calc(50% - 7px);
+      .horizontal-container {
+        .card {
+          width: 45%;
+          width: calc(50% - 7px);
+        }
       }
     }
   }
@@ -275,14 +289,16 @@ p span {
     flex: 1;
     h2 {
       background-image: url('/static/img/icons/connus.svg');
-      background-size: contain;
       background-position: right center;
       background-repeat: no-repeat;
-      padding: 10px 0;
+      padding: 0px 0 0;
       background-size: 20px;
       display: flex;
+      height: 30px;
       justify-content: space-between;
       z-index: 1000;
+      align-items: center;
+      margin-bottom: 20px;
       > div {
         margin-right: 40px;
         z-index: 1000;
@@ -354,7 +370,6 @@ p span {
   }
   input[type="button"] {
     display: inline-block;
-    // border-color: $blue;
     margin-left: 10px;
     &:first-child {
       margin-left: 0;
@@ -380,7 +395,6 @@ p span {
     text-transform: uppercase;
     font-size: 0.75rem;
     color: $lighter-gray;
-    // background-color: $dark-gray;
     .table-item  .large {
       color: $lighter-gray;
       font-weight: 500 !important;
@@ -1671,9 +1685,6 @@ ul.mini-nav {
       }
     }
     .card {
-      flex: 1;
-      max-width: 100%;
-      margin-right: 20px;
       background-color: #20252d;
       border-radius: 5px;
       display: flex;
@@ -1689,6 +1700,15 @@ ul.mini-nav {
       p {
         font-weight: 600;
         color: $lighter-gray;
+      }
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        .action {
+          font-weight: 700;
+          color: $lighter-gray;
+        }
       }
       &:last-child {
         margin-right: 0;
@@ -1909,8 +1929,7 @@ ul.mini-nav {
       padding-left: 50px;
     }
     .overall-container {
-      padding: 30px 30px 20px;
-      padding-left: 10px;
+      padding: 0;
     }
   }
   /*
@@ -1921,10 +1940,6 @@ ul.mini-nav {
   /*
     DASHBOARD
    */
-
-  .dashboard {
-
-  }
 
 
   /*
@@ -1938,7 +1953,25 @@ ul.mini-nav {
   }
 }
 
+@media screen and (max-width: 750px) {
+  .dashboard .overall-container .horizontal-container {
+    flex-direction: column;
+    .vertical-container {
+      width: 100%;
+      .horizontal-container {
+        flex-direction: row;
+      }
+    }
+  }
+}
+
 @media screen and (max-width: 400px) {
+  .dashboard .overall-container .horizontal-container .vertical-container .horizontal-container {
+    flex-direction: column;
+    .card {
+      width: 100%;
+    }
+  }
   .app-content {
     padding-left: 0;
     padding-bottom: 70px;

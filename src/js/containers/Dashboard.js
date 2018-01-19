@@ -98,109 +98,135 @@ class Dashboard extends Component {
           </div></h2>
           <div className="overall-container">
             <div className="horizontal-container">
-              <Card className="graph-container" title="Rendimiento general">
-                <div className="graph">
-                  <PieChart width={200} height={200}>
-                    <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={data}
-                      cx={95} cy={95}
-                      innerRadius={60}
-                      outerRadius={95}
-                      strokeWidth={0}
-                      label
-                    >
-                      {
-                        data.map(({name}, index) =>
-                          <Cell key={index} fill={getColor(name)}/>
-                        )
-                      }
-                    </Pie>
-                    <RechartsTooltip isAnimationActive={false} content={Tooltip} />
-                  </PieChart>
-                  <h1>96%</h1>
-                </div>
-                <div>
-                  <h3>Equipos funcionando correctamente</h3>
-                  <p>120 sitios</p>
-                  <div className="stats">
-                    <p><span>96.1%</span> funcionando</p>
-                    <p><span>2.8%</span> alertado</p>
-                    <p><span>1.1%</span> dañado</p>
+              <div className="vertical-container">
+                <Card className="graph-container" title="Rendimiento general">
+                  <div className="graph">
+                    <PieChart width={200} height={200}>
+                      <Pie
+                        animationBegin={0}
+                        dataKey="value"
+                        data={data}
+                        cx={95} cy={95}
+                        innerRadius={60}
+                        outerRadius={95}
+                        strokeWidth={0}
+                        label
+                      >
+                        {
+                          data.map(({name}, index) =>
+                            <Cell key={index} fill={getColor(name)}/>
+                          )
+                        }
+                      </Pie>
+                      <RechartsTooltip isAnimationActive={false} content={Tooltip} />
+                    </PieChart>
+                    <h1>96%</h1>
                   </div>
-                </div>
-              </Card>
-              <Card className="historical" title="Media de servicio">
-                <ResponsiveContainer width="100%" height={190}>
-                  <AreaChart data={barData}
-                    syncId="dashboard"
-                    margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                     <XAxis dataKey="name" height={20} mirror axisLine={false} padding={{right: 50}}/>
-                     <CartesianGrid stroke="#424953" horizontal={false} strokeWidth={0.5} />
-                     <defs>
-                      <linearGradient id="colorUv" x1="1" y1="0" x2="0" y2="0">
-                        <stop offset="0%" stopColor={blue} stopOpacity={0.8}/>
-                        <stop offset="100%" stopColor={blue} stopOpacity={0.1}/>
-                      </linearGradient>
-                    </defs>
-                    <RechartsTooltip isAnimationActive={false} content={Tooltip} />
-                     <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0}
-                       type="natural" stroke={blue} strokeWidth={2}
-                       activeDot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
-                   <ReferenceLine y={40} stroke="red" strokeDasharray="5 5" />
-                 </AreaChart>
-               </ResponsiveContainer>
-              </Card>
-            </div>
-            <div className="horizontal-container">
-              <Card title="Afluencia de personas" className="horizontal">
-                <div>
-                  <h1>105</h1>
-                  <p>7 personas por hora</p>
-                </div>
-                <ResponsiveContainer width="100%" height={190}>
-                  <ComposedChart data={data2}
-                        syncId="dashboard"
-                        margin={{top: 20, right: 20, bottom: 20, left: 20}}>
-                      <XAxis dataKey="name" height={15} axisLine={false} tickLine={false} />
-                      <YAxis width={21} tickLine={false} />
+                  <div>
+                    <h3>Equipos funcionando correctamente</h3>
+                    <p>120 sitios</p>
+                    <div className="stats">
+                      <p><span>96.1%</span> funcionando</p>
+                      <p><span>2.8%</span> alertado</p>
+                      <p><span>1.1%</span> dañado</p>
+                    </div>
+                  </div>
+                </Card>
+                <Card className="historical" title="Media de servicio">
+                  <ResponsiveContainer width="100%" height={190}>
+                    <AreaChart data={barData}
+                      syncId="dashboard"
+                      margin={{top: 5, right: 30, left: 20, bottom: 5}}>
+                       <XAxis dataKey="name" height={20} mirror axisLine={false} padding={{right: 50}}/>
+                       <CartesianGrid stroke="#424953" horizontal={false} strokeWidth={0.5} />
+                       <defs>
+                        <linearGradient id="colorUv" x1="1" y1="0" x2="0" y2="0">
+                          <stop offset="0%" stopColor={blue} stopOpacity={0.8}/>
+                          <stop offset="100%" stopColor={blue} stopOpacity={0.1}/>
+                        </linearGradient>
+                      </defs>
                       <RechartsTooltip isAnimationActive={false} content={Tooltip} />
-                      <Bar dataKey="uv" fill="rgba(255,255,255,0.15)"/>
-                      <Line type="linear" dataKey="uv" stroke={blue}
-                        strokeWidth={1}
-                        activeDot={{ strokeWidth: 0, fill: blue }}
-                        dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
-                   </ComposedChart>
+                       <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0}
+                         type="natural" stroke={blue} strokeWidth={2}
+                         activeDot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
+                     <ReferenceLine y={40} stroke="red" strokeDasharray="5 5" />
+                   </AreaChart>
                  </ResponsiveContainer>
-              </Card>
-              <Card title="Flujo vehicular" className="horizontal">
-                <div>
-                  <h1>210</h1>
-                  <p>15 vehículos por hora</p>
+                </Card>
+                <div className="horizontal-container">
+                  <Card
+                    title="Zona de mas alertas"
+                    className="horizontal"
+                  >
+                    <h1>54</h1>
+                    <p>Zona Centro</p>
+                    <div className="card-footer">
+                      <p className="red">21 alertas</p>
+                      <span className="action">Revisar</span>
+                    </div>
+                  </Card>
+                  <Card
+                    title="Sitio de mas alertas"
+                    className="horizontal"
+                  >
+                    <h1>Norte</h1>
+                    <p>98 Sitios</p>
+                    <div className="card-footer">
+                      <p className="red">21 alertas</p>
+                      <span className="action">Revisar</span>
+                    </div>
+                  </Card>
                 </div>
-                <ResponsiveContainer width="100%" height={190}>
-                  <LineChart data={data2}
-                        syncId="dashboard"
-                        margin={{top: 20, right: 20, bottom: 20, left: 20}}>
-                      <XAxis dataKey="name" height={15} axisLine={false} tickLine={false} />
-                      <YAxis width={21} tickLine={false} />
-                      <RechartsTooltip isAnimationActive={false} content={Tooltip} />
-                      <Line type="linear" dataKey="uv" stroke={blue}
-                        strokeWidth={1}
-                        activeDot={{ strokeWidth: 0, fill: blue }}
-                        dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
-                      <Line type="linear" dataKey="pv" stroke={yellow}
-                        strokeWidth={1}
-                        activeDot={{ strokeWidth: 0, fill: yellow }}
-                        dot={{ stroke: yellow, strokeWidth: 2, fill: darkGray }} />
-                      <Line type="linear" dataKey="tv" stroke={violet}
-                        strokeWidth={1}
-                        activeDot={{ strokeWidth: 0, fill: violet }}
-                        dot={{ stroke: violet, strokeWidth: 2, fill: darkGray }} />
-                   </LineChart>
-                 </ResponsiveContainer>
-              </Card>
+              </div>
+              <div className="vertical-container">
+                <Card title="Afluencia de personas" className="horizontal">
+                  <div>
+                    <h1>105</h1>
+                    <p>7 personas por hora</p>
+                  </div>
+                  <ResponsiveContainer width="100%" height={190}>
+                    <ComposedChart data={data2}
+                          syncId="dashboard"
+                          margin={{top: 20, right: 20, bottom: 20, left: 20}}>
+                        <XAxis dataKey="name" height={15} axisLine={false} tickLine={false} />
+                        <YAxis width={21} tickLine={false} />
+                        <RechartsTooltip isAnimationActive={false} content={Tooltip} />
+                        <Bar dataKey="uv" fill="rgba(255,255,255,0.15)"/>
+                        <Line type="linear" dataKey="uv" stroke={blue}
+                          strokeWidth={1}
+                          activeDot={{ strokeWidth: 0, fill: blue }}
+                          dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
+                     </ComposedChart>
+                   </ResponsiveContainer>
+                </Card>
+                <Card title="Flujo vehicular" className="horizontal">
+                  <div>
+                    <h1>210</h1>
+                    <p>15 vehículos por hora</p>
+                  </div>
+                  <ResponsiveContainer width="100%" height={190}>
+                    <LineChart data={data2}
+                          syncId="dashboard"
+                          margin={{top: 20, right: 20, bottom: 20, left: 20}}>
+                        <XAxis dataKey="name" height={15} axisLine={false} tickLine={false} />
+                        <YAxis width={21} tickLine={false} />
+                        <RechartsTooltip isAnimationActive={false} content={Tooltip} />
+                        <Line type="linear" dataKey="uv" stroke={blue}
+                          strokeWidth={1}
+                          activeDot={{ strokeWidth: 0, fill: blue }}
+                          dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
+                        <Line type="linear" dataKey="pv" stroke={yellow}
+                          strokeWidth={1}
+                          activeDot={{ strokeWidth: 0, fill: yellow }}
+                          dot={{ stroke: yellow, strokeWidth: 2, fill: darkGray }} />
+                        <Line type="linear" dataKey="tv" stroke={violet}
+                          strokeWidth={1}
+                          activeDot={{ strokeWidth: 0, fill: violet }}
+                          dot={{ stroke: violet, strokeWidth: 2, fill: darkGray }} />
+                     </LineChart>
+                   </ResponsiveContainer>
+                </Card>
+              </div>
             </div>
             <div className="events-container">
               <Table
@@ -221,7 +247,7 @@ class Dashboard extends Component {
                     <div className="medium bold">{item.event}</div>
                     <div className="medium">{item.status}</div>
                     <div><RiskBar risk={item.risk} /></div>
-                    <div>{item.site && item.site.key}</div>
+                    <div>{item.site}</div>
                   </div>
                 }
                 elements={[
