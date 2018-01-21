@@ -81,6 +81,7 @@ class Dashboard extends Component {
       to: new Date()
     }
   }
+
   render() {
     const { state, props } = this
     const { facialReports, accessReports, cameraReports, perimeterReports, vehicularReports } = props
@@ -97,7 +98,7 @@ class Dashboard extends Component {
             />
           </div></h2>
           <div className="overall-container">
-            <div className="horizontal-container">
+            <div className="horizontal-container minified">
               <div className="vertical-container">
                 <Card className="graph-container" title="Rendimiento general">
                   <div className="graph">
@@ -180,9 +181,14 @@ class Dashboard extends Component {
               </div>
               <div className="vertical-container">
                 <Card title="Afluencia de personas" className="horizontal">
-                  <div>
-                    <h1>105</h1>
-                    <p>7 personas por hora</p>
+                  <div className="info">
+                    <div className="data">
+                      <h1>105 <span className="delta up">15%</span></h1>
+                      <p>7 personas por hora</p>
+                    </div>
+                    <ul className="leyend">
+                      <li className="car">Personas</li>
+                    </ul>
                   </div>
                   <ResponsiveContainer width="100%" height={220}>
                     <ComposedChart data={data2}
@@ -200,9 +206,16 @@ class Dashboard extends Component {
                    </ResponsiveContainer>
                 </Card>
                 <Card title="Flujo vehicular" className="horizontal">
-                  <div>
-                    <h1>210</h1>
-                    <p>15 vehículos por hora</p>
+                  <div className="info">
+                    <div className="data">
+                      <h1>210 <span className="delta up">20%</span></h1>
+                      <p>15 vehículos por hora</p>
+                    </div>
+                    <ul className="leyend">
+                      <li className="tracto">Tracto</li>
+                      <li className="car">Automóvil</li>
+                      <li className="motor-cycle">Motocicleta</li>
+                    </ul>
                   </div>
                   <ResponsiveContainer width="100%" height={190}>
                     <LineChart data={data2}
@@ -252,7 +265,7 @@ class Dashboard extends Component {
                 }
                 elements={[
                   { title: 'Historial', elements: reports},
-                  { title: 'Alertas', elements: state.alerts}
+                  { title: 'Alertas', elements: reports.filter($0 => $0.risk > 2)}
                 ]}
                 titles={[
                   {title: 'Tiempo' },

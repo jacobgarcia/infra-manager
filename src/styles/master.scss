@@ -1698,6 +1698,39 @@ ul.mini-nav {
       padding: 20px;
       padding-top: 15px;
       padding-bottom: 0;
+      h1 {
+        .delta {
+          font-size: 1rem;
+          padding-left: 10px;
+        }
+        .delta.up { color: $connus-blue; }
+        .delta.down { color: $red; }
+      }
+      .info {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        ul li {
+          position: relative;
+          padding-right: 20px;
+          margin-bottom: 5px;
+          text-align: right;
+          font-weight: 500;
+          color: $lighter-gray;
+        }
+        ul li::before {
+          display: block; content: ''; position: absolute;
+          width: 8px;
+          height: 8px;
+          top: 3px;
+          right: 0px;
+          border: 3px solid red;
+          border-radius: 50%;
+        }
+        ul li.tracto::before { border-color: $violet; }
+        ul li.car::before { border-color: $blue; }
+        ul li.motor-cycle::before { border-color: $yellow; }
+      }
       .button {
         width: 160px;
         padding-left: 5px;
@@ -1711,7 +1744,7 @@ ul.mini-nav {
         &::before, &::after {
           content: '';
           position: absolute;
-          width: 10px;
+          width: 9px;
           height: 2px;
           background-color: $lighter-gray;
           display: block;
@@ -1720,11 +1753,11 @@ ul.mini-nav {
         }
         &::before {
           transform: rotate(45deg);
-          top: 7px;
+          top: 8px;
         }
         &::after {
           transform: rotate(-45deg);
-          bottom: 7px;
+          bottom: 8px;
         }
       }
       tspan {
@@ -1757,7 +1790,7 @@ ul.mini-nav {
         font-size: 0.9rem;
         text-transform: uppercase;
         margin-bottom: 20px;
-        color: $light-gray;
+        color: $lighter-gray;
       }
       .content {
         display: flex;
