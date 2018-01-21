@@ -85,8 +85,8 @@ class FacialRecognition extends Component {
               </div>
             }
             elements={[
-              { title: 'Registros', elements: props.facialReports },
-              { title: 'Alertas', elements: props.facialReports.filter($0 => $0.risk >= 3) }
+              { title: 'Registros', elements: props.facialReports.filter($0 => $0.risk < 1) },
+              { title: 'Alertas', elements: props.facialReports.filter($0 => $0.risk >= 1) }
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
@@ -108,12 +108,12 @@ class FacialRecognition extends Component {
                 </div>
                 <div className="detail">
                   <span>Rostro detectado</span>
-                  <div className="image-slider" style={{backgroundImage: `url(/static/img/dummy/frm-0` + this.state.selectedElementIndex[0] +`.jpg)`}} />
+                  <div className="image-slider" style={{backgroundImage: `url(` + state.selectedLog.photo +`)`}} />
                 </div>
                 <div className="details-container">
                   <div className="detail">
                     <span>Hora del suceso</span>
-                    <p>{state.selectedLog.hour}</p>
+                    <p>{state.selectedLog.timestamp.toLocaleTimeString()}</p>
                   </div>
                   <div className="detail">
                     <span>Tipo de ingreso</span>
