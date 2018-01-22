@@ -78,9 +78,11 @@ class Dashboard extends Component {
       alerts: [],
       selectedElementIndex: [null, null],
       from: new Date(),
-      to: new Date()
+      to: new Date(),
+      detail: null
     }
   }
+
   render() {
     const { state, props } = this
     const { facialReports, accessReports, cameraReports, perimeterReports, vehicularReports } = props
@@ -97,21 +99,54 @@ class Dashboard extends Component {
             />
           </div></h2>
           <div className="overall-container">
-            <div className="horizontal-container">
+            <div className={`horizontal-container ${state.detail !== null ? 'minified' : ''}`}>
               <div className="vertical-container">
-                <Card className="graph-container" title="Rendimiento general">
+                <Card
+                  className={`graph-container`}
+                  full={state.detail === 'performance'}
+                  detailView={
+                    <div className="detail-view">
+                      <h1>4/300 equipos dañados</h1>
+                      <Table
+                        selectedElementIndex={state.selectedElementIndex}
+                        element={(item, index, sectionIndex) =>
+                          <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
+                            key={index}
+                            onClick={() => this.onLogSelect(item, index, sectionIndex)}>
+                            {
+                              item.timestamp &&
+                              <div>{item.timestamp.toLocaleDateString('es-MX')} {item.timestamp.toLocaleTimeString('es-MX')}</div>
+                            }
+                            <div className="medium bold">{item.event}</div>
+                            <div className="medium">{item.status}</div>
+                            <div><RiskBar risk={item.risk} /></div>
+                            <div>{item.site}</div>
+                            <div>{item.risk}</div>
+                          </div>
+                        }
+                        elements={[
+                          { title: 'Dañados', elements: []},
+                          { title: 'Alertados', elements: []}
+                        ]}
+                        titles={[
+                          {title: 'Tiempo' },
+                          {title: 'Sitio', className: 'medium'},
+                          {title: 'Zona', className: 'medium'},
+                          {title: 'Suceso'},
+                          {title: 'Estatus'},
+                          {title: 'Riesgo'}
+                        ]}
+                      />
+                    </div>
+                  }
+                  detailActions={<div onClick={() => this.setState({detail: null})}>Cerrar</div>}
+                  title="Rendimiento general">
                   <div className="graph">
                     <PieChart width={200} height={200}>
                       <Pie
-                        animationBegin={0}
-                        dataKey="value"
-                        data={data}
-                        cx={95} cy={95}
-                        innerRadius={60}
-                        outerRadius={95}
-                        strokeWidth={0}
-                        label
-                      >
+                        animationBegin={0} dataKey="value" data={data}
+                        cx={95} cy={95} innerRadius={60} outerRadius={95}
+                        strokeWidth={0} label>
                         {
                           data.map(({name}, index) =>
                             <Cell key={index} fill={getColor(name)}/>
@@ -121,19 +156,47 @@ class Dashboard extends Component {
                       <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                     </PieChart>
                     <h1>96.1%</h1>
+                    <p>300 sitios</p>
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
                     <p>120 sitios</p>
                     <div className="stats">
                       <p><span>96.1%</span> funcionando</p>
-                      <p className="border button warning"><span>2.8%</span> alertado</p>
-                      <p className="border button error"><span>1.1%</span> dañado</p>
+                      <p className="border button warning" onClick={() => this.setState({detail: 'performance'})}><span>2.8%</span> alertado</p>
+                      <p className="border button error" onClick={() => this.setState({detail: 'performance'})}><span>1.1%</span> dañado</p>
                     </div>
                   </div>
                 </Card>
+                <Card title="Afluencia de personas" className="horizontal">
+                  <div className="info">
+                    <div className="data">
+                      <h1>105 <span className="delta up">15%</span></h1>
+                      <p>7 personas por hora</p>
+                    </div>
+                    <ul className="leyend">
+                      <li className="car">Personas</li>
+                    </ul>
+                  </div>
+                  <ResponsiveContainer width="100%" height={260}>
+                    <ComposedChart data={data2}
+                          syncId="dashboard"
+                          margin={{top: 20, right: 20, bottom: 20, left: 20}}>
+                        <XAxis dataKey="name" height={15} axisLine={false} tickLine={false} />
+                        <YAxis width={21} tickLine={false} />
+                        <RechartsTooltip isAnimationActive={false} content={Tooltip} />
+                        <Bar dataKey="uv" fill="rgba(255,255,255,0.15)"/>
+                        <Line type="linear" dataKey="uv" stroke={blue}
+                          strokeWidth={1}
+                          activeDot={{ strokeWidth: 0, fill: blue }}
+                          dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
+                     </ComposedChart>
+                   </ResponsiveContainer>
+                </Card>
+              </div>
+              <div className="vertical-container">
                 <Card className="historical" title="Media de servicio">
-                  <ResponsiveContainer width="100%" height={190}>
+                  <ResponsiveContainer width="100%" height={160}>
                     <AreaChart data={barData}
                       syncId="dashboard"
                       margin={{top: 5, right: 30, left: 20, bottom: 5}}>
@@ -177,32 +240,17 @@ class Dashboard extends Component {
                     </div>
                   </Card>
                 </div>
-              </div>
-              <div className="vertical-container">
-                <Card title="Afluencia de personas" className="horizontal">
-                  <div>
-                    <h1>105</h1>
-                    <p>7 personas por hora</p>
-                  </div>
-                  <ResponsiveContainer width="100%" height={220}>
-                    <ComposedChart data={data2}
-                          syncId="dashboard"
-                          margin={{top: 20, right: 20, bottom: 20, left: 20}}>
-                        <XAxis dataKey="name" height={15} axisLine={false} tickLine={false} />
-                        <YAxis width={21} tickLine={false} />
-                        <RechartsTooltip isAnimationActive={false} content={Tooltip} />
-                        <Bar dataKey="uv" fill="rgba(255,255,255,0.15)"/>
-                        <Line type="linear" dataKey="uv" stroke={blue}
-                          strokeWidth={1}
-                          activeDot={{ strokeWidth: 0, fill: blue }}
-                          dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
-                     </ComposedChart>
-                   </ResponsiveContainer>
-                </Card>
                 <Card title="Flujo vehicular" className="horizontal">
-                  <div>
-                    <h1>210</h1>
-                    <p>15 vehículos por hora</p>
+                  <div className="info">
+                    <div className="data">
+                      <h1>210 <span className="delta up">20%</span></h1>
+                      <p>15 vehículos por hora</p>
+                    </div>
+                    <ul className="leyend">
+                      <li className="tracto">Tracto</li>
+                      <li className="car">Automóvil</li>
+                      <li className="motor-cycle">Motocicleta</li>
+                    </ul>
                   </div>
                   <ResponsiveContainer width="100%" height={190}>
                     <LineChart data={data2}
@@ -252,7 +300,7 @@ class Dashboard extends Component {
                 }
                 elements={[
                   { title: 'Historial', elements: reports},
-                  { title: 'Alertas', elements: state.alerts}
+                  { title: 'Alertas', elements: reports.filter($0 => $0.risk > 2)}
                 ]}
                 titles={[
                   {title: 'Tiempo' },
