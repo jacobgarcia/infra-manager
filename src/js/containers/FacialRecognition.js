@@ -78,7 +78,7 @@ class FacialRecognition extends Component {
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                 <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
                 <div className="large">{item.event}</div>
-                <div className="hiddable">{item.zone}</div>
+                <div className="hiddable">{item.zone.name}</div>
                 <div className="hiddable">{item.site}</div>
                 <div><RiskBar risk={item.risk} /></div>
                 <div className="large hiddable">{item.status}</div>
