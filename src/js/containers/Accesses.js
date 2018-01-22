@@ -67,8 +67,8 @@ class Accesses extends Component {
               </div>
             }
             elements={[
-              { title: 'Registros', elements: props.accessReports},
-              { title: 'Alertas', elements: props.accessReports.filter($0 => $0.risk > 2)}
+              { title: 'Registros', elements: props.accessReports.filter($0 => $0.risk < 1)},
+              { title: 'Alertas', elements: props.accessReports.filter($0 => $0.risk >= 1)}
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
@@ -79,18 +79,41 @@ class Accesses extends Component {
               {title: 'Estatus o acción', className: 'medium hiddable'}
             ]}
           />
-          {
-            state.selectedLog !== null
+          { state.selectedLog !== null
             &&
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
                 <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
                 <div className="time-location">
-                  <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString('es-MX')}`}</p>
+                  <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
                   <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
                 </div>
                 <div className="detail">
-
+                  <span>Rostro detectado</span>
+                  <div className="image-slider" style={{backgroundImage: `url(` + state.selectedLog.photo +`)`}} />
+                </div>
+                <div className="details-container">
+                  <div className="detail">
+                    <span>Hora del suceso</span>
+                    <p>{state.selectedLog.timestamp.toLocaleTimeString()}</p>
+                  </div>
+                  <div className="detail">
+                    <span>Tipo de acceso</span>
+                    <p>{state.selectedLog.access}</p>
+                  </div>
+                  <div className="detail">
+                    <span>Usuario Que Autoriza</span>
+                    <p>{state.selectedLog.authorized}</p>
+                  </div>
+                  <div className="detail">
+                    <span>Estatus</span>
+                    <p>{state.selectedLog.status}</p>
+                  </div>
+                  <div className="detail">
+                    <span>Código único de identificación</span>
+                    <p>{state.selectedLog.id}</p>
+                    <img src="" alt=""/>
+                  </div>
                 </div>
               </div>
             </div>
