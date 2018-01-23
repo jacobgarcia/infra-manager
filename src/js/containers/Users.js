@@ -100,13 +100,21 @@ class Users extends Component {
           <h2>Usuarios</h2>
           <div className="table">
             <div className="table-actions">
-              <input
-                type="text"
-                placeholder="Buscar"
-                className="search action"
-                onChange={this.onQuerySearch}
-              />
-              <input type="button" className="action" value="Añadir" onClick={() => this.setState({ isAddingUser: true })} />
+              <div className="input-wrapper search">
+                <input
+                  type="text"
+                  placeholder="Buscar"
+                  className="search action"
+                  onChange={this.onQuerySearch}
+                />
+              </div>
+              <div className="input-wrapper add">
+                <input
+                  type="button"
+                  className="action"
+                  value="Añadir"
+                  onClick={() => this.setState({ isAddingUser: true })} />
+              </div>
             </div>
             <div className="table-header">
               <div className="table-item">

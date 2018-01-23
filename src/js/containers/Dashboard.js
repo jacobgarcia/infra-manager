@@ -3,23 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { PieChart, Pie, Cell, AreaChart, XAxis, LineChart, CartesianGrid, Tooltip as RechartsTooltip, ReferenceLine, Area, ResponsiveContainer,ComposedChart, YAxis, Bar, Line } from 'recharts'
 
-import { Card, Table, DateRangePicker, RiskBar } from '../components'
+import { Card, Table, DateRangePicker, RiskBar, Tooltip } from '../components'
 import { yellow, red, blue, darkGray, violet } from '../lib/colors'
-
-const Tooltip = ({payload, label}) => (
-  <div className="tooltip">
-    <span>{label}</span>
-    {
-      payload &&
-      payload.map((element, index) =>
-        <div key={index}>
-          <span className="icon" style={{backgroundColor: element.color}} />
-          <p>{element.name}: {element.value}</p>
-        </div>
-      )
-    }
-  </div>
-)
 
 const data = [
   { name: 'workings', value: 96.1 },
@@ -106,7 +91,7 @@ class Dashboard extends Component {
                   full={state.detail === 'performance'}
                   detailView={
                     <div className="detail-view">
-                      <h1>4/300 equipos dañados</h1>
+                      <h1>4<p>/300 equipos dañados (<span>1.2%</span>)</p></h1>
                       <Table
                         selectedElementIndex={state.selectedElementIndex}
                         element={(item, index, sectionIndex) =>
@@ -139,7 +124,9 @@ class Dashboard extends Component {
                       />
                     </div>
                   }
-                  detailActions={<div onClick={() => this.setState({detail: null})}>Cerrar</div>}
+                  detailActions={
+                    <p onClick={() => this.setState({detail: null})}>Cerrar</p>
+                  }
                   title="Rendimiento general">
                   <div className="graph">
                     <PieChart width={200} height={200}>

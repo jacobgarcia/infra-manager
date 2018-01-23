@@ -55,7 +55,7 @@ input[type="checkbox"] {
 }
 input[type="text"].search {
   text-align: center;
-  width: 117px;
+  width: 137px;
   transition: width 0.3s;
   &:focus {
     width: 200px;
@@ -75,6 +75,32 @@ button, input, .button {
   border-radius: 3px;
   background-color: $dark-gray;
   cursor: pointer;
+}
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  &.add {
+    transform: translateX(-22px);
+  }
+  &.add, &.search {
+    input[type].action {
+      padding-left: 42px !important;
+    }
+  }
+  &::before {
+    position: absolute;
+    content: '';
+    left: 15px;
+    top: 0;
+    width: 26px;
+    height: 29px;
+    background-repeat: no-repeat;
+    background-image: url('/static/img/icons/sprite-sheet.svg');
+    background-size: 325px 25px;
+  }
+  &.add::before  { background-position: -275px; }
+  &.search::before  { background-position: -300px; }
 }
 button, input[type="button"], input[type="submit"], .button, input[type="text"].search {
   padding: 3px 30px;
@@ -1456,7 +1482,7 @@ $dark: #1d212d;
   li a::before {
     background-repeat: no-repeat;
     background-image: url('/static/img/icons/sprite-sheet.svg');
-    background-size: 250px 25px;
+    background-size: 325px 25px;
   }
   li {
     position: relative;
@@ -1487,10 +1513,11 @@ $dark: #1d212d;
   .perimeter::before { background-position: -75px; }
   .cctv::before { background-position: -150px; }
   .facial-recognition::before { background-position: -100px; }
+  .settings::before { background-position: -225px; }
 
   .users::before { background-position: -175px; }
   .reports::before { background-position: -200px; }
-  .logout::before { background-position: -225px; }
+  .logout::before { background-position: -250px; }
   h2 {
     font-weight: 600;
     color: $gray;
@@ -1830,6 +1857,16 @@ ul.mini-nav {
       }
       .detail-view {
         width: 100%;
+        h1 p {
+          font-size: 0.9rem;
+          font-weight: 400;
+          display: inline-block;
+          margin-left: 4px;
+          color: white;
+          span {
+            color: $yellow;
+          }
+        }
       }
       .card-header {
         display: flex;
@@ -1840,6 +1877,12 @@ ul.mini-nav {
           text-transform: uppercase;
           margin-bottom: 20px;
           color: $lighter-gray;
+        }
+        .actions p {
+          font-size: 0.8rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          cursor: pointer;
         }
       }
       .card-content {
