@@ -1,3 +1,5 @@
+export { default as Bundle } from './Bundle'
+
 export { default as Navigator } from './Navigator'
 
 export { default as Tooltip } from './Tooltip'

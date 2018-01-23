@@ -6,9 +6,17 @@ import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
 import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
-import { Dashboard, Map, Users, Statistics, Settings, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports } from './'
-import { Navigator } from '../components'
+import { Dashboard, Users, Statistics, Settings, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports } from './'
+import { Navigator, Bundle } from '../components'
 import { NetworkOperation } from '../lib'
+
+import { default as loadMap } from 'bundle-loader?lazy!./Map'
+
+function Map(props) {
+  <Bundle load={loadMap}>
+    {Map => <Map {...props}/>}
+  </Bundle>
+}
 
 class App extends Component {
   constructor(props) {
@@ -19,9 +27,11 @@ class App extends Component {
       isLoading: true,
       willCompleteLoad: false
     }
-
   }
+
   componentDidMount() {
+    loadMap(() => {})
+
     const token = localStorage.getItem('token')
     let path = ''
     if (this.props.location.pathname !== '/') {
@@ -53,7 +63,6 @@ class App extends Component {
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
-      console.log({data})
       // Set all zones
       this.props.setExhaustive(data.zones)
 
@@ -63,12 +72,8 @@ class App extends Component {
       const { response = {} } = error
       this.props.setComplete()
 
-      switch (response.status) {
-        case 404: case 401: case 400:
-          this.props.history.replace(`/login${path}`)
-          break
-        default: // TODO Display error
-          break
+      if (response.status === 401 || response.status === 400 || response.status === 404) {
+        this.props.history.replace(`/login${path}`)
       }
     })
   }
@@ -81,12 +86,12 @@ class App extends Component {
     })
 
     this.socket.on('alert', report => {
-      console.log("Alert recieved from external server")
+      console.warn("Alert recieved from external server")
     })
   }
 
   componentDidCatch(error, info) {
-    console.log('ERROR')
+    console.warn('ERROR')
     console.error(error, info)
 
     this.setState({
