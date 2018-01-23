@@ -5,7 +5,8 @@ const dumbCctvLogs = [
     zone: {name: 'Centro', _id: null},
     site: 'MEXCOB0992',
     risk: 2,
-    status: 'Análisis de video en proceso'
+    status: 'Análisis de video en proceso',
+    video: '/static/video/dummy/cctv-00.mp4'
   },
   {
     timestamp: new Date(),
@@ -13,7 +14,8 @@ const dumbCctvLogs = [
     zone: {name: 'Centro', _id: null},
     site: 'DIFXCH1293',
     risk: 0,
-    status: 'Detección inofensiva. Personal de trabajo foráneo'
+    status: 'Detección inofensiva. Personal de trabajo foráneo',
+    video: '/static/video/dummy/cctv-01.mp4'
   },
   {
     timestamp: new Date(),
@@ -21,7 +23,8 @@ const dumbCctvLogs = [
     zone: {name: 'Centro', _id: null},
     site: 'DIFXCH1293',
     risk: 3,
-    status: 'Análisis de video en proceso'
+    status: 'Análisis de video en proceso',
+    video: '/static/video/dummy/cctv-02.mp4'
   }
 ]
 
