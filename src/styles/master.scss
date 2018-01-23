@@ -1533,11 +1533,12 @@ $dark: #1d212d;
     flex-direction: row;
     margin-left: 0;
   }
+  .sensors::before { background-position: -75px; }
   .sites::before { background-position: -25px; }
   .accesses::before { background-position: -50px; }
   .vehicular-flow::before { background-position: -125px; }
   .perimeter::before { background-position: -75px; }
-  .cctv::before { background-position: -150px; }
+  .video-surveillance::before { background-position: -150px; }
   .facial-recognition::before { background-position: -100px; }
   .settings::before { background-position: -225px; }
 
@@ -1566,6 +1567,7 @@ $dark: #1d212d;
   position: fixed;
   transition: .4s;
   width: 100%;
+  span { white-space: nowrap; }
   &::-webkit-scrollbar { width: 0 !important }
   *.fade {
     min-width: 200px;
@@ -1589,7 +1591,7 @@ $dark: #1d212d;
       }
     }
     *.fade {
-      opacity: 1;
+      opacity: 0;
       transition: opacity .3s, visibility 0 .4s;
       visibility: hidden;
     }

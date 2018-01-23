@@ -65,7 +65,7 @@ class Navigator extends Component {
           <h2 className="fade">Servicios</h2>
           {
             props.services.filter(service => props.credentials.company ? props.credentials.company.services.some($0 => $0 === service._id) : false).map(({title, name}) =>
-              <li key={name} onClick={() => this.closeNavigator()} className="alerted">
+              <li key={name} onClick={() => this.closeNavigator()}>
                 <NavLink to={`/${name}`} className={name}>
                   <span className="access fade">{title}</span>
                 </NavLink>
@@ -80,7 +80,6 @@ class Navigator extends Component {
           <li className="hr" />
           <li onClick={() => this.closeNavigator()}><NavLink to="/settings" className="settings"><span className="settings fade">Ajustes</span></NavLink></li>
         </ul>
-        {/* <li className=""><span className="logout">Cerrar sesión</span></li> */}
         <li onClick={() => this.closeNavigator()} className="logout">
           <NavLink exact to="/login" className="logout" onClick={this.logOut}>
             <span className="fade">Cerrar sesión</span>
@@ -94,6 +93,10 @@ class Navigator extends Component {
 Navigator.defaultProps = {
   services: [
     {
+      title: 'Sensorización',
+      name: 'sensors',
+      _id: '00'
+    }, {
       title: 'Accesos',
       name: 'accesses',
       _id: '01'
@@ -110,8 +113,8 @@ Navigator.defaultProps = {
       name: 'facial-recognition',
       _id: '04'
     }, {
-      title: 'CCTV',
-      name: 'cctv',
+      title: 'Video Vigilancia',
+      name: 'video-surveillance',
       _id: '05'
     }
   ]

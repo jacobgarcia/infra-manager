@@ -18,7 +18,7 @@ export { default as Perimeter } from './Perimeter'
 
 export { default as FacialRecognition } from './FacialRecognition'
 
-export { default as Cctv } from './Cctv'
+export { default as VideoSurveillance } from './VideoSurveillance'
 
 export { default as Settings } from './Settings'
 

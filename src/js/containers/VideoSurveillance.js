@@ -7,7 +7,7 @@ import { DateUtils } from 'react-day-picker'
 import { } from '../actions'
 import { Table, DateRangePicker, RiskBar } from '../components'
 
-class Cctv extends Component {
+class VideoSurveillance extends Component {
   constructor(props) {
     super(props)
 
@@ -45,10 +45,10 @@ class Cctv extends Component {
     return (
       <div className="app-content facial-recognition small-padding">
         <Helmet>
-          <title>Connus | CCTV</title>
+          <title>Connus | Video Vigilancia</title>
         </Helmet>
         <div className="content">
-          <h2>CCTV</h2>
+          <h2>Video Vigilancia</h2>
           <Table
             className={`${state.showLogDetail ? 'detailed' : ''}`}
             actionsContainer={
@@ -113,7 +113,7 @@ class Cctv extends Component {
   }
 }
 
-Cctv.propTypes = {
+VideoSurveillance.propTypes = {
   cameraReports: PropTypes.array
 }
 
@@ -129,4 +129,4 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Cctv)
+export default connect(mapStateToProps, mapDispatchToProps)(VideoSurveillance)
