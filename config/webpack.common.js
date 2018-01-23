@@ -30,22 +30,19 @@ module.exports = {
         }
       },
       {
-        test: /\.bundle\.js$/,
-        loader: 'bundle-loader',
-        options: {
-          name: 'my-chunk'
-        }
-      },
-      {
         test: /(\.css$|\.scss)/,
         use: env === 'production'
-          ? ExtractTextPlugin.extract({
-              fallback: 'style-loader',
-              use: [{loader: 'css-loader', options: { minimize: true}},{ loader: 'sass-loader' }]
+          ?
+          ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [{loader: 'css-loader', options: { minimize: true}}, {loader: 'sass-loader'}]
           })
-          : [{ loader: 'style-loader' },
-          { loader: 'css-loader' },
-          { loader: 'sass-loader' }]
+          :
+          [
+            { loader: 'style-loader' },
+            { loader: 'css-loader' },
+            { loader: 'sass-loader' }
+          ]
       }
     ]
   }
