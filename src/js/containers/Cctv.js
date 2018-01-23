@@ -29,6 +29,8 @@ class Cctv extends Component {
       selectedLog: item,
       selectedElementIndex: [index, sectionIndex]
     })
+
+    this.forceUpdate()
   }
 
   onDayClick(day) {
@@ -96,7 +98,7 @@ class Cctv extends Component {
               </div>
               <div>
                 <video width="360" height="240" controls loop muted autoPlay>
-                  <source src={"/static/video/dummy/cctv-0" + this.state.selectedElementIndex[0] + ".mp4"} type="video/mp4"/>
+                  <source src={state.selectedLog.video} type="video/mp4"/>
                 </video>
               </div>
               <div className="action destructive">

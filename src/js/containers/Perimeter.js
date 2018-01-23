@@ -33,6 +33,8 @@ class Perimeter extends Component {
       selectedLog: item,
       selectedElementIndex: [index, sectionIndex]
     })
+
+    this.forceUpdate()
   }
 
   onDayClick(day) {
