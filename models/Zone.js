@@ -2,10 +2,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-class ZoneClass {
-  // Methods
-}
-
 const schema = new Schema({
   name: {type: String, required: true},
   positions: {
@@ -13,10 +9,14 @@ const schema = new Schema({
     required: true
   },
   company: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
-  subzones: [{ type: Schema.Types.ObjectId, ref: 'Subzone', default: [] }], // Id of the subzones that belong to this zone, if applicable
   users: [{ type: Schema.Types.ObjectId, ref: 'User' }]
-})
+}, { toJSON: { virtuals: true } })
 
-schema.loadClass(ZoneClass)
+schema.virtual('sites', {
+  ref: 'Site',
+  localField: '_id',
+  foreignField: 'zone',
+  justOne: false
+})
 
 module.exports = mongoose.model('Zone', schema)

@@ -22,6 +22,7 @@ export function intToRGB(int) {
  * @return {Object}        Joined reports
  */
 export function substractReportValues(reports = []) {
+  console.log({reports})
   const alarms = []
   const sensors = []
 
@@ -36,19 +37,18 @@ export function substractReportValues(reports = []) {
   }
 }
 
-function getSubzoneData(subzone) {
-  return subzone.sites
-  ? subzone.sites.reduce((array, {alarms = [], sensors = []}) =>
+function getZoneData(zone) {
+  return zone.sites
+  ? zone.sites.reduce((array, {alarms = [], sensors = []}) =>
     ({ alarms: [...array.alarms, ...alarms], sensors: [...array.sensors, ...sensors] })
   , { alarms: [], sensors: [] })
   : ({ alarms: [], sensors: [] })
 }
 
 function getZoneData(zone) {
-  return zone.subzones.reduce((array, subzone) => {
-    const { alarms = [], sensors = [] } = getSubzoneData(subzone) || { alarms: [], sensors: []}
-    return ({ alarms: [...array.alarms, ...alarms], sensors: [...array.sensors, ...sensors] })
-  }, { alarms: [], sensors: [] })
+  const { alarms = [], sensors = [] } = getZoneData(zone) || { alarms: [], sensors: []}
+  console.log({alarms, sensors})
+  return ({ alarms: [...alarms], sensors: [...sensors] })
 }
 
 // Filter reports that belong to zone, subzone or site
@@ -61,7 +61,6 @@ function getZoneData(zone) {
 export function getFilteredReports(reports, element) {
   switch (element.type) {
     case 'ZONE': return reports.filter(({zone}) => element._id === zone._id)
-    case 'SUBZONE': return reports.filter(({subzone}) => element._id === subzone._id)
     case 'SITE': return reports.filter(({site}) => element._id === site._id)
     default: return []
   }

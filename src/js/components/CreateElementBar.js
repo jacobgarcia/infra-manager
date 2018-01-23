@@ -15,7 +15,7 @@ class CreateElementBar extends Component {
     return (
       <div className={`create-bar ${props.className}`} onMouseOver={props.onMouseOver}>
           <div className="description">
-            <p>{props.isCreatingSite ? 'Sitio' : props.isCreatingSubzone ? 'Subzona' : 'Zona'}</p>
+            <p>{props.isCreatingSite ? 'Sitio' : 'Zona'}</p>
           </div>
           <div>
             <input type="text" placeholder="Nombre..." onChange={props.onNameChange}/>

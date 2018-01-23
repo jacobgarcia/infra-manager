@@ -55,7 +55,7 @@ module.exports = {
             "error",
             "last"
         ],
-        "complexity": "error",
+        "complexity": "off",
         "computed-property-spacing": [
             "error",
             "never"
@@ -142,6 +142,7 @@ module.exports = {
         "no-catch-shadow": "error",
         "no-confusing-arrow": "off",
         "no-continue": "error",
+        "no-console": ["error", { allow: ["warn", "error"] }],
         "no-div-regex": "error",
         "no-duplicate-imports": "error",
         "no-else-return": "error",

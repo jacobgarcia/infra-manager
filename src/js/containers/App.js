@@ -53,6 +53,7 @@ class App extends Component {
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
+      console.log({data})
       // Set all zones
       this.props.setExhaustive(data.zones)
 
@@ -121,7 +122,7 @@ class App extends Component {
           {/* MAYBE TODO lazy load this component  */}
           <Route exact path="/" component={Dashboard}/>
           {/* TODO lazy load this component  */}
-          <Route path="/sites/:zoneId?/:subzoneId?/:siteId?" component={Map} />
+          <Route path="/sites/:zoneId?/:siteId?" component={Map} />
           <Route path="/users" component={Users}/>
           <Route path="/accesses" component={Accesses}/>
           <Route path="/vehicular-flow" component={VehicularFlow}/>

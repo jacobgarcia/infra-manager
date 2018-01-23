@@ -74,16 +74,16 @@ class Navigator extends Component {
           }
           <li className="hr" />
           <li className="hr" />
-          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/users" className="users"><span>Usuarios</span></NavLink></li>
-          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/reports" className="reports"><span>Reportes</span></NavLink></li>
+          <li onClick={() => this.closeNavigator()}><NavLink to="/users" className="users"><span className="fade">Usuarios</span></NavLink></li>
+          <li onClick={() => this.closeNavigator()}><NavLink to="/reports" className="reports"><span className="fade">Reportes</span></NavLink></li>
           <li className="hr" />
           <li className="hr" />
-          <li className="fade" onClick={() => this.closeNavigator()}><NavLink to="/settings" className="settings"><span className="settings">Ajustes</span></NavLink></li>
+          <li onClick={() => this.closeNavigator()}><NavLink to="/settings" className="settings"><span className="settings fade">Ajustes</span></NavLink></li>
         </ul>
         {/* <li className=""><span className="logout">Cerrar sesión</span></li> */}
-        <li onClick={() => this.closeNavigator()} className="fade logout">
+        <li onClick={() => this.closeNavigator()} className="logout">
           <NavLink exact to="/login" className="logout" onClick={this.logOut}>
-            <span>Cerrar sesión</span>
+            <span className="fade">Cerrar sesión</span>
           </NavLink>
         </li>
       </ul>
