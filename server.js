@@ -53,21 +53,20 @@ function slackMessage(body) {
 }
 
 app.post('/webhook', (req, res) => {
-  console.log('Build started...')
   slackMessage({
     text: '*Build started*'
   })
 
   exec('git pull; yarn; yarn build:prod', (error, stdout, stderr) => {
     if (error) {
-      console.log('Error', error)
       slackMessage({
         text: `*Build errored*\nOutput: ${error}`
       })
+
+      return
     }
 
     if (stdout) {
-      console.log('Build succeed')
       exec('yarn reload:prod')
       slackMessage({
         text: `*Build succeed!*\nYou're awersome`
@@ -75,7 +74,6 @@ app.post('/webhook', (req, res) => {
     }
 
     if (stderr) {
-      console.log('Console errors and warnings', stderr)
       slackMessage({
         text: `*Errors and warnings:*\n${stderr}`
       })
@@ -92,7 +90,7 @@ app.use('/dist',
 
 // Send index to all other routes
 app.get('*', (req, res) =>
-  res.sendFile(path.resolve('dist/index.html'))
+  res.sendFile(process.env.NODE_ENV === 'development' ? path.resolve('src/index.html') : path.resolve('dist/index.html'))
 )
 
 // Start server

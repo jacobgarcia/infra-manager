@@ -57,7 +57,7 @@ class Overall extends PureComponent {
     const { state, props } = this
 
     return (
-      <div className={`overall ${state.isHidden ? 'hidden' : ''}`}>
+      <div className={`overall ${state.isHidden || props.isCreating ? 'hidden' : ''}`}>
         <div className="tooltip" onClick={() => this.setState(prev => ({ isHidden: !prev.isHidden }))} />
         <div className="content">
           <div className="mini-header">

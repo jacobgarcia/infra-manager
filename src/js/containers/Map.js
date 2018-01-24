@@ -41,6 +41,7 @@ class MapContainer extends Component {
     this.onViewportChanged = this.onViewportChanged.bind(this)
     // MAP
     this.onMapClick = this.onMapClick.bind(this)
+    this.onEntitySelect = this.onEntitySelect.bind(this)
     this.onElementNameChange = this.onElementNameChange.bind(this)
     this.onElementPositionsChange = this.onElementPositionsChange.bind(this)
     this.onCreateElement = this.onCreateElement.bind(this)
@@ -188,6 +189,13 @@ class MapContainer extends Component {
     this.setState({
       newPositions: positions,
       isNewElementValid: this.state.newElementName.length > 0 && positions.length > 0
+    })
+  }
+
+  onEntitySelect({name, positions}) {
+    this.setState({
+      newPositions: positions,
+      newElementName: name
     })
   }
 
@@ -425,6 +433,7 @@ class MapContainer extends Component {
           />
         </Map>
         <CreateElementBar
+          onEntitySelect={this.onEntitySelect}
           onCreate={this.onCreateElement}
           onMouseOver={() => this.setState({hoverPosition: null})}
           className={state.isCreating ? '' : 'hidden'}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Connus</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- SEO TAGS -->
+    <meta name="description" content="Connus MX" />
+
+    <!-- PROGRESSIVE TAGS -->
+    <link rel="manifest" href="/static/manifest.json">
+    <meta name="theme-color" content="#303640"/>
+
+    <!-- OPEN GRAPH DATA -->
+    <meta name="twitter:card" value="Connus International">
+    <meta property="og:title" content="Connus" />
+    <meta property="og:url" content="https://app.connus.mx/" />
+    <meta property="og:description" content="Connus International" />
+
+    <!-- NO SCRTIP TAGS -->
+    <noscript>
+        <style>
+            noscript {
+                display: flex;
+                height: 100%;
+                width: 100%;
+            }
+        </style>
+    </noscript>
+
+    <!-- STYLE LINK IN PRODUCTION -->
+    <% if (htmlWebpackPlugin.options.styleUrl) { %>
+      <link rel="stylesheet" href="<%=htmlWebpackPlugin.options.styleUrl%>">
+    <% }
+    %>
+  </head>
+
+  <!-- BODY -->
+  <body>
+    <div id="root"></div>
+    <!-- CONTENT FOR NO SCRIPT -->
+    <noscript><h1>JavaScript es necesario para utilizar el App</h1></noscript>
+  </body>
+
+  <!-- SCRIPT -->
+  <script src="<%=htmlWebpackPlugin.options.bundleUrl%>" charset="utf-8"></script>
+</html>

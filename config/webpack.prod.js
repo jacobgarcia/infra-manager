@@ -9,8 +9,13 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = merge(common, {
   plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
     new HtmlWebpackPlugin({
-      template: path.resolve('src/index.html'),
+      template: path.resolve('src/index.ejs'),
       styleUrl: '/dist/styles.min.css',
       bundleUrl: '/dist/bundle.min.js',
       inject: false,
@@ -32,12 +37,7 @@ module.exports = merge(common, {
       evaluate: true,
       drop_console: true, // strips console statements
       sequences: true,
-      booleans: true,
-    }),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
+      booleans: true
     }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.optimize.AggressiveMergingPlugin(),

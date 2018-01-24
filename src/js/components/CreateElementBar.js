@@ -1,12 +1,45 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import { NetworkOperation } from '../lib'
+
 class CreateElementBar extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      showEntities: false
+      showEntities: false,
+      states: [],
+      selected: null
+    }
+  }
+
+  componentDidMount() {
+    NetworkOperation.getAvailableStates()
+    .then(({data}) => {
+      this.setState({
+        states: data.states
+      })
+    })
+    .catch(console.error)
+  }
+
+  onSelectEntity(entityId) {
+    this.setState({
+      selected: entityId
+    })
+    NetworkOperation.getEntityPolygon(entityId)
+    .then(({data}) => {
+      this.props.onEntitySelect(data.state)
+    })
+    .catch(console.error)
+  }
+
+  getContryName(code) {
+    switch (code) {
+      case 'MX': return 'México'
+      case 'AR': return 'Argentina'
+      default: return 'Otro'
     }
   }
 
@@ -45,12 +78,18 @@ class CreateElementBar extends Component {
               <p onClick={() => this.setState(prev => ({ showEntities: !prev.showEntities }))}>Añadir estados</p>
               <ul className={state.showEntities ? '' : 'hidden'}>
                 {
-                  [{name: 'Estado de México'}, {name: 'Estado de México'}, {name: 'Estado de México'}, {name: 'Estado de México'}, {name: 'Estado de México'}, , {name: 'Estado de México'}, , {name: 'Estado de México'}]
-                  .map((entity, index) =>
-                    <li key={index}>
-                      <input type="checkbox" id={index}/>
-                      <label htmlFor={index}>{entity.name}</label>
-                    </li>
+                  state.states.map(({_id, states}) =>
+                  <ul key={_id}>
+                    <span>{this.getContryName(_id)}</span>
+                    {
+                      states.map(({name, _id}) =>
+                      <li key={_id}>
+                        <input type="checkbox" id={_id} onChange={() => this.onSelectEntity(_id)} checked={_id === state.selected} />
+                        <label htmlFor={_id}>{name}</label>
+                      </li>
+                      )
+                    }
+                  </ul>
                   )
                 }
               </ul>

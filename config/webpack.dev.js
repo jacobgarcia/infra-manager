@@ -12,22 +12,21 @@ module.exports = merge(common, {
     'webpack-hot-middleware/client',
     path.resolve('src/js/index')
   ],
-  devServer: {
-    overlay: true,
-    hot: true,
-    compress: true,
-  },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: path.resolve('src/index.html'),
-      bundleUrl: '/dist/bundle.min.js',
-      inject: false
-    }),
-    new webpack.HotModuleReplacementPlugin(),
-  ],
   output: {
     path: path.resolve('dist'),
     filename: 'bundle.min.js',
     publicPath: '/dist/'
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new HtmlWebpackPlugin({
+      template: 'src/index.ejs',
+      inject: 'body',
+    })
+  ],
+  devServer: {
+    overlay: true,
+    hot: true,
+    compress: true,
   }
 })

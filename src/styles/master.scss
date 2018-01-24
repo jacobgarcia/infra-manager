@@ -843,7 +843,7 @@ p span {
   .create-bar {
     position: absolute;
     bottom: 0;
-    left: 0;
+    left: 70px;
     z-index: 1000;
     color: $white;
     display: flex;
@@ -892,7 +892,7 @@ p span {
         font-weight: 700;
         font-size: .9rem;
       }
-      ul {
+      > ul {
         position: absolute;
         bottom: 35px;
         background-color: $dark-gray;
@@ -905,6 +905,20 @@ p span {
         transition: max-height ease .5s;
         -webkit-overflow-scrolling: touch;
         -ms-overflow-style: none;
+        ul {
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+        }
+        span {
+          font-weight: 700;
+          background-color: $gray;
+          color: $dark-gray;
+          padding: 3px 10px;
+          position: -webkit-sticky;
+          position: sticky;
+          top: 0;
+        }
         &::-webkit-scrollbar { width: 0 !important }
         &.hidden {
           overflow: hidden;
@@ -912,11 +926,13 @@ p span {
           border: 0;
         }
         li {
+          flex-shrink: 0;
           display: flex;
           align-items: center;
           padding: 6px 10px;
           color: $white;
           border-bottom: 1px solid $gray;
+          label { cursor: pointer; }
           input {
             margin-right: 7px;
           }

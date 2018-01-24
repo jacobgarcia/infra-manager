@@ -6,11 +6,10 @@ const router = new express.Router()
 
 const State = require(path.resolve('models/State'))
 
-router.route('/polygons/:contryCode/:stateId')
+router.route('/polygons/:stateId')
 .get((req, res) => {
-  const { contryCode, stateId } = req.params
+  const { stateId } = req.params
 
-  // TODO: Country
   State.findById(stateId)
   .exec((error, state) => {
     if (error) {
@@ -24,11 +23,12 @@ router.route('/polygons/:contryCode/:stateId')
   })
 })
 
-router.route('/polygons/:countryCode')
+router.route('/polygons')
 .get((req, res) => {
-  const { countryCode } = req.params
   // TODO: Country
-  State.find({}, '-positions')
+  State.aggregate([
+    {$group: { _id: '$country', states: { $push: { name: '$name', _id: '$_id', code: '$code' } } }}
+  ])
   .exec((error, states) => {
     if (error) {
       winston.error({error})

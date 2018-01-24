@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 import { ElementStatus, Prompt } from './'
 import { getFilteredReports, substractReportValues, getStatus } from '../lib/specialFunctions'
 
-class Search extends Component {
+class Search extends PureComponent {
   constructor(props) {
     super(props)
 

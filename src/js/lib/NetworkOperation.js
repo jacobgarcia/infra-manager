@@ -31,7 +31,11 @@ class NetworkOperation {
   }
 
   static getAvailableStates() {
-    return axios.get(`${baseUrl}/polygons/mx`)
+    return axios.get(`${baseUrl}/polygons`)
+  }
+
+  static getEntityPolygon(entityId) {
+    return axios.get(`${baseUrl}/polygons/${entityId}`)
   }
 
   static getUsers() {
