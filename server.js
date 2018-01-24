@@ -92,7 +92,7 @@ app.use('/dist',
 
 // Send index to all other routes
 app.get('*', (req, res) =>
-  res.sendFile(path.resolve('src/index.html'))
+  res.sendFile(path.resolve('dist/index.html'))
 )
 
 // Start server

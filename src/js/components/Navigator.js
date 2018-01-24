@@ -1,10 +1,10 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
 import { getAccessTitle } from '../lib/CodeExtractor'
 
-class Navigator extends Component {
+class Navigator extends PureComponent {
   constructor(props) {
     super(props)
 

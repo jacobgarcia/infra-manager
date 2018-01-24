@@ -73,12 +73,11 @@ class MapContainer extends Component {
 
     NetworkOperation.getReports()
     .then(({data}) => {
-      console.log('---DATA REPORTS')
-      console.log({data})
+
       data.reports.forEach(report => {
         this.props.setReport(report)
       })
-    }).catch(console.warn)
+    }).catch(console.error)
   }
 
   componentWillReceiveProps(nextProps) {

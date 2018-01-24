@@ -1,12 +1,25 @@
 /* eslint-env node */
 const merge = require('webpack-merge')
+const path = require('path')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const common = require('./webpack.common.js')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = merge(common, {
   plugins: [
+    new HtmlWebpackPlugin({
+      template: path.resolve('src/index.html'),
+      styleUrl: '/dist/styles.min.css',
+      bundleUrl: '/dist/bundle.min.js',
+      inject: false,
+      minify: {
+        collapseWhitespace: true,
+        removeComments: true,
+        minifyCSS: true
+      }
+    }),
     new ExtractTextPlugin({
       filename: 'styles.min.css'
     }),

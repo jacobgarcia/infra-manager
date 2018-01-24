@@ -19,12 +19,12 @@ class StatusesContainer extends PureComponent {
   }
 
   getLink(type, element) {
-    const { zoneId, subzoneId, siteId } = this.props.params
+    const { zoneId, siteId } = this.props.params
     switch (type) {
       case 'GENERAL': return `/sites/${element._id}`
       case 'ZONE': return `/sites/${zoneId}/${element._id}`
-      case 'SUBZONE': return `/sites/${zoneId}/${subzoneId}/${element._id}`
-      case 'SITE': return `/sites/${zoneId}/${subzoneId}/${siteId}`
+      case 'SUBZONE': return `/sites/${zoneId}/${element._id}`
+      case 'SITE': return `/sites/${zoneId}/${siteId}`
       default: return `/`
     }
   }
@@ -95,7 +95,7 @@ class StatusesContainer extends PureComponent {
       )
       case 'INFO':
       return (
-        props.element &&
+        (props.element && props.element.position) &&
         <div className="info readonly">
           <div>
             <label htmlFor="">Id</label>

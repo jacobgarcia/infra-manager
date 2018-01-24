@@ -22,7 +22,6 @@ export function intToRGB(int) {
  * @return {Object}        Joined reports
  */
 export function substractReportValues(reports = []) {
-  console.log({reports})
   const alarms = []
   const sensors = []
 
@@ -47,7 +46,6 @@ function getZoneData(zone) {
 
 function getZoneData(zone) {
   const { alarms = [], sensors = [] } = getZoneData(zone) || { alarms: [], sensors: []}
-  console.log({alarms, sensors})
   return ({ alarms: [...alarms], sensors: [...sensors] })
 }
 

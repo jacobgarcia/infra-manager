@@ -3,6 +3,7 @@ const path = require('path')
 const merge = require('webpack-merge')
 const common = require('./webpack.common.js')
 const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = merge(common, {
   devtool: 'cheap-module-eval-source-map',
@@ -17,7 +18,12 @@ module.exports = merge(common, {
     compress: true,
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin()
+    new HtmlWebpackPlugin({
+      template: path.resolve('src/index.html'),
+      bundleUrl: '/dist/bundle.min.js',
+      inject: false
+    }),
+    new webpack.HotModuleReplacementPlugin(),
   ],
   output: {
     path: path.resolve('dist'),

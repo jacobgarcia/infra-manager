@@ -49,8 +49,6 @@ class FacialRecognition extends Component {
 
   render() {
     const { state, props } = this
-    console.log('ALERTS')
-    console.log(props.facialReports.filter($0 => $0.risk >= 3))
 
     return (
       <div className="app-content facial-recognition small-padding">

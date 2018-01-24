@@ -5,16 +5,21 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Connus</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Page description. No longer than 155 characters." />
+
+    <!-- SEO TAGS -->
+    <meta name="description" content="Connus MX" />
+
+    <!-- PROGRESSIVE TAGS -->
     <link rel="manifest" href="/static/manifest.json">
     <meta name="theme-color" content="#303640"/>
-    <!-- Twitter Card data -->
+
+    <!-- OPEN GRAPH DATA -->
     <meta name="twitter:card" value="Connus International">
-        <!-- Open Graph data -->
     <meta property="og:title" content="Connus" />
     <meta property="og:url" content="https://app.connus.mx/" />
-    <!-- <meta property="og:image" content="http://example.com/image.jpg" /> -->
     <meta property="og:description" content="Connus International" />
+
+    <!-- NO SCRTIP TAGS -->
     <noscript>
         <style>
             noscript {
@@ -24,11 +29,21 @@
             }
         </style>
     </noscript>
-    <link rel="stylesheet" href="/dist/styles.min.css">
+
+    <!-- STYLE LINK IN PRODUCTION -->
+    <% if (htmlWebpackPlugin.options.styleUrl) { %>
+      <link rel="stylesheet" href="<%=htmlWebpackPlugin.options.styleUrl%>">
+    <% }
+    %>
   </head>
+
+  <!-- BODY -->
   <body>
     <div id="root"></div>
-    <script src="/dist/bundle.min.js" charset="utf-8"></script>
+    <!-- CONTENT FOR NO SCRIPT -->
     <noscript><h1>JavaScript es necesario para utilizar el App</h1></noscript>
   </body>
+
+  <!-- SCRIPT -->
+  <script src="<%=htmlWebpackPlugin.options.bundleUrl%>" charset="utf-8"></script>
 </html>
