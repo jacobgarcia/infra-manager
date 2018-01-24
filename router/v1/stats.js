@@ -6,7 +6,6 @@ const router = new express.Router()
 
 // const Site = require(path.resolve('models/Site'))
 // const Zone = require(path.resolve('models/Zone'))
-// const Subzone = require(path.resolve('models/Subzone'))
 const Site = require(path.resolve('models/Site'))
 const mongoose = require('mongoose')
 

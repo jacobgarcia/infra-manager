@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Tooltip, Marker } from 'react-leaflet'
 import { icon as leafletIcon } from 'leaflet'
-import { PieChart, Pie, Cell, Label, Text } from 'recharts'
+import { PieChart, Pie, Cell } from 'recharts'
 
 import { substractReportValues, getStatus } from '../lib/specialFunctions'
 import constants from '../lib/constants'

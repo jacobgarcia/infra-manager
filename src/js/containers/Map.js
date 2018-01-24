@@ -46,22 +46,6 @@ class MapContainer extends Component {
     this.onCreateElement = this.onCreateElement.bind(this)
   }
 
-  componentWillMount() {
-    NetworkOperation.getAvailableStates()
-    .then(({data}) => {
-      this.setState({
-        states: data.states
-      })
-    })
-
-    NetworkOperation.getReports()
-    .then(({data}) => {
-      data.reports.forEach(report => {
-        this.props.setReport(report)
-      })
-    })
-  }
-
   onViewportChanged({zoom}) {
     if (zoom > 12) {
       this.setState({
@@ -79,16 +63,32 @@ class MapContainer extends Component {
     this.setState({
       elements
     })
+
+    NetworkOperation.getAvailableStates()
+    .then(({data}) => {
+      this.setState({
+        states: data.states
+      })
+    })
+
+    NetworkOperation.getReports()
+    .then(({data}) => {
+      console.log('---DATA REPORTS')
+      console.log({data})
+      data.reports.forEach(report => {
+        this.props.setReport(report)
+      })
+    }).catch(console.warn)
   }
 
   componentWillReceiveProps(nextProps) {
-    const { zoneId = null, subzoneId = null, siteId = null } = nextProps.match.params
+    const { zoneId = null, siteId = null } = nextProps.match.params
     if (this.props.match.params === nextProps.match.params) return
 
     if (nextProps.zones.length === 0) return
 
     // If we have the same paramters dont update the state
-    if (zoneId === null && subzoneId === null && siteId === null) {
+    if (zoneId === null && siteId === null) {
       const { elements = [], shadow = null } = this.getElementsToRender(nextProps)
       this.setState({
         elements,
@@ -108,7 +108,7 @@ class MapContainer extends Component {
       // Update state
       this.setState(prev => ({
         currentPosition: siteId ? element.position : shadow ? getAreaCenter(shadow) : prev.currentPosition,
-        currentZoom: siteId ? 13 : subzoneId ? 8 : zoneId ? 7 : 5,
+        currentZoom: siteId ? 13 : zoneId ? 7 : 5,
         element,
         shadow,
         elements
@@ -117,23 +117,22 @@ class MapContainer extends Component {
   }
 
   toggleCreate() {
-    const { zoneId = null, subzoneId = null } = this.props.match.params
+    const { zoneId = null } = this.props.match.params
 
     this.setState(prev => ({
       newPositions: [],
-      isCreating: prev.isCreating ? null : subzoneId ? 'SITE' : zoneId ? 'SUBZONE' : 'ZONE',
+      isCreating: prev.isCreating ? null : zoneId ? 'SITE' : 'ZONE',
       showing: null
     }))
   }
 
   getElementsToRender(props) {
-    const { zoneId = null, subzoneId = null, siteId = null } = props.match.params
+    const { zoneId = null, siteId = null } = props.match.params
 
     if (!this.props.zones || this.props.zones.length === 0) return { elements: [], shadow: null }
 
     if (siteId) {
-      const { subzones = [] } = this.props.zones.find(({_id}) => _id === zoneId)
-      const { sites = [], positions } = subzones.find(({_id}) => _id === subzoneId)
+      const { sites = [], positions } = this.props.zones.find(({_id}) => _id === zoneId)
       const element = sites.find(({_id}) => _id === siteId)
 
       return {
@@ -141,28 +140,19 @@ class MapContainer extends Component {
         shadow: positions,
         element
       }
-    } else if (subzoneId) {
-      const { subzones = [] } = this.props.zones.find(({_id}) => _id === zoneId)
-      const subzone = subzones.find(({_id}) => _id === subzoneId)
-      const { sites = [], positions: shadow } = subzone
+    } else if (zoneId) {
+      const zone = this.props.zones.find(({_id}) => _id === zoneId)
+      const { sites = [], positions: shadow } = zone
 
       return {
         elements: sites.map(site => ({...site, type: 'SITE'})),
         shadow,
-        element: { _id: subzone._id, name: subzone.name }
-      }
-    } else if (zoneId) {
-      const zone = this.props.zones.find(({_id}) => _id === zoneId)
-      const { subzones = [], positions } = zone
-      return {
-        elements: subzones.map(({name, positions, _id, sites}) => ({name, positions, _id, elements: sites.length, type: 'SUBZONE'})),
-        shadow: positions,
-        element: {_id: zone._id, name: zone.name}
+        element: { _id: zone._id, name: zone.name }
       }
     }
 
     return {
-      elements: this.props.zones.map(({name, positions, _id, subzones}) => ({name, positions, _id, elements: subzones.length, type: 'ZONE'})),
+      elements: this.props.zones.map(({name, positions, _id, sites = []}) => ({name, positions, _id, elements: sites.length, type: 'ZONE'})),
       shadow: null,
       element: null
     }
@@ -215,12 +205,10 @@ class MapContainer extends Component {
   }
 
   getElementReports() {
-    const { zoneId = null, subzoneId = null, siteId = null } = this.props.match.params
+    const { zoneId = null, siteId = null } = this.props.match.params
 
     if (siteId) {
       return this.props.reports.filter(({site}) => site._id === siteId)
-    } else if (subzoneId) {
-      return this.props.reports.filter(({subzone}) => subzone._id === subzoneId)
     } else if (zoneId) {
       return this.props.reports.filter(({zone}) => zone._id === zoneId)
     }
@@ -239,21 +227,14 @@ class MapContainer extends Component {
   }
 
   onCreateElement() {
-    const { zoneId: selectedZone = null, subzoneId: selectedSubzone = null } = this.props.match.params
+    const { zoneId: selectedZone = null} = this.props.match.params
     const { newPositions, newElementName } = this.state
 
-    if (selectedSubzone) {
-      NetworkOperation.setSite(selectedZone, selectedSubzone, newElementName, Date.now(), newPositions[newPositions.length - 1])
+    if (selectedZone) {
+      NetworkOperation.setSite(selectedZone, newElementName, Date.now(), newPositions[newPositions.length - 1])
       .then(({data}) => {
         this.setState({ newPositions: [], newElementName: '', isCreating: null, showing: null })
-        this.props.setSite(data.site.zone ,data.site.subzone, data.site._id, data.site.key, data.site.name, data.site.position)
-      })
-      .catch(console.warn)
-    } else if (selectedZone) {
-      NetworkOperation.setSubzone(selectedZone, newElementName, newPositions)
-      .then(({data}) => {
-        this.setState({ newPositions: [], newElementName: '', isCreating: null, showing: null })
-        this.props.setSubzone(data.subzone.parentZone, data.subzone._id, data.subzone.name, data.subzone.positions)
+        this.props.setSite(data.site.zone, data.site._id, data.site.key, data.site.name, data.site.position)
       })
       .catch(console.warn)
     } else {
@@ -268,8 +249,7 @@ class MapContainer extends Component {
 
   render() {
     const { state, props } = this
-    const { zoneId: selectedZone = null, subzoneId: selectedSubzone = null, siteId: selectedSite = null } = props.match.params
-    // const reports =
+    const { zoneId: selectedZone = null, siteId: selectedSite = null } = props.match.params
 
     return (
       <div id="map-container" className={state.isCreating ? 'creating-element' : ''}>
@@ -281,7 +261,7 @@ class MapContainer extends Component {
           alerts={null}
           onHover={this.onElementOver}
           elements={state.elements}
-          selectedType={selectedSite ? 'SITE' : selectedSubzone ? 'SUBZONE' : selectedZone ? 'ZONE' : 'GENERAL'}
+          selectedType={selectedSite ? 'SITE' : selectedZone ? 'ZONE' : 'GENERAL'}
           onVisibleToggle={() => this.toggleVisible('OVERALL')}
           reports={this.getElementReports()}
           element={state.element}
@@ -315,10 +295,9 @@ class MapContainer extends Component {
                 &&
                 <span className="button back" onClick={() => {
                     if (state.isCreating) this.toggleCreate()
-                    if (selectedSite) props.history.push(`/sites/${selectedZone}/${selectedSubzone}`)
-                    else if (selectedSubzone) props.history.push(`/sites/${selectedZone}`)
+                    if (selectedSite) props.history.push(`/sites/${selectedZone}`)
                     else if (selectedZone) props.history.push('/sites')
-                }}>Regresar <span>{selectedSubzone ? (selectedSite ? 'subzona' : 'zona') : 'general'}</span></span>
+                }}>Regresar <span>{selectedSite ? 'zona' : 'general'}</span></span>
               }
             </div>
             {
@@ -332,7 +311,7 @@ class MapContainer extends Component {
                   &&
                   <li className="button create"
                     onClick={this.toggleCreate}>
-                    <span className="create">{selectedZone ? (selectedSubzone ? 'Sitio' : 'Subzona') : 'Zona'}</span>
+                    <span className="create">{selectedZone ? 'Sitio' : 'Zona'}</span>
                   </li>
                 }
               </ul>
@@ -359,15 +338,14 @@ class MapContainer extends Component {
               weight={0}
               onClick={() => {
                 if (state.isCreating) return null
-                if (selectedSite) return props.history.push(`/sites/${selectedZone}/${selectedSubzone}`)
-                if (selectedSubzone) return props.history.push(`/sites/${selectedZone}`)
+                if (selectedSite) return props.history.push(`/sites/${selectedZone}`)
                 if (selectedZone) return props.history.push(`/sites`)
                 return null
               }}
             />
           }
           {
-            (selectedSubzone && state.elements)
+            (selectedZone && state.elements)
             ?
             state.elements.map(element =>
               <Marker
@@ -381,7 +359,7 @@ class MapContainer extends Component {
                 isTooltipVisible={state.visibleMarkers}
                 isHighlighted={this.state.hoverElement === element._id}
                 onMouseHover={this.onElementOver}
-                isSite={selectedSubzone !== null}
+                isSite={selectedZone !== null}
                 sensors={selectedSite ? state.element : element }
                 onClick={() => {
                   if (selectedSite === element._id) {
@@ -389,7 +367,7 @@ class MapContainer extends Component {
                       showing: 'OVERALL'
                     })
                   }
-                  props.history.push(`/sites/${selectedZone}/${selectedSubzone}/${element._id}`)
+                  props.history.push(`/sites/${selectedZone}/${element._id}`)
                 }}
               />
             )
@@ -401,8 +379,6 @@ class MapContainer extends Component {
                 reports={(() => {
                   let reports = []
                   if (selectedZone) {
-                    reports = props.reports.filter(({subzone}) => subzone._id === element._id)
-                  } else {
                     reports = props.reports.filter(({zone}) => zone._id === element._id)
                   }
                   return reports
@@ -412,7 +388,6 @@ class MapContainer extends Component {
                 onClick={() => {
                   if (state.isCreating !== null) return null
                   if (selectedZone === null) return props.history.push(`/sites/${element._id}`)
-                  if (selectedSubzone === null) return props.history.push(`/sites/${selectedZone}/${element._id}`)
                   return null
                 }}
               />
@@ -421,7 +396,7 @@ class MapContainer extends Component {
           {
             state.isCreating
             &&
-            (selectedSubzone
+            (selectedZone
             ?
             <Marker
               position={state.newPositions && state.newPositions[0] ? state.newPositions[state.newPositions.length - 1] : [0,0]}
@@ -435,7 +410,7 @@ class MapContainer extends Component {
             />)
           }
           {
-            state.isCreating && !selectedSubzone
+            state.isCreating && !selectedZone
             &&
             state.newPositions.map((position, index) =>
               <Circle
@@ -455,8 +430,7 @@ class MapContainer extends Component {
           onMouseOver={() => this.setState({hoverPosition: null})}
           className={state.isCreating ? '' : 'hidden'}
           isNewElementValid={state.isNewElementValid}
-          isCreatingSite={Boolean(selectedSubzone)}
-          isCreatingSubzone={Boolean(selectedZone)}
+          isCreatingSite={Boolean(selectedZone)}
           onNameChange={this.onElementNameChange}
           onPositionsChange={this.onElementPositionsChange}
           positions={state.newPositions}
@@ -489,11 +463,11 @@ function mapDispatchToProps(dispatch) {
     setZone: (id, name, positions) => {
       dispatch(setZone(id, name, positions))
     },
-    setSubzone: (zoneId, subzoneId, name, positions) => {
-      dispatch(setSubzone(zoneId, subzoneId, name, positions))
+    setSubzone: (zoneId, name, positions) => {
+      dispatch(setSubzone(zoneId, name, positions))
     },
-    setSite: (zoneId, subzoneId, siteId, key, name, position) => {
-      dispatch(setSite(zoneId, subzoneId, siteId, key, name, position))
+    setSite: (zoneId, siteId, key, name, position) => {
+      dispatch(setSite(zoneId, siteId, key, name, position))
     },
     setLoading: () => {
       dispatch(setLoading())

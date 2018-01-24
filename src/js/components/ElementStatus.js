@@ -29,8 +29,8 @@ class ElementStatus extends Component {
           >
           <div className="status-text">
             <span className="main">{props.title} {props.name} <span> {props.siteKey}</span></span>
-            {props.type !== 'SITE' && <span>{props.elements} Subzonas</span>}
-            <span>{props.alarms} Alarmas</span>
+            {props.type !== 'SITE' && <span>{props.elements} Sitios</span>}
+            <span>{props.alarms} Alertas</span>
           </div>
           <div className="chart-container">
             <p>{props.percentage}{!props.nonPercentage && '%'}</p>
@@ -65,8 +65,8 @@ ElementStatus.defaultProps = {
 ElementStatus.propTypes = {
   onHover: PropTypes.func,
   title: PropTypes.string,
-  elements: PropTypes.array,
-  alarms: PropTypes.array,
+  elements: PropTypes.number,
+  alarms: PropTypes.number,
   name: PropTypes.string,
   siteKey: PropTypes.string,
   type: PropTypes.string,

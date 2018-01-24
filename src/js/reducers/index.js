@@ -231,7 +231,6 @@ function reports(state = [], action) {
       ? newState[foundIndex] = {
         site: newState[foundIndex].site,
         zone: action.report.zone,
-        subzone: action.report.subzone,
         _id: action.report._id,
         alarms: [{
           timestamp: action.report.timestamp,
@@ -246,7 +245,6 @@ function reports(state = [], action) {
       : newState.push({
         site: action.report.site,
         zone: action.report.zone,
-        subzone: action.report.subzone,
         _id: action.report._id,
         alarms: [{
           timestamp: action.report.timestamp,
@@ -290,57 +288,20 @@ function zones(state = [], action) {
         positions: action.positions,
         subzones: [] // IMPORTANT
       }]
-    case 'SET_SUBZONE':
-      return state.map(zone =>
-        zone._id === action.zoneId
-        ? {
-          ...zone,
-          subzones: [...(zone.subzones || []), {
-            _id: action.subzoneId,
-            name: action.name,
-            positions: action.positions,
-            sites: [] // IMPORTANT
-          }]
-        }
-        : {...zone}
-      )
-    case 'SET_ALL_SITES':
-    return state.map(zone =>
-      zone._id === action.zoneId
-      ? {
-        ...zone,
-        subzones: zone.subzones.map(subzone =>
-          subzone._id === action.subzoneId
-          ? {
-            ...subzone,
-            sites: [...action.sites]
-          }
-          : {...subzone}
-        )
-      }
-      : {...zone}
-    )
     case 'SET_SITE':
       return state.map(zone =>
         zone._id === action.zoneId
         ? {
           ...zone,
-          subzones: zone.subzones.map(subzone =>
-            subzone._id === action.subzoneId
-            ? {
-              ...subzone,
-              sites: [
-                ...(subzone.sites || []),
-                {
-                  _id: action.siteId,
-                  key: action.key,
-                  name: action.name,
-                  position: action.position
-                }
-              ]
+          sites: [
+            ...zone.sites,
+            {
+              _id: action.siteId,
+              key: action.key,
+              name: action.name,
+              position: action.position
             }
-            : {...subzone}
-          )
+          ]
         }
         : {...zone}
       )

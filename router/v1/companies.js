@@ -6,7 +6,6 @@ const router = new express.Router()
 
 const Site = require(path.resolve('models/Site'))
 const Zone = require(path.resolve('models/Zone'))
-const Subzone = require(path.resolve('models/Subzone'))
 const User = require(path.resolve('models/User'))
 
 const { hasAccess } = require(path.resolve('router/v1/lib/middleware-functions'))
@@ -29,11 +28,11 @@ router.route('/users')
 })
 
 // Save sites and stream change
-router.route('/zones/:zone/subzones/:subzone/sites')
+router.route('/zones/:zone/sites')
 .post((req, res) => {
     const { name, position } = req.body
     let key = req.body.key
-    const { zone, subzone } = req.params
+    const { zone } = req.params
     const company = req._user.cmp
 
     if (key === null || key === 'null') key = String(Date.now())
@@ -43,7 +42,6 @@ router.route('/zones/:zone/subzones/:subzone/sites')
       key,
       name,
       position,
-      subzone,
       zone,
       company
     })
@@ -53,49 +51,7 @@ router.route('/zones/:zone/subzones/:subzone/sites')
         return res.status(500).json({ error })
       }
       // Add the new site to the specified subzone
-      return Subzone.findByIdAndUpdate(subzone, { $push: { sites: site } }, { new: true })
-      .exec(error => {
-        if (error) {
-          winston.error({error})
-          return res.status(500).json({ error })
-        }
-
-        return res.status(200).json({ site })
-      })
-    })
-})
-
-// Save subzone and stream change
-router.route('/:zoneId/subzones')
-.post((req, res) => {
-    const { name, positions, sites } = req.body
-    const { zoneId } = req.params
-    const company = req._user.cmp
-
-    // Create subzone using the information in the request body
-    new Subzone({
-      name,
-      positions,
-      parentZone: zoneId,
-      sites,
-      company
-    })
-    .save((error, subzone) => {
-      if (error) {
-        winston.error({error})
-        return res.status(500).json({ error })
-      }
-      // Add the new site to the specified zone
-      return Zone.findByIdAndUpdate(zoneId, { $push: { subzones: subzone._id } }, { new: true })
-      .exec((error, zone) => {
-        if (error) {
-          winston.error({error})
-          return res.status(500).json({ error })
-        }
-        if (!zone) return res.status(404).json({ message: 'No zone found'})
-
-        return res.status(200).json({ subzone })
-      })
+      return res.status(200).json({ site })
     })
 })
 
@@ -188,25 +144,6 @@ router.route('/zones')
   })
 })
 
-// Get subzones. TODO: Retrieve only company subzones
-router.route('/subzones')
-.get((req, res) => {
-  const company = req._user.cmp
-
-  Subzone.find({ company })
-  .exec((error, subzones) => {
-    if (error) {
-      winston.error({error})
-      return res.status(500).json({ error })
-    }
-
-    if (!subzones) return res.status(404).json({ message: 'No subzones found'})
-
-    return res.status(200).json({ subzones })
-  })
-})
-
-
 router.route('/sites')
 .get((req, res) => {
   const company = req._user.cmp
@@ -231,27 +168,22 @@ router.route('/reports')
 
   Site.find({ company })
   .populate('zone', 'name')
-  .populate('subzone', 'name')
   .exec((error, sites) => {
     if (error) {
       winston.error({error})
       return res.status(500).json({ error })
     }
 
-    const reports = []
-    sites.forEach(site => {
-      reports.push({
-        site: {
-          _id: site._id,
-          key: site.key
-        },
-        zone: site.zone,
-        subzone: site.subzone,
-        timestamp: site.timestamp,
-        sensors: site.sensors,
-        alarms: site.alarms
-      })
-    })
+    const reports = sites.map(site => ({
+      site: {
+        _id: site._id,
+        key: site.key
+      },
+      zone: site.zone,
+      timestamp: site.timestamp,
+      sensors: site.sensors,
+      alarms: site.alarms
+    }))
 
     return res.status(200).json({ reports })
   })
@@ -264,15 +196,7 @@ router.route('/exhaustive')
 
   Zone.find({ company })
   .select('name positions subzones')
-  .populate('subzones', 'name positions sites')
-  .populate({
-    path: 'subzones',
-    populate: {
-      path: 'sites',
-      model: 'Site',
-      select: 'alarms name key position sensors timestamp'
-    }
-  })
+  .populate('sites')
   .exec((error, zones) => {
 
     if (error) {

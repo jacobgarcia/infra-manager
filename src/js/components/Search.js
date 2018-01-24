@@ -12,9 +12,7 @@ class Search extends Component {
     this.state = {
       query: '',
       sites: [],
-      subzones: [],
       zones: [],
-      filteredSubzones: [],
       filteredSites: [],
       filteredZones: []
     }
@@ -35,46 +33,31 @@ class Search extends Component {
   setElements(nextProps) {
     if (JSON.stringify(nextProps.zones) === JSON.stringify(this.props.zones.length)) return
 
-    const zones = nextProps.zones.map(({_id: zoneId, name, subzones}) =>
+    const zones = nextProps.zones.map(({_id: zoneId, name, sites}) =>
       ({
         _id: zoneId,
         name,
-        subzones: subzones.map(({_id: subzoneId, name, sites}) =>
+        sites: sites.map(({_id, name, key}) =>
           ({
-            _id: subzoneId,
+            _id,
             name,
+            key,
             zone: zoneId,
-            sites: sites.map(({_id, name, key}) =>
-            ({
-              _id,
-              name,
-              key,
-              zone: zoneId,
-              subzone: subzoneId
-            })
-            )
           })
         )
       })
     )
 
-    const subzones = zones.reduce((subzones, zone) =>
-      [
-        ...zone.subzones,
-        ...subzones
-      ],
-    [])
 
-    const sites = subzones.reduce((sites, subzone) =>
+    const sites = zones.reduce((sites, zone) =>
       ([
-        ...subzone.sites,
+        ...zone.sites,
         ...sites
       ])
     , [])
 
     this.setState({
       sites,
-      subzones,
       zones,
     })
   }
@@ -85,17 +68,11 @@ class Search extends Component {
     if (value === '') {
       this.setState({
         [name]: value,
-        filteredSubzones: [],
         filteredSites: [],
         filteredZones: []
       })
       return
     }
-
-    const filteredSubzones = this.state.subzones.filter(subzone =>
-      JSON.stringify(subzone).toLowerCase()
-      .includes(value.toLowerCase())
-    )
 
     const filteredSites = this.state.sites.filter(site =>
       JSON.stringify(site).toLowerCase()
@@ -109,7 +86,6 @@ class Search extends Component {
 
     this.setState({
       [name]: value,
-      filteredSubzones,
       filteredSites,
       filteredZones
     })
@@ -118,8 +94,7 @@ class Search extends Component {
   getElementTitle(type) {
     switch (type) {
       case 'GENERAL': return 'Zona'
-      case 'ZONE': return 'Subzona'
-      case 'SUBZONE': return 'Sitio'
+      case 'ZONE': return 'Sitio'
       case 'SITE': return 'Sensor'
       default: return `Otro`
     }
@@ -127,9 +102,9 @@ class Search extends Component {
 
   getLink(type, element) {
     switch (type) {
-      case 'GENERAL': return `/zones/${element._id}`
-      case 'ZONE': return `/zones/${element.zone}/${element._id}`
-      case 'SUBZONE': return `/zones/${element.zone}/${element.subzone}/${element._id}`
+      case 'GENERAL': return `/sites/${element._id}`
+      case 'ZONE': return `/sites/${element.zone}/${element._id}`
+      case 'SUBZONE': return `/sites/${element.zone}/${element._id}`
       default: return `/`
     }
   }
@@ -171,36 +146,6 @@ class Search extends Component {
                           title={this.getElementTitle('SUBZONE')}
                           name={element.name}
                           type={'SUBZONE'}
-                          siteKey={element.key}
-                          percentage={percentage} // Zone
-                          status={status} // Zone
-                          alarms={reports ? reports.alarms.length : 0}
-                          elements={element.elements} // Subzones or sites
-                        />
-                      </Link>
-                    )
-                  })
-                }
-              </div>
-            }
-            {
-              (this.state.filteredSubzones.length > 0)
-              &&
-              <div className="subzones-container">
-                <p>Subzonas</p>
-                {
-                  this.state.filteredSubzones.map(element => {
-                    let reports = getFilteredReports(this.props.reports, {...element, type: 'SUBZONE'})
-                    reports = substractReportValues(reports)
-                    const { status, percentage } = getStatus(reports || null)
-
-                    return (
-                      <Link key={element._id} to={this.getLink('ZONE', element)}>
-                        <ElementStatus
-                          id={element._id}
-                          title={this.getElementTitle('ZONE')}
-                          name={element.name}
-                          type={'ZONE'}
                           siteKey={element.key}
                           percentage={percentage} // Zone
                           status={status} // Zone

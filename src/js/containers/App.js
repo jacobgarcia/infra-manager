@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
 import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
-import { Dashboard, Map, Users, Statistics, Settings, Accesses, VehicularFlow, Perimeter, FacialRecognition, Cctv, Reports } from './'
+import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports } from './'
 import { Navigator } from '../components'
 import { NetworkOperation } from '../lib'
 
@@ -19,8 +19,8 @@ class App extends Component {
       isLoading: true,
       willCompleteLoad: false
     }
-
   }
+
   componentDidMount() {
     const token = localStorage.getItem('token')
     let path = ''
@@ -62,12 +62,8 @@ class App extends Component {
       const { response = {} } = error
       this.props.setComplete()
 
-      switch (response.status) {
-        case 404: case 401: case 400:
-          this.props.history.replace(`/login${path}`)
-          break
-        default: // TODO Display error
-          break
+      if (response.status === 401 || response.status === 400 || response.status === 404) {
+        this.props.history.replace(`/login${path}`)
       }
     })
   }
@@ -80,12 +76,12 @@ class App extends Component {
     })
 
     this.socket.on('alert', report => {
-      console.log("Alert recieved from external server")
+      console.warn('Alert recieved from external server', { report })
     })
   }
 
   componentDidCatch(error, info) {
-    console.log('ERROR')
+    console.warn('ERROR')
     console.error(error, info)
 
     this.setState({
@@ -121,14 +117,14 @@ class App extends Component {
           {/* MAYBE TODO lazy load this component  */}
           <Route exact path="/" component={Dashboard}/>
           {/* TODO lazy load this component  */}
-          <Route path="/sites/:zoneId?/:subzoneId?/:siteId?" component={Map} />
+          <Route path="/sites/:zoneId?/:siteId?" component={Map} />
           <Route path="/users" component={Users}/>
           <Route path="/accesses" component={Accesses}/>
           <Route path="/vehicular-flow" component={VehicularFlow}/>
           <Route path="/perimeter" component={Perimeter}/>
           <Route path="/facial-recognition" component={FacialRecognition}/>
           <Route path="/statistics" component={Statistics}/>
-          <Route path="/cctv" component={Cctv}/>
+          <Route path="/video-surveillance" component={VideoSurveillance}/>
           <Route path="/reports" component={Reports}/>
           <Route path="/settings" component={Settings}/>
         </Switch>
