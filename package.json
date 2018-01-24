@@ -4,7 +4,7 @@
   "description": "React, Redux, Hot-Reload, SCSS, Stage 2, ESLint, Express, ES2015",
   "main": "server.js",
   "scripts": {
-    "build:prod": "NODE_ENV=\"production\" webpack --config ./config/webpack.prod.js",
+    "build:prod": "webpack --config ./config/webpack.prod.js",
     "push:prod": "aws s3 sync build-prod s3://connus.nure.mx/ --cache-control max-age=2592000 --delete --profile connus",
     "test": "echo \"Error: no test specified\" && exit 0",
     "reload:prod": "pm2 reload all -i max",
