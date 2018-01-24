@@ -100,21 +100,20 @@ class VehicularFlow extends Component {
                   <p>Zona <span>{state.selectedLog.zone}</span> Sitio <span>{state.selectedLog.site}</span></p>
                 </div>
                 <Slider nextArrow={<button>{'>'}</button>} prevArrow={<button>{'<'}</button>}>
-                  <div className="image-slider" style={{backgroundImage: `url(https://i.ytimg.com/vi/PJ5xXXcfuTc/maxresdefault.jpg)`}} />
-                  <div className="image-slider" style={{backgroundImage: `url(https://ak7.picdn.net/shutterstock/videos/27691087/thumb/1.jpg)`}} />
-                  <div className="image-slider" style={{backgroundImage: `url(https://www.gannett-cdn.com/-mm-/31a9e27e0f932508d2f38a8878fb2df3cab6c7c9/c=0-0-699-524&r=x404&c=534x401/local/-/media/2015/06/24/DesMoines/B9317848452Z.1_20150624231249_000_GUAB62DVM.1-0.jpg)`}}/>
+                  <div className="image-slider" style={{backgroundImage: `url(` + state.selectedLog.photo_front +`)` }}/>
+                  <div className="image-slider" style={{backgroundImage:`url(` + state.selectedLog.photo_back +`)` }} />
                   {/* <div className="image-slider 5"></div> */}
                 </Slider>
                 <div className="car-details">
-                  <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
-                  <div className="plate" style={{backgroundImage: `url(https://2.bp.blogspot.com/-EJPdoW3MKUg/WF4GwT3hQLI/AAAAAAAAlZY/tGk4NCebqzwTf2ySUOj2jbALJ2wUBVkVwCLcB/s1600/Placa%2BNAA-99-99%2BEstado%2Bde%2BM%25C3%25A9xico%2BNueva%2Bserie.jpg)`}}></div>
+                  <div className="plate" style={{backgroundImage: `url(` + state.selectedLog.plate_front +`)` }}></div>
+                  <div className="plate" style={{backgroundImage: `url(` + state.selectedLog.plate_back +`)` }}></div>
                   <div className="detail">
-                    <div className="profile-photo" style={{backgroundImage: `url(https://cap.stanford.edu/profiles/viewImage?profileId=19141&type=square&ts=1509532892453)`}}></div>
-                    <p>Omar García</p>
+                    <div className="profile-photo" style={{backgroundImage: `url(` + state.selectedLog.profile +`)` }}></div>
+                    <p>{state.selectedLog.authorized}</p>
                   </div>
                 </div>
                 <div className="action">
-                  <p className="warning">Acceso denegado</p>
+                  <p className="authorized">Acceso autorizado</p>
                 </div>
                 <div className="details-container">
                   <div className="detail">
@@ -123,23 +122,23 @@ class VehicularFlow extends Component {
                   </div>
                   <div className="detail">
                     <span>Marca</span>
-                    <p>Kia</p>
+                    <p>{state.selectedLog.brand}</p>
                   </div>
                   <div className="detail">
-                    <span>Modelio</span>
-                    <p>Rio</p>
+                    <span>Modelo</span>
+                    <p>{state.selectedLog.model}</p>
                   </div>
                   <div className="detail">
                     <span>Color</span>
-                    <p>Azul</p>
+                    <p>{state.selectedLog.color}</p>
                   </div>
                   <div className="detail">
                     <span>Placa delantera</span>
-                    <p>P 287 GKK</p>
+                    <p>{state.selectedLog.plate}</p>
                   </div>
                   <div className="detail">
                     <span>Placa trasera</span>
-                    <p>P 287 GKK</p>
+                    <p>{state.selectedLog.plate}</p>
                   </div>
                   <div className="detail">
                     <span>Conductor autorizado</span>
