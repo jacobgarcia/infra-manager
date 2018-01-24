@@ -134,6 +134,9 @@ button, input[type='button'], input[type='submit'], .button, input[type='text'].
   &.warning {
     border-color: $yellow;
   }
+  &.authorized {
+    border-color: $green;
+  }
   &.error {
     border-color: $red;
   }
