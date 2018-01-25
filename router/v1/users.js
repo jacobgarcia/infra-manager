@@ -24,7 +24,7 @@ const storage = multer.diskStorage({
     cb(null, 'static/uploads/profile-pictures/')
   },
   filename: (req, file, cb) => {
-    cb(null, `${req._user._id}.${mime.extension(file.mimetype)}`)
+    cb(null, `${req._user._id}.${mime.getExtension(file.mimetype)}`)
   }
 })
 
