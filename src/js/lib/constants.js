@@ -7,7 +7,8 @@ export default {
       return '#ed2a20'
     }
     return '#FFC511'
-  }
+  },
+  frmUrl: 'https://connus.be'
 }
 
 export const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']

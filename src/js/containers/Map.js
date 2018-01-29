@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
 import { Overall, Polygon, Marker, Search, CreateElementBar } from '../components'
-import { NetworkOperation } from '../lib'
+import { NetworkOperation, NetworkOperationFRM } from '../lib'
 import { setLoading, setComplete, setReport, setSubzone, setZone, setSite } from '../actions'
 import { getAreaCenter } from '../lib/specialFunctions'
 
@@ -78,6 +78,16 @@ class MapContainer extends Component {
       data.reports.forEach(report => {
         this.props.setReport(report)
       })
+    })
+
+    NetworkOperationFRM.getAvailableSites()
+    .then(({data}) => {
+      data.connected_sites.forEach((site) =>{
+        console.log(site)
+      })
+      // this.setState({
+      //   states: data.states
+      // })
     }).catch(console.error)
   }
 
