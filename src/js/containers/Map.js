@@ -157,6 +157,7 @@ class MapContainer extends Component {
     if (siteId) {
       const { sites = [], positions } = this.props.zones.find(({_id}) => _id === zoneId)
       const element = sites.find(({_id}) => _id === siteId)
+      const availableSites = this.arrayDifference(this.state.availableSites, sites)
 
       return {
         elements: sites,
@@ -166,7 +167,7 @@ class MapContainer extends Component {
     } else if (zoneId) {
       const zone = this.props.zones.find(({_id}) => _id === zoneId)
       const { sites = [], positions: shadow } = zone
-      const availableSites = this.arrayDifference(this.state.availableSites, sites) // This only has keys
+      const availableSites = this.arrayDifference(this.state.availableSites, sites)
       return {
         elements: availableSites.map(site => ({...site, type: 'SITE'})),
         shadow,
