@@ -30,7 +30,8 @@ class MapContainer extends Component {
       hoverPosition: [], // For area creation
       newPositions: [], // New element
       newElementName: '',
-      isNewElementValid: false
+      isNewElementValid: false,
+      availableSites: [] // Current available sites
     }
 
     this.getElementsToRender = this.getElementsToRender.bind(this)
@@ -45,6 +46,21 @@ class MapContainer extends Component {
     this.onElementNameChange = this.onElementNameChange.bind(this)
     this.onElementPositionsChange = this.onElementPositionsChange.bind(this)
     this.onCreateElement = this.onCreateElement.bind(this)
+    this.arrayDifference = this.arrayDifference.bind(this)
+  }
+
+  arrayDifference (arrayOne, arrayTwo) {
+    var ret = []
+    arrayOne.sort()
+    arrayTwo.sort()
+    // Compare only with keys
+    const arrayTwoKeys = arrayTwo.map(a => a.key)
+    for(var i = 0; i < arrayOne.length; i += 1) {
+        if(arrayTwoKeys.indexOf(arrayOne[i]) > -1){
+            ret.push(arrayTwo[i])
+        }
+    }
+    return ret
   }
 
   onViewportChanged({zoom}) {
@@ -82,12 +98,9 @@ class MapContainer extends Component {
 
     NetworkOperationFRM.getAvailableSites()
     .then(({data}) => {
-      data.connected_sites.forEach((site) =>{
-        console.log(site)
-      })
-      // this.setState({
-      //   states: data.states
-      // })
+       this.setState({
+         availableSites: data.connected_sites
+       })
     }).catch(console.error)
   }
 
@@ -153,9 +166,9 @@ class MapContainer extends Component {
     } else if (zoneId) {
       const zone = this.props.zones.find(({_id}) => _id === zoneId)
       const { sites = [], positions: shadow } = zone
-
+      const availableSites = this.arrayDifference(this.state.availableSites, sites) // This only has keys
       return {
-        elements: sites.map(site => ({...site, type: 'SITE'})),
+        elements: availableSites.map(site => ({...site, type: 'SITE'})),
         shadow,
         element: { _id: zone._id, name: zone.name }
       }
