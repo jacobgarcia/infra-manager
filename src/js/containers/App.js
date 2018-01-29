@@ -72,11 +72,16 @@ class App extends Component {
     this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
-      this.socket.emit('join', token)
+      this.socket.emit('join', 'web-platform')
     })
 
     this.socket.on('alert', report => {
       console.warn('Alert recieved from external server', { report })
+    })
+
+    this.socket.on('refresh', report => {
+      console.log('The server asks for a refresh')
+      this.forceUpdate()
     })
   }
 
