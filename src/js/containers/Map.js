@@ -76,6 +76,7 @@ class MapContainer extends Component {
   }
 
   componentDidMount() {
+
     const { elements = [] } = this.getElementsToRender(this.props)
     this.setState({
       elements
@@ -102,6 +103,36 @@ class MapContainer extends Component {
          availableSites: data.connected_sites
        })
     }).catch(console.error)
+
+      setInterval( () =>  {
+        const { elements = [] } = this.getElementsToRender(this.props)
+        this.setState({
+          elements
+        })
+
+        NetworkOperation.getAvailableStates()
+        .then(({data}) => {
+          this.setState({
+            states: data.states
+          })
+        })
+
+        NetworkOperation.getReports()
+        .then(({data}) => {
+
+          data.reports.forEach(report => {
+            this.props.setReport(report)
+          })
+        })
+
+        NetworkOperationFRM.getAvailableSites()
+        .then(({data}) => {
+           this.setState({
+             availableSites: data.connected_sites
+           })
+        }).catch(console.error)
+      }, 30000)
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -160,7 +191,7 @@ class MapContainer extends Component {
       const availableSites = this.arrayDifference(this.state.availableSites, sites)
 
       return {
-        elements: sites,
+        elements: availableSites,
         shadow: positions,
         element
       }

@@ -81,7 +81,7 @@ class App extends Component {
 
     this.socket.on('refresh', report => {
       console.log('The server asks for a refresh')
-      this.forceUpdate()
+      //this.forceUpdate()
     })
   }
 
