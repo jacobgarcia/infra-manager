@@ -6,7 +6,20 @@ const dumbCctvLogs = [
     site: 'MEXCOB0992',
     risk: 2,
     status: 'Análisis de video en proceso',
-    video: '/static/video/dummy/cctv-00.mp4'
+    video: '/static/video/dummy/cctv-00.mp4',
+    videoJsOptions: {
+      controls: true,
+      autoplay: true,
+      sources: [{
+        src: 'rtmp://demo.connus.mx/live&stream',
+        type: 'rtmp/mp4'
+      }],
+      width: 360,
+      height: 240,
+      controlBar: {
+          volumePanel: false
+      }
+    }
   },
   {
     timestamp: new Date(),
@@ -15,7 +28,20 @@ const dumbCctvLogs = [
     site: 'DIFXCH1293',
     risk: 0,
     status: 'Detección inofensiva. Personal de trabajo foráneo',
-    video: '/static/video/dummy/cctv-01.mp4'
+    video: '/static/video/dummy/cctv-01.mp4',
+    videoJsOptions: {
+      controls: true,
+      autoplay: true,
+      sources: [{
+        src: 'rtmp://demo.connus.mx/live&stream2',
+        type: 'rtmp/mp4'
+      }],
+      width: 360,
+      height: 240,
+      controlBar: {
+          volumePanel: false
+      }
+    }
   },
   {
     timestamp: new Date(),
@@ -24,7 +50,20 @@ const dumbCctvLogs = [
     site: 'DIFXCH1293',
     risk: 3,
     status: 'Análisis de video en proceso',
-    video: '/static/video/dummy/cctv-02.mp4'
+    video: '/static/video/dummy/cctv-02.mp4',
+    videoJsOptions: {
+      controls: true,
+      autoplay: true,
+      sources: [{
+        src: 'rtmp://demo.connus.mx/live&stream3',
+        type: 'rtmp/mp4'
+      }],
+      width: 360,
+      height: 240,
+      controlBar: {
+          volumePanel: false
+      }
+    }
   }
 ]
 
