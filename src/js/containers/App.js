@@ -7,7 +7,7 @@ import io from 'socket.io-client'
 
 import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
 import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports } from './'
-import { Navigator } from '../components'
+import { Navigator, VideoPlayer } from '../components'
 import { NetworkOperation } from '../lib'
 
 class App extends Component {
@@ -105,6 +105,15 @@ class App extends Component {
       )
     }
 
+    const videoJsOptions = {
+      controls: true,
+      autoplay: true,
+      sources: [{
+        src: 'rtmp://demo.connus.mx/live&stream',
+        type: 'rtmp/mp4'
+      }]
+    }
+
     return (
       <div id="app">
         {
@@ -132,6 +141,7 @@ class App extends Component {
           <Route path="/video-surveillance" component={VideoSurveillance}/>
           <Route path="/reports" component={Reports}/>
           <Route path="/settings" component={Settings}/>
+          <Route path="/streaming"  render={() => <VideoPlayer { ...videoJsOptions } />} />
         </Switch>
       </div>
     )
