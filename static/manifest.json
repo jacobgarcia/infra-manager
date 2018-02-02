@@ -1,6 +1,9 @@
 {
   "short_name": "Connus",
   "name": "Connus",
-  "start_url": "index.html",
-  "theme_color": "#303640"
+  "start_url": "/",
+  "theme_color": "#303640",
+  "display": "standalone",
+  "background_color": "#1d2229",
+  "description": "Connus"
 }
