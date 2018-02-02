@@ -109,9 +109,11 @@ class App extends Component {
       controls: true,
       autoplay: true,
       sources: [{
-        src: 'rtmp://demo.connus.mx/live&stream',
+        src: 'rtmp://91.230.211.87:1935/720p&hd',
         type: 'rtmp/mp4'
-      }]
+      }],
+      preload: 'auto',
+      techorder : ["flash"]
     }
 
     return (

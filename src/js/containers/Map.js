@@ -57,7 +57,7 @@ class MapContainer extends Component {
     const arrayTwoKeys = arrayTwo.map(a => a.key)
     for(var i = 0; i < arrayOne.length; i += 1) {
         if(arrayTwoKeys.indexOf(arrayOne[i]) > -1){
-            ret.push(arrayTwo[i])
+            ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[i])])
         }
     }
     return ret
@@ -189,7 +189,6 @@ class MapContainer extends Component {
       const { sites = [], positions } = this.props.zones.find(({_id}) => _id === zoneId)
       const element = sites.find(({_id}) => _id === siteId)
       const availableSites = this.arrayDifference(this.state.availableSites, sites)
-
       return {
         elements: availableSites,
         shadow: positions,
@@ -199,6 +198,7 @@ class MapContainer extends Component {
       const zone = this.props.zones.find(({_id}) => _id === zoneId)
       const { sites = [], positions: shadow } = zone
       const availableSites = this.arrayDifference(this.state.availableSites, sites)
+
       return {
         elements: availableSites.map(site => ({...site, type: 'SITE'})),
         shadow,
