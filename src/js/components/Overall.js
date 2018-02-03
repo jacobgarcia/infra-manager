@@ -79,6 +79,8 @@ class Overall extends PureComponent {
             reports={props.reports}
             onHover={props.onHover}
             element={props.element}
+            photo1={null}
+            photo2={null}
           />
         </div>
       </div>

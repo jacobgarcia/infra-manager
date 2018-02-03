@@ -95,7 +95,7 @@ router.route('/:siteKey/reports')
       .populate('zone', 'name')
       .populate('subzone', 'name')
       .exec((error, populatedSite) => {
-        site.sensors = sensors
+        if (sensors) site.sensors = sensors
         site.alarms = alarms
 
         site.save((error, updatedSite) => {

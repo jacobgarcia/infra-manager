@@ -91,7 +91,6 @@ class MapContainer extends Component {
 
     NetworkOperation.getReports()
     .then(({data}) => {
-
       data.reports.forEach(report => {
         this.props.setReport(report)
       })

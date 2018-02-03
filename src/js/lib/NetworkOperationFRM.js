@@ -21,6 +21,10 @@ class NetworkOperationFRM {
     return axios.get((`${baseUrl}/cameras/report/clients`))
   }
 
+  static getDebug(camera) {
+    return axios.post((`${baseUrl}/cameras/single/debug`),{camera})
+  }
+
 }
 
 export default NetworkOperationFRM

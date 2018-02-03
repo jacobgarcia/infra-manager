@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom'
 
 import { substractReportValues, getStatus, getFilteredReports } from '../lib/specialFunctions'
 import { ElementStatus } from './'
+import { NetworkOperation, NetworkOperationFRM } from '../lib'
+
+import io from 'socket.io-client'
 
 
 // IMPORTANT TODO if we change the site key, re-set the socket or ask to join there
@@ -12,10 +15,38 @@ class StatusesContainer extends PureComponent {
     super(props)
 
     this.state = {
-      show: 'SENSORS'
+      show: 'SENSORS',
+      photo2: props.photo1,
+      photo3: props.photo2
     }
 
     this.getLink = this.getLink.bind(this)
+  }
+
+  componentWillMount(){
+    // Init socket with userId and token
+    this.initSocket()
+  }
+
+
+  initSocket() {
+    this.socket = io('https://connus.be')
+
+    this.socket.on('connect', () => {
+      console.log('Connected')
+      this.socket.emit('join', 'connus')
+    })
+
+    this.socket.on('debugRequest',data => {
+
+      //if (this.props.element.key === camera){
+        this.setState({
+          photo2 : data.image2,
+          photo3 : data.image3
+        })
+    //  }
+    })
+
   }
 
   getLink(type, element) {
@@ -36,6 +67,17 @@ class StatusesContainer extends PureComponent {
       case 'SITE': return 'Sensor'
       default: return `Otro`
     }
+  }
+
+  onDebug(){
+    const { props } = this
+    NetworkOperationFRM.getDebug(props.element.key)
+    .then((response) => {
+    console.log(response)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
   }
 
   getContent() {
@@ -89,9 +131,15 @@ class StatusesContainer extends PureComponent {
       )
       case 'CAMERAS':
       return (
-        <div className="no-info">
-          Sin información de video
+        <div className="action destructive">
+          <p onClick={() => this.onDebug() }>Ver Cámaras</p>
+          <p>Photo 1</p>
+          <img src={this.state.photo2} />
+          <br/>
+          <p>Photo 2</p>
+          <img src={this.state.photo3} />
         </div>
+
       )
       case 'INFO':
       return (
