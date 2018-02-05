@@ -30,7 +30,45 @@ class FacialRecognition extends Component {
   }
 
   componentDidMount(){
+
+    // Start socket connection
+    this.initSockets(this.props)
     console.log(this.props.facialReports)
+  }
+
+  initSockets(props) {
+    this.socket = io('https://connus.be')
+
+    this.socket.on('connect', () => {
+      console.log('Joining to connus room')
+      this.socket.emit('join', 'connus')
+    })
+
+    this.socket.on('photo', data => {
+      console.log('Register element recieved from external server', { data } )
+
+      //Build object from recieved data
+      const log = {
+        timestamp: new Date(),
+        event: 'Registro de personal exitoso',
+        zone: {
+          name: 'Centro'
+        },
+        site: 'MEXJIL1152', //Hardcoded site
+        risk: 0, //Risk will be always 0 in this case
+        status: 'Registro satisfactorio',
+        access: 'Registro',
+        id: '5a4ea71050fdf1191fc71af8',
+        match: 'Si',
+        authorized: data.pin,
+        photo: data.photo
+      }
+      //Add the recieved element to the props
+      this.setState({
+        logs: this.state.logs.unshift(log)
+      })
+    })
+
   }
 
   onLogSelect(item, index, sectionIndex) {
