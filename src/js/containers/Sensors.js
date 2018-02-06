@@ -36,7 +36,7 @@ class Users extends Component {
     NetworkOperationFRM.getAlerts()
     .then(({data}) => {
       this.setState({
-        alerts: data.alerts
+        alerts: data.alerts.filter($0 => $0.site === 'CNHQ9094')
       })
     })
 
