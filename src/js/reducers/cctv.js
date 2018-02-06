@@ -1,11 +1,11 @@
 const dumbCctvLogs = [
   {
     timestamp: new Date(),
-    event: 'Movimiento detectado',
+    event: 'Sala de Espera',
     zone: {name: 'Centro', _id: null},
-    site: 'MEXCOB0992',
-    risk: 2,
-    status: 'Análisis de video en proceso',
+    site: 'CONHQ9094',
+    risk: 0,
+    status: 'Video en proceso',
     video: '/static/video/dummy/cctv-00.mp4',
     videoJsOptions: {
       controls: true,
@@ -23,11 +23,11 @@ const dumbCctvLogs = [
   },
   {
     timestamp: new Date(),
-    event: 'Reporte de analíticos',
+    event: 'Oficinas segundo piso',
     zone: {name: 'Centro', _id: null},
-    site: 'DIFXCH1293',
+    site: 'CONHQ9094',
     risk: 0,
-    status: 'Detección inofensiva. Personal de trabajo foráneo',
+    status: 'Video en proceso',
     video: '/static/video/dummy/cctv-01.mp4',
     videoJsOptions: {
       controls: true,
@@ -45,11 +45,11 @@ const dumbCctvLogs = [
   },
   {
     timestamp: new Date(),
-    event: 'Movimiento detectado en periodo no autorizado',
+    event: 'Almacén',
     zone: {name: 'Centro', _id: null},
-    site: 'DIFXCH1293',
-    risk: 3,
-    status: 'Análisis de video en proceso',
+    site: 'CONHQ9094',
+    risk: 0,
+    status: 'Video en proceso',
     video: '/static/video/dummy/cctv-02.mp4',
     videoJsOptions: {
       controls: true,

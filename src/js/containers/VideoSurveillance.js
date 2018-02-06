@@ -88,7 +88,6 @@ class VideoSurveillance extends Component {
             }
             elements={[
               { title: 'Registros', elements: props.cameraReports},
-              { title: 'Alertas', elements: props.cameraReports.filter($0 => $0.risk > 2)}
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
