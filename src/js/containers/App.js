@@ -35,11 +35,13 @@ class App extends Component {
     }
 
     this.props.setLoading()
-    // Set access reducers
+
+    // Set FRM access store
     NetworkOperationFRM.getAccess()
     .then(({data}) => {
       data.accessLogs.forEach(report => {
-        this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
+        if(this.props.credentials.company.name === 'Connus' && report.site === 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
+        else if (this.props.credentials.company.name === 'AT&T' && report.site != 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
       })
     })
     NetworkOperation.getSelf()
