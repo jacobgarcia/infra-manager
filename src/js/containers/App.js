@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
 import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
-import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports } from './'
+import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports, Sensors } from './'
 import { Navigator, VideoPlayer } from '../components'
 import { NetworkOperation } from '../lib'
 
@@ -143,6 +143,7 @@ class App extends Component {
           <Route path="/video-surveillance" component={VideoSurveillance}/>
           <Route path="/reports" component={Reports}/>
           <Route path="/settings" component={Settings}/>
+          <Route path="/sensors" component={Sensors}/>
           <Route path="/streaming"  render={() => <VideoPlayer { ...videoJsOptions } />} />
         </Switch>
       </div>

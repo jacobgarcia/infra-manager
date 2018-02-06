@@ -69,6 +69,55 @@ class FacialRecognition extends Component {
       })
     })
 
+    this.socket.on('login', data => {
+      console.log('Register element recieved from external server', { data } )
+
+      //Build object from recieved data
+      const log = {
+        timestamp: new Date(),
+        event: data.status === true ? 'Inicio de sesión exitoso' : 'Intento de inicio de sesión',
+        zone: {
+          name: 'Centro'
+        },
+        site: 'MEXJIL1152', //Hardcoded site
+        risk:  data.status === true ? 0 : 2,
+        status: data.status === true ? 'Acceso autorizado. Sensorización desactivada' : 'Acceso denegado. Almacenando y analizando rostro desconocido',
+        access: 'Inicio de sesión',
+        id: '5a4ea71050fdf1191fc71af8',
+        match: data.status === true ? 'Si' : 'No',
+        authorized: data.pin,
+        photo: data.photo
+      }
+      //Add the recieved element to the props
+      this.setState({
+        logs: this.state.logs.unshift(log)
+      })
+    })
+
+    this.socket.on('outlog', data => {
+      console.log('Register element recieved from external server', { data } )
+
+      //Build object from recieved data
+      const log = {
+        timestamp: new Date(),
+        event: data.status === true ? 'Registro de salida exitosa' : 'Intento de registro de salida',
+        zone: {
+          name: 'Centro'
+        },
+        site: 'MEXJIL1152', //Hardcoded site
+        risk:  data.status === true ? 0 : 2,
+        status: data.status === true ? 'Acceso autorizado. Sensorización reactivada' : 'Acceso denegado. Almacenando y analizando rostro desconocido',
+        access: 'Cierre de sesión',
+        id: '5a4ea71050fdf1191fc71af8',
+        match: data.status === true ? 'Si' : 'No',
+        authorized: data.pin,
+        photo: data.photo
+      }
+      //Add the recieved element to the props
+      this.setState({
+        logs: this.state.logs.unshift(log)
+      })
+    })
   }
 
   onLogSelect(item, index, sectionIndex) {
