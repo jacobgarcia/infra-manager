@@ -7,41 +7,41 @@ import { Card, Table, DateRangePicker, RiskBar, Tooltip } from '../components'
 import { yellow, red, blue, darkGray, violet } from '../lib/colors'
 
 const data = [
-  { name: 'workings', value: 96.1 },
-  { name: 'alerts', value: 2.8 },
-  { name: 'damaged', value: 1.1 }
+  { name: 'workings', value: 100 },
+  { name: 'alerts', value: 0 },
+  { name: 'damaged', value: 0 }
 ]
 
 const data2 = [
-  { name: '1:00 AM', uv: 590, pv: 1043, tv: 93 },
-  { name: '2:00 AM', uv: 868, pv: 940, tv: 40 },
-  { name: '3:00 AM', uv: 1397, pv: 1241, tv: 541 },
-  { name: '4:00 AM', uv: 1480, pv: 1043, tv: 53 },
-  { name: '5:00 AM', uv: 1520, pv: 1204, tv: 14 },
-  { name: '6:00 AM', uv: 1400, pv: 1143, tv: 443 },
-  { name: '7:00 AM', uv: 1400, pv: 1443, tv: 263 },
-  { name: '8:00 AM', uv: 1400, pv: 1143, tv: 583 },
-  { name: '9:00 AM', uv: 1400, pv: 1143, tv: 583 },
-  { name: '10:00 AM', uv: 400, pv: 1042, tv: 34 },
-  { name: '11:00 AM', uv: 1100, pv: 1042, tv: 92 },
-  { name: '12:00 PM', uv: 1300, pv: 1042, tv: 43 },
-  { name: '1:00 PM', uv: 2400, pv: 1042, tv: 51 }
+  { name: '7:00 AM', uv: 2, pv: 1042, tv: 92 },
+  { name: '8:00 AM', uv: 6, pv: 1042, tv: 34 },
+  { name: '9:00 AM', uv: 24, pv: 1043, tv: 93 },
+  { name: '10:00 AM', uv: 7, pv: 940, tv: 40 },
+  { name: '11:00 AM', uv: 8, pv: 1241, tv: 541 },
+  { name: '12:00 PM', uv: 4, pv: 1043, tv: 53 },
+  { name: '1:00 PM', uv: 6, pv: 1204, tv: 14 },
+  { name: '2:00 PM', uv: 8, pv: 1143, tv: 443 },
+  { name: '3:00 PM', uv: 9, pv: 1443, tv: 263 },
+  { name: '4:00 PM', uv: 3, pv: 1143, tv: 583 },
+  { name: '5:00 PM', uv: 6, pv: 1143, tv: 583 },
+  { name: '6:00 PM', uv: 18, pv: 1042, tv: 43 },
+  { name: '7:00 PM', uv: 11, pv: 1042, tv: 51 }
 ]
 
 const barData = [
-      {name: '1:00 AM', pv: 88 },
-      {name: '2:00 AM', pv: 90 },
-      {name: '3:00 AM', pv: 78 },
-      {name: '4:00 AM', pv: 58 },
-      {name: '5:00 AM', pv: 67 },
-      {name: '6:00 AM', pv: 74 },
-      {name: '7:00 AM', pv: 74 },
-      {name: '8:00 AM', pv: 79 },
-      {name: '9:00 AM', pv: 80 },
-      {name: '10:00 AM', pv: 83 },
-      {name: '11:00 AM', pv: 84 },
-      {name: '12:00 PM', pv: 85 },
-      {name: '1:00 PM', pv: 80 }
+      {name: '7:00 AM', pv: 100 },
+      {name: '8:00 AM', pv: 100 },
+      {name: '9:00 AM', pv: 100 },
+      {name: '10:00 AM', pv: 100 },
+      {name: '11:00 AM', pv: 100 },
+      {name: '12:00 PM', pv: 100 },
+      {name: '1:00 AM', pv: 100 },
+      {name: '2:00 AM', pv: 100 },
+      {name: '3:00 AM', pv: 100 },
+      {name: '4:00 AM', pv: 100 },
+      {name: '5:00 AM', pv: 100 },
+      {name: '6:00 PM', pv: 100 },
+      {name: '7:00 PM', pv: 100 }
 ]
 
 function getColor(name) {
@@ -71,8 +71,7 @@ class Dashboard extends Component {
   render() {
     const { state, props } = this
     const { facialReports, accessReports, cameraReports, perimeterReports, vehicularReports } = props
-    const reports = facialReports.concat(accessReports).concat(cameraReports).concat(perimeterReports).concat(vehicularReports)
-
+    const reports = facialReports
     return (
       <div className="dashboard app-content small-padding">
         <div className="content">
@@ -142,24 +141,24 @@ class Dashboard extends Component {
                       </Pie>
                       <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                     </PieChart>
-                    <h1>96.1%</h1>
-                    <p>300 sitios</p>
+                    <h1>100%</h1>
+                    <p>2 sitios</p>
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
-                    <p>120 sitios</p>
+                    <p>2 sitios</p>
                     <div className="stats">
-                      <p><span>96.1%</span> funcionando</p>
-                      <p className="border button warning" onClick={() => this.setState({detail: 'performance'})}><span>2.8%</span> alertado</p>
-                      <p className="border button error" onClick={() => this.setState({detail: 'performance'})}><span>1.1%</span> dañado</p>
+                      <p><span>100%</span> funcionando</p>
+                      <p className="border button warning" onClick={() => this.setState({detail: 'performance'})}><span>0%</span> alertado</p>
+                      <p className="border button error" onClick={() => this.setState({detail: 'performance'})}><span>0%</span> dañado</p>
                     </div>
                   </div>
                 </Card>
                 <Card title="Afluencia de personas" className="horizontal">
                   <div className="info">
                     <div className="data">
-                      <h1>105 <span className="delta up">15%</span></h1>
-                      <p>7 personas por hora</p>
+                      <h1>25 <span className="delta up">15%</span></h1>
+                      <p>4 personas por hora</p>
                     </div>
                     <ul className="leyend">
                       <li className="car">Personas</li>
@@ -208,10 +207,10 @@ class Dashboard extends Component {
                     title="Zona de mas alertas"
                     className="horizontal"
                   >
-                    <h1>54</h1>
-                    <p>Zona Centro</p>
+                    <h1>Centro</h1>
+                    <p>2 Sitios</p>
                     <div className="card-footer">
-                      <p className="red">21 alertas</p>
+                      <p className="red">1 alerta</p>
                       <span className="action">Revisar</span>
                     </div>
                   </Card>
@@ -219,48 +218,15 @@ class Dashboard extends Component {
                     title="Sitio de mas alertas"
                     className="horizontal"
                   >
-                    <h1>Norte</h1>
-                    <p>98 Sitios</p>
+                    <h1>CNHQ9094</h1>
+                    <p>Zona Centro</p>
                     <div className="card-footer">
                       <p className="red">21 alertas</p>
                       <span className="action">Revisar</span>
                     </div>
                   </Card>
                 </div>
-                <Card title="Flujo vehicular" className="horizontal">
-                  <div className="info">
-                    <div className="data">
-                      <h1>210 <span className="delta up">20%</span></h1>
-                      <p>15 vehículos por hora</p>
-                    </div>
-                    <ul className="leyend">
-                      <li className="tracto">Tracto</li>
-                      <li className="car">Automóvil</li>
-                      <li className="motor-cycle">Motocicleta</li>
-                    </ul>
-                  </div>
-                  <ResponsiveContainer width="100%" height={190}>
-                    <LineChart data={data2}
-                          syncId="dashboard"
-                          margin={{top: 20, right: 20, bottom: 20, left: 20}}>
-                        <XAxis dataKey="name" height={15} axisLine={false} tickLine={false} />
-                        <YAxis width={21} tickLine={false} />
-                        <RechartsTooltip isAnimationActive={false} content={Tooltip} />
-                        <Line type="linear" dataKey="uv" stroke={blue}
-                          strokeWidth={1}
-                          activeDot={{ strokeWidth: 0, fill: blue }}
-                          dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
-                        <Line type="linear" dataKey="pv" stroke={yellow}
-                          strokeWidth={1}
-                          activeDot={{ strokeWidth: 0, fill: yellow }}
-                          dot={{ stroke: yellow, strokeWidth: 2, fill: darkGray }} />
-                        <Line type="linear" dataKey="tv" stroke={violet}
-                          strokeWidth={1}
-                          activeDot={{ strokeWidth: 0, fill: violet }}
-                          dot={{ stroke: violet, strokeWidth: 2, fill: darkGray }} />
-                     </LineChart>
-                   </ResponsiveContainer>
-                </Card>
+
               </div>
             </div>
             <div className="events-container">
@@ -277,7 +243,7 @@ class Dashboard extends Component {
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                     {
                       item.timestamp &&
-                      <div>{item.timestamp.toLocaleDateString('es-MX')} {item.timestamp.toLocaleTimeString('es-MX')}</div>
+                      <div>{item.timestamp.toString()}</div>
                     }
                     <div className="medium bold">{item.event}</div>
                     <div className="medium">{item.status}</div>
@@ -287,7 +253,7 @@ class Dashboard extends Component {
                 }
                 elements={[
                   { title: 'Historial', elements: reports},
-                  { title: 'Alertas', elements: reports.filter($0 => $0.risk > 2)}
+                  { title: 'Alertas', elements: reports.filter($0 => $0.risk > 0)}
                 ]}
                 titles={[
                   {title: 'Tiempo' },
@@ -310,7 +276,7 @@ Dashboard.propTypes = {
 }
 
 function mapStateToProps({facialReports, accessReports, cameraReports, perimeterReports, vehicularReports}) {
-  return {facialReports, accessReports, cameraReports, perimeterReports, vehicularReports}
+  return {facialReports}
 }
 
 export default connect(mapStateToProps)(Dashboard)

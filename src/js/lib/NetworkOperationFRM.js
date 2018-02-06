@@ -28,6 +28,10 @@ class NetworkOperationFRM {
   static getAlerts(){
     return axios.get((`${baseUrl}/alerts`))
   }
+
+  static getAccess(){
+    return axios.get((`${baseUrl}/access/logs`))
+  }
 }
 
 export default NetworkOperationFRM

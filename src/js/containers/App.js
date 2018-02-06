@@ -5,10 +5,10 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
-import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
+import { setCredentials, setComplete, setLoading, setExhaustive, setReport, setFacialReport } from '../actions'
 import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports, Sensors } from './'
 import { Navigator, VideoPlayer } from '../components'
-import { NetworkOperation } from '../lib'
+import { NetworkOperation, NetworkOperationFRM } from '../lib'
 
 class App extends Component {
   constructor(props) {
@@ -35,7 +35,13 @@ class App extends Component {
     }
 
     this.props.setLoading()
-
+    // Set access reducers
+    NetworkOperationFRM.getAccess()
+    .then(({data}) => {
+      data.accessLogs.forEach(report => {
+        this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
+      })
+    })
     NetworkOperation.getSelf()
     .then(({data}) => {
       this.setState({
@@ -50,6 +56,9 @@ class App extends Component {
 
       // Start socket connection
       this.initSockets(this.props, token)
+
+
+
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
@@ -75,14 +84,6 @@ class App extends Component {
       this.socket.emit('join', 'web-platform')
     })
 
-    this.socket.on('alert', report => {
-      console.warn('Alert recieved from external server', { report })
-    })
-
-    this.socket.on('refresh', report => {
-      console.log('The server asks for a refresh')
-      //this.forceUpdate()
-    })
   }
 
   componentDidCatch(error, info) {
@@ -178,6 +179,9 @@ function mapDispatchToProps(dispatch) {
     },
     setExhaustive: zones => {
       dispatch(setExhaustive(zones))
+    },
+    setFacialReport: (timestamp, event, success, risk, zone, status, site, access, pin, photo, id) => {
+      dispatch(setFacialReport(timestamp, event, success, risk, zone, status, site, access, pin, photo, id))
     }
   }
 }

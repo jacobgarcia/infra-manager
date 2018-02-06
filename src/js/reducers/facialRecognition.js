@@ -3,10 +3,12 @@ export default function facialReports(state = dumbFacialLogs, action) {
     case 'SET_FACIAL_REPORT':
       return [...state, {
         timestamp: action.timestamp,
-        event: action.positions,
+        success: action.success,
+        zone: action.zone,
         site: action.site,
-        risk: action.risk,
-        status: action.status,
+        access: action.access,
+        pin: action.pin,
+        photo: action.photo
       }]
     default:
       return state
