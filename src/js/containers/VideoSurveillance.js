@@ -87,7 +87,7 @@ class VideoSurveillance extends Component {
               </div>
             }
             elements={[
-              { title: 'Registros', elements: props.cameraReports},
+              { title: 'CAMARAS', elements: props.cameraReports},
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
