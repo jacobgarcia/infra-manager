@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
 import { Overall, Polygon, Marker, Search, CreateElementBar } from '../components'
-import { NetworkOperation } from '../lib'
+import { NetworkOperation, NetworkOperationFRM } from '../lib'
 import { setLoading, setComplete, setReport, setSubzone, setZone, setSite } from '../actions'
 import { getAreaCenter } from '../lib/specialFunctions'
 
@@ -30,7 +30,8 @@ class MapContainer extends Component {
       hoverPosition: [], // For area creation
       newPositions: [], // New element
       newElementName: '',
-      isNewElementValid: false
+      isNewElementValid: false,
+      availableSites: [] // Current available sites
     }
 
     this.getElementsToRender = this.getElementsToRender.bind(this)
@@ -45,6 +46,21 @@ class MapContainer extends Component {
     this.onElementNameChange = this.onElementNameChange.bind(this)
     this.onElementPositionsChange = this.onElementPositionsChange.bind(this)
     this.onCreateElement = this.onCreateElement.bind(this)
+    this.arrayDifference = this.arrayDifference.bind(this)
+  }
+
+  arrayDifference (arrayOne, arrayTwo) {
+    var ret = []
+    arrayOne.sort()
+    arrayTwo.sort()
+    // Compare only with keys
+    const arrayTwoKeys = arrayTwo.map(a => a.key)
+    for(var i = 0; i < arrayOne.length; i += 1) {
+        if(arrayTwoKeys.indexOf(arrayOne[i]) > -1){
+            ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[i])])
+        }
+    }
+    return ret
   }
 
   onViewportChanged({zoom}) {
@@ -60,6 +76,7 @@ class MapContainer extends Component {
   }
 
   componentDidMount() {
+
     const { elements = [] } = this.getElementsToRender(this.props)
     this.setState({
       elements
@@ -74,11 +91,47 @@ class MapContainer extends Component {
 
     NetworkOperation.getReports()
     .then(({data}) => {
-
       data.reports.forEach(report => {
         this.props.setReport(report)
       })
+    })
+
+    NetworkOperationFRM.getAvailableSites()
+    .then(({data}) => {
+       this.setState({
+         availableSites: data.connected_sites
+       })
     }).catch(console.error)
+
+      setInterval( () =>  {
+        const { elements = [] } = this.getElementsToRender(this.props)
+        this.setState({
+          elements
+        })
+
+        NetworkOperation.getAvailableStates()
+        .then(({data}) => {
+          this.setState({
+            states: data.states
+          })
+        })
+
+        NetworkOperation.getReports()
+        .then(({data}) => {
+
+          data.reports.forEach(report => {
+            this.props.setReport(report)
+          })
+        })
+
+        NetworkOperationFRM.getAvailableSites()
+        .then(({data}) => {
+           this.setState({
+             availableSites: data.connected_sites
+           })
+        }).catch(console.error)
+      }, 30000)
+
   }
 
   componentWillReceiveProps(nextProps) {
@@ -134,18 +187,19 @@ class MapContainer extends Component {
     if (siteId) {
       const { sites = [], positions } = this.props.zones.find(({_id}) => _id === zoneId)
       const element = sites.find(({_id}) => _id === siteId)
-
+      const availableSites = this.arrayDifference(this.state.availableSites, sites)
       return {
-        elements: sites,
+        elements: availableSites,
         shadow: positions,
         element
       }
     } else if (zoneId) {
       const zone = this.props.zones.find(({_id}) => _id === zoneId)
       const { sites = [], positions: shadow } = zone
+      const availableSites = this.arrayDifference(this.state.availableSites, sites)
 
       return {
-        elements: sites.map(site => ({...site, type: 'SITE'})),
+        elements: availableSites.map(site => ({...site, type: 'SITE'})),
         shadow,
         element: { _id: zone._id, name: zone.name }
       }

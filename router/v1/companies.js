@@ -7,6 +7,7 @@ const router = new express.Router()
 const Site = require(path.resolve('models/Site'))
 const Zone = require(path.resolve('models/Zone'))
 const User = require(path.resolve('models/User'))
+const FaceRecognition = require(path.resolve('models/FaceRecognition'))
 
 const { hasAccess } = require(path.resolve('router/v1/lib/middleware-functions'))
 
@@ -95,7 +96,7 @@ router.route('/:siteKey/reports')
       .populate('zone', 'name')
       .populate('subzone', 'name')
       .exec((error, populatedSite) => {
-        site.sensors = sensors
+        if (sensors) site.sensors = sensors
         site.alarms = alarms
 
         site.save((error, updatedSite) => {
@@ -207,6 +208,23 @@ router.route('/exhaustive')
 
     return res.status(200).json({ zones })
 
+  })
+})
+
+// Get all face recognition registers
+router.route('/facerecognition')
+.get((req, res) => {
+  const company = req._user.cmp
+
+  FaceRecognition.find({ })
+  .populate('zone', 'name')
+  .exec((error, recognitions) => {
+    if (error) {
+      winston.error({error})
+      return res.status(500).json({ error })
+    }
+
+    return res.status(200).json({ recognitions })
   })
 })
 

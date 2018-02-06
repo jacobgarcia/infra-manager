@@ -26,3 +26,5 @@ export { default as Search } from './Search'
 export { default as CreateElementBar } from './CreateElementBar'
 
 export { default as DateRangePicker } from './DateRangePicker'
+
+export { default as VideoPlayer } from './VideoPlayer'

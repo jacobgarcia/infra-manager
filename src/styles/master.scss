@@ -469,7 +469,7 @@ p span {
       box-shadow: 0 0 7px rgba(#000, .25);
     }
     > div {
-      flex-basis: 200px;
+      flex-basis: 350px;
       &:first-child {
         padding-left: 20px;
       }
@@ -689,7 +689,10 @@ p span {
 //    L O G I N
 // ========
 
-
+img {
+  width: 480px;
+  height: 360px;
+}
 .login {
   align-items: center;
   bottom: 0;

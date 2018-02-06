@@ -41,13 +41,12 @@ class Navigator extends PureComponent {
 
   render() {
     const { state, props } = this
-
     return (
       <ul className={`navigator ${state.isHidden ? 'hidden' : ''}`}>
         <ul className="navigator-header">
           <li className="sandwitch-icon" onClick={() => this.setState(prev => ({isHidden: !prev.isHidden}))}/>
           <li className="username" onClick={() => this.closeNavigator()}>
-            <NavLink to="/settings" className="fade"><span className="fade">{getAccessTitle(props.credentials.user && props.credentials.user.access)}</span>{props.credentials.user && props.credentials.user.name}</NavLink><img src="/static/img/dummy/att-icon.png" alt="Company Icon" className="fade"/>
+            <NavLink to="/settings" className="fade"><span className="fade">{getAccessTitle(props.credentials.user && props.credentials.user.access)}</span>{props.credentials.user && props.credentials.user.name}</NavLink><img src={props.credentials.company && props.credentials.company.logo} alt="Company Icon" className="fade"/>
           </li>
         </ul>
         <ul>

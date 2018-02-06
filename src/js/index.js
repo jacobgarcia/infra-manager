@@ -6,6 +6,7 @@ import Routes from './router'
 
 // Styles
 import '../styles/master.scss'
+import '../styles/videojs.scss'
 
 function render(Component) {
   ReactDOM.render(

@@ -137,3 +137,20 @@ export function dismissReport(reportId) {
     report: reportId
   }
 }
+
+export function setFacialReport(timestamp, event, success, risk, zone, status, site, access, pin, photo, id) {
+  return {
+    type: 'SET_FACIAL_REPORT',
+    timestamp,
+    event,
+    success,
+    risk,
+    zone,
+    status,
+    site,
+    access,
+    pin,
+    photo,
+    id
+  }
+}

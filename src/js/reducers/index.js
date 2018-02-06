@@ -317,6 +317,27 @@ function administrators(state = [], action) {
   }
 }
 
+function facialReports(state = [], action) {
+  switch (action.type) {
+    case 'SET_FACIAL_REPORT':
+      return [...state, {
+        timestamp: action.timestamp,
+        event: action.event,
+        success: action.success,
+        risk: action.risk,
+        zone: action.zone,
+        status: action.status,
+        site: action.site,
+        access: action.access,
+        pin: action.pin,
+        photo: action.photo,
+        id: action.id
+      }]
+    default:
+      return state
+  }
+}
+
 import facialRecognitionLogs from './facialRecognition'
 import cctvLogs from './cctv'
 import vehicularFlowLogs from './vehicularFlow'
@@ -327,7 +348,7 @@ import perimeterLogs from './perimeter'
 export default combineReducers({
   credentials,
   zones,
-  facialReports: facialRecognitionLogs,
+  facialReports,
   accessReports: accessLogs,
   cameraReports: cctvLogs,
   perimeterReports: perimeterLogs,

@@ -24,7 +24,6 @@ export function intToRGB(int) {
 export function substractReportValues(reports = []) {
   const alarms = []
   const sensors = []
-
   reports.map(report => {
     alarms.push(...report.alarms[0].values)
     sensors.push(...report.sensors[0].values)

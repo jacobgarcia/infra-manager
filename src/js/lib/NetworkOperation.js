@@ -71,6 +71,10 @@ class NetworkOperation {
   static getCompanyUsers() {
     return axios.get(`${baseUrl}/users`)
   }
+
+  static getFaceRecognition() {
+    return axios.get(`${baseUrl}/facerecognition`)
+  }
 }
 
 export default NetworkOperation

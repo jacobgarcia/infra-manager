@@ -13,6 +13,9 @@ const app = express()
 const v1 = require(path.resolve('router/v1'))
 const webpackDevServer = require(path.resolve('config/webpackDevServer')) // Dev server
 
+// RTMP Server
+const NodeMediaServer = require('node-media-server')
+
 const PORT = process.env.PORT || 8080
 
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -97,3 +100,21 @@ app.get('*', (req, res) =>
 app.listen(PORT, () =>
   winston.info(`Connus server is listening on port: ${PORT}!`)
 )
+
+// Start RTMP Server
+const config = {
+  rtmp: {
+    port: 1935,
+    chunk_size: 60000,
+    gop_cache: true,
+    ping: 60,
+    ping_timeout: 30
+  },
+  http: {
+    port: 8000,
+    allow_origin: '*'
+  }
+}
+
+var nms = new NodeMediaServer(config)
+nms.run()

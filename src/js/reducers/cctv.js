@@ -1,30 +1,69 @@
 const dumbCctvLogs = [
   {
     timestamp: new Date(),
-    event: 'Movimiento detectado',
+    event: 'Sala de Espera',
     zone: {name: 'Centro', _id: null},
-    site: 'MEXCOB0992',
-    risk: 2,
-    status: 'Análisis de video en proceso',
-    video: '/static/video/dummy/cctv-00.mp4'
-  },
-  {
-    timestamp: new Date(),
-    event: 'Reporte de analíticos',
-    zone: {name: 'Centro', _id: null},
-    site: 'DIFXCH1293',
+    site: 'CONHQ9094',
     risk: 0,
-    status: 'Detección inofensiva. Personal de trabajo foráneo',
-    video: '/static/video/dummy/cctv-01.mp4'
+    status: 'Video en proceso',
+    video: '/static/video/dummy/cctv-00.mp4',
+    videoJsOptions: {
+      controls: true,
+      autoplay: true,
+      sources: [{
+        src: 'rtmp://demo.connus.mx/live&stream',
+        type: 'rtmp/mp4'
+      }],
+      width: 360,
+      height: 240,
+      controlBar: {
+          volumePanel: false
+      }
+    }
   },
   {
     timestamp: new Date(),
-    event: 'Movimiento detectado en periodo no autorizado',
+    event: 'Oficinas segundo piso',
     zone: {name: 'Centro', _id: null},
-    site: 'DIFXCH1293',
-    risk: 3,
-    status: 'Análisis de video en proceso',
-    video: '/static/video/dummy/cctv-02.mp4'
+    site: 'CONHQ9094',
+    risk: 0,
+    status: 'Video en proceso',
+    video: '/static/video/dummy/cctv-01.mp4',
+    videoJsOptions: {
+      controls: true,
+      autoplay: true,
+      sources: [{
+        src: 'rtmp://demo.connus.mx/live&stream2',
+        type: 'rtmp/mp4'
+      }],
+      width: 360,
+      height: 240,
+      controlBar: {
+          volumePanel: false
+      }
+    }
+  },
+  {
+    timestamp: new Date(),
+    event: 'Almacén',
+    zone: {name: 'Centro', _id: null},
+    site: 'CONHQ9094',
+    risk: 0,
+    status: 'Video en proceso',
+    video: '/static/video/dummy/cctv-02.mp4',
+    videoJsOptions: {
+      controls: true,
+      autoplay: true,
+      sources: [{
+        src: 'rtmp://demo.connus.mx/live&stream3',
+        type: 'rtmp/mp4'
+      }],
+      width: 360,
+      height: 240,
+      controlBar: {
+          volumePanel: false
+      }
+    }
   }
 ]
 

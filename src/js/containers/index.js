@@ -8,6 +8,8 @@ export { default as Statistics } from './Statistics'
 
 export { default as Users } from './Users'
 
+export { default as Sensors } from './Sensors'
+
 export { default as Services } from './Services'
 
 export { default as Accesses } from './Accesses'

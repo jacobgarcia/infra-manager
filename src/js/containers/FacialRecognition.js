@@ -5,9 +5,9 @@ import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
 
 import { Table, RiskBar, DateRangePicker } from '../components'
-import { } from '../actions'
+import { setFacialReport } from '../actions'
 
-import { NetworkOperation } from '../lib'
+import { NetworkOperation, NetworkOperationFRM } from '../lib'
 import io from 'socket.io-client'
 
 class FacialRecognition extends Component {
@@ -30,7 +30,90 @@ class FacialRecognition extends Component {
   }
 
   componentDidMount(){
-    console.log(this.props.facialReports)
+
+    // Start socket connection
+    this.initSockets(this.props)
+
+  }
+
+  // TODO: Clean this mess and do it at App (using redux)
+  initSockets(props) {
+    this.socket = io('https://connus.be')
+
+    this.socket.on('connect', () => {
+      console.log('Joining to connus room')
+      this.socket.emit('join', 'connus')
+    })
+
+    this.socket.on('photo', data => {
+      //Build object from recieved data
+      const report = {
+        timestamp: new Date(),
+        event: data.success ? 'Registro de personal exitoso' : 'Intento de registro de personal',
+        zone: {
+          name: 'Centro'
+        },
+        site: data.site,
+        risk: data.success ? 0 : 1,
+        status: data.success ? 'Registro satisfactorio' : 'Regsitro denegado. Fallo en la detección de rostro',
+        access: 'Registro',
+        id: '5a4ea71050fdf1191fc71af8',
+        match: data.success ? 'Si' : 'No',
+        authorized: data.pin,
+        photo: data.photo
+      }
+
+      //Add the recieved element to the props
+      this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report.id)
+
+    })
+
+    this.socket.on('login', data => {
+      console.log('Register element recieved from external server', { data } )
+
+      //Build object from recieved data
+      const log = {
+        timestamp: new Date(),
+        event: data.status === true ? 'Inicio de sesión exitoso' : 'Intento de inicio de sesión',
+        zone: {
+          name: 'Centro'
+        },
+        site: 'MEXJIL1152', //Hardcoded site
+        risk:  data.status === true ? 0 : 2,
+        status: data.status === true ? 'Acceso autorizado. Sensorización desactivada' : 'Acceso denegado. Almacenando y analizando rostro desconocido',
+        access: 'Inicio de sesión',
+        id: '5a4ea71050fdf1191fc71af8',
+        match: data.status === true ? 'Si' : 'No',
+        authorized: data.pin,
+        photo: data.photo
+      }
+
+      //Add the recieved element to the props
+      this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report.id)
+    })
+
+    this.socket.on('outlog', data => {
+      console.log('Register element recieved from external server', { data } )
+
+      //Build object from recieved data
+      const log = {
+        timestamp: new Date(),
+        event: data.status === true ? 'Registro de salida exitosa' : 'Intento de registro de salida',
+        zone: {
+          name: 'Centro'
+        },
+        site: 'MEXJIL1152', //Hardcoded site
+        risk:  data.status === true ? 0 : 2,
+        status: data.status === true ? 'Acceso autorizado. Sensorización reactivada' : 'Acceso denegado. Almacenando y analizando rostro desconocido',
+        access: 'Cierre de sesión',
+        id: '5a4ea71050fdf1191fc71af8',
+        match: data.status === true ? 'Si' : 'No',
+        authorized: data.pin,
+        photo: data.photo
+      }
+      //Add the recieved element to the props
+      this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report.id)
+    })
   }
 
   onLogSelect(item, index, sectionIndex) {
@@ -74,7 +157,7 @@ class FacialRecognition extends Component {
               <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                 key={index}
                 onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
+                <div className="medium">{item.timestamp.toString()}</div>
                 <div className="large">{item.event}</div>
                 <div className="hiddable">{item.zone.name}</div>
                 <div className="hiddable">{item.site}</div>
@@ -83,8 +166,8 @@ class FacialRecognition extends Component {
               </div>
             }
             elements={[
-              { title: 'Registros', elements: props.facialReports.filter($0 => $0.risk < 1) },
-              { title: 'Alertas', elements: props.facialReports.filter($0 => $0.risk >= 1) }
+              { title: 'Registros', elements: props.facialReports.filter($0 => ($0.risk) < 1) },
+              { title: 'Alertas', elements: props.facialReports.filter($0 => ($0.risk) >= 1) }
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
@@ -101,17 +184,17 @@ class FacialRecognition extends Component {
               <div className="content">
                 <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
                 <div className="time-location">
-                  <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
+                <p>{state.selectedLog.timestamp.toString()}</p>
                   <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
                 </div>
                 <div className="detail">
                   <span>Rostro detectado</span>
-                  <div className="image-slider" style={{backgroundImage: `url(` + state.selectedLog.photo +`)`}} />
+                  <div className="image-slider" style={{backgroundImage: `url(` + 'https://connus.be' + state.selectedLog.photo +`)`}} />
                 </div>
                 <div className="details-container">
                   <div className="detail">
                     <span>Hora del suceso</span>
-                    <p>{state.selectedLog.timestamp.toLocaleTimeString()}</p>
+                    <p>{state.selectedLog.timestamp.toString()}</p>
                   </div>
                   <div className="detail">
                     <span>Tipo de ingreso</span>
@@ -119,11 +202,11 @@ class FacialRecognition extends Component {
                   </div>
                   <div className="detail">
                     <span>Usuario Autorizado</span>
-                    <p>{state.selectedLog.authorized}</p>
+                    <p>{state.selectedLog.pin}</p>
                   </div>
                   <div className="detail">
                     <span>Coincide con registro</span>
-                    <p>{state.selectedLog.match}</p>
+                    <p>{state.selectedLog.success ? 'Si' : 'No'}</p>
                   </div>
                   <div className="detail">
                     <span>Estatus</span>
@@ -148,11 +231,11 @@ class FacialRecognition extends Component {
 }
 
 FacialRecognition.propTypes = {
-  setLog: PropTypes.func,
+  setFacialReport: PropTypes.func,
   facialReports: PropTypes.array
 }
 
-function mapStateToProps({ zones, facialReports}) {
+function mapStateToProps({ zones, facialReports }) {
   return {
     zones,
     facialReports
@@ -161,8 +244,8 @@ function mapStateToProps({ zones, facialReports}) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    setLog: report => {
-      dispatch(setLog(report))
+    setFacialReport: (timestamp, event, success, risk, zone, status, site, access, pin, photo, id) => {
+      dispatch(setFacialReport(timestamp, event, success, risk, zone, status, site, access, pin, photo, id))
     }
   }
 }

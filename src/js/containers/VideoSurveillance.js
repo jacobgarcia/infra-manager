@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
 
 import { } from '../actions'
-import { Table, DateRangePicker, RiskBar } from '../components'
+import { Table, DateRangePicker, RiskBar, VideoPlayer } from '../components'
 
 class VideoSurveillance extends Component {
   constructor(props) {
@@ -41,7 +41,19 @@ class VideoSurveillance extends Component {
 
   render() {
     const { state, props } = this
-
+    const videoJsOptions = {
+      controls: true,
+      autoplay: true,
+      sources: [{
+        src: 'rtmp://demo.connus.mx/live&stream',
+        type: 'rtmp/mp4'
+      }],
+      width: 360,
+      height: 240,
+      controlBar: {
+          volumePanel: false
+      }
+    }
     return (
       <div className="app-content facial-recognition small-padding">
         <Helmet>
@@ -75,8 +87,7 @@ class VideoSurveillance extends Component {
               </div>
             }
             elements={[
-              { title: 'Registros', elements: props.cameraReports},
-              { title: 'Alertas', elements: props.cameraReports.filter($0 => $0.risk > 2)}
+              { title: 'CAMARAS', elements: props.cameraReports},
             ]}
             titles={[
               {title: 'Tiempo', className: 'medium'},
@@ -97,9 +108,7 @@ class VideoSurveillance extends Component {
                 <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
               </div>
               <div>
-                <video width="360" height="240" controls loop muted autoPlay>
-                  <source src={state.selectedLog.video} type="video/mp4"/>
-                </video>
+                  <VideoPlayer { ...state.selectedLog.videoJsOptions } />
               </div>
               <div className="action destructive">
                 <p>Contactar seguridad</p>

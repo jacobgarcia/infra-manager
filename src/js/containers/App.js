@@ -5,10 +5,10 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
-import { setCredentials, setComplete, setLoading, setExhaustive, setReport } from '../actions'
-import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports } from './'
-import { Navigator } from '../components'
-import { NetworkOperation } from '../lib'
+import { setCredentials, setComplete, setLoading, setExhaustive, setReport, setFacialReport } from '../actions'
+import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports, Sensors } from './'
+import { Navigator, VideoPlayer } from '../components'
+import { NetworkOperation, NetworkOperationFRM } from '../lib'
 
 class App extends Component {
   constructor(props) {
@@ -36,6 +36,14 @@ class App extends Component {
 
     this.props.setLoading()
 
+    // Set FRM access store
+    NetworkOperationFRM.getAccess()
+    .then(({data}) => {
+      data.accessLogs.forEach(report => {
+        if(this.props.credentials.company.name === 'Connus' && report.site === 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
+        else if (this.props.credentials.company.name === 'AT&T' && report.site != 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
+      })
+    })
     NetworkOperation.getSelf()
     .then(({data}) => {
       this.setState({
@@ -50,6 +58,9 @@ class App extends Component {
 
       // Start socket connection
       this.initSockets(this.props, token)
+
+
+
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
@@ -72,12 +83,9 @@ class App extends Component {
     this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
-      this.socket.emit('join', token)
+      this.socket.emit('join', 'web-platform')
     })
 
-    this.socket.on('alert', report => {
-      console.warn('Alert recieved from external server', { report })
-    })
   }
 
   componentDidCatch(error, info) {
@@ -98,6 +106,17 @@ class App extends Component {
           <p className="legend">Si el problema persiste, favor de reportarlo a <a href="mailto:soporte@connus.mx">soporte@connus.mx</a></p>
         </div>
       )
+    }
+
+    const videoJsOptions = {
+      controls: true,
+      autoplay: true,
+      sources: [{
+        src: 'rtmp://91.230.211.87:1935/720p&hd',
+        type: 'rtmp/mp4'
+      }],
+      preload: 'auto',
+      techorder : ["flash"]
     }
 
     return (
@@ -127,6 +146,8 @@ class App extends Component {
           <Route path="/video-surveillance" component={VideoSurveillance}/>
           <Route path="/reports" component={Reports}/>
           <Route path="/settings" component={Settings}/>
+          <Route path="/sensors" component={Sensors}/>
+          <Route path="/streaming"  render={() => <VideoPlayer { ...videoJsOptions } />} />
         </Switch>
       </div>
     )
@@ -160,6 +181,9 @@ function mapDispatchToProps(dispatch) {
     },
     setExhaustive: zones => {
       dispatch(setExhaustive(zones))
+    },
+    setFacialReport: (timestamp, event, success, risk, zone, status, site, access, pin, photo, id) => {
+      dispatch(setFacialReport(timestamp, event, success, risk, zone, status, site, access, pin, photo, id))
     }
   }
 }
