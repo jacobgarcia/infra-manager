@@ -5,16 +5,16 @@ import videojsflash from 'videojs-flash'
 
 export default class VideoPlayer extends Component {
   componentDidMount() {
-    // instantiate Video.js
-    this.player = videojs(this.videoNode, this.props, function onPlayerReady() {
-      console.log('onPlayerReady', this)
-    })
+    this.player = videojs(this.videoNode, this.props)
   }
 
-  // destroy player on unmount
+
   componentWillUnmount() {
+    // Dispose player on unmount
     if (this.player) {
       this.player.dispose()
+      this.player = null
+      this.videoNode = null
     }
   }
 
@@ -24,7 +24,11 @@ export default class VideoPlayer extends Component {
   render() {
     return (
       <div data-vjs-player>
-        <video ref={ node => this.videoNode = node } className="video-js"></video>
+        <video
+          ref={component => {
+            this.videoNode = component
+          }} className="video-js"
+        />
       </div>
     )
   }

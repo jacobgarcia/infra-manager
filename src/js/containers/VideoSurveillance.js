@@ -15,7 +15,8 @@ class VideoSurveillance extends Component {
       selectedLog: null,
       selectedElementIndex: [null,null],
       from: new Date(),
-      to: new Date()
+      to: new Date(),
+      playingVideo: false
     }
 
     this.onDayClick = this.onDayClick.bind(this)
@@ -27,7 +28,12 @@ class VideoSurveillance extends Component {
     this.setState({
       showLogDetail: true,
       selectedLog: item,
-      selectedElementIndex: [index, sectionIndex]
+      selectedElementIndex: [index, sectionIndex],
+      playingVideo: false
+    }, () => {
+      this.setState({
+        playingVideo: true
+      })
     })
 
     this.forceUpdate()
@@ -39,21 +45,26 @@ class VideoSurveillance extends Component {
     this.setState(range)
   }
 
+  componentDidCatch(error, info) {
+    console.warn('Component had error', error)
+  }
+
   render() {
     const { state, props } = this
-    const videoJsOptions = {
-      controls: true,
-      autoplay: true,
-      sources: [{
-        src: 'rtmp://demo.connus.mx/live&stream',
-        type: 'rtmp/mp4'
-      }],
-      width: 360,
-      height: 240,
-      controlBar: {
-          volumePanel: false
-      }
-    }
+    // const videoJsOptions = {
+    //   controls: true,
+    //   autoplay: true,
+    //   sources: [{
+    //     src: 'rtmp://demo.connus.mx/live&stream',
+    //     type: 'rtmp/mp4'
+    //   }],
+    //   width: 360,
+    //   height: 240,
+    //   controlBar: {
+    //       volumePanel: false
+    //   }
+    // }
+
     return (
       <div className="app-content facial-recognition small-padding">
         <Helmet>
@@ -108,7 +119,12 @@ class VideoSurveillance extends Component {
                 <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
               </div>
               <div>
-                  <VideoPlayer { ...state.selectedLog.videoJsOptions } />
+                <p>{JSON.stringify(state.selectedLog)}</p>
+                  {
+                    state.playingVideo
+                    ? <VideoPlayer {...state.selectedLog.videoJsOptions} key={state.selectedLog} />
+                    : null
+                  }
               </div>
               <div className="action destructive">
                 <p>Contactar seguridad</p>
