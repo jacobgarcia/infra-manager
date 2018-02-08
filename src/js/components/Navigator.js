@@ -1,10 +1,10 @@
-import React, { PureComponent } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
 import { getAccessTitle } from '../lib/CodeExtractor'
 
-class Navigator extends PureComponent {
+class Navigator extends Component {
   constructor(props) {
     super(props)
 
@@ -56,7 +56,7 @@ class Navigator extends PureComponent {
             </NavLink>
           </li>
           <li onClick={() => this.closeNavigator()}>
-            <NavLink exact to="/sites" className="sites">
+            <NavLink to="/sites" className="sites">
               <span className="status fade">Sitios</span>
             </NavLink>
           </li>
