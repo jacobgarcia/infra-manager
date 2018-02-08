@@ -11,11 +11,11 @@ class Accesses extends Component {
     super(props)
 
     this.state = {
-      selectedElementIndex: [null,null],
-      showLogDetail: false,
+      selectedLog: this.props.accessReports.length > 0 ? this.props.accessReports[0] : null,
+      selectedElementIndex: this.props.accessReports.length > 0 ? [0,0] : [null,null],
+      showLogDetail: true,
       from: new Date(),
-      to: new Date(),
-      selectedLog: null
+      to: new Date()
     }
   }
 

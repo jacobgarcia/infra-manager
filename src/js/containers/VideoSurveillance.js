@@ -12,11 +12,12 @@ class VideoSurveillance extends Component {
     super(props)
 
     this.state = {
-      selectedLog: null,
-      selectedElementIndex: [null,null],
+      selectedLog: this.props.cameraReports.length > 0 ? this.props.cameraReports[0] : null,
+      selectedElementIndex: this.props.cameraReports.length > 0 ? [0,0] : [null,null],
       from: new Date(),
+      showLogDetail: true,
       to: new Date(),
-      playingVideo: false
+      playingVideo: true
     }
 
     this.onDayClick = this.onDayClick.bind(this)
@@ -113,13 +114,12 @@ class VideoSurveillance extends Component {
           &&
           <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
             <div className="content">
-              <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
+              {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
               <div className="time-location">
                 <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
                 <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
               </div>
               <div>
-                <p>{JSON.stringify(state.selectedLog)}</p>
                   {
                     state.playingVideo
                     ? <VideoPlayer {...state.selectedLog.videoJsOptions} key={state.selectedLog} />

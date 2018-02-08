@@ -15,9 +15,9 @@ class VehicularFlow extends Component {
     this.state = {
       logs: this.props.vehicularReports,
       alerts: [0,0,0,0,0],
-      selectedLog: null,
-      showLogDetail: false,
-      selectedElementIndex: [null,null],
+      selectedLog: this.props.vehicularReports.length > 0 ? this.props.vehicularReports[0] : null,
+      showLogDetail: true,
+      selectedElementIndex: this.props.vehicularReports.length > 0 ? [0,0] : [null,null],
       from: new Date(),
       to: new Date()
     }
@@ -94,7 +94,7 @@ class VehicularFlow extends Component {
             {
               state.selectedLog &&
               <div className="content">
-                <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
+                {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
                 <div className="time-location">
                   <p>3 Enero 07:45 PM</p>
                   <p>Zona <span>{state.selectedLog.zone}</span> Sitio <span>{state.selectedLog.site}</span></p>

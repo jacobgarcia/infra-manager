@@ -16,24 +16,32 @@ class FacialRecognition extends Component {
 
     this.state = {
       logs: this.props.facialReports,
-      selectedElementIndex: [null,null],
-      showLogDetail: false,
+      selectedLog: this.props.facialReports.length > 0 ? this.props.facialReports[0] : null,
+      selectedElementIndex: this.props.facialReports.length > 0 ? [0,0] : [null,null],
+      showLogDetail: true,
       from: new Date(),
-      to: new Date(),
-      selectedLog: null
+      to: new Date()
     }
 
     this.onLogSelect = this.onLogSelect.bind(this)
     this.onDayClick = this.onDayClick.bind(this)
-
-
   }
 
-  componentDidMount(){
+  componentWillReceiveProps(nextProps) {
+    if (!this.props.facialReports || this.props.facialReports.length === 0) {
+      if (nextProps.facialReports && nextProps.facialReports.length > 0) {
+        this.setState({
+          selectedLog: nextProps.facialReports.length > 0 ? nextProps.facialReports[0] : null,
+          selectedElementIndex: nextProps.facialReports.length > 0 ? [0,0] : [null,null],
+          showLogDetail: true,
+        })
+      }
+    }
+  }
 
+  componentDidMount() {
     // Start socket connection
     this.initSockets(this.props)
-
   }
 
   // TODO: Clean this mess and do it at App (using redux)
@@ -41,12 +49,11 @@ class FacialRecognition extends Component {
     this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
-      console.log('Joining to connus room')
       this.socket.emit('join', 'connus')
     })
 
     this.socket.on('photo', data => {
-      //Build object from recieved data
+      // Build object from recieved data
       const report = {
         timestamp: new Date(),
         event: data.success ? 'Registro de personal exitoso' : 'Intento de registro de personal',
@@ -63,7 +70,7 @@ class FacialRecognition extends Component {
         photo: data.photo
       }
 
-      //Add the recieved element to the props
+      // Add the recieved element to the props
       this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report.id)
 
     })
@@ -182,14 +189,13 @@ class FacialRecognition extends Component {
             &&
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
-                <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
                 <div className="time-location">
                 <p>{state.selectedLog.timestamp.toString()}</p>
                   <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
                 </div>
                 <div className="detail">
                   <span>Rostro detectado</span>
-                  <div className="image-slider" style={{backgroundImage: `url(` + 'https://connus.be' + state.selectedLog.photo +`)`}} />
+                  <div className="image-slider" style={{backgroundImage: `url(https://connus.be${state.selectedLog.photo})`}} />
                 </div>
                 <div className="details-container">
                   <div className="detail">

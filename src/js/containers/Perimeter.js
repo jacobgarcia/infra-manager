@@ -16,11 +16,11 @@ class Perimeter extends Component {
     this.state = {
       logs: this.props.perimeterReports,
       alerts: [],
-      selectedElementIndex: [null, null],
-      showLogDetail: false,
+      selectedLog: this.props.perimeterReports.length > 0 ? this.props.perimeterReports[0] : null,
+      selectedElementIndex: this.props.perimeterReports.length > 0 ? [0,0] : [null,null],
+      showLogDetail: true,
       from: new Date(),
-      to: new Date(),
-      selectedLog: null
+      to: new Date()
     }
 
     this.onLogSelect = this.onLogSelect.bind(this)
@@ -96,7 +96,7 @@ class Perimeter extends Component {
         state.selectedLog &&
         <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
           <div className="content">
-            <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
+            {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
             <div className="time-location">
               <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
               <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
