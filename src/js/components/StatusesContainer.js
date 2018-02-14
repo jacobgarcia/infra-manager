@@ -17,7 +17,8 @@ class StatusesContainer extends PureComponent {
     this.state = {
       show: 'SENSORS',
       photo2: props.photo1,
-      photo3: props.photo2
+      photo3: props.photo2,
+      animate: false
     }
 
     this.getLink = this.getLink.bind(this)
@@ -39,10 +40,11 @@ class StatusesContainer extends PureComponent {
 
     this.socket.on('debugRequest',data => {
 
+      this.setState({'animate':false})
       //if (this.props.element.key === camera){
         this.setState({
-          photo2 : data.image2,
-          photo3 : data.image3
+          photo2 : 'https://connus.be'+data.image2,
+          photo3 : 'https://connus.be'+data.image3
         })
     //  }
     })
@@ -70,14 +72,19 @@ class StatusesContainer extends PureComponent {
   }
 
   onDebug(){
+    this.setState({'animate':true})
     const { props } = this
+    console.log(props)
     NetworkOperationFRM.getDebug(props.element.key)
     .then((response) => {
     console.log(response)
+
     })
     .catch((error) => {
       console.log(error)
     })
+
+
   }
 
   getContent() {
@@ -131,16 +138,44 @@ class StatusesContainer extends PureComponent {
       )
       case 'CAMERAS':
       return (
-        <div className="action destructive">
-          <p onClick={() => this.onDebug() }>Ver Cámaras</p>
-          <p>Photo 1</p>
-          <img src={this.state.photo2} />
+        <div className="action destructive ">
+          <button className="center" onClick={() => this.onDebug() }>Ver Cámaras</button>
           <br/>
-          <p>Photo 2</p>
-          <img src={this.state.photo3} />
-        </div>
 
-      )
+
+          {
+            this.state.animate
+            &&
+            <div className="loading">
+          
+            <ul className="loadinglist">
+              <li>
+                <div id="panel">
+                    <span id="loading5">
+                          <span id="outerCircle"></span>
+                    </span>
+                  </div>
+              </li>
+              <br/>
+
+           </ul>
+
+            </div>
+          }
+
+          {
+            this.state.photo2 
+            &&
+            <div className="response">
+            <img src={this.state.photo2} />
+            <br/>
+            <img src={this.state.photo3} />
+            </div>
+          }
+                    </div>
+
+
+        )
       case 'INFO':
       return (
         (props.element && props.element.position) &&
