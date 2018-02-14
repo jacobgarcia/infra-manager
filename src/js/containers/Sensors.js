@@ -36,24 +36,22 @@ class Users extends Component {
     NetworkOperationFRM.getAlerts()
     .then(({data}) => {
       this.setState({
-        alerts: this.props.credentials.company.name === 'Connus' ? data.alerts.filter($0 => $0.site === 'CNHQ9094') : data.alerts.filter($0 => $0.site != 'CNHQ9094')
+        alerts: this.props.credentials.company.name === 'Connus' ? data.alerts.filter($0 => $0.site === 'CNHQ9094') : data.alerts.filter($0 => $0.site !== 'CNHQ9094')
       })
     })
 
     // Start socket connection
-    this.initSockets(this.props)
+    this.initSockets()
   }
 
-  initSockets(props) {
+  initSockets() {
     this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
-      console.log('Joining to connus room')
       this.socket.emit('join', 'connus')
     })
 
-    this.socket.on('alert', data => {
-      console.log('Register element recieved from external server', { data } )
+    this.socket.on('alert', () => {
       NetworkOperationFRM.getAlerts()
       .then(({data}) => {
         this.setState({
@@ -72,7 +70,8 @@ class Users extends Component {
 
     this.setState({
       query,
-      filteredUsers: value.length > 0 ? this.state.users.filter($0 => JSON.stringify($0).toLowerCase().search(regEx) >= 0) : this.state.users
+      filteredUsers: value.length > 0 ? this.state.users.filter($0 => JSON.stringify($0).toLowerCase()
+      .search(regEx) >= 0) : this.state.users
     })
   }
 
@@ -164,7 +163,7 @@ function mapStateToProps({zones, credentials}) {
 }
 
 Users.propTypes = {
-
+  credentials: PropTypes.object
 }
 
 export default connect(mapStateToProps)(Users)

@@ -31,7 +31,6 @@ class App extends Component {
     if (!token) {
       localStorage.removeItem('token')
       this.props.history.replace(`/login${path}`)
-      return
     }
 
     this.props.setLoading()
@@ -40,8 +39,8 @@ class App extends Component {
     NetworkOperationFRM.getAccess()
     .then(({data}) => {
       data.accessLogs.forEach(report => {
-        if(this.props.credentials.company.name === 'Connus' && report.site === 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
-        else if (this.props.credentials.company.name === 'AT&T' && report.site != 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
+        if (this.props.credentials.company.name === 'Connus' && report.site === 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
+        else if (this.props.credentials.company.name === 'AT&T' && report.site !== 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
       })
     })
     NetworkOperation.getSelf()
@@ -57,8 +56,7 @@ class App extends Component {
       this.props.setCredentials({...data.user, token})
 
       // Start socket connection
-      this.initSockets(this.props, token)
-
+      this.initSockets()
 
 
       return NetworkOperation.getExhaustive()
@@ -79,7 +77,7 @@ class App extends Component {
     })
   }
 
-  initSockets(props, token) {
+  initSockets() {
     this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
@@ -116,7 +114,7 @@ class App extends Component {
         type: 'rtmp/mp4'
       }],
       preload: 'auto',
-      techorder : ["flash"]
+      techorder: ["flash"]
     }
 
     return (
@@ -147,7 +145,7 @@ class App extends Component {
           <Route path="/reports" component={Reports}/>
           <Route path="/settings" component={Settings}/>
           <Route path="/sensors" component={Sensors}/>
-          <Route path="/streaming"  render={() => <VideoPlayer { ...videoJsOptions } />} />
+          <Route path="/streaming" render={() => <VideoPlayer { ...videoJsOptions } />} />
         </Switch>
       </div>
     )
@@ -162,7 +160,8 @@ App.propTypes = {
   location: PropTypes.object,
   setLoading: PropTypes.func,
   setExhaustive: PropTypes.func,
-  setComplete: PropTypes.func
+  setComplete: PropTypes.func,
+  setFacialReport: PropTypes.func
 }
 
 function mapDispatchToProps(dispatch) {
