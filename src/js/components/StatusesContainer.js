@@ -87,26 +87,39 @@ class StatusesContainer extends PureComponent {
         (props.elements && props.elements.length > 0)
         ?
         props.elements.map(element => {
-          let reports = getFilteredReports(props.reports, element)
-          reports = substractReportValues(reports)
-          let { status, percentage } = getStatus(reports || null)
+          const reports = substractReportValues(getFilteredReports(props.reports, element))
+          let { status, percentage, name } = getStatus(reports || null)
 
           if (props.type === 'SITE') {
             const sensor = substractReportValues(props.reports).sensors.find(({key}) => key === element.key)
 
             if (sensor) {
-              status = [{ name: 'normal', value: sensor.value}, { name: 'alerts', value: 100 - sensor.value }]
+              status = [{ name: 'bold', value: sensor.value}, { name: 'alerts', value: 100 - sensor.value }]
               percentage = sensor.value
             }
           }
 
-          // const { value = null } = element // Sensors
+          switch (element.key) {
+            case 'cs1':
+              name = 'de contacto 1'
+              break
+            case 'cs2':
+              name = 'de contacto 2'
+              break
+            case 'vs1':
+              name = 'de vibración 1'
+              break
+            case 'vs2':
+              name = 'de vibración 2'
+              break
+            default:
 
+          }
           return (
             <Link key={element._id} to={this.getLink(props.type, element)}>
               <ElementStatus
                 id={element._id}
-                title={this.getElementTitle(props.type)}
+                title={this.getElementTitle(props.type) + ' ' + name}
                 name={element.name}
                 type={props.type}
                 siteKey={element.key}
