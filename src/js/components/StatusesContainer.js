@@ -119,7 +119,7 @@ class StatusesContainer extends PureComponent {
             <Link key={element._id} to={this.getLink(props.type, element)}>
               <ElementStatus
                 id={element._id}
-                title={this.getElementTitle(props.type) + ' ' + name}
+                title={name ? this.getElementTitle(props.type) + ' ' + name : this.getElementTitle(props.type)}
                 name={element.name}
                 type={props.type}
                 siteKey={element.key}
