@@ -148,7 +148,7 @@ class FacialRecognition extends Component {
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
                 <div className="time-location">
-                <p>{state.selectedLog.timestamp && state.selectedLog.timestamp}</p>
+                <p>{state.selectedLog.timestamp && new Date(state.selectedLog.timestamp).toLocaleString()}</p>
                   {state.selectedLog.zone && <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>}
                 </div>
                 <div className="detail">
@@ -158,7 +158,7 @@ class FacialRecognition extends Component {
                 <div className="details-container">
                   <div className="detail">
                     <span>Hora del suceso</span>
-                    <p>{state.selectedLog.timestamp}</p>
+                    <p>{new Date(state.selectedLog.timestamp).toLocaleTimeString()}</p>
                   </div>
                   <div className="detail">
                     <span>Tipo de ingreso</span>
@@ -182,9 +182,11 @@ class FacialRecognition extends Component {
                     <img src="" alt=""/>
                   </div>
                 </div>
-                <div className="action destructive">
-                  <p>Contactar seguridad</p>
-                </div>
+                { state.selectedLog.risk > 0 &&
+                  <div className="action destructive">
+                    <p>Contactar seguridad</p>
+                  </div>
+                }
               </div>
             </div>
             <div className="tables-container">
@@ -229,7 +231,7 @@ class FacialRecognition extends Component {
                     <div className="large hiddable">{item.status}</div>
                   </div>
                 }
-                title="Aletas"
+                title="Alertas"
                 elements={props.facialReports.filter($0 => $0.risk > 0)}
                 titles={[
                   {title: 'Tiempo', className: 'medium'},
