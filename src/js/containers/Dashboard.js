@@ -142,7 +142,6 @@ class Dashboard extends Component {
                       <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                     </PieChart>
                     <h1>100%</h1>
-                    <p>2 sitios</p>
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
@@ -231,6 +230,7 @@ class Dashboard extends Component {
             </div>
             <div className="events-container">
               <Table
+                multipleTable
                 actionsContainer={
                   <div>
                     <p className="button action disabled">Filtrar</p>

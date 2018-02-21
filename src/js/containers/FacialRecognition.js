@@ -16,7 +16,7 @@ class FacialRecognition extends Component {
 
     this.state = {
       logs: this.props.facialReports,
-      selectedLog: this.props.facialReports.length > 0 ? this.props.facialReports[0] : null,
+      selectedLog: this.props.facialReports.length > 0 ? this.props.facialReports[0] : {},
       selectedElementIndex: this.props.facialReports.length > 0 ? [0,0] : [null,null],
       showLogDetail: true,
       from: new Date(),
@@ -72,21 +72,18 @@ class FacialRecognition extends Component {
 
       // Add the recieved element to the props
       this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report.id)
-
     })
 
     this.socket.on('login', data => {
-      console.log('Register element recieved from external server', { data } )
-
-      //Build object from recieved data
-      const log = {
+      // Build object from recieved data
+      const report = {
         timestamp: new Date(),
         event: data.status === true ? 'Inicio de sesión exitoso' : 'Intento de inicio de sesión',
         zone: {
           name: 'Centro'
         },
         site: 'MEXJIL1152', //Hardcoded site
-        risk:  data.status === true ? 0 : 2,
+        risk: data.status === true ? 0 : 2,
         status: data.status === true ? 'Acceso autorizado. Sensorización desactivada' : 'Acceso denegado. Almacenando y analizando rostro desconocido',
         access: 'Inicio de sesión',
         id: '5a4ea71050fdf1191fc71af8',
@@ -95,22 +92,22 @@ class FacialRecognition extends Component {
         photo: data.photo
       }
 
-      //Add the recieved element to the props
+      // Add the recieved element to the props
       this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report.id)
     })
 
     this.socket.on('outlog', data => {
       console.log('Register element recieved from external server', { data } )
 
-      //Build object from recieved data
-      const log = {
+      // Build object from recieved data
+      const report = {
         timestamp: new Date(),
         event: data.status === true ? 'Registro de salida exitosa' : 'Intento de registro de salida',
         zone: {
           name: 'Centro'
         },
-        site: 'MEXJIL1152', //Hardcoded site
-        risk:  data.status === true ? 0 : 2,
+        site: 'MEXJIL1152', // Hardcoded site
+        risk: data.status === true ? 0 : 2,
         status: data.status === true ? 'Acceso autorizado. Sensorización reactivada' : 'Acceso denegado. Almacenando y analizando rostro desconocido',
         access: 'Cierre de sesión',
         id: '5a4ea71050fdf1191fc71af8',
@@ -118,7 +115,7 @@ class FacialRecognition extends Component {
         authorized: data.pin,
         photo: data.photo
       }
-      //Add the recieved element to the props
+      // Add the recieved element to the props
       this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report.id)
     })
   }
@@ -147,51 +144,12 @@ class FacialRecognition extends Component {
         </Helmet>
         <div className="content">
           <h2>Reconocimiento Facial</h2>
-          <Table
-            className={`${state.showLogDetail ? 'detailed' : ''}`}
-            actionsContainer={
-              <div>
-                <DateRangePicker
-                  from={state.from}
-                  to={state.to}
-                  onDayClick={this.onDayClick}
-                />
-                <p className="button action disabled">Filtrar</p>
-              </div>
-            }
-            selectedElementIndex={state.selectedElementIndex}
-            element={(item, index, sectionIndex) =>
-              <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
-                key={index}
-                onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">{item.timestamp.toString()}</div>
-                <div className="large">{item.event}</div>
-                <div className="hiddable">{item.zone.name}</div>
-                <div className="hiddable">{item.site}</div>
-                <div><RiskBar risk={item.risk} /></div>
-                <div className="large hiddable">{item.status}</div>
-              </div>
-            }
-            elements={[
-              { title: 'Registros', elements: props.facialReports.filter($0 => ($0.risk) < 1) },
-              { title: 'Alertas', elements: props.facialReports.filter($0 => ($0.risk) >= 1) }
-            ]}
-            titles={[
-              {title: 'Tiempo', className: 'medium'},
-              {title: 'Suceso', className: 'large'},
-              {title: 'Zona', className: 'hiddable'},
-              {title: 'Sitio', className: 'hiddable'},
-              {title: 'Riesgo'},
-              {title: 'Estatus o acción', className: 'large hiddable'}
-            ]}
-          />
-          { state.selectedLog !== null
-            &&
+          <div className="tables-detail__container">
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
                 <div className="time-location">
-                <p>{state.selectedLog.timestamp.toString()}</p>
-                  <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
+                <p>{state.selectedLog.timestamp && state.selectedLog.timestamp}</p>
+                  {state.selectedLog.zone && <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>}
                 </div>
                 <div className="detail">
                   <span>Rostro detectado</span>
@@ -200,7 +158,7 @@ class FacialRecognition extends Component {
                 <div className="details-container">
                   <div className="detail">
                     <span>Hora del suceso</span>
-                    <p>{state.selectedLog.timestamp.toString()}</p>
+                    <p>{state.selectedLog.timestamp}</p>
                   </div>
                   <div className="detail">
                     <span>Tipo de ingreso</span>
@@ -229,7 +187,61 @@ class FacialRecognition extends Component {
                 </div>
               </div>
             </div>
-          }
+            <div className="tables-container">
+              <Table
+                className={`${state.showLogDetail ? 'detailed' : ''}`}
+                selectedElementIndex={state.selectedElementIndex}
+                element={(item, index, sectionIndex) =>
+                  <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
+                    key={index}
+                    onClick={() => this.onLogSelect(item, index, sectionIndex)}>
+                    <div className="medium">{new Date(item.timestamp).toLocaleDateString('es-MX')}</div>
+                    <div className="large">{item.event}</div>
+                    {/* <div className="hiddable">{item.zone.name}</div> */}
+                    <div className="hiddable">{item.site}</div>
+                    {/* <div><RiskBar risk={item.risk} /></div> */}
+                    <div className="large hiddable">{item.status}</div>
+                  </div>
+                }
+                title="Registros"
+                elements={props.facialReports.filter($0 => $0.risk === 0)}
+                titles={[
+                  {title: 'Tiempo', className: 'medium'},
+                  {title: 'Suceso', className: 'large'},
+                  // {title: 'Zona', className: 'hiddable'},
+                  {title: 'Sitio', className: 'hiddable'},
+                  // {title: 'Riesgo'},
+                  {title: 'Estatus o acción', className: 'large hiddable'}
+                ]}
+              />
+              <Table
+                className={`${state.showLogDetail ? 'detailed' : ''}`}
+                selectedElementIndex={state.selectedElementIndex}
+                element={(item, index) =>
+                  <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1 ? 'selected' : ''}`}
+                    key={index}
+                    onClick={() => this.onLogSelect(item, index, 1)}>
+                    <div className="medium">{new Date(item.timestamp).toLocaleDateString('es-MX')}</div>
+                    <div className="large">{item.event}</div>
+                    {/* <div className="hiddable">{item.zone.name}</div> */}
+                    <div className="hiddable">{item.site}</div>
+                    <div><RiskBar risk={item.risk} /></div>
+                    <div className="large hiddable">{item.status}</div>
+                  </div>
+                }
+                title="Aletas"
+                elements={props.facialReports.filter($0 => $0.risk > 0)}
+                titles={[
+                  {title: 'Tiempo', className: 'medium'},
+                  {title: 'Suceso', className: 'large'},
+                  // {title: 'Zona', className: 'hiddable'},
+                  {title: 'Sitio', className: 'hiddable'},
+                  {title: 'Riesgo'},
+                  {title: 'Estatus o acción', className: 'large hiddable'}
+                ]}
+              />
+            </div>
+          </div>
         </div>
       </div>
     )

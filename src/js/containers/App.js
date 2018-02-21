@@ -64,7 +64,6 @@ class App extends Component {
     .then(({data}) => {
       // Set all zones
       this.props.setExhaustive(data.zones)
-
       this.props.setComplete()
     })
     .catch(error => {

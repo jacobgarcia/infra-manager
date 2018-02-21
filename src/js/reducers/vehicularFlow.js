@@ -7,6 +7,7 @@ export default function vehicularReports(state = dumbVehicularReports, action) {
         site: action.site,
         authorized: action.authorized,
         access: action.access,
+        risk: action.risk
       }]
     default:
       return state
@@ -29,7 +30,8 @@ const dumbVehicularReports = [
     brand: 'Kia',
     model: 'Rio',
     color: 'Plata',
-    plate: '7KZW227'
+    plate: '7KZW227',
+    risk: 1
   },
   {
     timestamp: new Date('2018-01-15T12:05:00'),
@@ -46,7 +48,8 @@ const dumbVehicularReports = [
     brand: 'Chevrolet',
     model: 'Silverado',
     color: 'Vino',
-    plate: '41557A2'
+    plate: '41557A2',
+    risk: 2
   },
   {
     timestamp: new Date('2018-01-11T13:30:00'),
@@ -63,7 +66,8 @@ const dumbVehicularReports = [
     brand: 'Honda',
     model: 'Accord',
     color: 'Gris',
-    plate: '7HNT893'
+    plate: '7HNT893',
+    risk: 3
   },
   {
     timestamp: new Date('2018-01-10T16:45:00'),
@@ -80,7 +84,8 @@ const dumbVehicularReports = [
     brand: 'Nissan',
     model: 'Sentra',
     color: 'Plata',
-    plate: '6MFH334'
+    plate: '6MFH334',
+    risk: 0
   },
   {
     timestamp: new Date('2018-01-10T14:15:00'),
@@ -97,7 +102,8 @@ const dumbVehicularReports = [
     brand: 'Nissan',
     model: 'Frontier',
     color: 'Blanco',
-    plate: '68484H1'
+    plate: '68484H1',
+    risk: 0
 
   },
   {
@@ -115,7 +121,8 @@ const dumbVehicularReports = [
     brand: 'Toyota',
     model: 'Camry',
     color: 'Negro',
-    plate: '7HJG357'
+    plate: '7HJG357',
+    risk: 0
 
   }
 ]

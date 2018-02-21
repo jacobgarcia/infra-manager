@@ -41,46 +41,7 @@ class Accesses extends Component {
         </Helmet>
         <div className="content">
           <h2>Accesos</h2>
-          <Table
-            className={`${state.showLogDetail ? 'detailed' : ''}`}
-            actionsContainer={
-              <div>
-                <DateRangePicker
-                  from={state.from}
-                  to={state.to}
-                  onDayClick={this.onDayClick}
-                />
-                <p className="button action disabled">Filtrar</p>
-              </div>
-            }
-            selectedElementIndex={state.selectedElementIndex}
-            element={(item, index, sectionIndex) =>
-              <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
-                key={index}
-                onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
-                <div className="medium bold">{item.event}</div>
-                <div className="hiddable">{item.zone.name}</div>
-                <div className="hiddable">{item.site}</div>
-                <div><RiskBar risk={item.risk} /></div>
-                <div className="medium hiddable">{item.status}</div>
-              </div>
-            }
-            elements={[
-              { title: 'Registros', elements: props.accessReports.filter($0 => $0.risk < 1)},
-              { title: 'Alertas', elements: props.accessReports.filter($0 => $0.risk >= 1)}
-            ]}
-            titles={[
-              {title: 'Tiempo', className: 'medium'},
-              {title: 'Suceso', className: 'medium'},
-              {title: 'Zona', className: 'hiddable'},
-              {title: 'Sitio', className: 'hiddable'},
-              {title: 'Riesgo'},
-              {title: 'Estatus o acción', className: 'medium hiddable'}
-            ]}
-          />
-          { state.selectedLog !== null
-            &&
+          <div className="tables-detail__container">
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
                 <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
@@ -117,7 +78,55 @@ class Accesses extends Component {
                 </div>
               </div>
             </div>
-          }
+            <div className="tables-container">
+              <Table
+                className={`${state.showLogDetail ? 'detailed' : ''}`}
+                selectedElementIndex={state.selectedElementIndex}
+                element={(item, index, sectionIndex) =>
+                  <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
+                    key={index}
+                    onClick={() => this.onLogSelect(item, index, sectionIndex)}>
+                    <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
+                    <div className="medium bold">{item.event}</div>
+                    <div className="hiddable">{item.site}</div>
+                    <div className="medium hiddable">{item.status}</div>
+                  </div>
+                }
+                title="Registros"
+                elements={props.accessReports.filter($0 => $0.risk < 1)}
+                titles={[
+                  {title: 'Tiempo', className: 'medium'},
+                  {title: 'Suceso', className: 'medium'},
+                  {title: 'Sitio', className: 'hiddable'},
+                  {title: 'Estatus o acción', className: 'medium hiddable'}
+                ]}
+              />
+              <Table
+                className={`${state.showLogDetail ? 'detailed' : ''}`}
+                selectedElementIndex={state.selectedElementIndex}
+                element={(item, index) =>
+                  <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1 ? 'selected' : ''}`}
+                    key={index}
+                    onClick={() => this.onLogSelect(item, index, 1)}>
+                    <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
+                    <div className="medium bold">{item.event}</div>
+                    <div className="hiddable">{item.site}</div>
+                    <div><RiskBar risk={item.risk} /></div>
+                    <div className="medium hiddable">{item.status}</div>
+                  </div>
+                }
+                title="Alertas"
+                elements={props.accessReports.filter($0 => $0.risk >= 1)}
+                titles={[
+                  {title: 'Tiempo', className: 'medium'},
+                  {title: 'Suceso', className: 'medium'},
+                  {title: 'Sitio', className: 'hiddable'},
+                  {title: 'Riesgo'},
+                  {title: 'Estatus o acción', className: 'medium hiddable'}
+                ]}
+              />
+            </div>
+          </div>
         </div>
       </div>
     )

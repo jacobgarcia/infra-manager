@@ -18,6 +18,8 @@ class Table extends PureComponent {
         <div className="table-container-header">
           <ul className="inline-nav">
             {
+              props.multipleTable
+              ?
               props.elements.map(({title}, index) =>
                 <li
                   key={index}
@@ -26,6 +28,8 @@ class Table extends PureComponent {
                   >{title}
                 </li>
               )
+              :
+              <li>{props.title}</li>
             }
           </ul>
           { props.actionsContainer }
@@ -46,7 +50,9 @@ class Table extends PureComponent {
           </div>
           <div className="table-body">
             {
-              (props.elements
+              props.multipleTable
+              ?
+              ((props.elements
                 && props.elements[state.selected]
               )
               &&
@@ -56,7 +62,15 @@ class Table extends PureComponent {
                 props.element(element, index, state.selected)
               )
               :
-              <p className="no-info">Sin información</p>
+              <p className="no-info">Sin información</p>)
+              :
+              ((props.elements && props.elements.length > 0)
+              ?
+              props.elements.map((element, index) =>
+                props.element(element, index, state.selected)
+              )
+              :
+              <p className="no-info">Sin información</p>)
             }
           </div>
         </div>
