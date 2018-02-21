@@ -18,7 +18,7 @@ html, body, #root, #app {
 .inline-nav {
   color: $lightest-gray;
   display: flex;
-  padding: 30px 0 20px;
+  padding: 10px 0;
 
   li {
     cursor: pointer;
@@ -382,28 +382,28 @@ p span {
   }
 }
 
+.tables-detail__container {
+  display: grid;
+  grid-template-columns: 400px auto;
+  grid-column-gap: 20px;
+  align-items: start;
+  .tables-container {
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-row-gap: 20px;
+  }
+}
+
 .table-container {
   padding-right: 0;
   transition: padding-right .4s;
-  &.detailed {
-    padding-right: 380px;
-    * .hiddable {
-      opacity: 0;
-      max-width: 0;
-      overflow: hidden;
-      $white-space: nowrap;
-    }
-  }
-  * .hiddable {
-    opacity: 1;
-    transition: .5s;
-    max-width: 500px;
-  }
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.4);
+  padding: 20px;
+  border-radius: 5px;
   .table-container-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 20px;
     > div {
       > * {
         margin-left: 20px;
@@ -436,6 +436,7 @@ p span {
     font-weight: 500;
     text-transform: uppercase;
     font-size: .75rem;
+    background-color: $dark-gray;
     color: $lighter-gray;
     .table-item  .large {
       color: $lighter-gray;
@@ -445,6 +446,8 @@ p span {
   .table-body {
     color: $white;
     padding-top: 45px;
+    max-height: 400px;
+    overflow-y: scroll;
   }
   .no-info {
     width: 100%;
@@ -494,15 +497,6 @@ p span {
 .log-detail-container {
   bottom: 0;
   color: $white;
-  height: 100%;
-  max-width: 400px;
-  padding: 20px 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  transition: max-width .4s;
-  width: 100%;
-  z-index: 1001;
   .close {
     cursor: pointer;
   }
@@ -588,7 +582,7 @@ p span {
   }
 
   .action {
-   
+
     border-top: 1px solid $lighter-gray;
     margin: 15px 0;
     margin-bottom: 30px;
@@ -2107,8 +2101,8 @@ ul.mini-nav {
   -ms-box-shadow:0 0 20px #333;
   -o-box-shadow:0 0 20px #333;
   -webkit-box-shadow:0 0 20px #333;
-  
-  
+
+
 
 }
 
@@ -2123,19 +2117,19 @@ ul.mini-nav {
   border-bottom:7px solid #06F;
   border-left:7px solid transparent;
   border-right:7px solid transparent;
-  
+
   border-radius:80px;
   -moz-border-radius:80px;
   -webkit-border-radius:80px;
   -ms-border-radius:80px;
   -o-border-radius:80px;
-  
+
   box-shadow:0 0 20px #06F;
   -mozbox-shadow:0 0 20px #06F;
   -ms-box-shadow:0 0 20px #06F;
   -o-box-shadow:0 0 20px #06F;
   -webkit-box-shadow:0 0 20px #06F;
-  
+
   -webkit-animation: cwSpin 1s linear .2s infinite;
   -moz-animation: cwSpin .666s linear .2s infinite;
   -o-animation: cwSpin .666s linear .2s infinite;
@@ -2146,26 +2140,26 @@ ul.mini-nav {
 {
   display:block;
   margin:20px 0 0 20px;
-  
+
   width:40px;
   height:40px;
   border-top:7px solid #06F;
   border-bottom:7px solid #06F;
   border-left:7px solid transparent;
   border-right:7px solid transparent;
-  
+
   border-radius:40px;
   -moz-border-radius:40px;
   -webkit-border-radius:40px;
   -ms-border-radius:40px;
   -o-border-radius:40px;
-  
+
   box-shadow:0 0 20px #06F;
   -webkit-box-shadow:0 0 20px #06F;
   -moz-box-shadow:0 0 20px #06F;
   -ms-box-shadow:0 0 20px #06F;
   -o-box-shadow:0 0 20px #06F;
-  
+
   -webkit-animation: ccwSpin .555s linear .2s infinite;
   -moz-animation: ccwSpin .555s linear .2s infinite;
   -o-animation: ccwSpin .555s linear .2s infinite;
@@ -2181,12 +2175,12 @@ ul.mini-nav {
   -ms-box-shadow:none;
   -o-box-shadow:none;
   -webkit-box-shadow:none;
-  
+
   border-top:7px solid transparent;
   border-bottom:7px solid #06F;
   border-left:7px solid #06F;
   border-right:7px solid transparent;
-  
+
   -webkit-animation: cwSpin 1s linear .2s infinite;
   -moz-animation: cwSpin .666s linear .2s infinite;
   -o-animation: cwSpin .666s linear .2s infinite;

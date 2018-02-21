@@ -48,12 +48,11 @@ class Users extends Component {
     this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
-      console.log('Joining to connus room')
       this.socket.emit('join', 'connus')
     })
 
     this.socket.on('alert', data => {
-      console.log('Register element recieved from external server', { data } )
+      console.log('GOT ALERT', data)
       NetworkOperationFRM.getAlerts()
       .then(({data}) => {
         this.setState({

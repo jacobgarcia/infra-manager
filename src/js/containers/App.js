@@ -59,14 +59,11 @@ class App extends Component {
       // Start socket connection
       this.initSockets(this.props, token)
 
-
-
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
       // Set all zones
       this.props.setExhaustive(data.zones)
-
       this.props.setComplete()
     })
     .catch(error => {
@@ -116,7 +113,7 @@ class App extends Component {
         type: 'rtmp/mp4'
       }],
       preload: 'auto',
-      techorder : ["flash"]
+      techorder: ["flash"]
     }
 
     return (
@@ -147,7 +144,7 @@ class App extends Component {
           <Route path="/reports" component={Reports}/>
           <Route path="/settings" component={Settings}/>
           <Route path="/sensors" component={Sensors}/>
-          <Route path="/streaming"  render={() => <VideoPlayer { ...videoJsOptions } />} />
+          <Route path="/streaming" render={() => <VideoPlayer { ...videoJsOptions } />} />
         </Switch>
       </div>
     )

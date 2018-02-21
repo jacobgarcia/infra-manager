@@ -73,65 +73,64 @@ class VideoSurveillance extends Component {
         </Helmet>
         <div className="content">
           <h2>Video Vigilancia</h2>
-          <Table
-            className={`${state.showLogDetail ? 'detailed' : ''}`}
-            actionsContainer={
-              <div>
-                <DateRangePicker
-                  from={state.from}
-                  to={state.to}
-                  onDayClick={this.onDayClick}
-                />
-                <p className="button action disabled">Filtrar</p>
+          <div className="tables-detail__container">
+            <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
+              <div className="content">
+                {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
+                <div className="time-location">
+                  <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
+                  <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
+                </div>
+                <div>
+                    {
+                      state.playingVideo
+                      ? <VideoPlayer {...state.selectedLog.videoJsOptions} key={state.selectedLog} />
+                      : null
+                    }
+                </div>
+                <div className="action destructive">
+                  <p>Contactar seguridad</p>
+                </div>
               </div>
-            }
-            selectedElementIndex={state.selectedElementIndex}
-            element={(item, index, sectionIndex) =>
-              <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
-                key={index}
-                onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                { item.timestamp ? <div className="medium">{item.timestamp.toLocaleDateString()} {item.timestamp.toLocaleTimeString()}</div> : <div />}
-                <div className="large">{item.event}</div>
-                <div className="hiddable">{item.zone.name}</div>
-                <div className="hiddable">{item.site && item.site}</div>
-                <div><RiskBar risk={item.risk} /></div>
-                <div className="medium hiddable">{item.status}</div>
-              </div>
-            }
-            elements={[
-              { title: 'CAMARAS', elements: props.cameraReports},
-            ]}
-            titles={[
-              {title: 'Tiempo', className: 'medium'},
-              {title: 'Suceso', className: 'large'},
-              {title: 'Zona', className: 'hiddable'},
-              {title: 'Sitio', className: 'hiddable'},
-              {title: 'Riesgo'},
-              {title: 'Estatus o acción', className: 'medium hiddable'}
-            ]}
-          />
-        { state.selectedLog !== null
-          &&
-          <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
-            <div className="content">
-              {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
-              <div className="time-location">
-                <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
-                <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
-              </div>
-              <div>
-                  {
-                    state.playingVideo
-                    ? <VideoPlayer {...state.selectedLog.videoJsOptions} key={state.selectedLog} />
-                    : null
-                  }
-              </div>
-              <div className="action destructive">
-                <p>Contactar seguridad</p>
-              </div>
+          </div>
+            <div className="tables-container">
+              <Table
+                className={`${state.showLogDetail ? 'detailed' : ''}`}
+                actionsContainer={
+                  <div>
+                    <DateRangePicker
+                      from={state.from}
+                      to={state.to}
+                      onDayClick={this.onDayClick}
+                    />
+                    <p className="button action disabled">Filtrar</p>
+                  </div>
+                }
+                selectedElementIndex={state.selectedElementIndex}
+                element={(item, index, sectionIndex) =>
+                  <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
+                    key={index}
+                    onClick={() => this.onLogSelect(item, index, sectionIndex)}>
+                    { item.timestamp ? <div className="medium">{item.timestamp.toLocaleDateString()} {item.timestamp.toLocaleTimeString()}</div> : <div />}
+                    <div className="large">{item.event}</div>
+                    <div className="hiddable">{item.zone.name}</div>
+                    <div className="hiddable">{item.site && item.site}</div>
+                    <div><RiskBar risk={item.risk} /></div>
+                    <div className="medium hiddable">{item.status}</div>
+                  </div>
+                }
+                elements={props.cameraReports}
+                titles={[
+                  {title: 'Tiempo', className: 'medium'},
+                  {title: 'Suceso', className: 'large'},
+                  {title: 'Zona', className: 'hiddable'},
+                  {title: 'Sitio', className: 'hiddable'},
+                  {title: 'Riesgo'},
+                  {title: 'Estatus o acción', className: 'medium hiddable'}
+                ]}
+              />
             </div>
-        </div>
-      }
+          </div>
       </div>
     </div>
     )
