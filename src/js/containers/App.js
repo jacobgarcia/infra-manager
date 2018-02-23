@@ -17,8 +17,22 @@ class App extends Component {
     this.state = {
       error: false,
       isLoading: true,
-      willCompleteLoad: false
+      willCompleteLoad: false,
+      alerts: []
     }
+
+    this.cleanupAlerts = this.cleanupAlerts.bind(this)
+    this.addManualAlert = this.addManualAlert.bind(this)
+  }
+
+  cleanupAlerts() {
+    this.setState(prev => ({
+      alerts: prev.alerts.filter(({timestamp}) => timestamp + 7000 > Date.now())
+    }))
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.cleanupAlerts)
   }
 
   componentDidMount() {
@@ -27,6 +41,8 @@ class App extends Component {
     if (this.props.location.pathname !== '/') {
       path = `?return=${this.props.location.pathname}${this.props.location.search}`
     }
+
+    setInterval(this.cleanupAlerts, 5000)
 
     if (!token) {
       localStorage.removeItem('token')
@@ -43,6 +59,7 @@ class App extends Component {
         else if (this.props.credentials.company.name === 'AT&T' && report.site !== 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
       })
     })
+
     NetworkOperation.getSelf()
     .then(({data}) => {
       this.setState({
@@ -58,31 +75,42 @@ class App extends Component {
       // Start socket connection
       this.initSockets()
 
-
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
       // Set all zones
       this.props.setExhaustive(data.zones)
-      this.props.setComplete()
     })
     .catch(error => {
       const { response = {} } = error
-      this.props.setComplete()
 
       if (response.status === 401 || response.status === 400 || response.status === 404) {
         this.props.history.replace(`/login${path}`)
       }
     })
+    .then(this.props.setComplete())
   }
 
   initSockets() {
     this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
-      this.socket.emit('join', 'web-platform')
+      this.socket.emit('join', 'connus')
     })
 
+    this.socket.on('alert', alert => {
+      this.setState(prev => ({
+        alerts: prev.alerts.concat([{...alert, timestamp: Date.now()}])
+      }))
+    })
+  }
+
+  // Add manual alert
+  addManualAlert() {
+    const alert = {}
+    this.setState(prev => ({
+      alerts: prev.alerts.concat([{...alert, timestamp: Date.now()}])
+    }))
   }
 
   componentDidCatch(error, info) {
@@ -128,6 +156,21 @@ class App extends Component {
         <Helmet>
           <title>Connus</title>
         </Helmet>
+        <div className="alerts__container">
+          {
+            this.state.alerts.map(alert =>
+              <div key={alert.timestamp} className={`alert ${alert.timestamp + 5000 < Date.now() ? 'invalid' : ''}`}>
+                <div className="alert__image">
+                </div>
+                <div className="alert__body">
+                  <p>{'DESCRIPTION'}</p>
+                  <p>{'LOCATION'}</p>
+                </div>
+              </div>
+            )
+          }
+        </div>
+        <div onClick={this.addManualAlert}>GENERATE ALERT</div>
         <Navigator credentials={this.props.credentials} />
         <Switch>
           {/* MAYBE TODO lazy load this component  */}

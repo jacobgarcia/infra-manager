@@ -7,8 +7,6 @@ import { NetworkOperation, NetworkOperationFRM } from '../lib'
 import { getServiceName } from '../lib/CodeExtractor'
 import { DropDown } from '../components'
 
-import io from 'socket.io-client'
-
 class Users extends Component {
   constructor(props) {
     super(props)
@@ -18,65 +16,22 @@ class Users extends Component {
       isAddingUser: false,
       query: '',
       filteredUsers: [],
-      alerts: []
+      alerts: [],
+      latestAlerts: []
     }
-
-    this.onQuerySearch = this.onQuerySearch.bind(this)
   }
 
   componentDidMount() {
-    NetworkOperation.getCompanyUsers()
-    .then(({data}) => {
-      this.setState({
-        users: data.users,
-        filteredUsers: data.users
-      })
-    })
 
     NetworkOperationFRM.getAlerts()
     .then(({data}) => {
       this.setState({
-        alerts: this.props.credentials.company.name === 'Connus' ? data.alerts.filter($0 => $0.site === 'CNHQ9094') : data.alerts.filter($0 => $0.site !== 'CNHQ9094')
+        alerts: this.props.credentials.company.name === 'Connus' ? data.alerts.filter($0 => $0.site === 'CNHQ9094') : data.alerts.filter($0 => $0.site != 'CNHQ9094')
       })
     })
 
     // Start socket connection
-    this.initSockets()
-  }
-
-  initSockets() {
-    this.socket = io('https://connus.be')
-
-    this.socket.on('connect', () => {
-      this.socket.emit('join', 'connus')
-    })
-
-    this.socket.on('alert', () => {
-      NetworkOperationFRM.getAlerts()
-      .then(({data}) => {
-        this.setState({
-          alerts: data.alerts
-        })
-      })
-    })
-  }
-
-  onQuerySearch(event) {
-    event.stopPropagation()
-    const { value } = event.target
-    const query = value.toLowerCase()
-
-    const regEx = new RegExp(`${query}`)
-
-    this.setState({
-      query,
-      filteredUsers: value.length > 0 ? this.state.users.filter($0 => JSON.stringify($0).toLowerCase()
-      .search(regEx) >= 0) : this.state.users
-    })
-  }
-
-  addUser(event) {
-    event.preventDefault()
+    // this.initSockets(this.props)
   }
 
   render() {
@@ -141,7 +96,7 @@ class Users extends Component {
               {
                 state.alerts.map((alert, index) =>
                   <div className="table-item" key={index}>
-                    <div className="bold">{new Date(alert.timestamp).toString()}</div>
+                    <div className="bold">{new Date(alert.timestamp).toLocaleString()}</div>
                     <div>{alert.site}</div>
                     <div>{alert.alert}</div>
                   </div>
