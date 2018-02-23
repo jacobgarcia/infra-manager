@@ -58,21 +58,6 @@ class Users extends Component {
 
     return (
       <div className="users app-content small-padding">
-        <div className="alerts__container">
-          {
-            state.latestAlerts.map(alert =>
-              <div key={alert._id} className="alert">
-                <div className="alert__image">
-                  {/* <img src="" alt=""/> */}
-                </div>
-                <div className="alert__body">
-                  <p>Temperatura 80</p>
-                  <p>Sitio B45, Zona 34NJ</p>
-                </div>
-              </div>
-            )
-          }
-        </div>
         <Helmet>
           <title>Connus | Sensores</title>
         </Helmet>

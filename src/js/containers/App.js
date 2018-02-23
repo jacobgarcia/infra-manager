@@ -43,6 +43,7 @@ class App extends Component {
         else if (this.props.credentials.company.name === 'AT&T' && report.site !== 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
       })
     })
+
     NetworkOperation.getSelf()
     .then(({data}) => {
       this.setState({
@@ -64,23 +65,34 @@ class App extends Component {
     .then(({data}) => {
       // Set all zones
       this.props.setExhaustive(data.zones)
-      this.props.setComplete()
     })
     .catch(error => {
       const { response = {} } = error
-      this.props.setComplete()
 
       if (response.status === 401 || response.status === 400 || response.status === 404) {
         this.props.history.replace(`/login${path}`)
       }
     })
+    .then(() => {
+      this.props.setComplete()
+    })
   }
 
   initSockets() {
+    console.log('INIT SOCKETS')
     this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
-      this.socket.emit('join', 'web-platform')
+      console.log('CONNECT')
+      this.socket.emit('join', 'connus')
+    })
+
+    this.socket.on('join', join => {
+      console.log('JOIN', join)
+    })
+
+    this.socket.on('alert', alert => {
+      console.log('ALERT', alert)
     })
 
   }
@@ -128,6 +140,20 @@ class App extends Component {
         <Helmet>
           <title>Connus</title>
         </Helmet>
+        {/* <div className="alerts__container">
+          {
+            this.props.alerts.map(alert =>
+              <div key={alert._id} className="alert">
+                <div className="alert__image">
+                </div>
+                <div className="alert__body">
+                  <p>Temperatura 80</p>
+                  <p>Sitio B45, Zona 34NJ</p>
+                </div>
+              </div>
+            )
+          }
+        </div> */}
         <Navigator credentials={this.props.credentials} />
         <Switch>
           {/* MAYBE TODO lazy load this component  */}
