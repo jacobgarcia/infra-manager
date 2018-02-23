@@ -2140,8 +2140,8 @@ ul.mini-nav {
 
   width:80px;
   height:80px;
-  border-top:7px solid #06F;
-  border-bottom:7px solid #06F;
+  border-top:7px solid $connus-blue;
+  border-bottom:7px solid $connus-blue;
   border-left:7px solid transparent;
   border-right:7px solid transparent;
 
@@ -2151,11 +2151,11 @@ ul.mini-nav {
   -ms-border-radius:80px;
   -o-border-radius:80px;
 
-  box-shadow:0 0 20px #06F;
-  -mozbox-shadow:0 0 20px #06F;
-  -ms-box-shadow:0 0 20px #06F;
-  -o-box-shadow:0 0 20px #06F;
-  -webkit-box-shadow:0 0 20px #06F;
+  box-shadow:0 0 20px $connus-blue;
+  -mozbox-shadow:0 0 20px $connus-blue;
+  -ms-box-shadow:0 0 20px $connus-blue;
+  -o-box-shadow:0 0 20px $connus-blue;
+  -webkit-box-shadow:0 0 20px $connus-blue;
 
   -webkit-animation: cwSpin 1s linear .2s infinite;
   -moz-animation: cwSpin .666s linear .2s infinite;
@@ -2170,8 +2170,8 @@ ul.mini-nav {
 
   width:40px;
   height:40px;
-  border-top:7px solid #06F;
-  border-bottom:7px solid #06F;
+  border-top:7px solid $connus-blue;
+  border-bottom:7px solid $connus-blue;
   border-left:7px solid transparent;
   border-right:7px solid transparent;
 
@@ -2181,11 +2181,11 @@ ul.mini-nav {
   -ms-border-radius:40px;
   -o-border-radius:40px;
 
-  box-shadow:0 0 20px #06F;
-  -webkit-box-shadow:0 0 20px #06F;
-  -moz-box-shadow:0 0 20px #06F;
-  -ms-box-shadow:0 0 20px #06F;
-  -o-box-shadow:0 0 20px #06F;
+  box-shadow:0 0 20px $connus-blue;
+  -webkit-box-shadow:0 0 20px $connus-blue;
+  -moz-box-shadow:0 0 20px $connus-blue;
+  -ms-box-shadow:0 0 20px $connus-blue;
+  -o-box-shadow:0 0 20px $connus-blue;
 
   -webkit-animation: ccwSpin .555s linear .2s infinite;
   -moz-animation: ccwSpin .555s linear .2s infinite;
@@ -2204,8 +2204,8 @@ ul.mini-nav {
   -webkit-box-shadow:none;
 
   border-top:7px solid transparent;
-  border-bottom:7px solid #06F;
-  border-left:7px solid #06F;
+  border-bottom:7px solid $connus-blue;
+  border-left:7px solid $connus-blue;
   border-right:7px solid transparent;
 
   -webkit-animation: cwSpin 1s linear .2s infinite;
@@ -2309,8 +2309,8 @@ ul.mini-nav {
     2px 2px 0 #444,3px 3px 0 #444,4px 4px 0 #444,5px 5px 0 #444;
   }
   65%{
-    text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px #06F,
-    2px 2px 0 #06F,3px 3px 0 #06F,4px 4px 0 #06F,5px 5px 0 #06F;
+    text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px $connus-blue,
+    2px 2px 0 $connus-blue,3px 3px 0 $connus-blue,4px 4px 0 $connus-blue,5px 5px 0 $connus-blue;
   }
   85%{
     text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px #444,
@@ -2332,8 +2332,8 @@ ul.mini-nav {
     2px 2px 0 #444,3px 3px 0 #444,4px 4px 0 #444,5px 5px 0 #444;
   }
   65%{
-    text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px #06F,
-    2px 2px 0 #06F,3px 3px 0 #06F,4px 4px 0 #06F,5px 5px 0 #06F;
+    text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px $connus-blue,
+    2px 2px 0 $connus-blue,3px 3px 0 $connus-blue,4px 4px 0 $connus-blue,5px 5px 0 $connus-blue;
   }
   85%{
     text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px #444,
@@ -2355,8 +2355,8 @@ ul.mini-nav {
     2px 2px 0 #444,3px 3px 0 #444,4px 4px 0 #444,5px 5px 0 #444;
   }
   65%{
-    text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px #06F,
-    2px 2px 0 #06F,3px 3px 0 #06F,4px 4px 0 #06F,5px 5px 0 #06F;
+    text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px $connus-blue,
+    2px 2px 0 $connus-blue,3px 3px 0 $connus-blue,4px 4px 0 $connus-blue,5px 5px 0 $connus-blue;
   }
   85%{
     text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px #444,
@@ -2378,8 +2378,8 @@ ul.mini-nav {
     2px 2px 0 #444,3px 3px 0 #444,4px 4px 0 #444,5px 5px 0 #444;
   }
   65%{
-    text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px #06F,
-    2px 2px 0 #06F,3px 3px 0 #06F,4px 4px 0 #06F,5px 5px 0 #06F;
+    text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px $connus-blue,
+    2px 2px 0 $connus-blue,3px 3px 0 $connus-blue,4px 4px 0 $connus-blue,5px 5px 0 $connus-blue;
   }
   85%{
     text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px #444,
@@ -2401,8 +2401,8 @@ ul.mini-nav {
     2px 2px 0 #444,3px 3px 0 #444,4px 4px 0 #444,5px 5px 0 #444;
   }
   65%{
-    -o-text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px #06F,
-    2px 2px 0 #06F,3px 3px 0 #06F,4px 4px 0 #06F,5px 5px 0 #06F;
+    -o-text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px $connus-blue,
+    2px 2px 0 $connus-blue,3px 3px 0 $connus-blue,4px 4px 0 $connus-blue,5px 5px 0 $connus-blue;
   }
   85%{
     -o-text-shadow:-2px -2px 1px #232323,-1px -1px 1px #232323,1px 1px 1px #444,

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 import { substractReportValues, getStatus, getFilteredReports } from '../lib/specialFunctions'
 import { ElementStatus } from './'
-import { NetworkOperation, NetworkOperationFRM } from '../lib'
+import { NetworkOperationFRM } from '../lib'
 
 import io from 'socket.io-client'
 
@@ -24,7 +24,7 @@ class StatusesContainer extends PureComponent {
     this.getLink = this.getLink.bind(this)
   }
 
-  componentWillMount(){
+  componentWillMount() {
     // Init socket with userId and token
     this.initSocket()
   }
@@ -34,17 +34,16 @@ class StatusesContainer extends PureComponent {
     this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
-      console.log('Connected')
       this.socket.emit('join', 'connus')
     })
 
     this.socket.on('debugRequest',data => {
 
-      this.setState({'animate':false})
-      //if (this.props.element.key === camera){
+      this.setState({'animate': false})
+      // if (this.props.element.key === camera){
         this.setState({
-          photo2 : 'https://connus.be'+data.image2,
-          photo3 : 'https://connus.be'+data.image3
+          photo2: 'https://connus.be' + data.image2,
+          photo3: 'https://connus.be' + data.image3
         })
     //  }
     })
@@ -71,20 +70,10 @@ class StatusesContainer extends PureComponent {
     }
   }
 
-  onDebug(){
-    this.setState({'animate':true})
+  onDebug() {
+    this.setState({'animate': true})
     const { props } = this
-    console.log(props)
     NetworkOperationFRM.getDebug(props.element.key)
-    .then((response) => {
-    console.log(response)
-
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-
-
   }
 
   getContent() {
@@ -98,26 +87,39 @@ class StatusesContainer extends PureComponent {
         (props.elements && props.elements.length > 0)
         ?
         props.elements.map(element => {
-          let reports = getFilteredReports(props.reports, element)
-          reports = substractReportValues(reports)
-          let { status, percentage } = getStatus(reports || null)
+          const reports = substractReportValues(getFilteredReports(props.reports, element))
+          let { status, percentage, name } = getStatus(reports || null)
 
           if (props.type === 'SITE') {
             const sensor = substractReportValues(props.reports).sensors.find(({key}) => key === element.key)
 
             if (sensor) {
-              status = [{ name: 'normal', value: sensor.value}, { name: 'alerts', value: 100 - sensor.value }]
+              status = [{ name: 'bold', value: sensor.value}, { name: 'alerts', value: 100 - sensor.value }]
               percentage = sensor.value
             }
           }
 
-          // const { value = null } = element // Sensors
+          switch (element.key) {
+            case 'cs1':
+              name = 'de contacto 1'
+              break
+            case 'cs2':
+              name = 'de contacto 2'
+              break
+            case 'vs1':
+              name = 'de vibración 1'
+              break
+            case 'vs2':
+              name = 'de vibración 2'
+              break
+            default:
 
+          }
           return (
             <Link key={element._id} to={this.getLink(props.type, element)}>
               <ElementStatus
                 id={element._id}
-                title={this.getElementTitle(props.type)}
+                title={name ? this.getElementTitle(props.type) + ' ' + name : this.getElementTitle(props.type)}
                 name={element.name}
                 type={props.type}
                 siteKey={element.key}
@@ -147,7 +149,7 @@ class StatusesContainer extends PureComponent {
             this.state.animate
             &&
             <div className="loading">
-          
+
             <ul className="loadinglist">
               <li>
                 <div id="panel">
@@ -164,7 +166,7 @@ class StatusesContainer extends PureComponent {
           }
 
           {
-            this.state.photo2 
+            this.state.photo2
             &&
             <div className="response">
             <img src={this.state.photo2} />
@@ -240,7 +242,9 @@ class StatusesContainer extends PureComponent {
 }
 
 StatusesContainer.propTypes = {
-  params: PropTypes.object
+  params: PropTypes.object,
+  photo1: PropTypes.object,
+  photo2: PropTypes.object
 }
 
 export default StatusesContainer

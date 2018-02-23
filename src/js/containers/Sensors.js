@@ -60,12 +60,6 @@ class Users extends Component {
 
     this.socket.on('alert', data => {
       console.log('GOT ALERT', data)
-      // NetworkOperationFRM.getAlerts()
-      // .then(({data}) => {
-      //   this.setState({
-      //     alerts: data.alerts
-      //   })
-      // })
     })
   }
 
