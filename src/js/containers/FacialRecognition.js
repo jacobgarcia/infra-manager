@@ -62,7 +62,7 @@ class FacialRecognition extends Component {
         },
         site: data.site,
         risk: data.success ? 0 : 1,
-        status: data.success ? 'Registro satisfactorio' : 'Regsitro denegado. Fallo en la detección de rostro',
+        status: data.success ? 'Usuario satisfactoriamente registrado' : 'Regsitro denegado. Fallo en la detección de rostro',
         access: 'Registro',
         id: '5a4ea71050fdf1191fc71af8',
         match: data.success ? 'Si' : 'No',
@@ -70,8 +70,9 @@ class FacialRecognition extends Component {
         photo: data.photo
       }
 
+      console.log(data)
       // Add the recieved element to the props
-      this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report.id)
+      //this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report.id)
     })
 
     this.socket.on('login', data => {
@@ -197,7 +198,7 @@ class FacialRecognition extends Component {
                   <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                    <div className="medium">{new Date(item.timestamp).toLocaleDateString('es-MX')}</div>
+                    <div className="medium">{new Date(item.timestamp).toLocaleDateString()}</div>
                     <div className="large">{item.event}</div>
                     {/* <div className="hiddable">{item.zone.name}</div> */}
                     <div className="hiddable">{item.site}</div>
@@ -223,7 +224,7 @@ class FacialRecognition extends Component {
                   <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1 ? 'selected' : ''}`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, 1)}>
-                    <div className="medium">{new Date(item.timestamp).toLocaleDateString('es-MX')}</div>
+                    <div className="medium">{new Date(item.timestamp).toLocaleDateString()}</div>
                     <div className="large">{item.event}</div>
                     {/* <div className="hiddable">{item.zone.name}</div> */}
                     <div className="hiddable">{item.site}</div>

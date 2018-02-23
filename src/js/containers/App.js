@@ -163,14 +163,13 @@ class App extends Component {
                 <div className="alert__image">
                 </div>
                 <div className="alert__body">
-                  <p>{'DESCRIPTION'}</p>
-                  <p>{'LOCATION'}</p>
+                  <p>{alert.site}</p>
+                  <p>{alert.alert}</p>
                 </div>
               </div>
             )
           }
         </div>
-        <div onClick={this.addManualAlert}>GENERATE ALERT</div>
         <Navigator credentials={this.props.credentials} />
         <Switch>
           {/* MAYBE TODO lazy load this component  */}
