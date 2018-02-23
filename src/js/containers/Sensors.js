@@ -7,8 +7,6 @@ import { NetworkOperation, NetworkOperationFRM } from '../lib'
 import { getServiceName } from '../lib/CodeExtractor'
 import { DropDown } from '../components'
 
-import io from 'socket.io-client'
-
 class Users extends Component {
   constructor(props) {
     super(props)
@@ -33,24 +31,7 @@ class Users extends Component {
     })
 
     // Start socket connection
-    this.initSockets(this.props)
-  }
-
-  initSockets(props) {
-    this.socket = io('https://connus.be')
-
-    this.socket.on('connect', data => {
-      console.log('CONNECT', data)
-      this.socket.emit('join', 'connus')
-    })
-
-    this.socket.on('join', join => {
-      console.log('JOIN', join)
-    })
-
-    this.socket.on('alert', data => {
-      console.log('GOT ALERT', data)
-    })
+    // this.initSockets(this.props)
   }
 
   render() {

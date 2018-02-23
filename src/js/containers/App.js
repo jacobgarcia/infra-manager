@@ -17,8 +17,22 @@ class App extends Component {
     this.state = {
       error: false,
       isLoading: true,
-      willCompleteLoad: false
+      willCompleteLoad: false,
+      alerts: []
     }
+
+    this.cleanupAlerts = this.cleanupAlerts.bind(this)
+    this.addManualAlert = this.addManualAlert.bind(this)
+  }
+
+  cleanupAlerts() {
+    this.setState(prev => ({
+      alerts: prev.alerts.filter(({timestamp}) => timestamp + 7000 > Date.now())
+    }))
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.cleanupAlerts)
   }
 
   componentDidMount() {
@@ -27,6 +41,8 @@ class App extends Component {
     if (this.props.location.pathname !== '/') {
       path = `?return=${this.props.location.pathname}${this.props.location.search}`
     }
+
+    setInterval(this.cleanupAlerts, 5000)
 
     if (!token) {
       localStorage.removeItem('token')
@@ -59,7 +75,6 @@ class App extends Component {
       // Start socket connection
       this.initSockets()
 
-
       return NetworkOperation.getExhaustive()
     })
     .then(({data}) => {
@@ -73,28 +88,29 @@ class App extends Component {
         this.props.history.replace(`/login${path}`)
       }
     })
-    .then(() => {
-      this.props.setComplete()
-    })
+    .then(this.props.setComplete())
   }
 
   initSockets() {
-    console.log('INIT SOCKETS')
     this.socket = io('https://connus.be')
 
     this.socket.on('connect', () => {
-      console.log('CONNECT')
       this.socket.emit('join', 'connus')
     })
 
-    this.socket.on('join', join => {
-      console.log('JOIN', join)
-    })
-
     this.socket.on('alert', alert => {
-      console.log('ALERT', alert)
+      this.setState(prev => ({
+        alerts: prev.alerts.concat([{...alert, timestamp: Date.now()}])
+      }))
     })
+  }
 
+  // Add manual alert
+  addManualAlert() {
+    const alert = {}
+    this.setState(prev => ({
+      alerts: prev.alerts.concat([{...alert, timestamp: Date.now()}])
+    }))
   }
 
   componentDidCatch(error, info) {
@@ -140,20 +156,21 @@ class App extends Component {
         <Helmet>
           <title>Connus</title>
         </Helmet>
-        {/* <div className="alerts__container">
+        <div className="alerts__container">
           {
-            this.props.alerts.map(alert =>
-              <div key={alert._id} className="alert">
+            this.state.alerts.map(alert =>
+              <div key={alert.timestamp} className={`alert ${alert.timestamp + 5000 < Date.now() ? 'invalid' : ''}`}>
                 <div className="alert__image">
                 </div>
                 <div className="alert__body">
-                  <p>Temperatura 80</p>
-                  <p>Sitio B45, Zona 34NJ</p>
+                  <p>{'DESCRIPTION'}</p>
+                  <p>{'LOCATION'}</p>
                 </div>
               </div>
             )
           }
-        </div> */}
+        </div>
+        <div onClick={this.addManualAlert}>GENERATE ALERT</div>
         <Navigator credentials={this.props.credentials} />
         <Switch>
           {/* MAYBE TODO lazy load this component  */}
