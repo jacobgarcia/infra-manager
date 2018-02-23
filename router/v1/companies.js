@@ -162,6 +162,23 @@ router.route('/sites')
   })
 })
 
+router.route('/site/:siteKey')
+.get((req, res) => {
+  const { siteKey } = req.params
+
+  Site.findOne({ 'key': siteKey })
+  .exec((error, site) => {
+    if (error) {
+      winston.error({error})
+      return res.status(500).json({ error })
+    }
+
+    if (!site) return res.status(404).json({ message: 'No sites found'})
+
+    return res.status(200).json({ site })
+  })
+})
+
 // Get last report for all sites
 router.route('/reports')
 .get((req, res) => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
@@ -99,9 +99,19 @@ class App extends Component {
     })
 
     this.socket.on('alert', alert => {
-      this.setState(prev => ({
-        alerts: prev.alerts.concat([{...alert, timestamp: Date.now()}])
-      }))
+      // Get site id based on key
+      NetworkOperation.getSiteId(alert.site)
+      .then(({data}) => {
+        const theAlert = {
+          site: alert.site,
+          alert: alert.alert,
+          id: data.site._id
+        }
+        this.setState(prev => ({
+          alerts: prev.alerts.concat([{...theAlert, timestamp: Date.now()}])
+        }))
+      })
+
     })
   }
 
@@ -163,7 +173,7 @@ class App extends Component {
                 <div className="alert__image">
                 </div>
                 <div className="alert__body">
-                  <p>{alert.site}</p>
+                  <Link to={`/sites/59d84e3a2b12461001e6dc5a/${alert.id}`}><p>{alert.site}</p></Link>
                   <p>{alert.alert}</p>
                 </div>
               </div>

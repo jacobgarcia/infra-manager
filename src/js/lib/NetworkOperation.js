@@ -75,6 +75,11 @@ class NetworkOperation {
   static getFaceRecognition() {
     return axios.get(`${baseUrl}/facerecognition`)
   }
+
+  static getSiteId(siteKey) {
+    return axios.get(`${baseUrl}/site/${siteKey}`)
+  }
+
 }
 
 export default NetworkOperation
