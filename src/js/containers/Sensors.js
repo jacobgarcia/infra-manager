@@ -21,19 +21,9 @@ class Users extends Component {
       alerts: [],
       latestAlerts: []
     }
-
-    // this.onQuerySearch = this.onQuerySearch.bind(this)
   }
 
   componentDidMount() {
-
-    // NetworkOperation.getCompanyUsers()
-    // .then(({data}) => {
-    //   this.setState({
-    //     users: data.users,
-    //     filteredUsers: data.users
-    //   })
-    // })
 
     NetworkOperationFRM.getAlerts()
     .then(({data}) => {
@@ -62,23 +52,6 @@ class Users extends Component {
       console.log('GOT ALERT', data)
     })
   }
-
-  // onQuerySearch(event) {
-    // event.stopPropagation()
-    // const { value } = event.target
-    // const query = value.toLowerCase()
-
-    // const regEx = new RegExp(`${query}`)
-
-    // this.setState({
-    //   query,
-    //   filteredUsers: value.length > 0 ? this.state.users.filter($0 => JSON.stringify($0).toLowerCase().search(regEx) >= 0) : this.state.users
-    // })
-  // }
-
-  // addUser(event) {
-  //   event.preventDefault()
-  // }
 
   render() {
     const { state, props } = this
