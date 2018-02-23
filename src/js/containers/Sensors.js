@@ -18,20 +18,22 @@ class Users extends Component {
       isAddingUser: false,
       query: '',
       filteredUsers: [],
-      alerts: []
+      alerts: [],
+      latestAlerts: []
     }
 
-    this.onQuerySearch = this.onQuerySearch.bind(this)
+    // this.onQuerySearch = this.onQuerySearch.bind(this)
   }
 
   componentDidMount() {
-    NetworkOperation.getCompanyUsers()
-    .then(({data}) => {
-      this.setState({
-        users: data.users,
-        filteredUsers: data.users
-      })
-    })
+
+    // NetworkOperation.getCompanyUsers()
+    // .then(({data}) => {
+    //   this.setState({
+    //     users: data.users,
+    //     filteredUsers: data.users
+    //   })
+    // })
 
     NetworkOperationFRM.getAlerts()
     .then(({data}) => {
@@ -47,43 +49,63 @@ class Users extends Component {
   initSockets(props) {
     this.socket = io('https://connus.be')
 
-    this.socket.on('connect', () => {
+    this.socket.on('connect', data => {
+      console.log('CONNECT', data)
       this.socket.emit('join', 'connus')
+    })
+
+    this.socket.on('join', join => {
+      console.log('JOIN', join)
     })
 
     this.socket.on('alert', data => {
       console.log('GOT ALERT', data)
-      NetworkOperationFRM.getAlerts()
-      .then(({data}) => {
-        this.setState({
-          alerts: data.alerts
-        })
-      })
+      // NetworkOperationFRM.getAlerts()
+      // .then(({data}) => {
+      //   this.setState({
+      //     alerts: data.alerts
+      //   })
+      // })
     })
   }
 
-  onQuerySearch(event) {
-    event.stopPropagation()
-    const { value } = event.target
-    const query = value.toLowerCase()
+  // onQuerySearch(event) {
+    // event.stopPropagation()
+    // const { value } = event.target
+    // const query = value.toLowerCase()
 
-    const regEx = new RegExp(`${query}`)
+    // const regEx = new RegExp(`${query}`)
 
-    this.setState({
-      query,
-      filteredUsers: value.length > 0 ? this.state.users.filter($0 => JSON.stringify($0).toLowerCase().search(regEx) >= 0) : this.state.users
-    })
-  }
+    // this.setState({
+    //   query,
+    //   filteredUsers: value.length > 0 ? this.state.users.filter($0 => JSON.stringify($0).toLowerCase().search(regEx) >= 0) : this.state.users
+    // })
+  // }
 
-  addUser(event) {
-    event.preventDefault()
-  }
+  // addUser(event) {
+  //   event.preventDefault()
+  // }
 
   render() {
     const { state, props } = this
 
     return (
       <div className="users app-content small-padding">
+        <div className="alerts__container">
+          {
+            state.latestAlerts.map(alert =>
+              <div key={alert._id} className="alert">
+                <div className="alert__image">
+                  {/* <img src="" alt=""/> */}
+                </div>
+                <div className="alert__body">
+                  <p>Temperatura 80</p>
+                  <p>Sitio B45, Zona 34NJ</p>
+                </div>
+              </div>
+            )
+          }
+        </div>
         <Helmet>
           <title>Connus | Sensores</title>
         </Helmet>
@@ -141,7 +163,7 @@ class Users extends Component {
               {
                 state.alerts.map((alert, index) =>
                   <div className="table-item" key={index}>
-                    <div className="bold">{new Date(alert.timestamp).toString()}</div>
+                    <div className="bold">{new Date(alert.timestamp).toLocaleString()}</div>
                     <div>{alert.site}</div>
                     <div>{alert.alert}</div>
                   </div>
@@ -163,7 +185,7 @@ function mapStateToProps({zones, credentials}) {
 }
 
 Users.propTypes = {
-
+  credentials: PropTypes.object
 }
 
 export default connect(mapStateToProps)(Users)
