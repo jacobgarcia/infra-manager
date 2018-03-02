@@ -343,6 +343,7 @@ import cctvLogs from './cctv'
 import vehicularFlowLogs from './vehicularFlow'
 import accessLogs from './access'
 import perimeterLogs from './perimeter'
+import inventoryLogs from './inventory'
 
 
 export default combineReducers({
@@ -353,6 +354,7 @@ export default combineReducers({
   cameraReports: cctvLogs,
   perimeterReports: perimeterLogs,
   vehicularReports: vehicularFlowLogs,
+  inventoryReports: inventoryLogs,
   administrators,
   appAlert,
   reports

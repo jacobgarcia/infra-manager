@@ -154,3 +154,20 @@ export function setFacialReport(timestamp, event, success, risk, zone, status, s
     id
   }
 }
+
+export function setInventoryReport(timestamp, event, success, risk, zone, status, site, access, pin, photo, id) {
+  return {
+    type: 'SET_INVENTORY_REPORT',
+    timestamp,
+    event,
+    success,
+    risk,
+    zone,
+    status,
+    site,
+    access,
+    pin,
+    photo,
+    id
+  }
+}

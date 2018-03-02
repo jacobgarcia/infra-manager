@@ -651,6 +651,10 @@ p span {
         color: $yellow;
       }
     }
+    &.active {
+      margin: 0;
+      padding: 0;
+    }
   }
   .details-container {
     display: flex;
@@ -1604,10 +1608,11 @@ $dark: #1d212d;
   .perimeter::before { background-position: -75px; }
   .video-surveillance::before { background-position: -150px; }
   .facial-recognition::before { background-position: -100px; }
+  .inventory::before { background-position: -200px; }
   .settings::before { background-position: -225px; }
 
   .users::before { background-position: -175px; }
-  .reports::before { background-position: -200px; }
+  .reports::before { background-position: 0px; }
   .logout::before { background-position: -250px; }
   h2 {
     color: $gray;

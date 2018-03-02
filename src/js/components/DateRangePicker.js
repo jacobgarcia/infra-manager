@@ -17,7 +17,7 @@ class DateRangePicker extends Component {
     const { state, props } = this
     return (
       <div className={`range-select-container ${state.isVisible ? '' : 'hidden'}`}>
-        <p className="button action" onClick={() => this.setState(prev => ({isVisible: !prev.isVisible}))}>{(!props.from && !props.to) ? 'Seleccionar periodo' : getFriendlyDateRange(props.from, props.to)}</p>
+        <p className="button" onClick={() => this.setState(prev => ({isVisible: !prev.isVisible}))}>{(!props.from && !props.to) ? 'Seleccionar periodo' : getFriendlyDateRange(props.from, props.to)}</p>
         <DayPicker
           months={['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']}
           weekdaysShort={['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab']}

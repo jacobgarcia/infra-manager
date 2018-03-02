@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
+import Slider from 'react-slick'
 
 import { Table, RiskBar, DateRangePicker } from '../components'
 import { setFacialReport } from '../actions'
@@ -15,24 +16,26 @@ class Inventory extends Component {
     super(props)
 
     this.state = {
-      logs: this.props.facialReports,
-      selectedLog: this.props.facialReports.length > 0 ? this.props.facialReports[0] : {},
-      selectedElementIndex: this.props.facialReports.length > 0 ? [0,0] : [null,null],
+      selectedLog: this.props.inventoryReports.length > 0 ? this.props.inventoryReports[0] : null,
+      selectedElementIndex: this.props.inventoryReports.length > 0 ? [0,0] : [null,null],
       showLogDetail: true,
-      from: new Date(),
-      to: new Date()
+      last_from: new Date(),
+      last_to: new Date(),
+      next_from: new Date(),
+      next_to: new Date()
     }
 
     this.onLogSelect = this.onLogSelect.bind(this)
     this.onDayClick = this.onDayClick.bind(this)
+    this.onUpdateEntry = this.onUpdateEntry.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.props.facialReports || this.props.facialReports.length === 0) {
-      if (nextProps.facialReports && nextProps.facialReports.length > 0) {
+    if (!this.props.inventoryReports || this.props.inventoryReports.length === 0) {
+      if (nextProps.inventoryReports && nextProps.inventoryReports.length > 0) {
         this.setState({
-          selectedLog: nextProps.facialReports.length > 0 ? nextProps.facialReports[0] : null,
-          selectedElementIndex: nextProps.facialReports.length > 0 ? [0,0] : [null,null],
+          selectedLog: nextProps.inventoryReports.length > 0 ? nextProps.inventoryReports[0] : null,
+          selectedElementIndex: nextProps.inventoryReports.length > 0 ? [0,0] : [null,null],
           showLogDetail: true,
         })
       }
@@ -40,17 +43,10 @@ class Inventory extends Component {
   }
 
   componentDidMount() {
-    // Start socket connection
-    this.initSockets(this.props)
   }
 
-  // TODO: Clean this mess and do it at App (using redux)
-  initSockets(props) {
-    this.socket = io('https://connus.be')
+  onUpdateEntry() {
 
-    this.socket.on('connect', () => {
-      this.socket.emit('join', 'connus')
-    })
   }
 
   onLogSelect(item, index, sectionIndex) {
@@ -81,29 +77,32 @@ class Inventory extends Component {
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
                 <div className="time-location">
-                <p>{state.selectedLog.timestamp && new Date(state.selectedLog.timestamp).toLocaleString()}</p>
+                <p>{state.selectedLog.name}</p>
                   {state.selectedLog.zone && <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>}
                 </div>
                 <div className="detail">
                   <span>Componente</span>
-                  <div className="image-slider" style={{backgroundImage: `url(https://connus.be${state.selectedLog.photo})`}} />
-                </div>
+                  <Slider nextArrow={<button>{'>'}</button>} prevArrow={<button>{'<'}</button>}>
+                  <div className="image-slider" style={{backgroundImage: `url(` + state.selectedLog.photo +`)` }}/>
+                  <div className="image-slider" style={{backgroundImage: `url(` + state.selectedLog.photo +`)` }}/>
+                    {/* <div className="image-slider 5"></div> */}
+                  </Slider>                </div>
                 <div className="details-container">
                   <div className="detail">
                     <span>Nombre del componente</span>
-                    <p>{new Date(state.selectedLog.timestamp).toLocaleTimeString()}</p>
+                    <p>{state.selectedLog.name}</p>
                   </div>
                   <div className="detail">
                     <span>Marca</span>
-                    <p>{state.selectedLog.access}</p>
+                    <p>{state.selectedLog.brand}</p>
                   </div>
                   <div className="detail">
                     <span>Modelo</span>
-                    <p>{state.selectedLog.pin}</p>
+                    <p>{state.selectedLog.model}</p>
                   </div>
                   <div className="detail">
                     <span>Tipo</span>
-                    <p>{state.selectedLog.success ? 'Si' : 'No'}</p>
+                    <p>{state.selectedLog.type}</p>
                   </div>
                   <div className="detail">
                     <span>Estatus</span>
@@ -111,28 +110,43 @@ class Inventory extends Component {
                   </div>
                   <div className="detail">
                     <span>Identificador</span>
-                    <p>{state.selectedLog.id}</p>
+                    <p>{state.selectedLog._id}</p>
                   </div>
                   <div className="detail">
                     <span>Version</span>
-                    <p>{state.selectedLog.id}</p>
+                    <p>{state.selectedLog.version}</p>
                   </div>
                   <div className="detail">
                     <span>Id Fabricante</span>
-                    <p>{state.selectedLog.id}</p>
-                  </div>
-                  <div className="detail">
-                    <span>Modelo Fabricante</span>
-                    <p>{state.selectedLog.id}</p>
+                    <p>{state.selectedLog.idBrand}</p>
                   </div>
                   <div className="detail">
                     <span>Estatus Detallados</span>
-                    <p>{state.selectedLog.status}</p>
+                    <p>Temperatura: {state.selectedLog.detailedStatus.temperature}</p>
+                    <p>Activo: {state.selectedLog.detailedStatus.active ? 'Si' : 'No'}</p>
                   </div>
                 </div>
                 <div>
                   <label htmlFor="">Ultimo Mantenimiento</label>
-                  <input type="text" value={null} />
+                  <div className="tables-container">
+                    <DateRangePicker
+                      from={state.last_from}
+                      to={state.last_to}
+                      onDayClick={this.onDayClick}
+                      className="active"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="">Siguiente Mantenimiento</label>
+                  <div className="tables-container">
+                    <DateRangePicker
+                      from={state.next_from}
+                      to={state.next_to}
+                      onDayClick={this.onDayClick}
+                      className="active"
+                    />
+                  </div>
                 </div>
                 <div>
                   <label htmlFor="">Persona de mantenimiento</label>
@@ -143,14 +157,6 @@ class Inventory extends Component {
                   <input type="text" value={null} />
                 </div>
                 <div>
-                  <label htmlFor="">Tiempo de mantenimiento</label>
-                  <input type="text" value={null} />
-                </div>
-                <div>
-                  <label htmlFor="">Siguiente Mantenimiento</label>
-                  <input type="text" value={null} />
-                </div>
-                <div>
                   <label htmlFor="">Lugar de mantenimiento</label>
                   <input type="text" value={null} />
                 </div>
@@ -158,11 +164,9 @@ class Inventory extends Component {
                   <label htmlFor="">Tipo de Mantenimiento</label>
                   <input type="text" value={null} />
                 </div>
-                { state.selectedLog.risk > 0 &&
                   <div className="action destructive">
-                    <p>Contactar seguridad</p>
+                    <p>ACTUALIZAR INFORMACion</p>
                   </div>
-                }
               </div>
             </div>
             <div className="tables-container">
@@ -173,23 +177,23 @@ class Inventory extends Component {
                   <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                    <div className="medium">{new Date(item.timestamp).toLocaleDateString()}</div>
-                    <div className="large">{item.event}</div>
+                    <div className="large">{item.name}</div>
+                    <div className="large">{item.brand}</div>
                     {/* <div className="hiddable">{item.zone.name}</div> */}
-                    <div className="hiddable">{item.site}</div>
+                    <div className="large hiddable">{item.site}</div>
                     {/* <div><RiskBar risk={item.risk} /></div> */}
                     <div className="large hiddable">{item.status}</div>
                   </div>
                 }
                 title="Registros"
-                elements={props.facialReports.filter($0 => $0.risk === 0)}
+                elements={props.inventoryReports}
                 titles={[
-                  {title: 'Tiempo', className: 'medium'},
-                  {title: 'Suceso', className: 'large'},
+                  {title: 'Nombre', className: 'medium'},
+                  {title: 'Marca', className: ''},
                   // {title: 'Zona', className: 'hiddable'},
                   {title: 'Sitio', className: 'hiddable'},
                   // {title: 'Riesgo'},
-                  {title: 'Estatus o acción', className: 'large hiddable'}
+                  {title: 'Estatus', className: 'medium hiddable'}
                 ]}
               />
             </div>
@@ -202,13 +206,15 @@ class Inventory extends Component {
 
 Inventory.propTypes = {
   setFacialReport: PropTypes.func,
-  facialReports: PropTypes.array
+  inventoryReports: PropTypes.array
 }
 
-function mapStateToProps({ zones, facialReports }) {
+function mapStateToProps({ zones, inventoryReports, facialReports, cameraReports }) {
   return {
     zones,
-    facialReports
+    inventoryReports,
+    facialReports,
+    cameraReports
   }
 }
 

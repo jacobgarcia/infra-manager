@@ -8,6 +8,8 @@ const Site = require(path.resolve('models/Site'))
 const Zone = require(path.resolve('models/Zone'))
 const User = require(path.resolve('models/User'))
 const FaceRecognition = require(path.resolve('models/FaceRecognition'))
+const Inventory = require(path.resolve('models/Inventory'))
+
 
 const { hasAccess } = require(path.resolve('router/v1/lib/middleware-functions'))
 
@@ -229,19 +231,19 @@ router.route('/exhaustive')
 })
 
 // Get all face recognition registers
-router.route('/facerecognition')
-.get((req, res) => {
-  const company = req._user.cmp
+router.route('/inventory/:_id')
+.put((req, res) => {
+  const { _id } = req.params
+  const { lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType } = req.body
 
-  FaceRecognition.find({ })
-  .populate('zone', 'name')
-  .exec((error, recognitions) => {
+  Inventory.findOneAndUpdate({ _id }, { $set: { lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType }})
+  .exec((error, inventory) => {
     if (error) {
       winston.error({error})
       return res.status(500).json({ error })
     }
 
-    return res.status(200).json({ recognitions })
+    return res.status(200).json({ inventory })
   })
 })
 

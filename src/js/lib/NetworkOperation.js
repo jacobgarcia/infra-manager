@@ -80,6 +80,9 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/site/${siteKey}`)
   }
 
+  static updateInventoryElement(id, lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType) {
+    return axios.put(`${baseUrl}/inventory/${id}`, { lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType })
+  }
 }
 
 export default NetworkOperation
