@@ -6,7 +6,7 @@ import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
 import { setCredentials, setComplete, setLoading, setExhaustive, setReport, setFacialReport } from '../actions'
-import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports, Sensors } from './'
+import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports, Sensors ,Inventory} from './'
 import { Navigator, VideoPlayer } from '../components'
 import { NetworkOperation, NetworkOperationFRM } from '../lib'
 
@@ -191,6 +191,7 @@ class App extends Component {
           <Route path="/vehicular-flow" component={VehicularFlow}/>
           <Route path="/perimeter" component={Perimeter}/>
           <Route path="/facial-recognition" component={FacialRecognition}/>
+          <Route path="/inventory" component={Inventory}/>
           <Route path="/statistics" component={Statistics}/>
           <Route path="/video-surveillance" component={VideoSurveillance}/>
           <Route path="/reports" component={Reports}/>

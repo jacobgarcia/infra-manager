@@ -115,6 +115,10 @@ Navigator.defaultProps = {
       title: 'Video Vigilancia',
       name: 'video-surveillance',
       _id: '05'
+    },{
+      title: 'Inventario',
+      name: 'inventory',
+      _id: '06'
     }
   ]
 }

@@ -27,3 +27,5 @@ export { default as Settings } from './Settings'
 export { default as Reports } from './Reports'
 
 export { default as Login } from './Login'
+
+export { default as Inventory } from './Inventory'
