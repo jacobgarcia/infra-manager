@@ -1,6 +1,5 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { AppContainer } from 'react-hot-loader'
 
 import Routes from './router'
 
@@ -8,19 +7,20 @@ import Routes from './router'
 import '../styles/master.scss'
 import '../styles/videojs.scss'
 
-function render(Component) {
-  ReactDOM.render(
-    <AppContainer>
-      <Component />
-    </AppContainer>,
-    document.getElementById('root')
-  )
-}
+ReactDOM.render(
+  <Routes />,
+  document.getElementById('root')
+)
 
-render(Routes)
-
-if (module.hot) {
-  module.hot.accept('./router', () => {
-    render(Routes)
+// Progressive Web App service worker registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/dist/sw.js')
+    .then(registration => {
+      console.info('SW registered: ', registration)
+    })
+    .catch(registrationError => {
+      console.info('SW registration failed: ', registrationError)
+    })
   })
 }
