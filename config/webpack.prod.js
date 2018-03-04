@@ -40,7 +40,7 @@ module.exports = merge(common, {
       description: 'React Boilerplate',
       background_color: '#ffffff',
       theme_color: '#ffffff',
-      start_url: "/",
+      start_url: 'https://app.connus.mx',
       icons: [
         {
           src: path.resolve('src/assets/app-icon.png'),

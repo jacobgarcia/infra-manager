@@ -23,4 +23,7 @@ if ('serviceWorker' in navigator) {
       console.info('SW registration failed: ', registrationError)
     })
   })
+  window.addEventListener('fetch', event => {
+    console.info('Fetch event', event)
+  })
 }
