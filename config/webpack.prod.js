@@ -1,57 +1,64 @@
 /* eslint-env node */
 const merge = require('webpack-merge')
 const path = require('path')
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
-const common = require('./webpack.common.js')
-const webpack = require('webpack')
+const common = require(path.resolve('config/webpack.common.js'))
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
+const webpack = require('webpack')
+const WorkboxPlugin = require('workbox-webpack-plugin')
+const WebpackPwaManifest = require('webpack-pwa-manifest')
 
 module.exports = merge(common, {
+  mode: 'production',
+  devtool: 'source-map',
+  output: {
+    path: path.resolve('dist'),
+    filename: '[name]-[chunkhash].min.js',
+    publicPath: '/dist/'
+  },
+  module: {
+    rules: [
+      {
+        test: /(\.css$|\.scss)/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'sass-loader']
+        })
+      }
+    ]
+  },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      }
-    }),
-    new HtmlWebpackPlugin({
-      template: path.resolve('src/index.ejs'),
-      styleUrl: '/dist/styles.min.css',
-      bundleUrl: '/dist/bundle.min.js',
-      inject: false,
-      minify: {
-        collapseWhitespace: true,
-        removeComments: true,
-        minifyCSS: true
-      }
-    }),
-    new ExtractTextPlugin({
-      filename: 'styles.min.css'
+      'process.env.NODE_ENV': JSON.stringify('production')
     }),
     new UglifyJSPlugin({
-      unused: true,
-      dead_code: true, // big one--strip code that will never execute
-      warnings: false, // good for prod apps so users can't peek behind curtain
-      drop_debugger: true,
-      conditionals: true,
-      evaluate: true,
-      drop_console: true, // strips console statements
-      sequences: true,
-      booleans: true
+      sourceMap: true
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.AggressiveMergingPlugin(),
-    new webpack.BannerPlugin(
-`
-Developed and mantained by:
- _  _
-| \ | |_   _ _ __ ___
-|  \| | | | | '__/ _ \\
-| |\  | |_| | | |  __/
-|_| \_|\\__,_|_|  \\___|
-
-Visit: nure.mx
-We're hiring!
-`)
+    new WebpackPwaManifest({
+      name: 'React Boilerplate',
+      short_name: 'boilerplate',
+      description: 'React Boilerplate',
+      background_color: '#ffffff',
+      theme_color: '#ffffff',
+      start_url: "/",
+      icons: [
+        {
+          src: path.resolve('src/assets/app-icon.png'),
+          sizes: [96, 128, 192, 256, 384, 512] // multiple sizes
+        },
+        {
+          src: path.resolve('src/assets/app-large-icon.png'),
+          size: '1024x1024' // you can also use the specifications pattern
+        }
+      ]
+    }),
+    new WorkboxPlugin({
+      globDirectory: 'dist',
+      globPatterns: ['**/*.{html,js}'],
+      swDest: path.join('dist', 'sw.js'),
+      clientsClaim: true,
+      skipWaiting: true
+    }),
+    new ExtractTextPlugin('master.min.css')
   ]
 })

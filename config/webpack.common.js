@@ -1,49 +1,39 @@
 /* eslint-env node */
 const path = require('path')
-const env = process.env.NODE_ENV
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
   entry: {
-    app: path.resolve('src/js/index')
-  },
-  output: {
-    path: path.resolve('dist'),
-    filename: 'bundle.min.js',
-    chunkFilename: 'chunk-[id].js'
+    bundle: path.resolve('src/js/index')
   },
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loader: 'babel-loader',
-        include: path.resolve('src'),
-        options: {
-          presets: [
-            ['env', { modules: false }],
-            'react',
-            'stage-2'
-          ],
-          plugins: [
-            'react-hot-loader/babel'
-          ]
+        exclude: /(node_modules)/,
+        use: {
+          loader: require.resolve('babel-loader'),
+          options: {
+            cacheDirectory: true,
+            presets: [
+              ['env', { modules: false }],
+              'react',
+              'stage-2'
+            ]
+          }
         }
-      },
-      {
-        test: /(\.css$|\.scss)/,
-        use: env === 'production'
-          ?
-          ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: [{loader: 'css-loader', options: { minimize: true}}, {loader: 'sass-loader'}]
-          })
-          :
-          [
-            { loader: 'style-loader' },
-            { loader: 'css-loader' },
-            { loader: 'sass-loader' }
-          ]
       }
+      // CSS rules are handled in dev/prod files
     ]
-  }
+  },
+  plugins: [
+    new CleanWebpackPlugin(['dist/*.*'], {
+      root: path.join(__dirname, '../')
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve('src/index.html'),
+      filename: 'index.html'
+    })
+  ]
 }
