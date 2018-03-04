@@ -35,12 +35,12 @@ module.exports = merge(common, {
       sourceMap: true
     }),
     new WebpackPwaManifest({
-      name: 'React Boilerplate',
-      short_name: 'boilerplate',
-      description: 'React Boilerplate',
+      name: 'Connus',
+      short_name: 'Connus',
+      description: 'Connus',
       background_color: '#ffffff',
       theme_color: '#ffffff',
-      start_url: 'https://app.connus.mx',
+      start_url: '.',
       icons: [
         {
           src: path.resolve('src/assets/app-icon.png'),
@@ -52,13 +52,14 @@ module.exports = merge(common, {
         }
       ]
     }),
+    new ExtractTextPlugin('master.min.css'),
     new WorkboxPlugin({
       globDirectory: 'dist',
       globPatterns: ['**/*.{html,js}'],
+      staticFileGlobs: ['**/*.{html,js,css}'],
       swDest: path.join('dist', 'sw.js'),
       clientsClaim: true,
       skipWaiting: true
     }),
-    new ExtractTextPlugin('master.min.css')
   ]
 })

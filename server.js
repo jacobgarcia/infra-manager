@@ -78,10 +78,8 @@ app.post('/webhook', (req, res) => {
   res.status(200).json({ message: 'Webhook recieved' })
 })
 
-// Bundles
-app.use('/dist',
-  express.static('dist')
-)
+// Dist bundles
+app.use('/dist', express.static('dist'))
 
 // Send index to all other routes
 app.get('*', (req, res) =>
