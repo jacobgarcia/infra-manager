@@ -40,12 +40,15 @@ class StatusesContainer extends PureComponent {
     this.socket.on('debugRequest',data => {
 
       this.setState({'animate': false})
-      // if (this.props.element.key === camera){
+       //if (this.props.element.key == data.camera){
+        console.log(this.props.element.key)
+        console.log(data.camera)
         this.setState({
           photo2: 'https://connus.be' + data.image2,
-          photo3: 'https://connus.be' + data.image3
+          photo3: 'https://connus.be' + data.image3,
+          //camera: data.camera
         })
-    //  }
+      //}
     })
 
   }
