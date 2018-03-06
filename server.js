@@ -16,6 +16,9 @@ const NodeMediaServer = require('node-media-server')
 
 const PORT = process.env.PORT || 8080
 
+
+
+
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(helmet())
@@ -87,9 +90,30 @@ app.get('*', (req, res) =>
 )
 
 // Start server
-app.listen(PORT, () =>
+const server = app.listen(PORT, () =>
   winston.info(`Connus server is listening on port: ${PORT}!`)
 )
+
+const io = require('socket.io').listen(server)
+
+io.on('connection', socket => {
+  winston.info('New client connection')
+  socket.on('join', companyId => {
+    winston.info('New join on room: ' + companyId)
+    socket.join(companyId)
+    // Emit a refresh to web platform when new camera is connected
+    io.to('web-platform').emit('refresh')
+  })
+
+  socket.on('disconnect', companyId => {
+    winston.info('Disconnected client')
+    // Emit a refresh to web platform
+    io.to('web-platform').emit('refresh')
+  })
+})
+
+global.io = io
+
 
 // Start RTMP Server
 const config = {

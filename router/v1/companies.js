@@ -16,6 +16,7 @@ const { hasAccess } = require(path.resolve('router/v1/lib/middleware-functions')
 router.route('/users')
 .get(hasAccess(4), (req, res) => {
   const company = req._user.cmp
+  global.io.emit('report', report)
   // TODO add monitoring zones or subzones
   User.find({ company })
   .select('email name surname access zones')
