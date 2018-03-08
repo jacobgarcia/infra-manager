@@ -7,7 +7,6 @@ const router = new express.Router()
 const Site = require(path.resolve('models/Site'))
 const Zone = require(path.resolve('models/Zone'))
 const User = require(path.resolve('models/User'))
-const FaceRecognition = require(path.resolve('models/FaceRecognition'))
 const Inventory = require(path.resolve('models/Inventory'))
 
 

@@ -30,41 +30,39 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage })
 
-nev.configure({
-  verificationURL: 'https://demo.kawlantid.com/signup/${URL}',
-
-  // mongo configuration
-  persistentUserModel: User,
-  tempUserModel: Guest,
-  expirationTime: 86400, //24 hour expiration
-  URLFieldName: 'invitation_token',
-
-  transportOptions: {
-    service: 'Gmail',
-    auth: {
-        user: 'ingenieria@connus.mx',
-        pass: 'kawlantcloud'
-    }
-  },
-  verifyMailOptions: {
-      from: 'Do Not Reply <ingenieria@connus.mx>',
-      subject: 'Confirm your account',
-      html: '<p>Please verify your account by clicking <a href="${URL}">this link</a>. If you are unable to do so, copy and ' +
-              'paste the following link into your browser:</p><p>${URL}</p>',
-      text: 'Please verify your account by clicking the following link, or by copying and pasting it into your browser: ${URL}'
-  },
-  shouldSendConfirmation: true,
-  confirmMailOptions: {
-      from: 'Do Not Reply <ingenieria@connus.mx>',
-      subject: 'Successfully verified!',
-      html: '<p>Your account has been successfully verified.</p>',
-      text: 'Your account has been successfully verified.'
-  },
-
-  hashingFunction: null
-}, (error, options) => {
-
-})
+// nev.configure({
+//   verificationURL: `https://demo.kawlantid.com/signup/${URL}`,
+//
+//   // mongo configuration
+//   persistentUserModel: User,
+//   tempUserModel: Guest,
+//   expirationTime: 86400, // 24 hour expiration
+//   URLFieldName: 'invitation_token',
+//
+//   transportOptions: {
+//     service: 'Gmail',
+//     auth: {
+//         user: 'ingenieria@connus.mx',
+//         pass: 'kawlantcloud'
+//     }
+//   },
+//   verifyMailOptions: {
+//       from: 'Do Not Reply <ingenieria@connus.mx>',
+//       subject: 'Confirm your account',
+//       html: `<p>Please verify your account by clicking <a href="${URL}">this link</a>. If you are unable to do so, copy and ` +
+//               `paste the following link into your browser:</p><p>${URL}</p>`,
+//       text: `Please verify your account by clicking the following link, or by copying and pasting it into your browser: ${URL}`
+//   },
+//   shouldSendConfirmation: true,
+//   confirmMailOptions: {
+//       from: 'Do Not Reply <ingenieria@connus.mx>',
+//       subject: 'Successfully verified!',
+//       html: '<p>Your account has been successfully verified.</p>',
+//       text: 'Your account has been successfully verified.'
+//   },
+//
+//   hashingFunction: null
+// })
 
 router.route('/users/invite')
 .post((req, res) => {
@@ -84,14 +82,14 @@ router.route('/users/invite')
     if (existingPersistentUser) return res.status(409).json({error: 'User already registered'})
 
     if (newTempUser) {
-      var URL = newTempUser[nev.options.URLFieldName]
-      nev.sendVerificationEmail(email, URL, (error, info) => {
+      const URL = newTempUser[nev.options.URLFieldName]
+      nev.sendVerificationEmail(email, URL, error => {
         if (error) return res.status(500).json({error})
-        else return res.status(200).json({message: 'Invitation successfully sent'})
+        return res.status(200).json({message: 'Invitation successfully sent'})
        })
     }
     // user already have been invited
-    else return res.status(409).json({error: 'User already invited'})
+   return res.status(409).json({error: 'User already invited'})
   })
 
 })
