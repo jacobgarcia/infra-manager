@@ -190,7 +190,8 @@ function credentials(state = {}, action) {
           email: action.user.email,
           name: action.user.name,
           access: action.user.access,
-          photoUrl: action.user.photoUrl
+          photoUrl: action.user.photoUrl,
+          defaultPosition: action.user.defaultPosition
         },
         token: action.user.token,
         company: action.user.company,

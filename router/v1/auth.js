@@ -125,7 +125,7 @@ router.post('/authenticate', (req, res) => {
         cmp: user.company
       }, config.secret)
 
-      const {_id, fullName: name, surname, access} = user
+      const {_id, fullName: name, surname, access, defaultPosition} = user
 
       if (result) return res.status(200).json({
         token,
@@ -133,7 +133,8 @@ router.post('/authenticate', (req, res) => {
           _id,
           name,
           surname,
-          access
+          access,
+          defaultPosition
         }
       })
 

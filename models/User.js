@@ -12,7 +12,8 @@ const schema = new Schema({
   surname: String,
   photoUrl: { type: String },
   zones: [{ type: Schema.Types.ObjectId, ref: 'Zone' }],
-  services: [String]
+  services: [String],
+  defaultPosition: [String]
 })
 
 module.exports = mongoose.model('User', schema)

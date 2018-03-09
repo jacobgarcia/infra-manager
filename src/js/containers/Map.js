@@ -15,8 +15,8 @@ class MapContainer extends Component {
     super(props)
 
     this.state = {
-      currentPosition: [23.2096057, -101.6139503],
-      currentZoom: 5,
+      currentPosition: (props.credentials.user && props.credentials.user.defaultPosition) || [23.2096057, -101.6139503],
+      currentZoom: 3,
       shadow: null,
       element: null,
       elements: [],
@@ -76,7 +76,6 @@ class MapContainer extends Component {
   }
 
   componentDidMount() {
-
     const { elements = [] } = this.getElementsToRender(this.props)
     this.setState({
       elements
@@ -131,13 +130,16 @@ class MapContainer extends Component {
            })
         }).catch(console.error)
       }, 30000)
-
   }
 
   componentWillReceiveProps(nextProps) {
     const { zoneId = null, siteId = null } = nextProps.match.params
     if (this.props.match.params === nextProps.match.params) return
-
+    if (nextProps.credentials.user && nextProps.credentials.user.defaultPosition) {
+      this.setState({
+        currentPosition: nextProps.credentials.user.defaultPosition
+      })
+    }
     if (nextProps.zones.length === 0) return
 
     // If we have the same paramters dont update the state
@@ -310,6 +312,10 @@ class MapContainer extends Component {
 
   render() {
     const { state, props } = this
+    if (!props.credentials.user) {
+      return (null)
+    }
+
     const { zoneId: selectedZone = null, siteId: selectedSite = null } = props.match.params
 
     return (
@@ -510,13 +516,15 @@ MapContainer.propTypes = {
   setReport: PropTypes.func,
   setSite: PropTypes.func,
   setZone: PropTypes.func,
-  setSubzone: PropTypes.func
+  setSubzone: PropTypes.func,
+  credentials: PropTypes.object
 }
 
-function mapStateToProps({zones, reports}) {
+function mapStateToProps({zones, reports, credentials}) {
   return {
     zones,
-    reports
+    reports,
+    credentials
   }
 }
 
