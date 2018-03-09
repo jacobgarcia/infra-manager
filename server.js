@@ -3,7 +3,6 @@ const express = require('express')
 const path = require('path')
 const helmet = require('helmet') // Basic headers protection
 const bodyParser = require('body-parser')
-const compression = require('compression') // Files compresion
 const winston = require('winston') // Logger
 const hpp = require('hpp')
 const request = require('request')
@@ -11,7 +10,6 @@ const { exec } = require('child_process')
 const app = express()
 
 const v1 = require(path.resolve('router/v1'))
-const webpackDevServer = require(path.resolve('config/webpackDevServer')) // Dev server
 
 // RTMP Server
 const NodeMediaServer = require('node-media-server')
@@ -23,16 +21,10 @@ app.use(bodyParser.json())
 app.use(helmet())
 app.use(hpp())
 
-function shouldCompress(req, res) {
-  return req.headers['x-no-compression'] ? false : compression.filter(req, res)
-}
-
-// Compression
-app.use(compression({filter: shouldCompress}))
-
 // If in development use webpackDevServer
-process.env.NODE_ENV === 'development'
-&& app.use(webpackDevServer)
+if (process.env.NODE_ENV === 'development') {
+  app.use(require(path.resolve('config/webpackDevServer')))
+}
 
 // Images and static assets
 app.use('/static',
@@ -86,14 +78,12 @@ app.post('/webhook', (req, res) => {
   res.status(200).json({ message: 'Webhook recieved' })
 })
 
-// Bundles
-app.use('/dist',
-  express.static('dist')
-)
+// Dist bundles
+app.use('/dist', express.static('dist'))
 
 // Send index to all other routes
 app.get('*', (req, res) =>
-  res.sendFile(process.env.NODE_ENV === 'development' ? path.resolve('src/index.html') : path.resolve('dist/index.html'))
+  res.sendFile(path.resolve('dist/index.html'))
 )
 
 // Start server

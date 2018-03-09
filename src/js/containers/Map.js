@@ -55,7 +55,7 @@ class MapContainer extends Component {
     arrayTwo.sort()
     // Compare only with keys
     const arrayTwoKeys = arrayTwo.map(a => a.key)
-    for(var i = 0; i < arrayOne.length; i += 1) {
+    for (let i = 0; i < arrayOne.length; i += 1) {
         if(arrayTwoKeys.indexOf(arrayOne[i]) > -1){
             ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[i])])
         }
