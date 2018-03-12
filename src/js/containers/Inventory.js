@@ -7,6 +7,7 @@ import Slider from 'react-slick'
 
 import { Table, RiskBar, DateRangePicker } from '../components'
 import { setFacialReport } from '../actions'
+import { setInventoryReport } from '../actions'
 
 import { NetworkOperation, NetworkOperationFRM } from '../lib'
 import io from 'socket.io-client'
@@ -16,6 +17,7 @@ class Inventory extends Component {
     super(props)
 
     this.state = {
+      inventoryReports: null,
       selectedLog: this.props.inventoryReports.length > 0 ? this.props.inventoryReports[0] : null,
       selectedElementIndex: this.props.inventoryReports.length > 0 ? [0,0] : [null,null],
       showLogDetail: true,
@@ -24,13 +26,13 @@ class Inventory extends Component {
       next_from: new Date(),
       next_to: new Date()
     }
-
     this.onLogSelect = this.onLogSelect.bind(this)
     this.onDayClick = this.onDayClick.bind(this)
     this.onUpdateEntry = this.onUpdateEntry.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
+
     if (!this.props.inventoryReports || this.props.inventoryReports.length === 0) {
       if (nextProps.inventoryReports && nextProps.inventoryReports.length > 0) {
         this.setState({
@@ -41,7 +43,17 @@ class Inventory extends Component {
       }
     }
   }
+  componentWillMount() {
+    let inventory = {}
+    NetworkOperationFRM.getSensors()
+    .then(({data}) => {
+      //console.log(this.props.inventoryReports);
+      this.props.setInventoryReport(data)
+    })
 
+  }
+
+/*data map*/
   componentDidMount() {
   }
 
@@ -208,6 +220,7 @@ Inventory.propTypes = {
   setFacialReport: PropTypes.func,
   inventoryReports: PropTypes.array
 }
+
 
 function mapStateToProps({ zones, inventoryReports, facialReports, cameraReports }) {
   return {

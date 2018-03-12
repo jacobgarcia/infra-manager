@@ -20,6 +20,8 @@ router.use(require(path.resolve('router/v1/stats')))
 router.use(require(path.resolve('router/v1/sites')))
 router.use(require(path.resolve('router/v1/debugs')))
 router.use(require(path.resolve('router/v1/admins')))
+router.use(require(path.resolve('router/v1/cameras')))
+
 
 
 

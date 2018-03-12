@@ -9,6 +9,7 @@ export default {
     return '#FFC511'
   },
   frmUrl: 'https://connus.be'
+  //frmUrl: 'http://localhost:8080'
 }
 
 export const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']

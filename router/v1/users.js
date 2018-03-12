@@ -7,6 +7,10 @@ const multer = require('multer')
 const mime = require('mime')
 const mongoose = require('mongoose')
 const nev = require('email-verification')(mongoose)
+const jwt = require('jsonwebtoken')
+const base64Img = require('base64-img')
+const shortid = require('shortid')
+const PythonShell = require('python-shell')
 
 // Image optimization
 const imagemin = require('imagemin')
@@ -14,7 +18,13 @@ const imageminMozjpeg = require('imagemin-mozjpeg')
 const imageminPngquant = require('imagemin-pngquant')
 
 const Guest = require(path.resolve('models/Guest'))
+const Site = require(path.resolve('models/Site'))
 const User = require(path.resolve('models/User'))
+const FrmUser = require(path.resolve('models/FrmUser'))
+const Access = require(path.resolve('models/Access'))
+
+const Admin= require(path.resolve('models/Admin'))
+
 const config = require(path.resolve('config/config'))
 
 mongoose.connect(config.database)
@@ -64,6 +74,31 @@ nev.configure({
   hashingFunction: null
 }, (error, options) => {
 
+})
+
+
+/*************************************
+***                                ***
+***          MIDDLEWARE JWT        ***
+***                                ***
+*************************************/
+/* This endpoints are secured so you need a token in order to use 'em */
+router.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*")
+  res.header("Access-Control-Allow-Headers", "X-Requested-With")
+  const token = req.headers['x-access-token'] // check header or url parameters or post parameters for token
+
+  if (token) {
+    const decodedToken = jwt.decode(token) //Decode token
+    jwt.verify(token, config.secret, (error, decoded) => { // decode token
+      if (error) return res.status(401).json({'success': false, 'message': 'Failed to authenticate token.'})
+      else { //Send the decoded token to the request body
+        req.U_ID = decoded._id //Save the decoded user_id from the token to use in next routes
+        next()
+      }
+    })
+  }
+  else return res.status(403).json({'success': "false",'message': "No token provided"});
 })
 
 router.route('/users/invite')
@@ -134,5 +169,127 @@ router.route('/users/self/photo')
     return res.status(201).json({ message: 'Uploaded and saved, could not compress', photo: imagePath })
   })
 })
+
+// Register new user form
+router.route('/users/signup')
+.post((req, res) => {
+  // Validate that no field is empty
+  const { pin, privacy, site } = req.body
+  if (!pin || !privacy || !site) return res.status(400).json({'success': false, 'message': "Malformed request"})
+  // Validate that site exists (dumb validation)
+  Site.findOne({ 'key': site })
+  .exec((error, thesite) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': "false", 'message': "Error finding that site.",'error':error}) // return shit if a server error occurs
+    }
+    if (!thesite) return res.status(406).json({'success': false, 'message': "The specified site does not exist"})
+    else {
+
+      Admin.findOne({ '_id': req.U_ID })
+      .exec((error, admin) => {
+        if (error) {
+          winston.error(error)
+          console.log(req.U_ID)
+          return res.status(400).json({'success': "false", 'message': "The specified admin does not exist","error":error})
+        }
+        else if (admin == null) return res.status(404).json({'success': false, 'message': "admin not found"})
+        else if (admin.role != 'registrar' && admin.role != 'camarabader' && admin.role != 'root') return res.status(401).json({'success': false, 'message': "Don't have permission to register new users"})
+        else {
+          // Check that the user is not already registered. Can be done via mongo but PATY GFYf
+          FrmUser.findOne({ pin })
+          .exec((error, user) => {
+            if (error) {
+              winston.error(error)
+              return res.status(400).json({'success': "false", 'message': "The specified frmuser does not exist"})
+            }
+            if (user) return res.status(409).json({'success': false, 'message': "User already registered"})
+            else {
+              new FrmUser({
+                    privacy,
+                    pin,
+                    site
+              })
+              .save((error, user) => { // Save the user form
+                if (error) {
+                  winston.error(error)
+                  return res.status(400).json({'success': "false", 'message': "The specified user is already registered"})
+                }
+                else {
+                  global.io.to(site).emit('register', user.pin)
+                  return res.status(200).json({ 'success': true, 'message': "Successfully registered user. Now it's time to take the picture!", user })
+                }
+              })
+            }
+          })
+        }
+      })
+    }
+  })
+})
+
+router.route('/users/photo')
+.put((req, res) => {
+  const { pin, photo } = req.body
+  if (!photo) return res.status(400).json({'success': "false", 'message': "Image not found"}) // no image found
+  else {
+      const filename = base64Img.imgSync(photo, 'static/uploads', shortid.generate() + Date.now())
+      // Set photo file to new user registered
+      FrmUser.findOneAndUpdate({ pin }, { $set: { photo: '/' + filename} }, { new: true })
+      .exec((error, user) => {
+        if (error) {
+          winston.error(error)
+          return res.status(400).json({'success': "false", 'message': "The specified frmuser does not exist","error":error})
+        }
+        else if (!user) return res.status(404).json({'success': false, 'message': "The specified user does not exist"})
+        else {
+          // call code for AWS facial recognition. Now using stub
+          // use PythonShell to call python instance
+          const faceRecognition = new PythonShell('lib/python/rekognition.py', { pythonOptions: ['-u'], args: [ 'post', user.pin, process.env.PWD + user.photo ] })
+
+          /* Wait for the AWS response from Python to proceed */
+          faceRecognition.on('message', (message) => {
+            // end the input stream and allow the process to exit
+              faceRecognition.end((error) => {
+                if (error) {
+                  winston.error(error)
+                  return res.status(500).json({ 'success': "false", 'message': "Face Recognition Module Failed" })
+                }
+                const response = JSON.parse(message)
+
+                const data = { success: response.validation === 'false' ? false : true, photo, pin, site: user.site }
+                // Send photo to ATT and Connus
+                global.io.to('ATT').emit('photo', data)
+                global.io.to('connus').emit('photo', data)
+
+                // Insert access
+                new Access({
+                  timestamp: new Date(),
+                  event: data.success ? 'Registro de personal exitoso' : 'Intento de registro de personal',
+                  success: data.success,
+                  risk: data.success ? 0 : 1,
+                  zone: {
+                    name: 'Centro'
+                  },
+                  status: data.success ? 'Registro satisfactorio' : 'Regsitro denegado. Fallo en la detección de rostro',
+                  site: user.site,
+                  access: 'Registro',
+                  pin: data.pin,
+                  photo: user.photo
+                })
+                .save((error, access) => {
+                  if (error) {
+                    winston.error(error)
+                    return res.status(500).json({'success': "false",'message': "Could not save log."})
+                  }
+                  return res.status(response.status).json({ 'success': response.validation, 'message': response.description, user })
+                })
+              })
+          })
+        }
+      })
+  }
+})
+
 
 module.exports = router

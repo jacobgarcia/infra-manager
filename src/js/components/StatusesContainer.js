@@ -147,7 +147,7 @@ class StatusesContainer extends PureComponent {
           <button className="center" onClick={() => this.onDebug() }>Ver Cámaras</button>
           <br/>
 
-
+ 
           {
             this.state.animate
             &&
