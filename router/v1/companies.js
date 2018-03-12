@@ -8,7 +8,7 @@ const Site = require(path.resolve('models/Site'))
 const Zone = require(path.resolve('models/Zone'))
 const User = require(path.resolve('models/User'))
 const Inventory = require(path.resolve('models/Inventory'))
-
+const Company = require(path.resolve('models/Company'))
 
 const { hasAccess } = require(path.resolve('router/v1/lib/middleware-functions'))
 
@@ -243,6 +243,40 @@ router.route('/inventory/:_id')
     }
 
     return res.status(200).json({ inventory })
+  })
+})
+
+// Create site based on a central equipment (This endpoint must be called when a new site is given access)
+router.route('/site')
+.post((req, res) => {
+  // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
+  const { company, key, name, position, sensors } = req.body
+
+  Company.findOne({ name: company })
+  .exec((error, company) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({ error })
+    }
+    if (!company) return res.status(404).json({ success: false, message: 'Specified company was not found'})
+
+    // Create site using the information in the request body
+    new Site({
+      key,
+      name,
+      position,
+      company: company._id,
+      sensors
+    })
+    .save((error, site) => {
+      if (error) {
+        winston.error(error)
+        return res.status(400).json({ success: false, message: 'Site already registered' })
+      }
+      // Add the new site to the specified subzone
+      return res.status(200).json({ site })
+    })
+
   })
 })
 
