@@ -115,7 +115,6 @@ class VideoSurveillance extends Component {
                     <div className="large">{item.event}</div>
                     <div className="hiddable">{item.zone.name}</div>
                     <div className="hiddable">{item.site && item.site}</div>
-                    <div><RiskBar risk={item.risk} /></div>
                     <div className="medium hiddable">{item.status}</div>
                   </div>
                 }
@@ -125,7 +124,6 @@ class VideoSurveillance extends Component {
                   {title: 'Suceso', className: 'large'},
                   {title: 'Zona', className: 'hiddable'},
                   {title: 'Sitio', className: 'hiddable'},
-                  {title: 'Riesgo'},
                   {title: 'Estatus o acción', className: 'medium hiddable'}
                 ]}
               />
