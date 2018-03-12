@@ -76,10 +76,6 @@ class MapContainer extends Component {
   }
 
   componentDidMount() {
-    const { elements = [] } = this.getElementsToRender(this.props)
-    this.setState({
-      elements
-    })
 
     NetworkOperation.getAvailableStates()
     .then(({data}) => {
@@ -100,13 +96,16 @@ class MapContainer extends Component {
        this.setState({
          availableSites: data.connected_sites
        })
+
+       const { elements = [] } = this.getElementsToRender(this.props)
+       this.setState({
+         elements
+       })
     }).catch(console.error)
 
-      setInterval( () =>  {
-        const { elements = [] } = this.getElementsToRender(this.props)
-        this.setState({
-          elements
-        })
+
+
+      setInterval(() => {
 
         NetworkOperation.getAvailableStates()
         .then(({data}) => {
@@ -128,7 +127,13 @@ class MapContainer extends Component {
            this.setState({
              availableSites: data.connected_sites
            })
+
+           const { elements = [] } = this.getElementsToRender(this.props)
+           this.setState({
+             elements
+           })
         }).catch(console.error)
+
       }, 30000)
   }
 
@@ -190,6 +195,7 @@ class MapContainer extends Component {
       const { sites = [], positions } = this.props.zones.find(({_id}) => _id === zoneId)
       const element = sites.find(({_id}) => _id === siteId)
       const availableSites = this.arrayDifference(this.state.availableSites, sites)
+
       return {
         elements: availableSites,
         shadow: positions,
@@ -207,8 +213,9 @@ class MapContainer extends Component {
       }
     }
 
+
     return {
-      elements: this.props.zones.map(({name, positions, _id, sites = []}) => ({name, positions, _id, elements: sites.length, type: 'ZONE'})),
+      elements: this.props.zones.map(({name, positions, _id, sites = []}) => ({name, positions, _id, elements: this.state.availableSites.length, type: 'ZONE'})),
       shadow: null,
       element: null
     }
