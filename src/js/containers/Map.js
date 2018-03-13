@@ -53,6 +53,7 @@ class MapContainer extends Component {
     var ret = []
     arrayOne.sort()
     arrayTwo.sort()
+
     // Compare only with keys
     const arrayTwoKeys = arrayTwo.map(a => a.key)
     for (let i = 0; i < arrayOne.length; i += 1) {
@@ -60,6 +61,11 @@ class MapContainer extends Component {
             ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[i])])
         }
     }
+    console.log(ret.sort((a, b) => {
+      if(a.name < b.name) return -1
+      if(a.name > b.name) return 1
+      return 0
+    }))
     return ret
   }
 
@@ -127,7 +133,6 @@ class MapContainer extends Component {
            this.setState({
              availableSites: data.connected_sites
            })
-
            const { elements = [] } = this.getElementsToRender(this.props)
            this.setState({
              elements
