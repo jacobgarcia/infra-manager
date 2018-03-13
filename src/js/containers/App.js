@@ -10,6 +10,17 @@ import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, P
 import { Navigator, VideoPlayer } from '../components'
 import { NetworkOperation, NetworkOperationFRM } from '../lib'
 
+const videoJsOptions = {
+  controls: true,
+  autoplay: true,
+  sources: [{
+    src: 'rtmp://91.230.211.87:1935/720p&hd',
+    type: 'rtmp/mp4'
+  }],
+  preload: 'auto',
+  techorder: ["flash"]
+}
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -65,11 +76,6 @@ class App extends Component {
       this.setState({
         willCompleteLoad: true
       })
-      setTimeout(() => {
-        this.setState({
-          isLoading: false
-        })
-      }, 300)
       this.props.setCredentials({...data.user, token})
 
       // Start socket connection
@@ -88,7 +94,13 @@ class App extends Component {
         this.props.history.replace(`/login${path}`)
       }
     })
-    .then(this.props.setComplete())
+    .then(() => {
+      console.log('END LOADING LOADING')
+      this.props.setComplete()
+      this.setState({
+        isLoading: false
+      })
+    })
   }
 
   initSockets() {
@@ -143,26 +155,18 @@ class App extends Component {
       )
     }
 
-    const videoJsOptions = {
-      controls: true,
-      autoplay: true,
-      sources: [{
-        src: 'rtmp://91.230.211.87:1935/720p&hd',
-        type: 'rtmp/mp4'
-      }],
-      preload: 'auto',
-      techorder: ["flash"]
+    if (this.state.isLoading) {
+      return (
+        <div id="app">
+          <div className={`loading-screen ${this.state.willCompleteLoad ? 'dismissed' : ''}`}>
+            <h1>Cargando...</h1>
+          </div>
+        </div>
+      )
     }
 
     return (
       <div id="app">
-        {
-          this.state.isLoading
-          &&
-          <div className={`loading-screen ${this.state.willCompleteLoad ? 'dismissed' : ''}`}>
-            <h1>Cargando...</h1>
-          </div>
-        }
         <Helmet>
           <title>Connus</title>
         </Helmet>

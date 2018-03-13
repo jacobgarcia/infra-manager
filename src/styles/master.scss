@@ -15,6 +15,33 @@ html, body, #root, #app {
 // GLOBALS
 // =========
 
+.battery-chart, .fuel-chart {
+  width: 100%;
+  height: 100%;
+  border: 8px solid rgba(0,0,0,0.2);
+  border-radius: 13px;
+  .bar {
+    width: 100%;
+    background-color: $connus-blue;
+    border-radius: 4px;
+  }
+  .fuel {
+    width: 100%;
+    border-radius: 5px;
+    background-color: $connus-blue;
+  }
+}
+.fuel-chart {
+  display: flex;
+  align-items: flex-end;
+}
+.battery-chart {
+  padding: 4px;
+  display: grid;
+  grid-template-rows: repeat(1fr);
+  grid-row-gap: 4px;
+}
+
 .inline-nav {
   color: $lightest-gray;
   display: flex;
@@ -385,6 +412,12 @@ p span {
       > div {
         margin-right: 40px;
         z-index: 1000;
+        > div {
+          margin-left: 10px;
+          &:last-child {
+            margin-left: none;
+          }
+        }
       }
     }
     &.vertical {
@@ -615,9 +648,9 @@ p span {
   }
 
   .center{
-  margin:auto;
-  display:block;
-  text-align:center
+    margin: auto;
+    display: block;
+    text-align: center
   }
 
   .action {
@@ -1798,7 +1831,7 @@ ul.mini-nav {
   DASHBOARD
  */
 
-.dashboard {
+.dashboard, .sensors {
   color: $white;
   .overall-container {
     display: flex;
@@ -1853,6 +1886,7 @@ ul.mini-nav {
       padding-top: 15px;
       padding-bottom: 0;
       position: relative;
+      padding-bottom: 20px;
       h1 {
         .delta {
           font-size: 1rem;
@@ -1889,6 +1923,15 @@ ul.mini-nav {
         ul li.tracto::before { border-color: $violet; }
         ul li.car::before { border-color: $blue; }
         ul li.motor-cycle::before { border-color: $yellow; }
+      }
+      .battery-chart, .fuel-chart {
+        margin-right: 40px;
+      }
+      .center {
+        display: grid;
+        height: 100%;
+        grid-gap: 5px;
+        align-content: center;
       }
       .button {
         width: 160px;
@@ -1980,9 +2023,7 @@ ul.mini-nav {
         height: 100%;
         width: 100%;
         flex-wrap: wrap;
-        > div {
-          padding-bottom: 20px;
-        }
+        align-items: center;
       }
       &.historical {
         padding-bottom: 0;
@@ -2025,7 +2066,7 @@ ul.mini-nav {
           position: absolute;
           width: 100%;
           top: 50%;
-          transform: translateY(-27px);
+          transform: translateY(-17px);
           height: 35px;
           font-weight: 600;
           left: 0;

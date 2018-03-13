@@ -14,8 +14,12 @@ class MapContainer extends Component {
   constructor(props) {
     super(props)
 
+    let { defaultPosition = [] } = props.credentials.user
+
+    defaultPosition = defaultPosition.length > 0 ? defaultPosition : [23.2096057, -101.6139503]
+
     this.state = {
-      currentPosition: (props.credentials.user && props.credentials.user.defaultPosition) || [23.2096057, -101.6139503],
+      currentPosition: defaultPosition,
       currentZoom: 3,
       shadow: null,
       element: null,
@@ -57,7 +61,7 @@ class MapContainer extends Component {
     // Compare only with keys
     const arrayTwoKeys = arrayTwo.map(a => a.key)
     for (let i = 0; i < arrayOne.length; i += 1) {
-        if(arrayTwoKeys.indexOf(arrayOne[i]) > -1){
+        if (arrayTwoKeys.indexOf(arrayOne[i]) > -1) {
             ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[i])])
         }
     }
@@ -145,11 +149,7 @@ class MapContainer extends Component {
   componentWillReceiveProps(nextProps) {
     const { zoneId = null, siteId = null } = nextProps.match.params
     if (this.props.match.params === nextProps.match.params) return
-    if (nextProps.credentials.user && nextProps.credentials.user.defaultPosition) {
-      this.setState({
-        currentPosition: nextProps.credentials.user.defaultPosition
-      })
-    }
+
     if (nextProps.zones.length === 0) return
 
     // If we have the same paramters dont update the state
@@ -364,7 +364,7 @@ class MapContainer extends Component {
           zoom={state.currentZoom}
           onClick={this.onMapClick}
           onViewportChanged={this.onViewportChanged}
-          onMouseMove={({latlng}) => state.isCreating && this.setState({ hoverPosition: [latlng.lat, latlng.lng] })}
+          onMouseMove={({latlng = {}}) => state.isCreating === true && this.setState({ hoverPosition: [latlng.lat, latlng.lng] })}
           animate
         >
           <div className="bar-actions" onMouseMove={() => state.isCreating && this.setState({hoverPosition: null})}>
@@ -532,7 +532,13 @@ MapContainer.propTypes = {
   credentials: PropTypes.object
 }
 
-function mapStateToProps({zones, reports, credentials}) {
+MapContainer.defaultProps = {
+  user: {}
+}
+
+function mapStateToProps(props) {
+  // console.log({props})
+  const {zones, reports, credentials} = props
   return {
     zones,
     reports,
