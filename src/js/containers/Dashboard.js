@@ -5,6 +5,7 @@ import { PieChart, Pie, Cell, AreaChart, XAxis, LineChart, CartesianGrid, Toolti
 
 import { Card, Table, DateRangePicker, RiskBar, Tooltip } from '../components'
 import { yellow, red, blue, darkGray, violet } from '../lib/colors'
+import { getColor } from '../lib/specialFunctions'
 
 const data = [
   { name: 'workings', value: 100 },
@@ -44,15 +45,6 @@ const barData = [
       {name: '7:00 PM', pv: 100 }
 ]
 
-function getColor(name) {
-  switch (name) {
-    case 'working': return blue
-    case 'alerts': return yellow
-    case 'damaged': return red
-    default: return blue
-  }
-}
-
 class Dashboard extends Component {
   constructor(props) {
     super(props)
@@ -86,6 +78,7 @@ class Dashboard extends Component {
             <div className={`horizontal-container ${state.detail !== null ? 'minified' : ''}`}>
               <div className="vertical-container">
                 <Card
+                  title="Rendimiento general"
                   className={`graph-container`}
                   full={state.detail === 'performance'}
                   detailView={
@@ -126,7 +119,7 @@ class Dashboard extends Component {
                   detailActions={
                     <p onClick={() => this.setState({detail: null})}>Cerrar</p>
                   }
-                  title="Rendimiento general">
+                  >
                   <div className="graph">
                     <PieChart width={200} height={200}>
                       <Pie

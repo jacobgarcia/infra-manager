@@ -21,15 +21,8 @@ app.use(bodyParser.json())
 app.use(helmet())
 app.use(hpp())
 
-// If in development use webpackDevServer
-if (process.env.NODE_ENV === 'development') {
-  app.use(require(path.resolve('config/webpackDevServer')))
-}
-
 // Images and static assets
-app.use('/static',
-  express.static(path.resolve('static'))
-)
+app.use('/static', express.static(path.resolve('static')))
 
 // TODO add API
 // Resolve API v1
@@ -80,6 +73,12 @@ app.post('/webhook', (req, res) => {
 
 // Dist bundles
 app.use('/dist', express.static('dist'))
+
+
+// If in development use webpackDevServer
+if (process.env.NODE_ENV === 'development') {
+  app.use(require(path.resolve('config/webpackDevServer')))
+}
 
 // Send index to all other routes
 app.get('*', (req, res) =>
