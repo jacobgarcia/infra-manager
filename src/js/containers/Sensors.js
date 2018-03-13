@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
-import { PieChart, Pie, Cell, AreaChart, XAxis, LineChart, CartesianGrid, Tooltip as RechartsTooltip, ReferenceLine, Area, ResponsiveContainer,ComposedChart, YAxis, Bar, Line } from 'recharts'
-import { DateRangePicker, Card, Tooltip } from '../components'
+import { PieChart, Pie, Cell, Tooltip as RechartsTooltip } from 'recharts'
+import { DateRangePicker, Card, Tooltip, BatteryChart, FuelChart } from '../components'
 import { NetworkOperation, NetworkOperationFRM } from '../lib'
 import { getColor } from '../lib/specialFunctions'
 
@@ -70,10 +70,10 @@ class Users extends Component {
                 className={`graph-container`}
               >
                 <div className="graph">
-                  <PieChart width={200} height={200}>
+                  <PieChart width={160} height={160}>
                     <Pie
                       animationBegin={0} dataKey="value" data={data}
-                      cx={95} cy={95} innerRadius={60} outerRadius={95}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
                       strokeWidth={0} label>
                       {
                         data.map(({name}, index) =>
@@ -85,7 +85,7 @@ class Users extends Component {
                   </PieChart>
                   <h1>100%</h1>
                 </div>
-                <div>
+                <div className="center">
                   Ningún Sitio Dañado
                   <p className="border button" onClick={() => this.setState({detail: 'performance'})}>Detalles</p>
                 </div>
@@ -93,31 +93,43 @@ class Users extends Component {
               <Card
                 title="Batería"
               >
-                <div></div>
                 <div>
+                  <BatteryChart
+                    height={160}
+                    width={110}
+                  />
+                </div>
+                <div className="center">
                   <h3>89% promedio</h3>
                   <p>Sin batería</p>
-                  <p className="border button" onClick={() => this.setState({detail: 'performance'})}>9 Sitios</p>
+                  <p className="border warning button" onClick={() => this.setState({detail: 'performance'})}>9 Sitios</p>
                 </div>
               </Card>
               <Card
                 title="Combustible"
               >
-                <div></div>
                 <div>
+                  <FuelChart
+                    height={160}
+                    width={110}
+                    percentage={80}
+                  />
+                </div>
+                <div className="center">
                   <h3>89% promedio</h3>
                   <p>Sin batería</p>
-                  <p className="border button" onClick={() => this.setState({detail: 'performance'})}>9 Sitios</p>
+                  <p className="border warning button" onClick={() => this.setState({detail: 'performance'})}>9 Sitios</p>
                 </div>
               </Card>
               <Card
                 title="Presión"
+                className={`graph-container`}
               >
                 <div className="graph">
-                  <PieChart width={200} height={200}>
+                  <PieChart width={160} height={160}>
                     <Pie
                       animationBegin={0} dataKey="value" data={data}
-                      cx={95} cy={95} innerRadius={60} outerRadius={95}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
                       strokeWidth={0} label>
                       {
                         data.map(({name}, index) =>
@@ -128,20 +140,26 @@ class Users extends Component {
                     <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                   </PieChart>
                 </div>
-                <div>
+                <div className="center">
                   <h3>1043 Pa</h3>
-                  Ningún Sitio Dañado
+                  <p>Ningún Sitio Dañado</p>
                   <p className="border button" onClick={() => this.setState({detail: 'performance'})}>Detalles</p>
                 </div>
               </Card>
               <Card
                 title="Tuberías"
               >
-                <div></div>
                 <div>
-                  <h3>89% promedio</h3>
-                  <p>Sin batería</p>
-                  <p className="border button" onClick={() => this.setState({detail: 'performance'})}>9 Sitios</p>
+                  <FuelChart
+                    height={160}
+                    width={110}
+                    percentage={80}
+                  />
+                </div>
+                <div className="center">
+                  <h3>49% funcionando</h3>
+                  <p>Dañadas</p>
+                  <p className="border error button" onClick={() => this.setState({detail: 'performance'})}>9 Sitios</p>
                 </div>
               </Card>
           </div>
