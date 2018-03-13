@@ -170,6 +170,38 @@ router.route('/users/self/photo')
   })
 })
 
+// Specify comparison from the GUI to the PI
+router.route('/users/login')
+.post((req, res) => {
+  const { pin, site } = req.body
+  // Validate that no field is empty
+  if (!pin || !site) return res.status(400).json({'success': false, 'message': "Malformed request"})
+  // Validate that site exists (dumb validation)
+  Site.findOne({ 'key': site })
+  .exec((error, thesite) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': "false", 'message': "Error finding that user."}) // return shit if a server error occurs
+    }
+    if (!thesite) return res.status(406).json({'success': false, 'message': "The specified site does not exist"})
+    else {
+      FrmUser.findOne({ pin })
+      .exec((error, user) => { // if there are any errors, return the error
+        if (error) {
+          winston.error(error)
+          return res.status(500).json({'success': "false", 'message': "Error at finding users"}) // return shit if a server error occurs
+        }
+        else if (!user) return res.status(401).json({'success': "false",'message': "That user is not registered"})
+        else if (user.isLogged) return res.status(405).json({ 'success': false, 'message': "Already in an active session"})
+        else {
+            global.io.to(site).emit('recognize', user.pin, 'login')
+            return res.status(200).json({ 'success': true, 'message': "The camera is ready to recognize the user. Now take the picture", user })
+        }
+      })
+    }
+  })
+})
+
 // Register new user form
 router.route('/users/signup')
 .post((req, res) => {
@@ -220,6 +252,85 @@ router.route('/users/signup')
                   return res.status(200).json({ 'success': true, 'message': "Successfully registered user. Now it's time to take the picture!", user })
                 }
               })
+            }
+          })
+        }
+      })
+    }
+  })
+})
+
+// Specify logout comparison from the GUI to the PI
+router.route('/users/logout')
+.post((req, res) => {
+  const { pin, site } = req.body
+  // Validate that no field is empty
+  if (!pin || !site) return res.status(400).json({'success': false, 'message': "Malformed request"})
+  // Validate that site exists (dumb validation)
+  Site.findOne({ 'key': site })
+  .exec((error, thesite) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': "false", 'message': "Error finding that admin."}) // return shit if a server error occurs
+    }
+    if (!thesite) return res.status(406).json({'success': false, 'message': "The specified site does not exist"})
+    else {
+      FrmUser.findOne({ pin })
+      .exec((error, user) => { // if there are any errors, return the error
+        if (error) {
+          winston.error(error)
+          return res.status(500).json({'success': "false", 'message': "Error at finding users"}) // return shit if a server error occurs
+        }
+        else if (!user) return res.status(401).json({'success': "false",'message': "That user is not registered"})
+        else if (!user.isLogged) return res.status(405).json({ 'success': false, 'message': "The user is not in an active session"})
+        else {
+
+            global.io.to(site).emit('logout', user.pin, 'outlog')
+            return res.status(200).json({ 'success': true, 'message': "The camera is ready to recognize the user. Now take the picture", user })
+              // const data = { status: response.validation, pin }
+              // global.io.emit('logout', data)
+              // return res.status(200).json({ 'success': true, 'message': "The camera is ready to recognize the user. Now take the picture", updatedUser })
+        }
+      })
+    }
+  })
+})
+
+// Specify photo update to already registered user
+router.route('/users/update')
+.put((req, res) => {
+  const { pin, privacy, site } = req.body
+  // Validate that no field is empty
+  if (!pin || !privacy || !site) return res.status(400).json({'success': false, 'message': "Malformed request"})
+  // Validate that site exists (dumb validation)
+  Site.findOne({ 'key': site })
+  .exec((error, thesite) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': "false", 'message': "Error finding site"}) // return shit if a server error occurs
+    }
+    if (!thesite) return res.status(406).json({'success': false, 'message': "The specified site does not exist"})
+    else {
+      // Validate that admin has permissions to register new users
+      Admin.findOne({ '_id': req.U_ID })
+      .exec((error, admin) => {
+        if (error) {
+          winston.error(error)
+          return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
+        }
+        else if (admin.role != 'registrar' && admin.role != 'camarabader') return res.status(401).json({'success': false, 'message': "Don't have permission to register new users"})
+        else {
+          // Validate that specified user exists
+          FrmUser.findOne({ pin })
+          .exec((error, user) => { // if there are any errors, return the error
+            if (error) {
+              winston.error(error)
+              return res.status(500).json({'success': "false", 'message': "Error at finding users"}) // return shit if a server error occurs
+            }
+            else if (!user) return res.status(401).json({'success': "false",'message': "That user is not registered"})
+            else {
+              global.io.to(site).emit('update', user.pin)
+              return res.status(200).json({ 'success': true, 'message': "The camera is ready to update the photo of the user. Now take the picture", user })
             }
           })
         }
@@ -289,6 +400,159 @@ router.route('/users/photo')
         }
       })
   }
+})
+
+// update user register photo
+router.route('/users/updatephoto')
+.put((req, res) => {
+  const { pin, photo } = req.body
+  if (!photo) return res.status(400).json({'success': "false", 'message': "Image not found"}) // no image found
+  else {
+    // Send photo to GUI
+    const data = { photo, pin }
+    global.io.to('ATT').emit('photo', data)
+      const filename = base64Img.imgSync(photo, 'static/uploads', shortid.generate() + Date.now())
+      // Set photo file to new user registered
+      FrmUser.findOneAndUpdate({ pin }, { $set: { photo: '/' + filename} }, { new: true })
+      .exec((error, user) => {
+        if (error) {
+          winston.error(error)
+          return res.status(400).json({'success': "false", 'message': "The specified site does not exist"})
+        }
+        else if (!user) return res.status(404).json({'success': false, 'message': "The specified user does not exist"})
+        else {
+          // call code for AWS facial recognition. Now using stub
+          // use PythonShell to call python instance
+          const faceRecognition = new PythonShell('lib/python/rekognition.py', { pythonOptions: ['-u'], args: [ 'put', user.pin, process.env.PWD + user.photo ] })
+
+          /* Wait for the AWS response from Python to proceed */
+          faceRecognition.on('message', (message) => {
+            // end the input stream and allow the process to exit
+              faceRecognition.end((error) => {
+                if (error) {
+                  winston.error(error)
+                  return res.status(500).json({ 'success': "false", 'message': "Face Recognition Module Failed" })
+                }
+
+                const response = JSON.parse(message)
+
+                return res.status(response.status).json({ 'success': response.validation, 'message': response.description, user })
+
+              })
+          })
+        }
+      })
+  }
+})
+
+// Register appointment for specified user
+router.route('/users/appointments')
+.put((req, res) => {
+  const { pin, site, startdate, enddate } = req.body
+  // Validate that no field is empty
+  if (!pin || !site || !startdate || !enddate || (enddate < startdate)) return res.status(400).json({'success': false, 'message': "Malformed request"})
+  // Validate that site exists (dumb validation)
+  Site.findOne({ 'key': site })
+  .exec((error, thesite) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': "false", 'message': "Error finding site"}) // return shit if a server error occurs
+    }
+    if (!thesite) return res.status(406).json({'success': false, 'message': "The specified site does not exist"})
+    else {
+    Admin.findOne({ '_id': req.U_ID })
+    .exec((error, admin) => {
+      if (error) {
+        winston.error(error)
+        return res.status(400).json({'success': "false", 'message': "The specified site does not exist"})
+      }
+      else if (admin.role != 'appointer'  && admin.role != 'camarabader') return res.status(401).json({'success': false, 'message': "Don't have permission to make appointments"})
+      else {
+        FrmUser.findOne({ pin })
+        .exec((error, user) => { // if there are any errors, return the error
+          if (error) {
+            winston.error(error)
+            return res.status(500).json({'success': "false", 'message': "Error at finding users"}) // return shit if a server error occurs
+          }
+          else if (!user) return res.status(401).json({'success': "false",'message': "User not found. Try with another one"})
+           else {
+             FrmUser.findOneAndUpdate({'_id': user}, { $set: { site, startdate, enddate } }, { new: true })
+             .exec((error, user) => {
+               if (error) {
+                 winston.eror(error)
+                 return res.status(400).json({'success': "false", 'message': "The specified site does not exist"})
+               }
+               else {
+                 // Send appointments to the camera
+                 request.get({ url:'http://localhost:8080/v1/users/appointments/' + site, headers:{ 'Content-Type': 'application/x-www-form-urlencoded', 'x-access-token': req.headers['x-access-token'] }}, (error, response) => {
+                   if (error) {
+                     winston.info(error)
+                     return res.status(500).json({'success': "false", 'message': "Error at finding appointments"})
+                   }
+                   else {
+                     global.io.to(site).emit('appointments', response)
+                     return res.status(200).json({ 'success': true, 'message': "Successfully registered appointment", user })
+                   }
+                 })
+               }
+             })
+           }
+         })
+       }
+     })
+    }
+  })
+})
+
+// Get new appointments
+router.route('/users/appointments/:site')
+.get((req, res) => {
+  //Get appointments only for specified site
+  const site = req.params.site
+
+  FrmUser.find({ enddate : {$gte: Date.now()}, site })
+  .exec((error, users) => { // if there are any errors, return the error
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': "false", 'message': "Error at finding appointments"}) // return shit if a server error occurs
+    }
+
+    else if (users.length === 0) return res.status(404).json({'success': "false",'message': "No appointments"})
+    else return res.status(200).json({ 'success': true, 'message': "Successfully retrieved appointments", users })
+  })
+})
+
+// Delete already registered users
+router.route('/users/')
+.delete((req, res) => {
+  const { pin } = req.body
+
+  FrmUser.remove({ pin })
+  .exec((error, user) => { // if there are any errors, return the error
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': "false", 'message': "Error at removing user"}) // return shit if a server error occurs
+    }
+    else {
+      // call code for AWS facial recognition. Now using stub
+      // use PythonShell to call python instance
+      const faceRecognition = new PythonShell('lib/python/rekognition.py', { pythonOptions: ['-u'], args: [ 'del', pin, process.env.PWD + user.photo ] })
+
+      /* Wait for the AWS response from Python to proceed */
+      faceRecognition.on('message', (message) => {
+        // end the input stream and allow the process to exit
+          faceRecognition.end((error) => {
+            if (error) {
+              winston.error(error)
+              return res.status(500).json({ 'success': "false", 'message': "FRM Script Failed" })
+            }
+            const response = JSON.parse(message)
+
+            return res.status(response.status).json({ 'success': response.validation, 'message': response.description, user })
+          })
+        })
+    }
+  })
 })
 
 

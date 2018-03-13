@@ -7,13 +7,205 @@ const router = new express.Router()
 // const Site = require(path.resolve('models/Site'))
 // const Zone = require(path.resolve('models/Zone'))
 const mongoose = require('mongoose')
+const base64Img = require('base64-img')
+const shortid = require('shortid')
 const Battery = require(path.resolve('models/Battery'))
 const Site = require(path.resolve('models/Site'))
 const Report = require(path.resolve('models/Report'))
 const Access = require(path.resolve('models/Access'))
 const Face = require(path.resolve('models/Face'))
-const base64Img = require('base64-img')
-const shortid = require('shortid')
+const Admin = require(path.resolve('models/Admin'))
+
+
+
+// Return all logs from specific site
+router.route('/cameras/logs/:camera')
+.get((req, res) => {
+  const camera = req.params.camera
+
+  //Find battery logs
+  Battery.find({ camera })
+  .exec((error, batteryLogs) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': "false",'message': "Could not retrieve battery log."})
+    }
+
+    //Find Report logs
+    Report.find({ camera })
+    .exec((error, reportLogs) => {
+      if (error) {
+        winston.error(error)
+        return res.status(500).json({'success': "false",'message': "Could not retrieve report log."})
+      }
+
+      //Find access logs
+      Access.find({ camera })
+      .exec((error, accessLogs) => {
+        if (error) {
+          winston.error(error)
+          return res.status(500).json({'success': "false",'message': "Could not retrieve battery log."})
+        }
+
+        return res.status(200).json({ 'success': true, batteryLogs, reportLogs, accessLogs })
+      })
+    })
+  })
+})
+
+// Return last status only for report
+// Return last status of access only (to know if the user is valid or not)
+router.route('/cameras/report/:site')
+.get((req, res) => {
+  const camera = req.params.site
+
+  //Find battery logs
+  Report.find({ camera })
+  .exec((error, reportLogs) => {
+      if (error) {
+        winston.error(error)
+        return res.status(500).json({'success': "false",'message': "Could not retrieve report log."})
+      }
+      if (!reportLogs) return res.status(404).json({'success': false, 'message': "The camera specified does not exists"})
+      else {
+        //order logs from most recent access to return the first element. Sync call, so no problem for the return
+        reportLogs.sort((a, b) => {
+          return parseFloat(b.timestamp) - parseFloat(a.timestamp)
+        })
+        return res.status(200).json( { 'success': true,'report': reportLogs[0]})
+        //return res.status(200).json( { 'success': true } ,reportLogs[0] )
+      }
+  })
+})
+
+// Upgrade all cameras
+router.route('/cameras/multi/upgrade')
+.post((req, res) => {
+  Admin.findOne({ '_id': req.U_ID })
+  .exec((error, admin) => {
+    if (error) {
+      winston.error(error)
+      return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
+    }
+    else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
+    else {
+      // Notify to cameras
+      global.io.emit('upgrade')
+      return res.status(200).json({ 'succes': true, 'message': "Initiated upgrading process to all cameras" })
+    }
+  })
+})
+
+// Get a debug report for all cameras
+router.route('/cameras/multi/debug')
+.post((req, res) => {
+  Admin.findOne({ '_id': req.U_ID })
+  .exec((error, admin) => {
+    if (error) {
+      winston.error(error)
+      return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
+    }
+    else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
+    else {
+      // Notify to all cameras
+      global.io.emit('debug')
+      return res.status(200).json({ 'succes': true, 'message': "Initiated debugging process to all cameras" })
+    }
+  })
+})
+
+// Get a debug report for all cameras
+router.route('/cameras/single/debug')
+.post((req, res) => {
+  const { camera } = req.body
+  Admin.findOne({ '_id': req.U_ID })
+  .exec((error, admin) => {
+    if (error) {
+      winston.error(error)
+      return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
+    }
+    else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
+    else {
+      // Notify to all cameras
+      global.io.to(camera).emit('debug')
+      return res.status(200).json({ 'succes': true, 'message': "Initiated debugging process to all cameras" })
+    }
+  })
+})
+
+router.route('/cameras/single/upgrade')
+.post((req, res) => {
+  const { camera, site } = req.body
+  Admin.findOne({ '_id': req.U_ID })
+  .exec((error, admin) => {
+    if (error) {
+      winston.error(error)
+      return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
+    }
+    else if (admin.role != 'root')
+    return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
+    else {
+      // Notify to cameras
+      global.io.to(camera).emit('upgrade', site)
+      return res.status(200).json({ 'succes': true, 'message': "Initiated upgrading process to camera " + camera })
+    }
+  })
+})
+
+// Deactivate alarm
+router.route('/cameras/alarm/deactivate')
+.post((req, res) => {
+  const { camera } = req.body
+  Admin.findOne({ '_id': req.U_ID })
+  .exec((error, admin) => {
+    if (error) {
+      winston.error(error)
+      return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
+    }
+    else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
+    else {
+      // Notify to cameras
+      global.io.to(camera).emit('deactivate')
+      return res.status(200).json({ 'succes': true, 'message': "Deactivated alarm for camera " + camera })
+    }
+  })
+})
+
+// Ask for more alarm photos
+router.route('/cameras/alarm/photos/activate')
+.post((req, res) => {
+  const { camera } = req.body
+  Admin.findOne({ '_id': req.U_ID })
+  .exec((error, admin) => {
+    if (error) {
+      winston.error(error)
+      return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
+    }
+    else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
+    else {
+      // Notify to cameras
+      global.io.to(camera).emit('activate')
+      return res.status(200).json({ 'succes': true, 'message': "Asked for mor photos to camera " + camera })
+    }
+  })
+})
+
+router.route('/cameras/alarm/fine')
+.post((req, res) => {
+  const { site, alert }  = req.body
+
+  // Update site sensors value
+  Site.findOneAndUpdate({ _id: site }, { $set: { fine: true } })
+  .exec((error, thesite) => {
+    if (error) {
+      winston.error(error)
+      return res.status(400).json({'success': "false", 'message': "The specified site does not exist"})
+    }
+    return res.status(200).json({ 'succes': true, 'message': "Alarm is fine" })
+
+  })
+
+})
 
 
 /***** CAMERA LOGS ENDPOINTS ****/

@@ -21,6 +21,8 @@ router.use(require(path.resolve('router/v1/sites')))
 router.use(require(path.resolve('router/v1/debugs')))
 router.use(require(path.resolve('router/v1/admins')))
 router.use(require(path.resolve('router/v1/cameras')))
+router.use(require(path.resolve('router/v1/alerts')))
+router.use(require(path.resolve('router/v1/access')))
 
 
 
