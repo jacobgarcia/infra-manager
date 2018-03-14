@@ -28,6 +28,7 @@ class Inventory extends Component {
     this.onLogSelect = this.onLogSelect.bind(this)
     this.onDayClick = this.onDayClick.bind(this)
     this.onUpdateEntry = this.onUpdateEntry.bind(this)
+    this.onChange = this.onChange.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -48,6 +49,16 @@ class Inventory extends Component {
   onUpdateEntry() {
 
   }
+
+  onChange(event) {
+    const { value, name } = event.target
+
+    this.setState({
+      [name]: value,
+      error: null
+    })
+  }
+
 
   onLogSelect(item, index, sectionIndex) {
     this.setState({
@@ -172,6 +183,11 @@ class Inventory extends Component {
             <div className="tables-container">
               <Table
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
+                actionsContainer={
+                  <div>
+                    <input name="filter" type="text" placeholder="Filtrar" value={state.filter} onChange={this.onChange}/>
+                  </div>
+                }
                 selectedElementIndex={state.selectedElementIndex}
                 element={(item, index, sectionIndex) =>
                   <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
@@ -186,7 +202,7 @@ class Inventory extends Component {
                   </div>
                 }
                 title="Registros"
-                elements={props.inventoryReports}
+                elements={state.filter ? props.inventoryReports.filter($0 => $0.site === state.filter) : props.inventoryReports}
                 titles={[
                   {title: 'Nombre', className: 'medium'},
                   {title: 'Marca', className: ''},

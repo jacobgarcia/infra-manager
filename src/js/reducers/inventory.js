@@ -29,7 +29,7 @@ const dumbInventoryLogs = [
     "zone": {
        "name": "Centro"
      },
-    "site": "CNHQ9094",
+    "site": "CNHQ8184",
     "name": "aire acondicionado fujitsu AC549871",
     "brand": "fujitsu",
     "model": "AC549871",
