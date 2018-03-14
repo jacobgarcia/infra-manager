@@ -280,4 +280,22 @@ router.route('/site')
   })
 })
 
+router.route('/sites/sensors')
+.get((req, res) => {
+  const company = req._user.cmp
+
+  Site.find({ company })
+  .select('sensors key')
+  .exec((error, sites) => {
+    if (error) {
+      winston.error({error})
+      return res.status(500).json({ error })
+    }
+
+    if (!sites) return res.status(404).json({ message: 'No sites found'})
+
+    return res.status(200).json({ sites })
+  })
+})
+
 module.exports = router

@@ -44,6 +44,29 @@ class Inventory extends Component {
   }
 
   componentDidMount() {
+    NetworkOperation.getInventory()
+    .then(({data}) => {
+      data.sites.map(site => {
+        // Since each site has multiple sensors, map sensors now
+        site.sensors.map(sensor => {
+          const inventoryLog = {
+            zone: {
+              name: 'Centro'
+            },
+            site: site.key,
+            name: sensor.key.substring(0,1) === 'c' ? 'Sensor de contacto' : 'Sensor de vibración',
+            brand: sensor.key.substring(0,1) === 'c' ? 'iSmart' : 'OEM',
+            model: sensor.key.substring(0,1) === 'c' ? '2PK' : 'SW-420',
+            type: 'Analogico',
+            status: 'Activo',
+            _id: Math.floor(Math.random() * Math.floor(10000)),
+            version: 1.0,
+            idBrand: 'DWS3R'
+          }
+          console.log(inventoryLog)
+        })
+      })
+    })
   }
 
   onUpdateEntry() {
