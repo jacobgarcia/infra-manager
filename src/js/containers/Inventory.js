@@ -6,7 +6,7 @@ import { DateUtils } from 'react-day-picker'
 import Slider from 'react-slick'
 
 import { Table, RiskBar, DateRangePicker } from '../components'
-import { setFacialReport } from '../actions'
+import { setFacialReport, setInventoryReport } from '../actions'
 
 import { NetworkOperation, NetworkOperationFRM } from '../lib'
 import io from 'socket.io-client'
@@ -60,10 +60,14 @@ class Inventory extends Component {
             type: 'Analogico',
             status: 'Activo',
             _id: Math.floor(Math.random() * Math.floor(10000)),
-            version: 1.0,
-            idBrand: 'DWS3R'
+            version: '1.0',
+            makerId: sensor.key.substring(0,1) ? 'DWS3R' : 'SW420',
+            photo: sensor.key.substring(0,1) === 'c' ? '/static/img/dummy/contact-sensor.png' : '/static/img/dummy/vibration-sensor.jpg',
+            detailedStatus: {
+
+            }
           }
-          console.log(inventoryLog)
+          this.props.setInventoryReport(inventoryLog)
         })
       })
     })
@@ -144,7 +148,7 @@ class Inventory extends Component {
                   </div>
                   <div className="detail">
                     <span>Identificador</span>
-                    <p>{state.selectedLog._id}</p>
+                    <p>{state.selectedLog.id}</p>
                   </div>
                   <div className="detail">
                     <span>Version</span>
@@ -152,7 +156,7 @@ class Inventory extends Component {
                   </div>
                   <div className="detail">
                     <span>Id Fabricante</span>
-                    <p>{state.selectedLog.idBrand}</p>
+                    <p>{state.selectedLog.makerId}</p>
                   </div>
                   <div className="detail">
                     <span>Estatus Detallados</span>
@@ -208,7 +212,7 @@ class Inventory extends Component {
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
                 actionsContainer={
                   <div>
-                    <input name="filter" type="text" placeholder="Filtrar" value={state.filter} onChange={this.onChange}/>
+                    <input name="filter" type="text" placeholder="Filtrar por sitio" value={state.filter} onChange={this.onChange}/>
                   </div>
                 }
                 selectedElementIndex={state.selectedElementIndex}
@@ -225,7 +229,7 @@ class Inventory extends Component {
                   </div>
                 }
                 title="Registros"
-                elements={state.filter ? props.inventoryReports.filter($0 => $0.site === state.filter) : props.inventoryReports}
+                elements={state.filter ? props.inventoryReports.filter($0 => !$0.site.indexOf(state.filter)) : props.inventoryReports}
                 titles={[
                   {title: 'Nombre', className: 'medium'},
                   {title: 'Marca', className: ''},
@@ -245,6 +249,7 @@ class Inventory extends Component {
 
 Inventory.propTypes = {
   setFacialReport: PropTypes.func,
+  setInventoryReport: PropTypes.func,
   inventoryReports: PropTypes.array
 }
 
@@ -261,6 +266,9 @@ function mapDispatchToProps(dispatch) {
   return {
     setFacialReport: (timestamp, event, success, risk, zone, status, site, access, pin, photo, id) => {
       dispatch(setFacialReport(timestamp, event, success, risk, zone, status, site, access, pin, photo, id))
+    },
+    setInventoryReport: report => {
+      dispatch(setInventoryReport(report))
     }
   }
 }
