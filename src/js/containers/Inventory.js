@@ -70,6 +70,10 @@ class Inventory extends Component {
           this.props.setInventoryReport(inventoryLog)
         })
       })
+
+      this.setState({
+        selectedLog: this.props.inventoryReports[0]
+      })
     })
   }
 
@@ -109,12 +113,15 @@ class Inventory extends Component {
         <Helmet>
           <title>Connus | Reconocimiento Facial</title>
         </Helmet>
+        {
+          state.selectedLog &&
         <div className="content">
           <h2>Inventario</h2>
           <div className="tables-detail__container">
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
                 <div className="time-location">
+
                 <p>{state.selectedLog.name}</p>
                   {state.selectedLog.zone && <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>}
                 </div>
@@ -222,9 +229,7 @@ class Inventory extends Component {
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                     <div className="large">{item.name}</div>
                     <div className="large">{item.brand}</div>
-                    {/* <div className="hiddable">{item.zone.name}</div> */}
                     <div className="large hiddable">{item.site}</div>
-                    {/* <div><RiskBar risk={item.risk} /></div> */}
                     <div className="large hiddable">{item.status}</div>
                   </div>
                 }
@@ -233,15 +238,14 @@ class Inventory extends Component {
                 titles={[
                   {title: 'Nombre', className: 'medium'},
                   {title: 'Marca', className: ''},
-                  // {title: 'Zona', className: 'hiddable'},
                   {title: 'Sitio', className: 'hiddable'},
-                  // {title: 'Riesgo'},
                   {title: 'Estatus', className: 'medium hiddable'}
                 ]}
               />
             </div>
           </div>
         </div>
+      }
       </div>
     )
   }

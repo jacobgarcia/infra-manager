@@ -1,4 +1,4 @@
-export default function inventoryReports(state = dumbInventoryLogs, action) {
+export default function inventoryReports(state = {}, action) {
   switch (action.type) {
     case 'SET_INVENTORY_REPORT':
       return [...state, {
