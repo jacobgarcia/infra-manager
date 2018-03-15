@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-import { DateUtils } from 'react-day-picker'
+import { DateUtils, DayPicker } from 'react-day-picker'
 import Slider from 'react-slick'
 
 import { Table, RiskBar, DateRangePicker } from '../components'
@@ -19,10 +19,18 @@ class Inventory extends Component {
       selectedLog: this.props.inventoryReports.length > 0 ? this.props.inventoryReports[0] : null,
       selectedElementIndex: this.props.inventoryReports.length > 0 ? [0,0] : [null,null],
       showLogDetail: true,
+      from: new Date(),
       last_from: new Date(),
       last_to: new Date(),
       next_from: new Date(),
-      next_to: new Date()
+      next_to: new Date(),
+      maintenance: [],
+      kind: '',
+      mantainer: ''
+    }
+
+    this.options = {
+
     }
 
     this.onLogSelect = this.onLogSelect.bind(this)
@@ -62,9 +70,9 @@ class Inventory extends Component {
             _id: Math.floor(Math.random() * Math.floor(10000)),
             version: '1.0',
             makerId: sensor.key.substring(0,1) ? 'DWS3R' : 'SW420',
-            photo: sensor.key.substring(0,1) === 'c' ? '/static/img/dummy/contact-sensor.png' : '/static/img/dummy/vibration-sensor.jpg',
+            photo: sensor.key.substring(0,1) === 'c' ? '/static/img/dummy/contact-sensor.jpg' : '/static/img/dummy/vibration-sensor.jpg',
             detailedStatus: {
-
+              active: true
             }
           }
           this.props.setInventoryReport(inventoryLog)
@@ -78,7 +86,17 @@ class Inventory extends Component {
   }
 
   onUpdateEntry() {
-
+    const maintenance = {
+      id: this.state.selectedLog.id,
+      date: this.state.from,
+      kind: this.state.kind,
+      maintainer: this.state.maintainer
+    }
+    this.setState({
+      maintenance: [...this.state.maintenance, maintenance],
+      maintainer: '',
+      kind: ''
+    })
   }
 
   onChange(event) {
@@ -97,6 +115,7 @@ class Inventory extends Component {
       selectedLog: item,
       selectedElementIndex: [index, sectionIndex]
     })
+
   }
 
   onDayClick(day) {
@@ -171,46 +190,41 @@ class Inventory extends Component {
                     <p>Activo: {state.selectedLog.detailedStatus.active ? 'Si' : 'No'}</p>
                   </div>
                 </div>
+                <Table
+                  element={(item, index, sectionIndex) =>
+                    <div className={`table-item`}
+                      key={index}>
+                      <div className="small">{new Date(item.date).toLocaleDateString()}</div>
+                      <div className="small">{item.kind}</div>
+                      <div className="small">{item.maintainer}</div>
+                    </div>
+                  }
+                  title="MANTENIMIENTOS"
+                  elements={state.maintenance.filter($0 => $0.id === state.selectedLog.id)}
+                  titles={[
+                    {title: 'Fecha', className: 'small'},
+                    {title: 'Tipo', className: 'small'},
+                    {title: 'Operador', className: 'small'}
+                  ]}
+                />
                 <div>
-                  <label htmlFor="">Ultimo Mantenimiento</label>
+                  <label htmlFor="">Fecha de Mantenimiento</label>
                   <div className="tables-container">
                     <DateRangePicker
-                      from={state.last_from}
-                      to={state.last_to}
+                      from={state.from}
                       onDayClick={this.onDayClick}
                       className="active"
                     />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="">Siguiente Mantenimiento</label>
-                  <div className="tables-container">
-                    <DateRangePicker
-                      from={state.next_from}
-                      to={state.next_to}
-                      onDayClick={this.onDayClick}
-                      className="active"
-                    />
-                  </div>
+                  <input name="maintainer" type="text" placeholder="Persona de mantenimiento" value={state.maintainer} onChange={this.onChange}/>
                 </div>
                 <div>
-                  <label htmlFor="">Persona de mantenimiento</label>
-                  <input type="text" value={null} />
-                </div>
-                <div>
-                  <label htmlFor="">Supervisor de Mantenimiento</label>
-                  <input type="text" value={null} />
-                </div>
-                <div>
-                  <label htmlFor="">Lugar de mantenimiento</label>
-                  <input type="text" value={null} />
-                </div>
-                <div>
-                  <label htmlFor="">Tipo de Mantenimiento</label>
-                  <input type="text" value={null} />
+                  <input name="kind" type="text" placeholder="Tipo de mantenimiento" value={state.kind} onChange={this.onChange}/>
                 </div>
                   <div className="action destructive">
-                    <p>ACTUALIZAR INFORMACion</p>
+                    <p onClick={this.onUpdateEntry}>Agregar mantenimiento</p>
                   </div>
               </div>
             </div>
