@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
 import { getAccessTitle } from '../lib/CodeExtractor'
@@ -96,29 +95,21 @@ Navigator.defaultProps = {
       name: 'sensors',
       _id: '00'
     }, {
-      title: 'Accesos',
-      name: 'accesses',
+      title: 'FR',
+      name: 'facial-recognition',
       _id: '01'
     }, {
       title: 'Flujo vehícular',
       name: 'vehicular-flow',
       _id: '02'
     }, {
-      title: 'Perímetro',
-      name: 'perimeter',
-      _id: '03'
-    }, {
-      title: 'FR',
-      name: 'facial-recognition',
-      _id: '04'
-    }, {
       title: 'Video Vigilancia',
       name: 'video-surveillance',
-      _id: '05'
-    },{
+      _id: '03'
+    }, {
       title: 'Inventario',
       name: 'inventory',
-      _id: '06'
+      _id: '04'
     }
   ]
 }

@@ -34,8 +34,8 @@ const schema = new Schema({
   timestamp: { type: Date, default: new Date() }, // Last updated
   history: { type: [History], default: []},
   company: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
-  subzone: { type: Schema.Types.ObjectId, ref: 'Subzone', required: true },
-  zone: { type: Schema.Types.ObjectId, ref: 'Zone', required: true }
+  subzone: { type: Schema.Types.ObjectId, ref: 'Subzone' },
+  zone: { type: Schema.Types.ObjectId, ref: 'Zone' }
 })
 
 // Set company-key unique

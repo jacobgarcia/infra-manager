@@ -1,5 +1,16 @@
 /* eslint max-statements: ["error", 15] */
 
+import { yellow, red, blue } from '../lib/colors'
+
+export function getColor(name) {
+  switch (name) {
+    case 'working': return blue
+    case 'alerts': return yellow
+    case 'damaged': return red
+    default: return blue
+  }
+}
+
 export function hashCode(str = '') { // java String#hashCode
     var hash = 0
     for (let index = 0; index < str.length; index++) {

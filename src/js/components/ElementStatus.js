@@ -29,7 +29,14 @@ class ElementStatus extends Component {
           >
           <div className="status-text">
             <span className="main">{props.title} {props.name} <span> {props.siteKey}</span></span>
-            {props.type !== 'SITE' && <span>{props.elements} Sitios</span>}
+            {
+              props.type === 'GENERAL' &&
+              <span>{props.elements} Sitios</span>
+            }
+            {
+              props.type === 'ZONE' &&
+              <span>{props.elements} Sensores</span>
+            }
             <span>{props.alarms} Alertas</span>
           </div>
           <div className="chart-container">

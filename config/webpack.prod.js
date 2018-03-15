@@ -55,8 +55,7 @@ module.exports = merge(common, {
     new ExtractTextPlugin('master.min.css'),
     new WorkboxPlugin({
       globDirectory: 'dist',
-      globPatterns: ['**/*.{html,js}'],
-      staticFileGlobs: ['**/*.{html,js,css}'],
+      globPatterns: ['**/*.{html,js,css}'],
       swDest: path.join('dist', 'sw.js'),
       clientsClaim: true,
       skipWaiting: true

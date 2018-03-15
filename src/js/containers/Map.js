@@ -14,9 +14,13 @@ class MapContainer extends Component {
   constructor(props) {
     super(props)
 
+    let { defaultPosition = [] } = props.credentials.user
+
+    defaultPosition = defaultPosition.length > 0 ? defaultPosition : [23.2096057, -101.6139503]
+
     this.state = {
-      currentPosition: [23.2096057, -101.6139503],
-      currentZoom: 5,
+      currentPosition: defaultPosition,
+      currentZoom: 3,
       shadow: null,
       element: null,
       elements: [],
@@ -53,13 +57,19 @@ class MapContainer extends Component {
     var ret = []
     arrayOne.sort()
     arrayTwo.sort()
+
     // Compare only with keys
     const arrayTwoKeys = arrayTwo.map(a => a.key)
     for (let i = 0; i < arrayOne.length; i += 1) {
-        if(arrayTwoKeys.indexOf(arrayOne[i]) > -1){
+        if (arrayTwoKeys.indexOf(arrayOne[i]) > -1) {
             ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[i])])
         }
     }
+    console.log(ret.sort((a, b) => {
+      if(a.name < b.name) return -1
+      if(a.name > b.name) return 1
+      return 0
+    }))
     return ret
   }
 
@@ -76,11 +86,6 @@ class MapContainer extends Component {
   }
 
   componentDidMount() {
-
-    const { elements = [] } = this.getElementsToRender(this.props)
-    this.setState({
-      elements
-    })
 
     NetworkOperation.getAvailableStates()
     .then(({data}) => {
@@ -101,13 +106,16 @@ class MapContainer extends Component {
        this.setState({
          availableSites: data.connected_sites
        })
+
+       const { elements = [] } = this.getElementsToRender(this.props)
+       this.setState({
+         elements
+       })
     }).catch(console.error)
 
-      setInterval( () =>  {
-        const { elements = [] } = this.getElementsToRender(this.props)
-        this.setState({
-          elements
-        })
+
+
+      setInterval(() => {
 
         NetworkOperation.getAvailableStates()
         .then(({data}) => {
@@ -129,9 +137,13 @@ class MapContainer extends Component {
            this.setState({
              availableSites: data.connected_sites
            })
+           const { elements = [] } = this.getElementsToRender(this.props)
+           this.setState({
+             elements
+           })
         }).catch(console.error)
-      }, 30000)
 
+      }, 30000)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -188,6 +200,7 @@ class MapContainer extends Component {
       const { sites = [], positions } = this.props.zones.find(({_id}) => _id === zoneId)
       const element = sites.find(({_id}) => _id === siteId)
       const availableSites = this.arrayDifference(this.state.availableSites, sites)
+
       return {
         elements: availableSites,
         shadow: positions,
@@ -205,8 +218,9 @@ class MapContainer extends Component {
       }
     }
 
+
     return {
-      elements: this.props.zones.map(({name, positions, _id, sites = []}) => ({name, positions, _id, elements: sites.length, type: 'ZONE'})),
+      elements: this.props.zones.map(({name, positions, _id, sites = []}) => ({name, positions, _id, elements: this.state.availableSites.length, type: 'ZONE'})),
       shadow: null,
       element: null
     }
@@ -310,6 +324,10 @@ class MapContainer extends Component {
 
   render() {
     const { state, props } = this
+    if (!props.credentials.user) {
+      return (null)
+    }
+
     const { zoneId: selectedZone = null, siteId: selectedSite = null } = props.match.params
 
     return (
@@ -346,7 +364,7 @@ class MapContainer extends Component {
           zoom={state.currentZoom}
           onClick={this.onMapClick}
           onViewportChanged={this.onViewportChanged}
-          onMouseMove={({latlng}) => state.isCreating && this.setState({ hoverPosition: [latlng.lat, latlng.lng] })}
+          onMouseMove={({latlng = {}}) => state.isCreating === true && this.setState({ hoverPosition: [latlng.lat, latlng.lng] })}
           animate
         >
           <div className="bar-actions" onMouseMove={() => state.isCreating && this.setState({hoverPosition: null})}>
@@ -510,13 +528,21 @@ MapContainer.propTypes = {
   setReport: PropTypes.func,
   setSite: PropTypes.func,
   setZone: PropTypes.func,
-  setSubzone: PropTypes.func
+  setSubzone: PropTypes.func,
+  credentials: PropTypes.object
 }
 
-function mapStateToProps({zones, reports}) {
+MapContainer.defaultProps = {
+  user: {}
+}
+
+function mapStateToProps(props) {
+  // console.log({props})
+  const {zones, reports, credentials} = props
   return {
     zones,
-    reports
+    reports,
+    credentials
   }
 }
 

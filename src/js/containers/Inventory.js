@@ -6,8 +6,7 @@ import { DateUtils } from 'react-day-picker'
 import Slider from 'react-slick'
 
 import { Table, RiskBar, DateRangePicker } from '../components'
-import { setFacialReport } from '../actions'
-import { setInventoryReport } from '../actions'
+import { setFacialReport, setInventoryReport } from '../actions'
 
 import { NetworkOperation, NetworkOperationFRM } from '../lib'
 import io from 'socket.io-client'
@@ -29,6 +28,7 @@ class Inventory extends Component {
     this.onLogSelect = this.onLogSelect.bind(this)
     this.onDayClick = this.onDayClick.bind(this)
     this.onUpdateEntry = this.onUpdateEntry.bind(this)
+    this.onChange = this.onChange.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -55,11 +55,52 @@ class Inventory extends Component {
 
 /*data map*/
   componentDidMount() {
+    NetworkOperation.getInventory()
+    .then(({data}) => {
+      data.sites.map(site => {
+        // Since each site has multiple sensors, map sensors now
+        site.sensors.map(sensor => {
+          const inventoryLog = {
+            zone: {
+              name: 'Centro'
+            },
+            site: site.key,
+            name: sensor.key.substring(0,1) === 'c' ? 'Sensor de contacto' : 'Sensor de vibración',
+            brand: sensor.key.substring(0,1) === 'c' ? 'iSmart' : 'OEM',
+            model: sensor.key.substring(0,1) === 'c' ? '2PK' : 'SW-420',
+            type: 'Analogico',
+            status: 'Activo',
+            _id: Math.floor(Math.random() * Math.floor(10000)),
+            version: '1.0',
+            makerId: sensor.key.substring(0,1) ? 'DWS3R' : 'SW420',
+            photo: sensor.key.substring(0,1) === 'c' ? '/static/img/dummy/contact-sensor.png' : '/static/img/dummy/vibration-sensor.jpg',
+            detailedStatus: {
+
+            }
+          }
+          this.props.setInventoryReport(inventoryLog)
+        })
+      })
+
+      this.setState({
+        selectedLog: this.props.inventoryReports[0]
+      })
+    })
   }
 
   onUpdateEntry() {
 
   }
+
+  onChange(event) {
+    const { value, name } = event.target
+
+    this.setState({
+      [name]: value,
+      error: null
+    })
+  }
+
 
   onLogSelect(item, index, sectionIndex) {
     this.setState({
@@ -83,12 +124,15 @@ class Inventory extends Component {
         <Helmet>
           <title>Connus | Reconocimiento Facial</title>
         </Helmet>
+        {
+          state.selectedLog &&
         <div className="content">
           <h2>Inventario</h2>
           <div className="tables-detail__container">
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
                 <div className="time-location">
+
                 <p>{state.selectedLog.name}</p>
                   {state.selectedLog.zone && <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>}
                 </div>
@@ -122,7 +166,7 @@ class Inventory extends Component {
                   </div>
                   <div className="detail">
                     <span>Identificador</span>
-                    <p>{state.selectedLog._id}</p>
+                    <p>{state.selectedLog.id}</p>
                   </div>
                   <div className="detail">
                     <span>Version</span>
@@ -130,7 +174,7 @@ class Inventory extends Component {
                   </div>
                   <div className="detail">
                     <span>Id Fabricante</span>
-                    <p>{state.selectedLog.idBrand}</p>
+                    <p>{state.selectedLog.makerId}</p>
                   </div>
                   <div className="detail">
                     <span>Estatus Detallados</span>
@@ -184,6 +228,11 @@ class Inventory extends Component {
             <div className="tables-container">
               <Table
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
+                actionsContainer={
+                  <div>
+                    <input name="filter" type="text" placeholder="Filtrar por sitio" value={state.filter} onChange={this.onChange}/>
+                  </div>
+                }
                 selectedElementIndex={state.selectedElementIndex}
                 element={(item, index, sectionIndex) =>
                   <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
@@ -191,26 +240,23 @@ class Inventory extends Component {
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                     <div className="large">{item.name}</div>
                     <div className="large">{item.brand}</div>
-                    {/* <div className="hiddable">{item.zone.name}</div> */}
                     <div className="large hiddable">{item.site}</div>
-                    {/* <div><RiskBar risk={item.risk} /></div> */}
                     <div className="large hiddable">{item.status}</div>
                   </div>
                 }
                 title="Registros"
-                elements={props.inventoryReports}
+                elements={state.filter ? props.inventoryReports.filter($0 => !$0.site.indexOf(state.filter)) : props.inventoryReports}
                 titles={[
                   {title: 'Nombre', className: 'medium'},
                   {title: 'Marca', className: ''},
-                  // {title: 'Zona', className: 'hiddable'},
                   {title: 'Sitio', className: 'hiddable'},
-                  // {title: 'Riesgo'},
                   {title: 'Estatus', className: 'medium hiddable'}
                 ]}
               />
             </div>
           </div>
         </div>
+      }
       </div>
     )
   }
@@ -218,6 +264,7 @@ class Inventory extends Component {
 
 Inventory.propTypes = {
   setFacialReport: PropTypes.func,
+  setInventoryReport: PropTypes.func,
   inventoryReports: PropTypes.array
 }
 
@@ -235,6 +282,9 @@ function mapDispatchToProps(dispatch) {
   return {
     setFacialReport: (timestamp, event, success, risk, zone, status, site, access, pin, photo, id) => {
       dispatch(setFacialReport(timestamp, event, success, risk, zone, status, site, access, pin, photo, id))
+    },
+    setInventoryReport: report => {
+      dispatch(setInventoryReport(report))
     }
   }
 }
