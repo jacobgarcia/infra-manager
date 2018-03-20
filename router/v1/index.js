@@ -17,6 +17,7 @@ router.use(require(path.resolve('router/v1/companies')))
 router.use(require(path.resolve('router/v1/users')))
 router.use(require(path.resolve('router/v1/polygons')))
 router.use(require(path.resolve('router/v1/stats')))
+router.use(require(path.resolve('router/v1/vehicular-flow')))
 
 // TODO: Send user invitee (mail)
 // TODO: Accept user invitee
