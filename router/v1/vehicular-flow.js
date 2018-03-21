@@ -4,10 +4,13 @@ const winston = require('winston')
 const multer = require('multer')
 const crypto = require('crypto')
 const mime = require('mime')
+const path = require('path')
 const OpenalprApi = require('openalpr_api')
 const apiInstance = new OpenalprApi.DefaultApi()
 const secretKey = 'sk_00083b316c1a01c22ea1a196'
 const router = new express.Router()
+
+const VehicularReport = require(path.resolve('models/VehicularReport'))
 
 // Storage object specs
 const storage = multer.diskStorage({
@@ -20,13 +23,15 @@ const storage = multer.diskStorage({
 })
 
 // Upload object specs
-const upload = multer({storage: storage}).single('image') // single file upload using this variable
+const upload = multer({storage: storage}).fields([{ name: 'front', maxCount: 1 }, { name: 'back', maxCount: 1 }, { name: 'video', maxCount: 1 }])
 
 router.route('/vehicular-flow/recognize')
 .post(upload, (req, res) => {
+  const { site } = req.body
   // Receieve photo as file and upload it.
   const image = 'https://demo.connus.mx/static/img/dummy/lpr-06.jpg'
-  // const image = 'https://demo.connus.mx/static/vehicular-flow' + req.file.filename
+  // const image = 'https://demo.connus.mx/static/vehicular-flow' + req.file[0].filename
+
   // Defines the training data used by OpenALPR
   const country = 'us'
 
@@ -42,7 +47,27 @@ router.route('/vehicular-flow/recognize')
       return res.status(500).json({ error })
     }
 
-    return res.status(200).json({ data })
+    new VehicularReport({
+      vehicle: data.results[0].vehicle.body_type[0].name,
+      zone: 'Centro',
+      site,
+      front: process.env.PWD + '/static/vehicular-flow/' + req.files.front[0].filename,
+      back: process.env.PWD + '/static/vehicular-flow/' + req.files.back[0].filename,
+      video: process.env.PWD + '/static/vehicular-flow/' + req.files.video[0].filename,
+      brand: data.results[0].vehicle.make[0].name,
+      model: data.results[0].vehicle.make_model[0].name,
+      color: data.results[0].vehicle.color[0].name,
+      plate: data.results[0].plate
+    })
+    .save((error, report) => {
+      if (error) {
+        winston.error({error})
+        return res.status(500).json({ error })
+      }
+
+      return res.status(200).json({ report })
+
+    })
   })
 })
 
