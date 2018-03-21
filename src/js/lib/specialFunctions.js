@@ -119,13 +119,20 @@ export function getSensorChart(type) {
 }
 
 export function getStatus(data) {
+
+  let sum = 0
+  data.sensors.forEach(function(current){
+    sum += current.value
+  })
+
   if (data) {
     return ({
         status: [
           { name: 'normal', value: data.sensors.length - (data.alarms ? data.alarms.length : 0) },
           { name: 'alerts', value: data.alarms ? data.alarms.length : 0 },
         ],
-        percentage: Math.round((1 - ((data.alarms ? data.alarms.length : 0) / (data.sensors ? data.sensors.length : 1))) * 1000) / 10
+        //percentage: Math.round((1 - ((data.alarms ? data.alarms.length : 0) / (data.sensors ? data.sensors.length : 1))) * 1000) / 10
+        percentage: Math.round(sum/data.sensors.length)
     })
   }
   return { status: [], percentage: 0 }

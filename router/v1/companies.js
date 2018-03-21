@@ -185,7 +185,6 @@ router.route('/site/:siteKey')
 router.route('/reports')
 .get((req, res) => {
   const company = req._user.cmp
-
   Site.find({ company })
   .populate('zone', 'name')
   .exec((error, sites) => {

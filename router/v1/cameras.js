@@ -201,7 +201,7 @@ router.route('/cameras/alarm/fine')
       winston.error(error)
       return res.status(400).json({'success': "false", 'message': "The specified site does not exist"})
     }
-    return res.status(200).json({ 'succes': true, 'message': "Alarm is fine" })
+    return res.status(200).json({ 'success': true, 'message': "Alarm is fine" })
 
   })
 
@@ -236,9 +236,9 @@ router.route('/cameras/alarm/photos')
          pc2 } = req.body
 
   // Emit alert socket
-  global.io.to('ATT').emit('photo-alarm', data)
+  //global.io.to('ATT').emit('photo-alarm', data)
 
-  return res.status(200).json({ 'success': true, 'message': 'Bacan',/*'data':data*/ })
+  return res.status(200).json({ 'success': true, 'message': 'Bacan'/*,'data':data*/ })
 })
 
 /***** CAMERA LOGS ENDPOINTS ****/

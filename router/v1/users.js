@@ -81,23 +81,23 @@ const upload = multer({ storage })
 ***                                ***
 *************************************/
 /* This endpoints are secured so you need a token in order to use 'em */
-router.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*")
-  res.header("Access-Control-Allow-Headers", "X-Requested-With")
-  const token = req.headers['x-access-token'] // check header or url parameters or post parameters for token
-
-  if (token) {
-    const decodedToken = jwt.decode(token) //Decode token
-    jwt.verify(token, config.secret, (error, decoded) => { // decode token
-      if (error) return res.status(401).json({'success': false, 'message': 'Failed to authenticate token.'})
-      else { //Send the decoded token to the request body
-        req.U_ID = decoded._id //Save the decoded user_id from the token to use in next routes
-        next()
-      }
-    })
-  }
-  else return res.status(403).json({'success': "false",'message': "No token provided"});
-})
+//router.use((req, res, next) => {
+//  res.header("Access-Control-Allow-Origin", "*")
+//  res.header("Access-Control-Allow-Headers", "X-Requested-With")
+//  const token = req.headers['x-access-token'] // check header or url parameters or post parameters for token
+//
+//  if (token) {
+//    const decodedToken = jwt.decode(token) //Decode token
+//    jwt.verify(token, config.secret, (error, decoded) => { // decode token
+//      if (error) return res.status(401).json({'success': false, 'message': 'Failed to authenticate token.'})
+//      else { //Send the decoded token to the request body
+//        req.U_ID = decoded._id //Save the decoded user_id from the token to use in next routes
+//        next()
+//      }
+//    })
+//  }
+//  else return res.status(403).json({'success': "false",'message': "No token provided"});
+//})
 
 router.route('/users/invite')
 .post((req, res) => {
@@ -128,6 +128,90 @@ router.route('/users/invite')
   })
 
 })
+
+// Recognize user based on photo
+router.route('/users/recognize')
+.post((req, res) => {
+  const { pin, photo, event } = req.body
+
+
+  FrmUser.findOne({ pin })
+  .exec((error, user) => { // if there are any errors, return the error
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': "false", 'message': "Error at finding users"}) // return shit if a server error occurs
+    }
+    else if (!user) return res.status(401).json({'success': "false",'message': "That user is not registered"})
+    else if (!photo) return res.status(400).json({'success': "false",'message': "Image not specified"})
+    else {
+
+      //decode base64 image
+      const filename = base64Img.imgSync(photo, 'static/uploads', shortid.generate() + Date.now())
+
+      // call code for AWS facial recognition. Now using stub
+      // use PythonShell to call python instance
+      return res.status(200).json({ 'success': "true", 'message': "all ok" })
+
+
+      //const faceRecognition = new PythonShell('lib/python/rekognition.py', { pythonOptions: ['-u'], args: [ 'get', pin, process.env.PWD + '/' + filename ] })
+
+      /* Wait for the AWS response from Python to proceed */
+      faceRecognition.on('message', (message) => {
+        // end the input stream and allow the process to exit
+          faceRecognition.end((error) => {
+            if (error) {
+              winston.error(error)
+              return res.status(500).json({ 'success': "false", 'message': "Face Recognition Failed" })
+            }
+
+            const response = JSON.parse(message)
+
+            //if response was successful, change user logged state
+            if (response.validation === 'true') {
+              if (event === 'login')
+                user.isLogged = true
+              if (event === 'outlog')
+                user.isLogged = false
+              user.save((error, updatedUser) => {
+                if (error) {
+                  winston.error(error)
+                  return res.status(500).json({ 'success': "false", 'message': "Cannot update user state" })
+                }
+              })
+            }
+              const data = { success: response.validation === 'false' ? false : true, message: response.validation === 'false' ? "No se pudo registrar acceso" : "Acceso registrado correctamente" , pin, photo }
+              console.log(event)
+              global.io.to('ATT').emit(event, data)
+              global.io.to('connus').emit(event, data)
+
+              // Insert access
+              new Access({
+                timestamp: new Date(),
+                event: data.success === true ? (event === 'login' ? 'Inicio de sesión exitoso' : 'Cierre de sesión exitoso') : (event === 'login' ? 'Intento de inicio de sesión' : 'Intento de cierre de sesión'),
+                success: data.success,
+                risk: data.success ? 0 : 2,
+                zone: {
+                  name: 'Centro'
+                },
+                status: data.success === true ? (event === 'login' ? 'Acceso autorizado. Sensorización desactivada' : 'Acceso autorizado. Sensorización reactivada') : 'Acceso denegado. Rostro desconocido almacenando',
+                site: user.site,
+                access: event === 'login' ? 'Inicio de sesión' : 'Cierre de sesión',
+                pin: data.pin,
+                photo: process.env.PWD + '/' + filename
+              })
+              .save((error, access) => {
+                if (error) {
+                  winston.error(error)
+                  return res.status(500).json({'success': "false",'message': "Could not save log."})
+                }
+                return res.status(response.status).json({ 'facial_validation': response.validation, 'message': response.description, user })
+              })
+          })
+        })
+      }
+    })
+})
+
 
 router.route('/users/self')
 .get((req, res) => {
@@ -339,6 +423,8 @@ router.route('/users/update')
 
 router.route('/users/photo')
 .put((req, res) => {
+  //console.log(req.body)
+  console.log(req.headers)
   const { pin, photo } = req.body
   if (!photo) return res.status(400).json({'success': "false", 'message': "Image not found"}) // no image found
   else {
@@ -354,6 +440,8 @@ router.route('/users/photo')
         else {
           // call code for AWS facial recognition. Now using stub
           // use PythonShell to call python instance
+
+
           const faceRecognition = new PythonShell('lib/python/rekognition.py', { pythonOptions: ['-u'], args: [ 'post', user.pin, process.env.PWD + user.photo ] })
 
           /* Wait for the AWS response from Python to proceed */
@@ -421,7 +509,7 @@ router.route('/users/updatephoto')
         else {
           // call code for AWS facial recognition. Now using stub
           // use PythonShell to call python instance
-          const faceRecognition = new PythonShell('lib/python/rekognition.py', { pythonOptions: ['-u'], args: [ 'put', user.pin, process.env.PWD + user.photo ] })
+          //const faceRecognition = new PythonShell('lib/python/rekognition.py', { pythonOptions: ['-u'], args: [ 'put', user.pin, process.env.PWD + user.photo ] })
 
           /* Wait for the AWS response from Python to proceed */
           faceRecognition.on('message', (message) => {

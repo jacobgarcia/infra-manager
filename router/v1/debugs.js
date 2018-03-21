@@ -85,51 +85,7 @@ router.route('/debug/request')
 
 
 // post camera debug
-router.route('/debug/request/multiple')
-.post(upload, (req,res) => {
-    const {camera,
-         c1,
-         c2,
-         v1,
-         v2
-  } = req.body
 
-  const photos = req.files
-
-  new Debug({camera,
-             c1,
-             c2,
-             v1,
-             v2,
-             photo: '/static/uploads/' + photos[0].filename,
-             pc1:  '/static/uploads/' + photos[1].filename,
-             pc2:  '/static/uploads/' + photos[2].filename,
-          })
-  .save((error, debug) => { // Save debug request
-    if (error) {
-      winston.error(error)
-      return res.status(400).json({'success': "false", 'message': "The specified debug couldn't be created","error":error})
-    }
-    else {
-
-    data = {
-      'image1': '/static/uploads/' + photos[0].filename,
-      'image2': '/static/uploads/' + photos[1].filename,
-      'image3': '/static/uploads/' + photos[2].filename,
-      'c1':c1,
-      'c2':c2,
-      'v1':v1,
-      'v2':v2
-    }
-
-    global.io.to('connus').emit('debugRequest',data)
-    global.io.to('web-platform').emit('debugRequest',data)
-
-      return res.status(200).json({ 'success': true, 'message': "Successfully registered debug" })
-    }
-  })
-
-})
 // debug camera request for simple id
 router.route('/debug/request/:id')
 .get((req,res) => {
