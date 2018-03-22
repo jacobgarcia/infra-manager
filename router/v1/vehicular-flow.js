@@ -30,7 +30,7 @@ router.route('/vehicular-flow/recognize')
   const { site } = req.body
   // Receieve photo as file and upload it.
   // const image = 'https://demo.connus.mx/static/img/dummy/lpr-06.jpg'
-  const image = 'https://demo.connus.mx/static/vehicular-flow' + req.files.front[0].filename
+  const image = 'https://demo.connus.mx/static/vehicular-flow/' + req.files.front[0].filename
 
   // Defines the training data used by OpenALPR
   const country = 'us'
@@ -66,7 +66,7 @@ router.route('/vehicular-flow/recognize')
         return res.status(500).json({ error })
       }
 
-      return res.status(200).json({ data })
+      return res.status(200).json({ report })
 
     })
   })
