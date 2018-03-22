@@ -16,8 +16,8 @@ const NodeMediaServer = require('node-media-server')
 
 const PORT = process.env.PORT || 8080
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ limit: '12mb' }))
+app.use(bodyParser.json({ limit: '12mb' }))
 app.use(helmet())
 app.use(hpp())
 
