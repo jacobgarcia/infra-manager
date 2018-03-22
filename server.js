@@ -86,9 +86,23 @@ app.get('*', (req, res) =>
 )
 
 // Start server
-app.listen(PORT, () =>
+const server = app.listen(PORT, () =>
   winston.info(`Connus server is listening on port: ${PORT}!`)
 )
+
+// Socket IO Configuration
+const io = require('socket.io').listen(server)
+
+io.on('connection', socket => {
+  socket.on('join', smartboxId => {
+    winston.info('Smartbox ' + smartboxId + ' has joined the dark side')
+    socket.join(smartboxId)
+  })
+
+  socket.on('disconnect', smartboxId => {
+    winston.info('Smartbox ' + smartboxId + ' has disconnected')
+  })
+})
 
 // Start RTMP Server
 const config = {

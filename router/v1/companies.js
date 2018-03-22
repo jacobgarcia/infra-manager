@@ -2,6 +2,9 @@
 const express = require('express')
 const path = require('path')
 const winston = require('winston')
+const multer = require('multer')
+const crypto = require('crypto')
+const mime = require('mime')
 const router = new express.Router()
 
 const Site = require(path.resolve('models/Site'))
@@ -9,8 +12,21 @@ const Zone = require(path.resolve('models/Zone'))
 const User = require(path.resolve('models/User'))
 const Inventory = require(path.resolve('models/Inventory'))
 const Company = require(path.resolve('models/Company'))
+const SmartBox = require(path.resolve('models/SmartBox'))
 
 const { hasAccess } = require(path.resolve('router/v1/lib/middleware-functions'))
+
+// Storage object specs
+const storage = multer.diskStorage({
+  destination: (req, file, callback) => callback(null, 'static/vehicular-flow'),
+  filename: (req, file, callback) => {
+    crypto.pseudoRandomBytes(16, (error, raw) => {
+      callback(null, raw.toString('hex') + Date.now() + '.' + mime.getExtension(file.mimetype))
+    })
+  }
+})
+
+const upload = multer({storage: storage}).array('photos', 3)
 
 router.route('/users')
 .get(hasAccess(4), (req, res) => {
@@ -246,11 +262,11 @@ router.route('/inventory/:_id')
   })
 })
 
-// Create site based on a central equipment (This endpoint must be called when a new site is given access)
-router.route('/site')
+// Create site based on a central equipment (This endpoint must be called when a new smartbox connects to the server)
+router.route('/sites/initialize')
 .post((req, res) => {
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
-  const { company, key, name, position, sensors } = req.body
+  const { id, version, company, key, name, position, sensors } = req.body
 
   Company.findOne({ name: company })
   .exec((error, company) => {
@@ -260,22 +276,94 @@ router.route('/site')
     }
     if (!company) return res.status(404).json({ success: false, message: 'Specified company was not found'})
 
-    // Create site using the information in the request body
-    new Site({
-      key,
-      name,
-      position,
-      company: company._id,
-      sensors
+    // Check if smartbox has been already created
+    new SmartBox({
+      id,
+      version
     })
-    .save((error, site) => {
+    .save((error, smartbox) => {
       if (error) {
         winston.error(error)
-        return res.status(400).json({ success: false, message: 'Site already registered' })
+        return res.status(401).json({ success: false, message: 'Smartbox already registered' })
       }
-      // Add the new site to the specified subzone
-      return res.status(200).json({ site })
+
+      // Create site using the information in the request body
+      new Site({
+        key,
+        name,
+        position,
+        company: company._id,
+        sensors,
+        smartboxes: smartbox
+      })
+      .save(error => {
+        if (error) {
+          winston.error(error)
+        }
+        // Site already registred but smartbox does not. Update the site
+        Site.findOneAndUpdate({ key, company: company._id }, { $push: { smartboxes: smartbox._id }})
+        .exec((error, site) => {
+          if (error) {
+            winston.error(error)
+            return res.status(400).json({ success: false, message: 'Could not add the smartbox to the already created site' })
+          }
+          // Add the new site to the specified subzone
+          return res.status(200).json({ site })
+        })
+      })
     })
+  })
+})
+
+router.route('/smartbox/exception')
+.post((req, res) => {
+  const { id, description } = req.body
+  SmartBox.findOneAndUpdate({ id }, { $push: { exceptions: { description } } })
+  .exec((error, smartbox) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': false, 'message': "Could not save exception"})
+    }
+    return res.status(200).json({ 'success': true, smartbox })
+  })
+})
+
+router.route('/smartbox/debug/:id')
+.get((req, res) => {
+  const { id } = req.params
+
+  SmartBox.findOne({ id })
+  .exec((error, smartbox) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': false, 'message': "Could not find Smart Box"})
+    }
+
+    global.io.to(id).emit('debug')
+    return res.status(200).json({ 'succes': true, smartbox })
+
+  })
+})
+
+// post camera debug
+router.route('/smartbox/debug/:id')
+.post(upload, (req,res) => {
+  const { id } = req.params
+  const photoFiles = req.files
+
+  const photos = []
+  photoFiles.forEach(photo => {
+    photos.push(photo)
+  })
+
+  SmartBox.findOneAndUpdate({ id }, { $push: { debugs: { photos } } })
+  .exec((error, smartbox) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({success: false, message: "The specified debug couldn't be created"})
+    }
+
+    return res.status(200).json({ 'success': true, smartbox})
 
   })
 })
