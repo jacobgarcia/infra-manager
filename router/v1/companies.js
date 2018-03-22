@@ -266,7 +266,7 @@ router.route('/inventory/:_id')
 router.route('/sites/initialize')
 .post((req, res) => {
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
-  const { id, version, company, key, name, position, sensors } = req.body
+  const { id, version, company, key, name, position, sensors, country } = req.body
 
   Company.findOne({ name: company })
   .exec((error, company) => {
@@ -294,7 +294,8 @@ router.route('/sites/initialize')
         position,
         company: company._id,
         sensors,
-        smartboxes: smartbox
+        smartboxes: smartbox,
+        country
       })
       .save(error => {
         if (error) {
@@ -339,13 +340,15 @@ router.route('/smartbox/debug/:id')
       return res.status(500).json({'success': false, 'message': "Could not find Smart Box"})
     }
 
+    if (!smartbox) return res.status(404).json({ success: false, message: "Specified Smartbox was not found"})
+
     global.io.to(id).emit('debug')
-    return res.status(200).json({ 'succes': true, smartbox })
+    return res.status(200).json({ 'success': true, message: 'Initialized Smartbox debugging process', smartbox })
 
   })
 })
 
-// post camera debug
+// post Smartbox debug
 router.route('/smartbox/debug/:id')
 .post(upload, (req,res) => {
   const { id } = req.params
@@ -353,7 +356,7 @@ router.route('/smartbox/debug/:id')
 
   const photos = []
   photoFiles.forEach(photo => {
-    photos.push(photo)
+    photos.push(photo.filename)
   })
 
   SmartBox.findOneAndUpdate({ id }, { $push: { debugs: { photos } } })

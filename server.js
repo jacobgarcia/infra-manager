@@ -104,6 +104,8 @@ io.on('connection', socket => {
   })
 })
 
+global.io = io
+
 // Start RTMP Server
 const config = {
   rtmp: {
