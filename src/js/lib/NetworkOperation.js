@@ -84,6 +84,10 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/sites/sensors`)
   }
 
+  static getVehicularReports() {
+    return axios.get(`${baseUrl}/vehicular-flow/reports`)
+  }
+
   static updateInventoryElement(id, lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType) {
     return axios.put(`${baseUrl}/inventory/${id}`, { lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType })
   }

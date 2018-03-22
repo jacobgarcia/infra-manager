@@ -161,3 +161,10 @@ export function setInventoryReport(report) {
     report
   }
 }
+
+export function setVehicleReport(report) {
+  return {
+    type: 'SET_VEHICULAR_REPORT',
+    report
+  }
+}

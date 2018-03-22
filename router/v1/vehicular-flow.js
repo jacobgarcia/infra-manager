@@ -51,13 +51,14 @@ router.route('/vehicular-flow/recognize')
       vehicle: data.results[0].vehicle.body_type[0].name,
       zone: 'Centro',
       site,
-      front: process.env.PWD + '/static/vehicular-flow/' + req.files.front[0].filename,
-      back: process.env.PWD + '/static/vehicular-flow/' + req.files.back[0].filename,
-      video: process.env.PWD + '/static/vehicular-flow/' + req.files.video[0].filename,
+      front: '/static/vehicular-flow/' + req.files.front[0].filename,
+      back: '/static/vehicular-flow/' + req.files.back[0].filename,
+      video: '/static/vehicular-flow/' + req.files.video[0].filename,
       brand: data.results[0].vehicle.make[0].name,
       model: data.results[0].vehicle.make_model[0].name,
       color: data.results[0].vehicle.color[0].name,
-      plate: data.results[0].plate
+      plate: data.results[0].plate,
+      region: data.results[0].region
     })
     .save((error, report) => {
       if (error) {
@@ -65,9 +66,22 @@ router.route('/vehicular-flow/recognize')
         return res.status(500).json({ error })
       }
 
-      return res.status(200).json({ report })
+      return res.status(200).json({ data })
 
     })
+  })
+})
+
+router.route('/vehicular-flow/reports')
+.get((req, res) => {
+  VehicularReport.find()
+  .exec((error, reports) => {
+    if (error) {
+      winston.error({error})
+      return res.status(500).json({ error })
+    }
+
+    return res.status(200).json({ reports })
   })
 })
 

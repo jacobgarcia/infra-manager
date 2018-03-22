@@ -14,6 +14,7 @@ const schema = new Schema({
   model: String,
   color: String,
   plate: String,
+  region: String,
   risk: { type: Number, default: 0 }
 })
 

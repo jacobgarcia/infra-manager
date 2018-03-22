@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
-import { setCredentials, setComplete, setLoading, setExhaustive, setReport, setFacialReport } from '../actions'
+import { setCredentials, setComplete, setLoading, setExhaustive, setReport, setFacialReport, setVehicleReport } from '../actions'
 import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports, Sensors ,Inventory} from './'
 import { Navigator, VideoPlayer } from '../components'
 import { NetworkOperation, NetworkOperationFRM } from '../lib'
@@ -61,6 +61,14 @@ class App extends Component {
     }
 
     this.props.setLoading()
+
+    // Set Vehicular Reports
+    NetworkOperation.getVehicularReports()
+    .then(({data}) => {
+      data.reports.map(report => {
+        this.props.setVehicleReport(report)
+      })
+    })
 
     // Set FRM access store
     NetworkOperationFRM.getAccess()
@@ -217,7 +225,8 @@ App.propTypes = {
   setLoading: PropTypes.func,
   setExhaustive: PropTypes.func,
   setComplete: PropTypes.func,
-  setFacialReport: PropTypes.func
+  setFacialReport: PropTypes.func,
+  setVehicleReport: PropTypes.func
 }
 
 function mapDispatchToProps(dispatch) {
@@ -239,6 +248,9 @@ function mapDispatchToProps(dispatch) {
     },
     setFacialReport: (timestamp, event, success, risk, zone, status, site, access, pin, photo, id) => {
       dispatch(setFacialReport(timestamp, event, success, risk, zone, status, site, access, pin, photo, id))
+    },
+    setVehicleReport: report => {
+      dispatch(setVehicleReport(report))
     }
   }
 }
