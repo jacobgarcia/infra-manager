@@ -353,8 +353,10 @@ router.route('/smartbox/debug/:id')
 .post(upload, (req,res) => {
   const { id } = req.params
   const photoFiles = req.files
-
   const photos = []
+
+  if (!photoFiles) return res.status(400).json({ success: false, message: 'Malformed request. Empty photos'})
+
   photoFiles.forEach(photo => {
     photos.push(photo.filename)
   })
@@ -368,6 +370,32 @@ router.route('/smartbox/debug/:id')
 
     return res.status(200).json({ 'success': true, smartbox})
 
+  })
+})
+
+router.route('/sites/sensors')
+.put((req, res) => {
+  const { key, company, sensors } = req.body
+  // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
+  Company.findOne({ name: company })
+  .exec((error, company) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({ error })
+    }
+    if (!company) return res.status(404).json({ success: false, message: 'Specified company was not found'})
+
+    Site.findOneAndUpdate({ company, key }, { $set: { sensors }})
+    .exec((error, site) => {
+      if (error) {
+        winston.error({error})
+        return res.status(500).json({ error })
+      }
+
+      if (!site) return res.status(404).json({ success: false, message: 'No site found'})
+
+      return res.status(200).json({ success: true, message: 'Updated sensor information sucessfully', site })
+    })
   })
 })
 
