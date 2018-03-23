@@ -61,7 +61,7 @@ router.route('/vehicular-flow/recognize')
       new VehicularReport({
         vehicle: data.results[0].vehicle.body_type[0].name,
         zone: 'Centro',
-        site,
+        site: key,
         front: '/static/vehicular-flow/' + req.files.front[0].filename,
         back: '/static/vehicular-flow/' + req.files.back[0].filename,
         video: '/static/vehicular-flow/' + req.files.video[0].filename,
