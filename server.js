@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 const winston = require('winston') // Logger
 const hpp = require('hpp')
 const request = require('request')
+const cors = require('cors')
 const { exec } = require('child_process')
 const app = express()
 
@@ -19,6 +20,7 @@ const PORT = process.env.PORT || 8080
 app.use(bodyParser.urlencoded({ limit: '12mb' }))
 app.use(bodyParser.json({ limit: '12mb' }))
 app.use(helmet())
+app.use(cors()) /* Enable All CORS Requests */
 app.use(hpp())
 
 // Images and static assets
