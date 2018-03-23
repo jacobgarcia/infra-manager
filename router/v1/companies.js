@@ -26,7 +26,7 @@ const storage = multer.diskStorage({
   }
 })
 
-const upload = multer({storage: storage}).array('photos', 3)
+const upload = multer({storage: storage}).fields([{ name: 'photos', maxCount: 10}, { name: 'log', maxCount: 1}])
 
 router.route('/users')
 .get(hasAccess(4), (req, res) => {
@@ -352,7 +352,8 @@ router.route('/smartbox/debug/:id')
 router.route('/smartbox/debug/:id')
 .post(upload, (req,res) => {
   const { id } = req.params
-  const photoFiles = req.files
+  const photoFiles = req.files.photos
+  console.log(req.files)
   const photos = []
 
   if (!photoFiles) return res.status(400).json({ success: false, message: 'Malformed request. Empty photos'})
@@ -361,7 +362,7 @@ router.route('/smartbox/debug/:id')
     photos.push(photo.filename)
   })
 
-  SmartBox.findOneAndUpdate({ id }, { $push: { debugs: { photos } } })
+  SmartBox.findOneAndUpdate({ id }, { $push: { debugs: { photos } } }, {$set: { debugs: { logFile: req.files.log[0] } }})
   .exec((error, smartbox) => {
     if (error) {
       winston.error(error)

@@ -11,7 +11,8 @@ const schema = new Schema({
   }],
   debugs: [{
     timestamp: { type: Date, default: Date.now },
-    photos: [String]
+    photos: [String],
+    logFile: String
   }]
 })
 
