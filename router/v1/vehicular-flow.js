@@ -29,11 +29,11 @@ const upload = multer({storage: storage}).fields([{ name: 'front', maxCount: 1 }
 router.route('/vehicular-flow/recognize')
 .post(upload, (req, res) => {
   // Receieve photo as file and upload it
-  const { site, domain } = req.body
+  const { key, domain } = req.body
   let image = 'https://' + domain + '.connus.mx/static/vehicular-flow/' + req.files.back[0].filename
   if (process.env.NODE_ENV === "development") image = 'https://demo.connus.mx/static/img/dummy/lpr-06.jpg'
 
-  Site.findOne({ key: site })
+  Site.findOne({ key })
   .exec((error, detailedSite) => {
     if (error) {
       winston.error({error})

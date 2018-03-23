@@ -376,9 +376,6 @@ router.route('/smartbox/debug/:id')
 router.route('/sites/sensors')
 .put((req, res) => {
   const { key, company, sensors } = req.body
-  console.log(key)
-  console.log(company)
-  console.log(sensors)
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
   Company.findOne({ name: company })
   .exec((error, company) => {
