@@ -25,6 +25,7 @@ const storage = multer.diskStorage({
 
 // Upload object specs
 const upload = multer({storage: storage}).fields([{ name: 'front', maxCount: 1 }, { name: 'back', maxCount: 1 }, { name: 'video', maxCount: 1 }])
+const file = multer({storage: storage}).single('file')
 
 router.route('/vehicular-flow/recognize')
 .post(upload, (req, res) => {
@@ -92,6 +93,12 @@ router.route('/vehicular-flow/reports')
 
     return res.status(200).json({ reports })
   })
+})
+
+
+router.route('/file/upload')
+.post(file, (req, res) => {
+  return res.status(200).json({filename: 'https://demo.connus.mx/static/vehicular-flow/' + req.file.filename})
 })
 
 module.exports = router
