@@ -91,6 +91,11 @@ class NetworkOperation {
   static updateInventoryElement(id, lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType) {
     return axios.put(`${baseUrl}/inventory/${id}`, { lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType })
   }
+
+  // Video on Demand
+  static createVideoToken() {
+    return axios.post(`${baseUrl}/video/token`)
+  }
 }
 
 export default NetworkOperation

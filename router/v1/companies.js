@@ -13,6 +13,7 @@ const User = require(path.resolve('models/User'))
 const Inventory = require(path.resolve('models/Inventory'))
 const Company = require(path.resolve('models/Company'))
 const SmartBox = require(path.resolve('models/SmartBox'))
+const Stream = require(path.resolve('models/Stream'))
 
 const { hasAccess } = require(path.resolve('router/v1/lib/middleware-functions'))
 
@@ -266,7 +267,7 @@ router.route('/inventory/:_id')
 router.route('/sites/initialize')
 .post((req, res) => {
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
-  const { id, version, company, key, name, position, sensors, country } = req.body
+  const { id, version, company, key, name, position, sensors, cameras, country } = req.body
 
   Company.findOne({ name: company })
   .exec((error, company) => {
@@ -294,6 +295,7 @@ router.route('/sites/initialize')
         position,
         company: company._id,
         sensors,
+        cameras,
         smartboxes: smartbox,
         country
       })
@@ -306,7 +308,7 @@ router.route('/sites/initialize')
         .exec((error, site) => {
           if (error) {
             winston.error(error)
-            return res.status(400).json({ success: false, message: 'Could not add the smartbox to the already created site' })
+            return res.status(500).json({ success: false, message: 'Could not add the smartbox to the already created site' })
           }
           // Add the new site to the specified subzone
           return res.status(200).json({ site })
@@ -418,6 +420,48 @@ router.route('/sites/sensors')
     if (!sites) return res.status(404).json({ message: 'No sites found'})
 
     return res.status(200).json({ sites })
+  })
+})
+
+router.route('/video/token')
+.post((req, res) => {
+  const company = req._user.cmp
+  const { site, id } = req.body
+
+  // Generate room unique token
+  crypto.pseudoRandomBytes(16, (error, raw) => {
+    const room = raw.toString('hex') + Date.now()
+    new Stream({
+      company,
+      site,
+      camera: id,
+      room
+    })
+    .save((error, stream) => {
+      if (error) {
+        winston.error({error})
+        return res.status(500).json({ success: false, message: 'Could not create streaming' })
+      }
+      const data = { id, room }
+      global.io.to(site).emit('stream', data)
+
+      return res.status(200).json({ stream })
+    })
+  })
+})
+
+router.route('/video/publish')
+.post((req, res) => {
+  const { name } = req.body
+
+  Stream.findOne({ room: name })
+  .exec((error, stream) => {
+    if (error) {
+      winston.error({error})
+      return res.status(500).json({ success: false, message: 'Could not publish streaming' })
+    }
+    if (stream) res.status(200).json({ success: true, message: 'Streaming successfully published'})
+    return res.status(403).json({ success: false, message: 'Can not publish to that room'})
   })
 })
 

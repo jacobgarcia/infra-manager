@@ -7,6 +7,8 @@ import { DateUtils } from 'react-day-picker'
 import { } from '../actions'
 import { Table, DateRangePicker, RiskBar, VideoPlayer } from '../components'
 
+import { NetworkOperation } from '../lib'
+
 class VideoSurveillance extends Component {
   constructor(props) {
     super(props)
@@ -22,7 +24,7 @@ class VideoSurveillance extends Component {
 
     this.onDayClick = this.onDayClick.bind(this)
     this.onLogSelect = this.onLogSelect.bind(this)
-
+    this.onVideoDemand = this.onVideoDemand.bind(this)
   }
 
   onLogSelect(item, index, sectionIndex) {
@@ -38,6 +40,13 @@ class VideoSurveillance extends Component {
     })
 
     this.forceUpdate()
+  }
+
+  onVideoDemand() {
+    NetworkOperation.createVideoToken()
+    .then(({data}) => {
+
+    })
   }
 
   onDayClick(day) {
@@ -81,7 +90,6 @@ class VideoSurveillance extends Component {
                   <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
                   <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
                 </div>
-                <p>PEDIR VIDEO</p>
                 <div>
                     {
                       state.playingVideo
@@ -90,7 +98,7 @@ class VideoSurveillance extends Component {
                     }
                 </div>
                 <div className="action destructive">
-                  <p>Contactar seguridad</p>
+                  <p onClick={this.onVideoDemand}>Pedir Video</p>
                 </div>
               </div>
           </div>

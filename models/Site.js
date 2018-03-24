@@ -37,7 +37,13 @@ const schema = new Schema({
   subzone: { type: Schema.Types.ObjectId, ref: 'Subzone' },
   zone: { type: Schema.Types.ObjectId, ref: 'Zone' },
   smartboxes: [{ type: Schema.Types.ObjectId, ref: 'SmartBox' }],
-  country: String
+  country: String,
+  cameras: [{
+    id: String,
+    name: String,
+    room: String,
+    videos: [String]
+  }]
 })
 
 // Set company-key unique
