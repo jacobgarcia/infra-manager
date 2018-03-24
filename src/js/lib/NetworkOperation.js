@@ -92,9 +92,13 @@ class NetworkOperation {
     return axios.put(`${baseUrl}/inventory/${id}`, { lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType })
   }
 
-  // Video on Demand
+  // Video Surveillance
   static createVideoToken() {
     return axios.post(`${baseUrl}/video/token`)
+  }
+
+  static getStreams() {
+    return axios.get(`${baseUrl}/video/cameras`)
   }
 }
 

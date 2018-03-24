@@ -426,28 +426,36 @@ router.route('/sites/sensors')
 router.route('/video/token')
 .post((req, res) => {
   const company = req._user.cmp
-  const { site, id } = req.body
+  const { key, id } = req.body
 
-  // Generate room unique token
-  crypto.pseudoRandomBytes(16, (error, raw) => {
-    const room = raw.toString('hex') + Date.now()
-    new Stream({
-      company,
-      site,
-      camera: id,
-      room
-    })
-    .save((error, stream) => {
+    Site.findOne({ key })
+    .exec((error, site) => {
       if (error) {
         winston.error({error})
-        return res.status(500).json({ success: false, message: 'Could not create streaming' })
+        return res.status(500).json({ success: false, message: 'Could not create streaming', error })
       }
-      const data = { id, room }
-      global.io.to(site).emit('stream', data)
+      if (!site) return res.status(404).json({ success: false, message: 'Site was not found' })
+      // Generate room unique token
+      crypto.pseudoRandomBytes(16, (error, raw) => {
+        const room = raw.toString('hex') + Date.now()
+        new Stream({
+          company,
+          site: site._id,
+          id,
+          room
+        })
+        .save((error, stream) => {
+          if (error) {
+            winston.error({error})
+            return res.status(500).json({ success: false, message: 'Could not create streaming', error })
+          }
+          const data = { id, room }
+          global.io.to(site).emit('stream', data)
 
-      return res.status(200).json({ stream })
+          return res.status(200).json({ stream })
+        })
+      })
     })
-  })
 })
 
 router.route('/video/publish')
@@ -462,6 +470,21 @@ router.route('/video/publish')
     }
     if (stream) res.status(200).json({ success: true, message: 'Streaming successfully published'})
     return res.status(403).json({ success: false, message: 'Can not publish to that room'})
+  })
+})
+
+router.route('/video/cameras')
+.get((req, res) => {
+  const company = req._user.cmp
+
+  Stream.find({ company })
+  .populate('site', 'key zone')
+  .exec((error, cameras) => {
+    if (error) {
+      winston.error({error})
+      return res.status(500).json({ success: false, message: 'Could not publish streaming' })
+    }
+    return res.status(200).json({ success: true, message: 'Retrieved streaming cameras', cameras})
   })
 })
 

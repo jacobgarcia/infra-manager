@@ -168,3 +168,15 @@ export function setVehicleReport(report) {
     report
   }
 }
+
+/*
+
+          C A M E R A S
+
+ */
+ export function setCamera(camera) {
+   return {
+     type: 'SET_CAMERA',
+     camera
+   }
+ }

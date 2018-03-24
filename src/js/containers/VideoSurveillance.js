@@ -87,13 +87,14 @@ class VideoSurveillance extends Component {
               <div className="content">
                 {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
                 <div className="time-location">
-                  <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
-                  <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
+                  <p>{state.selectedLog.name}</p>
+                  <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site.key}</span></p>
                 </div>
+
                 <div>
                     {
                       state.playingVideo
-                      ? <VideoPlayer {...state.selectedLog.videoJsOptions} key={state.selectedLog} />
+                      ? <VideoPlayer {...state.selectedLog.room} key={state.selectedLog} />
                       : null
                     }
                 </div>
@@ -120,20 +121,18 @@ class VideoSurveillance extends Component {
                   <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                    { item.timestamp ? <div className="medium">{item.timestamp.toLocaleDateString()} {item.timestamp.toLocaleTimeString()}</div> : <div />}
-                    <div className="large">{item.event}</div>
+                    <div className="large">{item.name}</div>
                     <div className="hiddable">{item.zone.name}</div>
-                    <div className="hiddable">{item.site && item.site}</div>
-                    <div className="medium hiddable">{item.status}</div>
+                    <div className="hiddable">{item.site && item.site.key}</div>
+                    <div className="medium hiddable">{item.id}</div>
                   </div>
                 }
                 elements={props.cameraReports}
                 titles={[
-                  {title: 'Tiempo', className: 'medium'},
-                  {title: 'Suceso', className: 'large'},
+                  {title: 'Nombre', className: 'large'},
                   {title: 'Zona', className: 'hiddable'},
                   {title: 'Sitio', className: 'hiddable'},
-                  {title: 'Estatus o acción', className: 'medium hiddable'}
+                  {title: 'Identificador', className: 'medium hiddable'}
                 ]}
               />
             </div>

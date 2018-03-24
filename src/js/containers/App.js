@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import io from 'socket.io-client'
 
-import { setCredentials, setComplete, setLoading, setExhaustive, setReport, setFacialReport, setVehicleReport } from '../actions'
+import { setCredentials, setComplete, setLoading, setExhaustive, setReport, setFacialReport, setVehicleReport, setCamera } from '../actions'
 import { Dashboard, Users, Statistics, Settings, Map, Accesses, VehicularFlow, Perimeter, FacialRecognition, VideoSurveillance, Reports, Sensors ,Inventory} from './'
 import { Navigator, VideoPlayer } from '../components'
 import { NetworkOperation, NetworkOperationFRM } from '../lib'
@@ -67,6 +67,14 @@ class App extends Component {
     .then(({data}) => {
       data.reports.map(report => {
         this.props.setVehicleReport(report)
+      })
+    })
+
+    // Set Cameras
+    NetworkOperation.getStreams()
+    .then(({data}) => {
+      data.cameras.map(camera => {
+        this.props.setCamera(camera)
       })
     })
 
@@ -226,7 +234,8 @@ App.propTypes = {
   setExhaustive: PropTypes.func,
   setComplete: PropTypes.func,
   setFacialReport: PropTypes.func,
-  setVehicleReport: PropTypes.func
+  setVehicleReport: PropTypes.func,
+  setCamera: PropTypes.func
 }
 
 function mapDispatchToProps(dispatch) {
@@ -251,6 +260,9 @@ function mapDispatchToProps(dispatch) {
     },
     setVehicleReport: report => {
       dispatch(setVehicleReport(report))
+    },
+    setCamera: camera => {
+      dispatch(setCamera(camera))
     }
   }
 }
