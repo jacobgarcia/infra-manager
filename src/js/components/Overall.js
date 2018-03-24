@@ -81,6 +81,7 @@ class Overall extends PureComponent {
             element={props.element}
             photo1={null}
             photo2={null}
+            key={props.element.key}
           />
         </div>
       </div>

@@ -13,6 +13,7 @@ const app = express()
 const v1 = require(path.resolve('router/v1'))
 
 const PORT = process.env.PORT || 8080
+const watch = require('node-watch');
 
 app.use(bodyParser.urlencoded({ limit: '12mb' }))
 app.use(bodyParser.json({ limit: '12mb' }))
@@ -102,5 +103,29 @@ io.on('connection', socket => {
     winston.info('Smartbox ' + smartboxId + ' has disconnected')
   })
 })
-
 global.io = io
+
+const watcher = watch('./static/videos/flv', { recursive: true })
+let isTimeout = false
+let timeOut = null
+
+watcher.on('change', (evt, name) => {
+ if (evt === 'update' && !isTimeout) {
+  timeOut = setTimeout(videoConverter, 5000, name)
+  isTimeout = true
+ }
+ else {
+   clearTimeout(timeOut)
+   timeOut = setTimeout(videoConverter, 5000, name)
+  }
+})
+
+function videoConverter(name) {
+    var file = name.split("/")
+    var old = file[3]
+    var rename = old.split(".flv")
+    exec('avconv -i ' + name + ' -codec copy ./static/videos/mp4/' + rename[0] + '.mp4', error => {
+        if (error !== null) winston.error('exec error: ' + error)
+    })
+    isTimeout = false
+}
