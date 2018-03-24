@@ -81,6 +81,7 @@ class VideoSurveillance extends Component {
                   <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
                   <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
                 </div>
+                <p>PEDIR VIDEO</p>
                 <div>
                     {
                       state.playingVideo
