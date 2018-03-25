@@ -438,19 +438,14 @@ router.route('/video/token')
       // Generate room unique token
       crypto.pseudoRandomBytes(16, (error, raw) => {
         const room = raw.toString('hex') + Date.now()
-        new Stream({
-          company,
-          site: site._id,
-          id,
-          room
-        })
-        .save((error, stream) => {
+        Stream.findOneAndUpdate({ id }, {$set: { room } })
+        .exec((error, stream) => {
           if (error) {
             winston.error({error})
             return res.status(500).json({ success: false, message: 'Could not create streaming', error })
           }
           const data = { id, room }
-          global.io.to(site).emit('stream', data)
+          global.io.to(site).emit('streaming', data)
 
           return res.status(200).json({ stream })
         })
@@ -482,7 +477,7 @@ router.route('/video/cameras')
   .exec((error, cameras) => {
     if (error) {
       winston.error({error})
-      return res.status(500).json({ success: false, message: 'Could not publish streaming' })
+      return res.status(500).json({ success: false, message: 'Could not retrieve cameras' })
     }
     return res.status(200).json({ success: true, message: 'Retrieved streaming cameras', cameras})
   })

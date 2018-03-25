@@ -43,9 +43,10 @@ class VideoSurveillance extends Component {
   }
 
   onVideoDemand() {
-    NetworkOperation.createVideoToken()
+    const { state } = this
+    NetworkOperation.createVideoToken(state.selectedLog.site.key, state.selectedLog.id)
     .then(({data}) => {
-
+      console.log(data.stream.room)
     })
   }
 
@@ -61,19 +62,21 @@ class VideoSurveillance extends Component {
 
   render() {
     const { state, props } = this
-    // const videoJsOptions = {
-    //   controls: true,
-    //   autoplay: true,
-    //   sources: [{
-    //     src: 'rtmp://demo.connus.mx/live&stream',
-    //     type: 'rtmp/mp4'
-    //   }],
-    //   width: 360,
-    //   height: 240,
-    //   controlBar: {
-    //       volumePanel: false
-    //   }
-    // }
+
+    const videoJsOptions = {
+      controls: true,
+      autoplay: false,
+      sources: [{
+        src: state.selectedLog.room,
+        type: 'application/x-mpegURL'
+      }],
+      poster: state.selectedLog.photo,
+      width: 340,
+      height: 240,
+      controlBar: {
+          volumePanel: false
+      }
+    }
 
     return (
       <div className="app-content facial-recognition small-padding">
@@ -87,14 +90,14 @@ class VideoSurveillance extends Component {
               <div className="content">
                 {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
                 <div className="time-location">
-                  <p>{state.selectedLog.name}</p>
-                  <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site.key}</span></p>
+                  <p>{state.selectedLog.name && state.selectedLog.name}</p>
+                  <p>Zona <span>{state.selectedLog.name && state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site.key}</span></p>
                 </div>
 
                 <div>
                     {
                       state.playingVideo
-                      ? <VideoPlayer {...state.selectedLog.room} key={state.selectedLog} />
+                      ? <VideoPlayer {...videoJsOptions} key={state.selectedLog} />
                       : null
                     }
                 </div>

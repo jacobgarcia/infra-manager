@@ -1,7 +1,6 @@
 // Video Streaming Player
 import React, { Component } from 'react'
 import videojs from 'video.js'
-import videojsflash from 'videojs-flash'
 
 export default class VideoPlayer extends Component {
   componentDidMount() {

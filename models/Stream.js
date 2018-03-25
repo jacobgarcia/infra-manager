@@ -8,7 +8,8 @@ const schema = new Schema({
   room: { type: String, required: true, unique: true },
   company: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
   site: { type: Schema.Types.ObjectId, ref: 'Site' },
-  records: [String]
+  records: [String],
+  photo: String
 })
 
 module.exports = mongoose.model('Stream', schema)

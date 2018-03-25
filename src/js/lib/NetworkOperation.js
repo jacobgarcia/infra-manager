@@ -93,8 +93,8 @@ class NetworkOperation {
   }
 
   // Video Surveillance
-  static createVideoToken() {
-    return axios.post(`${baseUrl}/video/token`)
+  static createVideoToken(key, id) {
+    return axios.post(`${baseUrl}/video/token`, { key, id })
   }
 
   static getStreams() {
