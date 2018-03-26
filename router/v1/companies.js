@@ -316,7 +316,6 @@ router.route('/sites/initialize')
               new Stream({
                 id: camera.id,
                 name: camera.name,
-                room: camera.room,
                 company,
                 site: site._id,
                 photo: camera.photo
