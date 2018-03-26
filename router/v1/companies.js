@@ -308,7 +308,7 @@ router.route('/sites/initialize')
         .exec((error, site) => {
           if (error) {
             winston.error(error)
-            return res.status(500).json({ success: false, message: 'Could not add the smartbox to the already created site' })
+            return res.status(500).json({ success: false, message: 'Could not add the smartbox to the already created site', error })
           }
 
           // Add cameras of the SmartBox
