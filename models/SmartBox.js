@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 
 const schema = new Schema({
   id: { type: String, required: true, unique: true },
-  version: Number,
+  version: String,
   exceptions: [{
     timestamp: { type: Date, default: Date.now },
     description: String
