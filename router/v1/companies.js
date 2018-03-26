@@ -32,6 +32,7 @@ const upload = multer({storage: storage}).fields([{ name: 'photos', maxCount: 10
 router.route('/users')
 .get(hasAccess(4), (req, res) => {
   const company = req._user.cmp
+  global.io.emit('report', report)
   // TODO add monitoring zones or subzones
   User.find({ company })
   .select('email name surname access zones')
@@ -201,7 +202,7 @@ router.route('/site/:siteKey')
 router.route('/reports')
 .get((req, res) => {
   const company = req._user.cmp
-
+  global.io.emit('report', report)
   Site.find({ company })
   .populate('zone', 'name')
   .exec((error, sites) => {

@@ -15,8 +15,11 @@ const v1 = require(path.resolve('router/v1'))
 const PORT = process.env.PORT || 8080
 const watch = require('node-watch')
 
-app.use(bodyParser.urlencoded({ limit: '12mb' }))
-app.use(bodyParser.json({ limit: '12mb' }))
+
+
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 app.use(helmet())
 app.use(cors()) /* Enable All CORS Requests */
 app.use(hpp())
@@ -90,33 +93,39 @@ const server = app.listen(PORT, () =>
   winston.info(`Connus server is listening on port: ${PORT}!`)
 )
 
-// Socket IO Configuration
 const io = require('socket.io').listen(server)
 
 io.on('connection', socket => {
-  socket.on('join', smartboxId => {
-    winston.info('Smartbox ' + smartboxId + ' has joined the dark side')
-    socket.join(smartboxId)
+  winston.info('New client connection')
+  socket.on('join', companyId => {
+    winston.info('New join on room: ' + companyId)
+    socket.join(companyId)
+    // Emit a refresh to web platform when new camera is connected
+    io.to('web-platform').emit('refresh')
   })
 
-  socket.on('disconnect', smartboxId => {
-    winston.info('Smartbox ' + smartboxId + ' has disconnected')
+  socket.on('disconnect', companyId => {
+    winston.info('Disconnected client')
+    // Emit a refresh to web platform
+    io.to('web-platform').emit('refresh')
   })
 })
+
 global.io = io
 
-const watcher = watch('./static/videos/flv', { recursive: true })
-let isTimeout = false
-let timeOut = null
 
-watcher.on('change', (evt, name) => {
- if (evt === 'update' && !isTimeout) {
-  timeOut = setTimeout(videoConverter, 5000, name)
-  isTimeout = true
- }
- else {
-   clearTimeout(timeOut)
-   timeOut = setTimeout(videoConverter, 5000, name)
+// Start RTMP Server
+const config = {
+  rtmp: {
+    port: 1935,
+    chunk_size: 60000,
+    gop_cache: true,
+    ping: 60,
+    ping_timeout: 30
+  },
+  http: {
+    port: 8000,
+    allow_origin: '*'
   }
 })
 

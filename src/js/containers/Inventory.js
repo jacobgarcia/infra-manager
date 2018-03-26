@@ -16,6 +16,7 @@ class Inventory extends Component {
     super(props)
 
     this.state = {
+      inventoryReports: null,
       selectedLog: this.props.inventoryReports.length > 0 ? this.props.inventoryReports[0] : null,
       selectedElementIndex: this.props.inventoryReports.length > 0 ? [0,0] : [null,null],
       showLogDetail: true,
@@ -32,7 +33,6 @@ class Inventory extends Component {
     this.options = {
 
     }
-
     this.onLogSelect = this.onLogSelect.bind(this)
     this.onDayClick = this.onDayClick.bind(this)
     this.onUpdateEntry = this.onUpdateEntry.bind(this)
@@ -40,6 +40,7 @@ class Inventory extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+
     if (!this.props.inventoryReports || this.props.inventoryReports.length === 0) {
       if (nextProps.inventoryReports && nextProps.inventoryReports.length > 0) {
         this.setState({
@@ -50,7 +51,17 @@ class Inventory extends Component {
       }
     }
   }
+  componentWillMount() {
+    let inventory = {}
+    NetworkOperationFRM.getSensors()
+    .then(({data}) => {
+      //console.log(this.props.inventoryReports);
+      this.props.setInventoryReport(data)
+    })
 
+  }
+
+/*data map*/
   componentDidMount() {
     NetworkOperation.getInventory()
     .then(({data}) => {
@@ -270,6 +281,7 @@ Inventory.propTypes = {
   setInventoryReport: PropTypes.func,
   inventoryReports: PropTypes.array
 }
+
 
 function mapStateToProps({ zones, inventoryReports, facialReports, cameraReports }) {
   return {
