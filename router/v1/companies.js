@@ -269,6 +269,8 @@ router.route('/sites/initialize')
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
   const { id, version, company, key, name, position, sensors, cameras, country } = req.body
   console.log(req.body)
+  JSON.parse(sensors)
+  console.log(sensors)
   if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country) return res.status(400).json({ success: false, message: 'Malformed request'})
   Company.findOne({ name: company })
   .exec((error, company) => {
