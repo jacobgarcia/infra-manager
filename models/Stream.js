@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const schema = new Schema({
-  id: String,
+  id: { type: String, unique: true },
   name: String,
   room: { type: String, required: true, unique: true },
   company: { type: Schema.Types.ObjectId, ref: 'Company', required: true },

@@ -310,6 +310,20 @@ router.route('/sites/initialize')
             winston.error(error)
             return res.status(500).json({ success: false, message: 'Could not add the smartbox to the already created site' })
           }
+
+          // Add cameras of the SmartBox
+          cameras.map(camera => {
+              new Stream({
+                id: camera.id,
+                name: camera.name,
+                room: camera.room,
+                company,
+                site: site._id,
+                photo: camera.photo
+              })
+              .save()
+          })
+
           // Add the new site to the specified subzone
           return res.status(200).json({ site })
         })
