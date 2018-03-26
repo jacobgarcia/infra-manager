@@ -285,7 +285,7 @@ router.route('/sites/initialize')
     .save((error, smartbox) => {
       if (error) {
         winston.error(error)
-        return res.status(401).json({ success: false, message: 'Smartbox already registered' })
+        return res.status(403).json({ success: false, message: 'Smartbox already registered', error })
       }
 
       // Create site using the information in the request body
