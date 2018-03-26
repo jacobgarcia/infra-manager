@@ -269,6 +269,7 @@ router.route('/sites/initialize')
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
   const { id, version, company, key, name, position, sensors, cameras, country } = req.body
 
+  if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country) return res.status(400).json({ success: false, message: 'Malformed request'})
   Company.findOne({ name: company })
   .exec((error, company) => {
     if (error) {
@@ -311,17 +312,19 @@ router.route('/sites/initialize')
             return res.status(500).json({ success: false, message: 'Could not add the smartbox to the already created site', error })
           }
 
-          // Add cameras of the SmartBox
-          cameras.map(camera => {
-              new Stream({
-                id: camera.id,
-                name: camera.name,
-                company,
-                site: site._id,
-                photo: camera.photo
-              })
-              .save()
-          })
+          if (cameras.length > 0) {
+            // Add cameras of the SmartBox
+            cameras.map(camera => {
+                new Stream({
+                  id: camera.id,
+                  name: camera.name,
+                  company,
+                  site: site._id,
+                  photo: camera.photo
+                })
+                .save()
+            })
+          }
 
           // Add the new site to the specified subzone
           return res.status(200).json({ site })
