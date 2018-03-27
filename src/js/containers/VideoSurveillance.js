@@ -98,7 +98,7 @@ class VideoSurveillance extends Component {
 
                 <div>
                     {
-                      <ReactPlayer url={state.selectedLog.room} playing width="340" height="240" controls/>
+                      <ReactPlayer url={'https://stream.connus.mx/hls/' + state.selectedLog.room + '.m3u8'} playing width="340" height="240" controls/>
                     }
                 </div>
                 <div className="action destructive">
