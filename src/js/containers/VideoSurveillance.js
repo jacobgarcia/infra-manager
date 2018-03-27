@@ -48,7 +48,7 @@ class VideoSurveillance extends Component {
     const { state } = this
     NetworkOperation.createVideoToken(state.selectedLog.site.key, state.selectedLog.id)
     .then(({data}) => {
-      console.log(data.stream.room)
+      console.log(data.room)
     })
   }
 

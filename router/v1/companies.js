@@ -471,7 +471,7 @@ router.route('/video/token')
           const data = { id, room }
           global.io.to(key).emit('streaming', data)
 
-          return res.status(200).json({ stream })
+          return res.status(200).json({ room })
         })
       })
     })
