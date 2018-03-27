@@ -322,7 +322,6 @@ router.route('/sites/initialize')
           if (cameras.length > 0) {
             // Add cameras of the SmartBox
             cameras.map(camera => {
-              console.log(camera.photo)
               const filename = base64Img.imgSync(camera.photo, 'static/uploads', shortid.generate() + Date.now())
                 new Stream({
                   id: camera.id,
@@ -470,7 +469,7 @@ router.route('/video/token')
             return res.status(500).json({ success: false, message: 'Could not create streaming', error })
           }
           const data = { id, room }
-          global.io.to(site).emit('streaming', data)
+          global.io.to(key).emit('streaming', data)
 
           return res.status(200).json({ stream })
         })
