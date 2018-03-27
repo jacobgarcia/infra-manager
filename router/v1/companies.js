@@ -6,6 +6,8 @@ const multer = require('multer')
 const crypto = require('crypto')
 const mime = require('mime')
 const router = new express.Router()
+const base64Img = require('base64-img')
+const shortid = require('shortid')
 
 const Site = require(path.resolve('models/Site'))
 const Zone = require(path.resolve('models/Zone'))
@@ -320,12 +322,13 @@ router.route('/sites/initialize')
           if (cameras.length > 0) {
             // Add cameras of the SmartBox
             cameras.map(camera => {
+              const filename = base64Img.imgSync(camera.photo, 'static/uploads', shortid.generate() + Date.now())
                 new Stream({
                   id: camera.id,
                   name: camera.name,
                   company,
                   site: site._id,
-                  photo: camera.photo
+                  photo: '/' + filename
                 })
                 .save()
             })
