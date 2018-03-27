@@ -269,6 +269,7 @@ router.route('/sites/initialize')
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
   const { id, version, company, key, name, position, country } = req.body
   let { sensors, cameras } = req.body
+  console.log(sensors)
   sensors = JSON.parse(sensors)
   cameras = JSON.parse(cameras)
   if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country) return res.status(400).json({ success: false, message: 'Malformed request'})
