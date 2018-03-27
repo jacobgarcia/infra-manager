@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
+import ReactPlayer from 'react-player'
+
 
 import { } from '../actions'
 import { Table, DateRangePicker, RiskBar, VideoPlayer } from '../components'
@@ -67,7 +69,7 @@ class VideoSurveillance extends Component {
       controls: true,
       autoplay: false,
       sources: [{
-        src: state.selectedLog.room,
+        src: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
         type: 'application/x-mpegURL'
       }],
       poster: state.selectedLog.photo,
@@ -96,9 +98,7 @@ class VideoSurveillance extends Component {
 
                 <div>
                     {
-                      state.playingVideo
-                      ? <VideoPlayer {...videoJsOptions} key={state.selectedLog} />
-                      : null
+                      <ReactPlayer url={state.selectedLog.room} playing width="340" height="240" controls/>
                     }
                 </div>
                 <div className="action destructive">
