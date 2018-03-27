@@ -48,7 +48,9 @@ class VideoSurveillance extends Component {
     const { state } = this
     NetworkOperation.createVideoToken(state.selectedLog.site.key, state.selectedLog.id)
     .then(({data}) => {
-      console.log(data.room)
+      this.setState({
+        room: data.room
+      })
     })
   }
 
@@ -98,7 +100,7 @@ class VideoSurveillance extends Component {
 
                 <div>
                     {
-                      <ReactPlayer url={'https://stream.connus.mx/hls/' + state.selectedLog.room + '.m3u8'} playing width="340" height="240" controls/>
+                      <ReactPlayer url={'https://stream.connus.mx/hls/' + state.room + '.m3u8'} playing width="340" height="240" controls/>
                     }
                 </div>
                 <div className="action destructive">
