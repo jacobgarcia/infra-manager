@@ -322,8 +322,8 @@ router.route('/sites/initialize')
           if (cameras.length > 0) {
             // Add cameras of the SmartBox
             cameras.map(camera => {
-              console.log(decodeURI(camera.photo))
-              const filename = base64Img.imgSync(decodeURI(camera.photo), 'static/uploads', shortid.generate() + Date.now())
+              console.log(camera.photo)
+              const filename = base64Img.imgSync(camera.photo, 'static/uploads', shortid.generate() + Date.now())
                 new Stream({
                   id: camera.id,
                   name: camera.name,
