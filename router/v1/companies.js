@@ -271,6 +271,7 @@ router.route('/sites/initialize')
   let { sensors, cameras } = req.body
 
   if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country) return res.status(400).json({ success: false, message: 'Malformed request'})
+  console.log('TIPO: ' + typeof sensors)
   if (sensors instanceof String || cameras instanceof String) {
     sensors = JSON.parse(sensors)
     cameras = JSON.parse(cameras)
