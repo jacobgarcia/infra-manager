@@ -30,6 +30,7 @@ class VideoSurveillance extends Component {
   }
 
   onLogSelect(item, index, sectionIndex) {
+    console.log('https://stream.connus.mx/hls/' + this.state.room + '.m3u8')
     this.setState({
       showLogDetail: true,
       selectedLog: item,
