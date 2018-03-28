@@ -276,7 +276,7 @@ router.route('/sites/initialize')
   if (typeof sensors === 'string' || typeof cameras === 'string') {
     sensors = JSON.parse(sensors)
     cameras = JSON.parse(cameras)
-    console.log(JSON.parse(cameras))
+    console.log(Array.from(position))
     position = JSON.parse(position)
   }
   Company.findOne({ name: company })
