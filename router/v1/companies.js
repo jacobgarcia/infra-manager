@@ -269,13 +269,15 @@ router.route('/inventory/:_id')
 router.route('/sites/initialize')
 .post((req, res) => {
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
-  const { id, version, company, key, name, position, country } = req.body
-  let { sensors, cameras } = req.body
+  const { id, version, company, key, name, country } = req.body
+  let { position, sensors, cameras } = req.body
 
   if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country) return res.status(400).json({ success: false, message: 'Malformed request'})
   if (typeof sensors === 'string' || typeof cameras === 'string') {
     sensors = JSON.parse(sensors)
     cameras = JSON.parse(cameras)
+    console.log(JSON.parse(cameras))
+    position = JSON.parse(position)
   }
   Company.findOne({ name: company })
   .exec((error, company) => {
