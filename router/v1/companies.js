@@ -319,7 +319,7 @@ router.route('/sites/initialize')
           country,
           zone: zone._id
         })
-        .save(error => {
+        .save((error => {
           if (error) {
             winston.error(error)
           }
@@ -510,7 +510,7 @@ router.route('/video/cameras')
   const company = req._user.cmp
 
   Stream.find({ company })
-  .populate('site', 'key')
+  .populate('site', 'key zone')
   .exec((error, cameras) => {
     if (error) {
       winston.error({error})
