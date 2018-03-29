@@ -269,16 +269,16 @@ router.route('/inventory/:_id')
 router.route('/sites/initialize')
 .post((req, res) => {
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
-  const { id, version, company, key, name, country } = req.body
+  const { id, version, company, key, name, country, zone } = req.body
   let { position, sensors, cameras } = req.body
 
   if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country) return res.status(400).json({ success: false, message: 'Malformed request'})
   if (typeof sensors === 'string' || typeof cameras === 'string') {
     sensors = JSON.parse(sensors)
     cameras = JSON.parse(cameras)
-    console.log(Array.from(position))
     position = JSON.parse(position)
   }
+
   Company.findOne({ name: company })
   .exec((error, company) => {
     if (error) {
@@ -298,46 +298,57 @@ router.route('/sites/initialize')
         return res.status(403).json({ success: false, message: 'Smartbox already registered', error })
       }
 
-      // Create site using the information in the request body
-      new Site({
-        key,
-        name,
-        position,
-        company: company._id,
-        sensors,
-        cameras,
-        smartboxes: smartbox,
-        country
-      })
-      .save(error => {
+      // Always set to zone Centro
+      Zone.findOne({ name: zone, company: company._id })
+      .exec((error, zone) => {
         if (error) {
           winston.error(error)
+          return res.status(500).json({ error })
         }
-        // Site already registred but smartbox does not. Update the site
-        Site.findOneAndUpdate({ key, company: company._id }, { $push: { smartboxes: smartbox._id }})
-        .exec((error, site) => {
+
+        if (!zone) return res.status(404).json({ success: false, message: 'Specified zone was not found'})
+        // Create site using the information in the request body
+        new Site({
+          key,
+          name,
+          position,
+          company: company._id,
+          sensors,
+          cameras,
+          smartboxes: smartbox,
+          country,
+          zone: zone._id
+        })
+        .save(error => {
           if (error) {
             winston.error(error)
-            return res.status(500).json({ success: false, message: 'Could not add the smartbox to the already created site', error })
           }
+          // Site already registred but smartbox does not. Update the site
+          Site.findOneAndUpdate({ key, company: company._id }, { $push: { smartboxes: smartbox._id }})
+          .exec((error, site) => {
+            if (error) {
+              winston.error(error)
+              return res.status(500).json({ success: false, message: 'Could not add the smartbox to the already created site', error })
+            }
 
-          if (cameras.length > 0) {
-            // Add cameras of the SmartBox
-            cameras.map(camera => {
-              const filename = base64Img.imgSync(camera.photo, 'static/uploads', shortid.generate() + Date.now())
-                new Stream({
-                  id: camera.id,
-                  name: camera.name,
-                  company,
-                  site: site._id,
-                  photo: '/' + filename
-                })
-                .save()
-            })
-          }
+            if (cameras.length > 0) {
+              // Add cameras of the SmartBox
+              cameras.map(camera => {
+                const filename = base64Img.imgSync(camera.photo, 'static/uploads', shortid.generate() + Date.now())
+                  new Stream({
+                    id: camera.id,
+                    name: camera.name,
+                    company,
+                    site: site._id,
+                    photo: '/' + filename
+                  })
+                  .save()
+              })
+            }
 
-          // Add the new site to the specified subzone
-          return res.status(200).json({ site })
+            // Add the new site to the specified subzone
+            return res.status(200).json({ site })
+          })
         })
       })
     })
