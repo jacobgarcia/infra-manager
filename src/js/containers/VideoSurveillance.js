@@ -21,7 +21,8 @@ class VideoSurveillance extends Component {
       from: new Date(),
       showLogDetail: true,
       to: new Date(),
-      playingVideo: true
+      playingVideo: true,
+      isPlaying: false
     }
 
     this.onDayClick = this.onDayClick.bind(this)
@@ -49,8 +50,11 @@ class VideoSurveillance extends Component {
     const { state } = this
     NetworkOperation.createVideoToken(state.selectedLog.site.key, state.selectedLog.id)
     .then(({data}) => {
-      setInterval(() => this.setState({ room: data.room }), 20000)
-
+      this.setState({
+        isLoading: true,
+        isPlaying: true
+      })
+      setInterval(() => this.setState({ room: data.room, isLoading: false }), 20000)
     })
   }
 
@@ -104,7 +108,28 @@ class VideoSurveillance extends Component {
                     }
                 </div>
                 <div className="action destructive">
-                  <p onClick={this.onVideoDemand}>Pedir Video</p>
+                  {
+                    state.isLoading &&
+                    <div className="loading">
+
+                    <ul className="loadinglist">
+                      <li>
+                        <div id="panel">
+                            <span id="loading5">
+                                  <span id="outerCircle"></span>
+                            </span>
+                          </div>
+                      </li>
+                      <br/>
+
+                   </ul>
+
+                    </div>
+                  }
+                  {
+                    !state.isPlaying &&
+                    <p onClick={this.onVideoDemand}>Pedir Video</p>
+                  }
                 </div>
               </div>
           </div>
