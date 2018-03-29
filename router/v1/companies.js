@@ -510,7 +510,7 @@ router.route('/video/cameras')
   const company = req._user.cmp
 
   Stream.find({ company })
-  .populate('site', 'key zone')
+  .populate('site', 'key')
   .exec((error, cameras) => {
     if (error) {
       winston.error({error})
