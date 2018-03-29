@@ -319,7 +319,7 @@ router.route('/sites/initialize')
           country,
           zone: zone._id
         })
-        .save((error => {
+        .save(error => {
           if (error) {
             winston.error(error)
           }
