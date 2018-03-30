@@ -360,12 +360,12 @@ router.route('/smartbox/exception')
   const { id, description } = req.body
   if (!id || !description) return res.status(400).json({ })
   SmartBox.findOneAndUpdate({ id }, { $push: { exceptions: { description } } })
-  .exec((error, smartbox) => {
+  .exec(error => {
     if (error) {
       winston.error(error)
       return res.status(500).json({'success': false, 'message': "Could not save exception"})
     }
-    return res.status(200).json({ 'success': true, smartbox })
+    return res.status(200).json({ 'success': true, message: 'Succesfully added exception' })
   })
 })
 
@@ -403,13 +403,13 @@ router.route('/smartbox/debug')
   })
 
   SmartBox.findOneAndUpdate({ id }, { $push: { debugs: { photos } } }, {$set: { debugs: { logFile: req.files.log[0] } }})
-  .exec((error, smartbox) => {
+  .exec(error => {
     if (error) {
       winston.error(error)
       return res.status(500).json({success: false, message: "The specified debug couldn't be created"})
     }
 
-    return res.status(200).json({ 'success': true, smartbox})
+    return res.status(200).json({ 'success': true, message: 'Succesfully debugged Smartbox'})
 
   })
 })
