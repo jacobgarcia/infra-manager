@@ -383,16 +383,16 @@ router.route('/smartbox/upgrade/:key')
     if (!smartbox) return res.status(404).json({ success: false, message: "Specified Smartbox was not found"})
 
     global.io.to(key).emit('upgrade')
-    return res.status(200).json({ 'success': true, message: 'Initialized Smartbox debugging process' })
+    return res.status(200).json({ 'success': true, message: 'Initialized Smartbox debugging process', smartbox })
 
   })
 })
 
-router.route('/smartbox/debug/:id')
+router.route('/smartbox/debug/:key')
 .get((req, res) => {
-  const { id } = req.params
+  const { key } = req.params
 
-  SmartBox.findOne({ id })
+  Site.findOne({ key })
   .exec((error, smartbox) => {
     if (error) {
       winston.error(error)
@@ -401,7 +401,7 @@ router.route('/smartbox/debug/:id')
 
     if (!smartbox) return res.status(404).json({ success: false, message: "Specified Smartbox was not found"})
 
-    global.io.to(id).emit('debug')
+    global.io.to(key).emit('debug')
     return res.status(200).json({ 'success': true, message: 'Initialized Smartbox debugging process', smartbox })
 
   })
