@@ -369,6 +369,25 @@ router.route('/smartbox/exception')
   })
 })
 
+router.route('/smartbox/upgrade/:key')
+.get((req, res) => {
+  const { key } = req.params
+
+  Site.findOne({ key })
+  .exec((error, smartbox) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': false, 'message': "Could not find Smart Box"})
+    }
+
+    if (!smartbox) return res.status(404).json({ success: false, message: "Specified Smartbox was not found"})
+
+    global.io.to(key).emit('debug')
+    return res.status(200).json({ 'success': true, message: 'Initialized Smartbox debugging process' })
+
+  })
+})
+
 router.route('/smartbox/debug/:id')
 .get((req, res) => {
   const { id } = req.params
