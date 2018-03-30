@@ -38,7 +38,7 @@ router.route('/vehicular-flow/recognize')
   .exec((error, detailedSite) => {
     if (error) {
       winston.error({error})
-      return res.status(500).json({ error })
+      return res.status(500).json({ success: false, message: 'Could not find site', error })
     }
 
     if (!detailedSite) return res.status(404).json({ success: false, message: 'Site not found'})
@@ -55,7 +55,7 @@ router.route('/vehicular-flow/recognize')
     apiInstance.recognizeUrl(image, secretKey, country, options, (error, data) => {
       if (error) {
         winston.error({error})
-        return res.status(500).json({ error })
+        return res.status(500).json({ success: false, message: 'Could not process OpenALPR API call', error })
       }
 
       new VehicularReport({

@@ -126,21 +126,23 @@ class App extends Component {
       this.socket.emit('join', 'connus')
     })
 
-    this.socket.on('alert', alert => {
-      // Get site id based on key
-      NetworkOperation.getSiteId(alert.site)
-      .then(({data}) => {
-        const theAlert = {
-          site: alert.site,
-          alert: alert.alert,
-          id: data.site._id
-        }
-        this.setState(prev => ({
-          alerts: prev.alerts.concat([{...theAlert, timestamp: Date.now()}])
-        }))
+      if (this.props.credentials.company.name === 'AT&T' || this.props.credentials.company.name === 'Connus') {
+        this.socket.on('alert', alert => {
+        // Get site id based on key
+        NetworkOperation.getSiteId(alert.site)
+        .then(({data}) => {
+          const theAlert = {
+            site: alert.site,
+            alert: alert.alert,
+            id: data.site._id
+          }
+          this.setState(prev => ({
+            alerts: prev.alerts.concat([{...theAlert, timestamp: Date.now()}])
+          }))
+        })
       })
+    }
 
-    })
   }
 
   // Add manual alert

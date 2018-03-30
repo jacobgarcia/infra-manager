@@ -83,7 +83,7 @@ class Dashboard extends Component {
                   full={state.detail === 'performance'}
                   detailView={
                     <div className="detail-view">
-                      <h1>4<p>/300 equipos dañados (<span>1.2%</span>)</p></h1>
+                      <h1>0<p>/8 equipos dañados (<span>0%</span>)</p></h1>
                       <Table
                         selectedElementIndex={state.selectedElementIndex}
                         element={(item, index, sectionIndex) =>
@@ -138,7 +138,7 @@ class Dashboard extends Component {
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
-                    <p>2 sitios</p>
+                    <p>8 sitios</p>
                     <div className="stats">
                       <p><span>100%</span> funcionando</p>
                       <p className="border button warning" onClick={() => this.setState({detail: 'performance'})}><span>0%</span> alertado</p>
@@ -200,21 +200,19 @@ class Dashboard extends Component {
                     className="horizontal"
                   >
                     <h1>Centro</h1>
-                    <p>2 Sitios</p>
+                    <p>8 Sitios</p>
                     <div className="card-footer">
-                      <p className="red">1 alerta</p>
-                      <span className="action">Revisar</span>
+                      <p className="red">0 alertas </p>
                     </div>
                   </Card>
                   <Card
                     title="Sitio de mas alertas"
                     className="horizontal"
                   >
-                    <h1>CNHQ9094</h1>
+                    <h1>MEXTEX1244</h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
-                      <p className="red">21 alertas</p>
-                      <span className="action">Revisar</span>
+                      <p className="red">3 alertas</p>
                     </div>
                   </Card>
                 </div>

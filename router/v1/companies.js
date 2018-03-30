@@ -272,7 +272,7 @@ router.route('/sites/initialize')
   const { id, version, company, key, name, country, zone } = req.body
   let { position, sensors, cameras } = req.body
 
-  if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country) return res.status(400).json({ success: false, message: 'Malformed request'})
+  if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country || !zone) return res.status(400).json({ success: false, message: 'Malformed request'})
   if (typeof sensors === 'string' || typeof cameras === 'string') {
     sensors = JSON.parse(sensors)
     cameras = JSON.parse(cameras)
@@ -358,6 +358,7 @@ router.route('/sites/initialize')
 router.route('/smartbox/exception')
 .post((req, res) => {
   const { id, description } = req.body
+  if (!id || !description) return res.status(400).json({ })
   SmartBox.findOneAndUpdate({ id }, { $push: { exceptions: { description } } })
   .exec((error, smartbox) => {
     if (error) {
@@ -388,9 +389,9 @@ router.route('/smartbox/debug/:id')
 })
 
 // post Smartbox debug
-router.route('/smartbox/debug/:id')
+router.route('/smartbox/debug')
 .post(upload, (req,res) => {
-  const { id } = req.params
+  const { id } = req.body
   const photoFiles = req.files.photos
   console.log(req.files)
   const photos = []
