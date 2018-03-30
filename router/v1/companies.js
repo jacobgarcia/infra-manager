@@ -382,7 +382,7 @@ router.route('/smartbox/upgrade/:key')
 
     if (!smartbox) return res.status(404).json({ success: false, message: "Specified Smartbox was not found"})
 
-    global.io.to(key).emit('debug')
+    global.io.to(key).emit('upgrade')
     return res.status(200).json({ 'success': true, message: 'Initialized Smartbox debugging process' })
 
   })
