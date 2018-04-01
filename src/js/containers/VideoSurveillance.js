@@ -16,7 +16,7 @@ class VideoSurveillance extends Component {
     super(props)
 
     this.state = {
-      selectedLog: this.props.cameraReports.length > 0 ? this.props.cameraReports[0] : null,
+      selectedLog: this.props.cameraReports.length > 0 ? this.props.cameraReports[0] : {},
       selectedElementIndex: this.props.cameraReports.length > 0 ? [0,0] : [null,null],
       from: new Date(),
       showLogDetail: true,
@@ -78,7 +78,6 @@ class VideoSurveillance extends Component {
         src: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
         type: 'application/x-mpegURL'
       }],
-      poster: state.selectedLog.photo,
       width: 340,
       height: 240,
       controlBar: {
@@ -93,13 +92,15 @@ class VideoSurveillance extends Component {
         </Helmet>
         <div className="content">
           <h2>Video Vigilancia</h2>
-          <div className="tables-detail__container">
+            <div className="tables-detail__container">
+            { this.props.cameraReports.length > 0 &&
+
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
                 {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
                 <div className="time-location">
                   <p>{state.selectedLog.name && state.selectedLog.name}</p>
-                  <p>Zona <span>{state.selectedLog.name && state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site.key}</span></p>
+                  <p>Zona <span>{state.selectedLog.name && state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site && state.selectedLog.site.key}</span></p>
                 </div>
 
                 <div>
@@ -133,6 +134,7 @@ class VideoSurveillance extends Component {
                 </div>
               </div>
           </div>
+        }
             <div className="tables-container">
               <Table
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
