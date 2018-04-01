@@ -3,13 +3,13 @@ import React from 'react'
 function BatteryChart(props) {
   return (
     <div className="battery-chart" style={{width: props.width, height: props.height}}>
-      <div className="bar"></div>
-      <div className="bar"></div>
-      <div className="bar"></div>
-      <div className="bar"></div>
-      <div className="bar"></div>
-      <div className="bar"></div>
-      <div className="bar"></div>
+      <div className="unbar"></div>
+      <div className="unbar"></div>
+      <div className="unbar"></div>
+      <div className="unbar"></div>
+      <div className="unbar"></div>
+      <div className="unbar"></div>
+      <div className="unbar"></div>
       <div className="bar"></div>
     </div>
   )
