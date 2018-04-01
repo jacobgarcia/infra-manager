@@ -13,7 +13,8 @@ export default function vehicularReports(state = [], action) {
         model: action.report.model.slice(action.report.model.indexOf('_')).charAt(1).toUpperCase() + action.report.model.slice(action.report.model.indexOf('_') + 2) ,
         color: action.report.color,
         plate: action.report.plate,
-        risk: action.report.risk
+        risk: action.report.risk,
+        region: action.report.region
       }]
     default:
       return state

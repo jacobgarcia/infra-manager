@@ -24,6 +24,7 @@ class VehicularFlow extends Component {
     this.onDayClick = this.onDayClick.bind(this)
     this.onLogSelect = this.onLogSelect.bind(this)
     this.colorDictionary = this.colorDictionary.bind(this)
+    this.regionDictionary = this.regionDictionary.bind(this)
   }
 
   onLogSelect(element, elementIndex, sectionIndex) {
@@ -42,6 +43,9 @@ class VehicularFlow extends Component {
   colorDictionary(color) {
     let esColor = ''
     switch (color) {
+      case 'red':
+        esColor = 'Rojo'
+        break
       case 'silver-gray':
         esColor = 'Gris Platinado'
         break
@@ -49,6 +53,18 @@ class VehicularFlow extends Component {
         esColor = 'N/A'
     }
     return esColor
+  }
+
+  regionDictionary(region) {
+    let esRegion = ''
+    switch (region) {
+      case 'ca':
+        esRegion = 'California'
+        break
+      default:
+        esRegion = 'N/A'
+    }
+    return esRegion
   }
 
   render() {
@@ -117,7 +133,7 @@ class VehicularFlow extends Component {
                     </div>
                     <div className="detail">
                       <span>Region</span>
-                      <p>{state.selectedLog.region}</p>
+                      <p>{this.regionDictionary(state.selectedLog.region)}</p>
                     </div>
                   </div>
                 </div>
