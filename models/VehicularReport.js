@@ -15,7 +15,8 @@ const schema = new Schema({
   color: String,
   plate: String,
   region: String,
-  risk: { type: Number, default: 0 }
+  risk: { type: Number, default: 0 },
+  company: { type: Schema.Types.ObjectId, ref: 'Company' },
 })
 
 module.exports = mongoose.model('VehicularReport', schema)

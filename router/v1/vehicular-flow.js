@@ -24,13 +24,15 @@ const storage = multer.diskStorage({
 })
 
 // Upload object specs
-const upload = multer({storage: storage}).fields([{ name: 'front', maxCount: 1 }, { name: 'back', maxCount: 1 }, { name: 'video', maxCount: 1 }])
+const upload = multer({storage: storage}).fields([{ name: 'front', maxCount: 1 }, { name: 'back', maxCount: 1 }, { name: 'video', maxCount: 2 }])
 const file = multer({storage: storage}).single('file')
 
 router.route('/vehicular-flow/recognize')
 .post(upload, (req, res) => {
   // Receieve photo as file and upload it
   const { key, domain } = req.body
+  const company = req._user.cmp
+
   let image = 'https://' + domain + '.connus.mx/static/vehicular-flow/' + req.files.back[0].filename
   if (process.env.NODE_ENV === "development") image = 'https://demo.connus.mx/static/img/dummy/lpr-06.jpg'
 
@@ -69,7 +71,8 @@ router.route('/vehicular-flow/recognize')
         model: data.results[0].vehicle.make_model[0].name,
         color: data.results[0].vehicle.color[0].name,
         plate: data.results[0].plate,
-        region: data.results[0].region
+        region: data.results[0].region,
+        company
       })
       .save((error, report) => {
         if (error) {
@@ -84,7 +87,9 @@ router.route('/vehicular-flow/recognize')
 
 router.route('/vehicular-flow/reports')
 .get((req, res) => {
-  VehicularReport.find()
+  const company = req._user.cmp
+
+  VehicularReport.find({ company })
   .exec((error, reports) => {
     if (error) {
       winston.error({error})
