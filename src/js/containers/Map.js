@@ -220,7 +220,7 @@ class MapContainer extends Component {
 
 
     return {
-      elements: this.props.zones.map(({name, positions, _id, sites = []}) => ({name, positions, _id, elements: this.state.availableSites.length, type: 'ZONE'})),
+      elements: this.props.zones.map(({name, positions, _id, sites = []}) => ({name, positions, _id, elements: sites.length, type: 'ZONE'})),
       shadow: null,
       element: null
     }

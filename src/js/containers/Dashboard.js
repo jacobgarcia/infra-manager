@@ -209,10 +209,10 @@ class Dashboard extends Component {
                     title="Sitio de mas alertas"
                     className="horizontal"
                   >
-                    <h1>MEXTEX1244</h1>
+                    <h1>MEXATZ0973</h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
-                      <p className="red">3 alertas</p>
+                      <p className="red">0 alertas</p>
                     </div>
                   </Card>
                 </div>
