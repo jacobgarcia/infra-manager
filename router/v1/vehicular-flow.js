@@ -46,7 +46,7 @@ router.route('/vehicular-flow/recognize')
     if (!detailedSite) return res.status(404).json({ success: false, message: 'Site not found'})
 
     // Defines the training data used by OpenALPR
-    const country = 'us,' + detailedSite.country
+    const country = 'us'
 
     // Recognize vehicle information
     const options = {
