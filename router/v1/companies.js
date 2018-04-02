@@ -510,21 +510,6 @@ router.route('/video/token')
     })
 })
 
-router.route('/video/publish')
-.post((req, res) => {
-  const { name } = req.body
-
-  Stream.findOne({ room: name })
-  .exec((error, stream) => {
-    if (error) {
-      winston.error({error})
-      return res.status(500).json({ success: false, message: 'Could not publish streaming' })
-    }
-    if (stream) res.status(200).json({ success: true, message: 'Streaming successfully published'})
-    return res.status(403).json({ success: false, message: 'Can not publish to that room'})
-  })
-})
-
 router.route('/video/cameras')
 .get((req, res) => {
   const company = req._user.cmp

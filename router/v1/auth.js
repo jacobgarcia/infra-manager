@@ -13,6 +13,8 @@ const Guest = require(path.resolve('models/Guest'))
 
 const config = require(path.resolve('config/config'))
 
+const Stream = require(path.resolve('models/Stream'))
+
 // nev.configure({
 //   verificationURL: `https://demo.kawlantid.com/signup/${URL}`,
 //   // mongo configuration
@@ -44,6 +46,21 @@ const config = require(path.resolve('config/config'))
 //
 //   hashingFunction: null
 // })
+
+router.route('/video/publish')
+.post((req, res) => {
+  const { name } = req.body
+  console.log('Publishing video')
+  Stream.findOne({ room: name })
+  .exec((error, stream) => {
+    if (error) {
+      winston.error({error})
+      return res.status(500).json({ success: false, message: 'Could not publish streaming' })
+    }
+    if (stream) res.status(200).json({ success: true, message: 'Streaming successfully published'})
+    return res.status(403).json({ success: false, message: 'Can not publish to that room'})
+  })
+})
 
 router.post('/signup/:invitation_token', (req, res) => {
   const invitation_token = req.params.invitation_token

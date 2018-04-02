@@ -173,21 +173,19 @@ class VehicularFlow extends Component {
                     className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1 ? 'selected' : ''}`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, 1)}>
-                    <div className="medium">{item.timestamp && `${item.timestamp.toString()} ${item.timestamp.toString()}`}</div>
-                    <div className="large">{item.log}</div>
+                    <div className="medium">{item.timestamp && `${new Date(item.timestamp).toLocaleDateString()}`}</div>
                     <div className="hiddable">{item.site}</div>
                     <div><RiskBar risk={item.risk} /></div>
-                    <div>{item.status}</div>
+                    <div>{item.event}</div>
                   </div>
                 }
                 title="Alertas"
                 elements={props.vehicularReports.filter($0 => $0.risk > 0)}
                 titles={[
                   {title: 'Tiempo', className: 'medium'},
-                  {title: 'Suceso', className: 'large'},
                   {title: 'Sitio', className: 'hiddable'},
                   {title: 'Riesgo'},
-                  {title: 'Estatus'}
+                  {title: 'Suceso', className: 'large'},
                 ]}
               />
             </div>

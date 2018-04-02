@@ -14,7 +14,8 @@ export default function vehicularReports(state = [], action) {
         color: action.report.color,
         plate: action.report.plate,
         risk: action.report.risk,
-        region: action.report.region
+        region: action.report.region,
+        event: action.report.event
       }]
     default:
       return state
