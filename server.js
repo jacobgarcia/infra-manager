@@ -127,7 +127,7 @@ const config = {
     port: 8000,
     allow_origin: '*'
   }
-})
+}
 
 function videoConverter(name) {
     var file = name.split("/")
