@@ -57,7 +57,7 @@ router.route('/video/publish')
       winston.error({error})
       return res.status(500).json({ success: false, message: 'Could not publish streaming' })
     }
-    if (stream) res.status(200).json({ success: true, message: 'Streaming successfully published'})
+    if (stream) return res.status(200).json({ success: true, message: 'Streaming successfully published'})
     return res.status(403).json({ success: false, message: 'Can not publish to that room'})
   })
 })
