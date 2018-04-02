@@ -62,7 +62,7 @@ router.route('/vehicular-flow/recognize')
 
       if (data.results.length < 1) {
         new VehicularReport({
-          zone: 'Centro'.
+          zone: 'Centro',
           site: key,
           front: '/static/vehicular-flow/' + req.files.front[0].filename,
           back: '/static/vehicular-flow/' + req.files.back[0].filename,
