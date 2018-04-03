@@ -36,7 +36,8 @@ class VideoSurveillance extends Component {
       showLogDetail: true,
       selectedLog: item,
       selectedElementIndex: [index, sectionIndex],
-      playingVideo: false
+      playingVideo: false,
+      index
     }, () => {
       this.setState({
         playingVideo: true,
