@@ -95,7 +95,7 @@ class StatusesContainer extends PureComponent {
 
 
            if (sensor) {
-             if(sensor.key.search("cs") !== -1 && sensor.key.search("vs") !== -1){
+             if(sensor.key.search("cs") !== -1 || sensor.key.search("vs") !== -1){
                status = [{ name: 'bold', value: (sensor.value == 100 ? 'OK': 'BAD')}, { name: 'alerts', value: (sensor.value == 100 ? 'OK': 'BAD') }]
                percentage = (sensor.value == 100 ? 'OK': 'BAD')
 
