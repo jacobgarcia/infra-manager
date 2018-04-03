@@ -36,7 +36,8 @@ class VideoSurveillance extends Component {
       showLogDetail: true,
       selectedLog: item,
       selectedElementIndex: [index, sectionIndex],
-      playingVideo: false
+      playingVideo: false,
+      index
     }, () => {
       this.setState({
         playingVideo: true,
@@ -132,7 +133,7 @@ class VideoSurveillance extends Component {
                   <div>
                       {
                         state.playingVideo &&
-                        <ReactPlayer url={'https://demo.connus.mx/static/videos/mp4/stream' + (parseInt(state.selectedElementIndex.splice(',')) + 1) + '.mp4'} playing width="340" height="240" controls fileConfig={{ attributes: { poster: state.selectedLog.photo } }}/>
+                        <ReactPlayer url={'https://demo.connus.mx/static/videos/mp4/stream' + (parseInt(index) + 1) + '.mp4'} playing width="340" height="240" controls fileConfig={{ attributes: { poster: state.selectedLog.photo } }}/>
                       }
                   </div>
                   {
