@@ -112,6 +112,18 @@ class StatusesContainer extends PureComponent {
             case 'vs2':
               name = 'de vibración 2'
               break
+            case 'ts1':
+              name = 'de temperatura'
+              break
+            case 'fs1':
+              name = 'de combustible'
+              break
+            case 'bs1':
+              name = 'de batería'
+              break
+            case 'cu1':
+              name = 'de corriente'
+              break
             default:
 
           }
