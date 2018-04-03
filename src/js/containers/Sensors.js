@@ -15,9 +15,15 @@ const data = [
 ]
 
 const data2 = [
-  { name: 'workings', value: 90 },
-  { name: 'alerts', value: 10 },
-  { name: 'damaged', value: 0 }
+  { name: 'workings', value: 175 },
+  { name: 'alerts', value: 17 },
+  { name: 'damaged', value: 3 }
+]
+
+const data3 = [
+  { name: 'workings', value: 17 },
+  { name: 'alerts', value: 2 },
+  { name: 'damaged', value: 4 }
 ]
 
 
@@ -102,7 +108,7 @@ class Users extends Component {
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0} dataKey="value" data={data}
+                      animationBegin={0} dataKey="value" data={data3}
                       cx={75} cy={75} innerRadius={55} outerRadius={75}
                       strokeWidth={0} label>
                       {

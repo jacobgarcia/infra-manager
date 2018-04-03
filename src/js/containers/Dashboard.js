@@ -68,11 +68,6 @@ class Dashboard extends Component {
       <div className="dashboard app-content small-padding">
         <div className="content">
           <h2>Estatus <div className="actions">
-            <DateRangePicker
-              from={state.from}
-              to={state.to}
-              onDayClick={this.onDayClick}
-            />
           </div></h2>
           <div className="overall-container">
             <div className={`horizontal-container ${state.detail !== null ? 'minified' : ''}`}>
@@ -134,13 +129,13 @@ class Dashboard extends Component {
                       </Pie>
                       <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                     </PieChart>
-                    <h1>70%</h1>
+                    <h1>75%</h1>
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
                     <p>7 sitios</p>
                     <div className="stats">
-                      <p><span>70%</span> funcionando</p>
+                      <p><span>75%</span> funcionando</p>
                       <p className="border button warning" onClick={() => this.setState({detail: 'performance'})}><span>20%</span> alertado</p>
                       <p className="border button error" onClick={() => this.setState({detail: 'performance'})}><span>10%</span> dañado</p>
                     </div>
@@ -202,17 +197,17 @@ class Dashboard extends Component {
                     <h1>Centro</h1>
                     <p>8 Sitios</p>
                     <div className="card-footer">
-                      <p className="red">0 alertas </p>
+                      <p className="red">6 alertas </p>
                     </div>
                   </Card>
                   <Card
                     title="Sitio de mas alertas"
                     className="horizontal"
                   >
-                    <h1>MEXATZ0973</h1>
+                    <h1>MEXECA1058</h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
-                      <p className="red">0 alertas</p>
+                      <p className="red">4 alertas</p>
                     </div>
                   </Card>
                 </div>
