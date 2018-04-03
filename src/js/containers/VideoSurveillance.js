@@ -16,7 +16,7 @@ class VideoSurveillance extends Component {
     super(props)
 
     this.state = {
-      selectedLog: this.props.cameraReports.length > 0 ? this.props.cameraReports[0] : {},
+      selectedLog: this.props.cameraReports.length > 0 ? this.props.cameraReports[0] : null,
       selectedElementIndex: this.props.cameraReports.length > 0 ? [0,0] : [null,null],
       from: new Date(),
       showLogDetail: true,
@@ -36,8 +36,7 @@ class VideoSurveillance extends Component {
       showLogDetail: true,
       selectedLog: item,
       selectedElementIndex: [index, sectionIndex],
-      playingVideo: false,
-      index
+      playingVideo: false
     }, () => {
       this.setState({
         playingVideo: true,
