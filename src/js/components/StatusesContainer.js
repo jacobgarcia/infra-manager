@@ -95,10 +95,17 @@ class StatusesContainer extends PureComponent {
 
           if (props.type === 'SITE') {
             const sensor = substractReportValues(props.reports).sensors.find(({key}) => key === element.key)
-            //console.log(sensor.value)
+
+
             if (sensor) {
-              status = [{ name: 'bold', value: sensor.value}, { name: 'alerts', value: 100 - sensor.value }]
-              percentage = sensor.value
+              if(sensor.key.search("cs") !== -1){
+                status = [{ name: 'bold', value: (sensor.value == 100 ? 'OK': 'BAD')}, { name: 'alerts', value: (sensor.value == 100 ? 'OK': 'BAD') }]
+                percentage = (sensor.value == 100 ? 'OK': 'BAD')
+
+              }else {
+                status = [{ name: 'bold', value: sensor.value}, { name: 'alerts', value: 100 - sensor.value }]
+                percentage = sensor.value
+              }
             }
           }
 
