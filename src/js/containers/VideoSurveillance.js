@@ -132,7 +132,7 @@ class VideoSurveillance extends Component {
                   <div>
                       {
                         state.playingVideo &&
-                        <ReactPlayer url={'https://demo.connus.mx/static/videos/mp4/stream' + (parseInt(state.index) + 1) + '.mp4'} playing width="340" height="240" controls fileConfig={{ attributes: { poster: state.selectedLog.photo } }}/>
+                        <ReactPlayer url={'https://demo.connus.mx/static/videos/mp4/stream' + state.index) + '.mp4'} playing width="340" height="240" controls fileConfig={{ attributes: { poster: state.selectedLog.photo } }}/>
                       }
                   </div>
                   {
