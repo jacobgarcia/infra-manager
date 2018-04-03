@@ -8,25 +8,25 @@ import { yellow, red, blue, darkGray, violet } from '../lib/colors'
 import { getColor } from '../lib/specialFunctions'
 
 const data = [
-  { name: 'workings', value: 100 },
-  { name: 'alerts', value: 0 },
-  { name: 'damaged', value: 0 }
+  { name: 'workings', value: 70 },
+  { name: 'alerts', value: 20 },
+  { name: 'damaged', value: 10 }
 ]
 
 const data2 = [
-  { name: '7:00 AM', uv: 2, pv: 1042, tv: 92 },
-  { name: '8:00 AM', uv: 6, pv: 1042, tv: 34 },
-  { name: '9:00 AM', uv: 24, pv: 1043, tv: 93 },
-  { name: '10:00 AM', uv: 7, pv: 940, tv: 40 },
-  { name: '11:00 AM', uv: 8, pv: 1241, tv: 541 },
-  { name: '12:00 PM', uv: 4, pv: 1043, tv: 53 },
-  { name: '1:00 PM', uv: 6, pv: 1204, tv: 14 },
-  { name: '2:00 PM', uv: 8, pv: 1143, tv: 443 },
-  { name: '3:00 PM', uv: 9, pv: 1443, tv: 263 },
-  { name: '4:00 PM', uv: 3, pv: 1143, tv: 583 },
-  { name: '5:00 PM', uv: 6, pv: 1143, tv: 583 },
-  { name: '6:00 PM', uv: 18, pv: 1042, tv: 43 },
-  { name: '7:00 PM', uv: 11, pv: 1042, tv: 51 }
+  { name: '7:00 AM', uv: 9, pv: 1042, tv: 92 },
+  { name: '8:00 AM', uv: 31, pv: 1042, tv: 34 },
+  { name: '9:00 AM', uv: 26, pv: 1043, tv: 93 },
+  { name: '10:00 AM', uv: 28, pv: 940, tv: 40 },
+  { name: '11:00 AM', uv: 17, pv: 1241, tv: 541 },
+  { name: '12:00 PM', uv: 7, pv: 1043, tv: 53 },
+  { name: '1:00 PM', uv: 5, pv: 1204, tv: 14 },
+  { name: '2:00 PM', uv: 6, pv: 1143, tv: 443 },
+  { name: '3:00 PM', uv: 4, pv: 1443, tv: 263 },
+  { name: '4:00 PM', uv: 5, pv: 1143, tv: 583 },
+  { name: '5:00 PM', uv: 12, pv: 1143, tv: 583 },
+  { name: '6:00 PM', uv: 31, pv: 1042, tv: 43 },
+  { name: '7:00 PM', uv: 13, pv: 1042, tv: 51 }
 ]
 
 const barData = [
@@ -34,15 +34,15 @@ const barData = [
       {name: '8:00 AM', pv: 100 },
       {name: '9:00 AM', pv: 100 },
       {name: '10:00 AM', pv: 100 },
-      {name: '11:00 AM', pv: 100 },
+      {name: '11:00 AM', pv: 90 },
       {name: '12:00 PM', pv: 100 },
-      {name: '1:00 AM', pv: 100 },
-      {name: '2:00 AM', pv: 100 },
-      {name: '3:00 AM', pv: 100 },
-      {name: '4:00 AM', pv: 100 },
-      {name: '5:00 AM', pv: 100 },
-      {name: '6:00 PM', pv: 100 },
-      {name: '7:00 PM', pv: 100 }
+      {name: '1:00 PM', pv: 100 },
+      {name: '2:00 PM', pv: 80 },
+      {name: '3:00 PM', pv: 100 },
+      {name: '4:00 PM', pv: 100 },
+      {name: '5:00 PM', pv: 100 },
+      {name: '6:00 PM', pv: 70 },
+      {name: '7:00 PM', pv: 70 }
 ]
 
 class Dashboard extends Component {
@@ -83,7 +83,7 @@ class Dashboard extends Component {
                   full={state.detail === 'performance'}
                   detailView={
                     <div className="detail-view">
-                      <h1>0<p>/8 equipos dañados (<span>0%</span>)</p></h1>
+                      <h1>1<p>/8 equipos dañados (<span>10%</span>)</p></h1>
                       <Table
                         selectedElementIndex={state.selectedElementIndex}
                         element={(item, index, sectionIndex) =>
@@ -134,23 +134,23 @@ class Dashboard extends Component {
                       </Pie>
                       <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                     </PieChart>
-                    <h1>100%</h1>
+                    <h1>70%</h1>
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
-                    <p>8 sitios</p>
+                    <p>7 sitios</p>
                     <div className="stats">
-                      <p><span>100%</span> funcionando</p>
-                      <p className="border button warning" onClick={() => this.setState({detail: 'performance'})}><span>0%</span> alertado</p>
-                      <p className="border button error" onClick={() => this.setState({detail: 'performance'})}><span>0%</span> dañado</p>
+                      <p><span>70%</span> funcionando</p>
+                      <p className="border button warning" onClick={() => this.setState({detail: 'performance'})}><span>20%</span> alertado</p>
+                      <p className="border button error" onClick={() => this.setState({detail: 'performance'})}><span>10%</span> dañado</p>
                     </div>
                   </div>
                 </Card>
                 <Card title="Afluencia de personas" className="horizontal">
                   <div className="info">
                     <div className="data">
-                      <h1>25 <span className="delta up">15%</span></h1>
-                      <p>4 personas por hora</p>
+                      <h1>192 <span className="delta up">15%</span></h1>
+                      <p>13 personas por hora</p>
                     </div>
                     <ul className="leyend">
                       <li className="car">Personas</li>

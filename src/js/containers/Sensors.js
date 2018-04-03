@@ -14,6 +14,13 @@ const data = [
   { name: 'damaged', value: 0 }
 ]
 
+const data2 = [
+  { name: 'workings', value: 90 },
+  { name: 'alerts', value: 10 },
+  { name: 'damaged', value: 0 }
+]
+
+
 class Users extends Component {
   constructor(props) {
     super(props)
@@ -28,6 +35,12 @@ class Users extends Component {
       from: new Date(),
       to: new Date()
     }
+
+    this.onSites = this.onSites.bind(this)
+  }
+
+  onSites() {
+    this.props.history.replace(`/sites`)
   }
 
   componentDidMount() {
@@ -54,14 +67,6 @@ class Users extends Component {
         <div className="content">
           <h2>
             Estatus
-            <div className="actions">
-              <DateRangePicker
-                from={state.from}
-                to={state.to}
-                onDayClick={this.onDayClick}
-              />
-              <div className="button">Filtrar</div>
-            </div>
           </h2>
           <div className="overall-container">
           <div className="horizontal-container">
@@ -87,36 +92,57 @@ class Users extends Component {
                 </div>
                 <div className="center">
                   Ningún Sitio Dañado
-                  <p className="border button" onClick={() => this.setState({detail: 'performance'})}>8 sitios</p>
+                  <p className="border button" onClick={this.onSites}>8 sitios</p>
                 </div>
               </Card>
               <Card
                 title="Vibración"
+                className={`graph-container`}
               >
-                <div>
-                  <BatteryChart
-                    height={160}
-                    width={110}
-                  />
+                <div className="graph">
+                  <PieChart width={160} height={160}>
+                    <Pie
+                      animationBegin={0} dataKey="value" data={data}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
+                      strokeWidth={0} label>
+                      {
+                        data.map(({name}, index) =>
+                          <Cell key={index} fill={getColor(name)}/>
+                        )
+                      }
+                    </Pie>
+                    <RechartsTooltip isAnimationActive={false} content={Tooltip} />
+                  </PieChart>
+                  <h1>17</h1>
                 </div>
                 <div className="center">
-                  <p>Ningún sitio alertado</p>
-                  <p className="border button" onClick={() => this.setState({detail: 'performance'})}>8 Sitios</p>
+                  Activaciones
+                  <p className="border button" onClick={this.onSites}>8 sitios</p>
                 </div>
               </Card>
               <Card
-                title="Contacto"
+                title="Apertura"
+                className={`graph-container`}
               >
-                <div>
-                  <FuelChart
-                    height={160}
-                    width={110}
-                    percentage={100}
-                  />
+                <div className="graph">
+                  <PieChart width={160} height={160}>
+                    <Pie
+                      animationBegin={0} dataKey="value" data={data2}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
+                      strokeWidth={0} label>
+                      {
+                        data.map(({name}, index) =>
+                          <Cell key={index} fill={getColor(name)}/>
+                        )
+                      }
+                    </Pie>
+                    <RechartsTooltip isAnimationActive={false} content={Tooltip} />
+                  </PieChart>
+                  <h1>192</h1>
                 </div>
                 <div className="center">
-                  <p>Ningún sitio alertado</p>
-                  <p className="border button" onClick={() => this.setState({detail: 'performance'})}>8 Sitios</p>
+                  Accesos
+                  <p className="border button" onClick={this.onSites}>8 sitios</p>
                 </div>
               </Card>
               <Card
@@ -141,23 +167,23 @@ class Users extends Component {
                 </div>
                 <div className="center">
                   Ningún Sitio Dañado
-                  <p className="border button" onClick={() => this.setState({detail: 'performance'})}>8 sitios</p>
+                  <p className="border button" onClick={this.onSites}>8 sitios</p>
                 </div>
               </Card>
               <Card
-                title="Nivel de Agua"
+                title="Nivel de Batería"
               >
                 <div>
-                  <FuelChart
+                  <BatteryChart
                     height={160}
                     width={110}
-                    percentage={60}
                   />
                 </div>
                 <div className="center">
-                  <h3>60% promedio</h3>
+                <h3>90% promedio</h3>
+
                   <p>Ningún sitio alertado</p>
-                  <p className="border button" onClick={() => this.setState({detail: 'performance'})}>8 Sitios</p>
+                  <p className="border button" onClick={this.onSites}>8 Sitios</p>
                 </div>
               </Card>
               <Card
@@ -172,8 +198,8 @@ class Users extends Component {
                 </div>
                 <div className="center">
                   <h3>80% promedio</h3>
-                  <p>Dañadas</p>
-                  <p className="border button" onClick={() => this.setState({detail: 'performance'})}>8 Sitios</p>
+                  <p>1 alertado</p>
+                  <p className="border warning button" onClick={this.onSites}>1 Sitio</p>
                 </div>
               </Card>
           </div>

@@ -78,14 +78,6 @@ class VehicularFlow extends Component {
         <div className="content">
           <h2>
             Flujo Vehicular
-            <div className="actions">
-              <DateRangePicker
-                from={state.from}
-                to={state.to}
-                onDayClick={this.onDayClick}
-              />
-              <p className="button action disabled">Filtrar</p>
-            </div>
           </h2>
           <div className="tables-detail__container">
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>

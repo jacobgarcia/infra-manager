@@ -10,10 +10,10 @@ class Settings extends Component {
     super(props)
 
     this.state = {
-      name: 'John Appleseed',
+      name: 'Operador Fibercorp',
       permissions: 4,
       photo: null,
-      email: 'johnappleseed@kawlant.com',
+      email: 'operador@fibercorp.com',
       file: null,
       changed: false
     }

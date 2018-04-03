@@ -138,16 +138,6 @@ class VideoSurveillance extends Component {
             <div className="tables-container">
               <Table
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
-                actionsContainer={
-                  <div>
-                    <DateRangePicker
-                      from={state.from}
-                      to={state.to}
-                      onDayClick={this.onDayClick}
-                    />
-                    <p className="button action disabled">Filtrar</p>
-                  </div>
-                }
                 selectedElementIndex={state.selectedElementIndex}
                 element={(item, index, sectionIndex) =>
                   <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
