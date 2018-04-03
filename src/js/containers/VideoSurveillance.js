@@ -164,6 +164,29 @@ class VideoSurveillance extends Component {
                   {title: 'Identificador', className: 'medium hiddable'}
                 ]}
               />
+              <Table
+                className={state.showLogDetail ? 'detailed' : ''}
+                selectedElementIndex={state.selectedElementIndex}
+                element={(item, index) =>
+                  <div
+                    className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1 ? 'selected' : ''}`}
+                    key={index}
+                    onClick={() => this.onLogSelect(item, index, 1)}>
+                    <div className="medium">{item.timestamp && `${new Date(item.timestamp).toLocaleDateString()}`}</div>
+                    <div className="hiddable">{item.site}</div>
+                    <div><RiskBar risk={item.risk} /></div>
+                    <div>{item.event}</div>
+                  </div>
+                }
+                title="Alertas"
+                elements={null}
+                titles={[
+                  {title: 'Tiempo', className: 'medium'},
+                  {title: 'Sitio', className: 'hiddable'},
+                  {title: 'Riesgo'},
+                  {title: 'Suceso', className: 'large'},
+                ]}
+              />
             </div>
           </div>
       </div>

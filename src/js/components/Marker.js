@@ -77,7 +77,7 @@ function SiteMarker(props) {
                           stroke={false}
                         >
                         <Cell fill={constants.colors(percentage)} />
-                        <Cell fill="#424953" />
+                        <Cell fill="#ed2a20" />
                         </Pie>
                       </PieChart>
                       <p>{sensor.key}</p>
