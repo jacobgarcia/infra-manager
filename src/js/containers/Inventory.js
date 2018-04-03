@@ -156,7 +156,7 @@ class Inventory extends Component {
     return sensorName
   }
 
-  onSensorPhoto(photo) {
+  onSensorPhoto(sensor) {
     let sensorName = ''
     switch (sensor) {
       case 'cs':
