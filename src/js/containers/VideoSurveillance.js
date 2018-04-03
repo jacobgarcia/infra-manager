@@ -39,7 +39,8 @@ class VideoSurveillance extends Component {
       playingVideo: false
     }, () => {
       this.setState({
-        playingVideo: true
+        playingVideo: true,
+        selectedElementIndex: [index, sectionIndex]
       })
     })
 
