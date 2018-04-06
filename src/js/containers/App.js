@@ -53,7 +53,7 @@ class App extends Component {
       path = `?return=${this.props.location.pathname}${this.props.location.search}`
     }
 
-    setInterval(this.cleanupAlerts, 5000)
+    setInterval(this.cleanupAlerts, 500000)
 
     if (!token) {
       localStorage.removeItem('token')
@@ -139,6 +139,7 @@ class App extends Component {
         NetworkOperation.getSiteId(alert.site)
         .then(({data}) => {
           const theAlert = {
+            /* console.log(data) */
             site: alert.site,
             alert: alert.alert,
             id: data.site._id

@@ -204,7 +204,7 @@ router.route('/site/:siteKey')
 router.route('/reports')
 .get((req, res) => {
   const company = req._user.cmp
-  global.io.emit('report', report)
+  //global.io.emit('report', report)
   Site.find({ company })
   .populate('zone', 'name')
   .exec((error, sites) => {

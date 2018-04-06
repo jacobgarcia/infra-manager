@@ -107,7 +107,7 @@ class StatusesContainer extends PureComponent {
                 percentage = sensor.value
               }
             }
-          }
+
 
            if (sensor) {
              if(sensor.key.search("cs") !== -1 || sensor.key.search("vs") !== -1){
