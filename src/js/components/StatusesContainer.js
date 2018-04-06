@@ -94,7 +94,7 @@ class StatusesContainer extends PureComponent {
           let { status, percentage, name } = getStatus(reports || null)
 
           if (props.type === 'SITE') {
-            const sensor = substractReportValues(props.reports).sensors.find(({key}) => key === element.key)
+           const sensor = substractReportValues(props.reports).sensors.find(({key}) => key === element.key)
 
 
             if (sensor) {
@@ -108,6 +108,18 @@ class StatusesContainer extends PureComponent {
               }
             }
           }
+
+           if (sensor) {
+             if(sensor.key.search("cs") !== -1 || sensor.key.search("vs") !== -1){
+               status = [{ name: 'bold', value: (sensor.value == 100 ? 'OK': 'BAD')}, { name: 'alerts', value: (sensor.value == 100 ? 'OK': 'BAD') }]
+               percentage = (sensor.value == 100 ? 'OK': 'BAD')
+
+             }else {
+               status = [{ name: 'bold', value: sensor.value}, { name: 'alerts', value: 100 - sensor.value }]
+               percentage = sensor.value
+             }
+           }
+         }
 
           switch (element.key) {
             case 'cs1':

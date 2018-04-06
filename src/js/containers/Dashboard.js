@@ -8,8 +8,8 @@ import { yellow, red, blue, darkGray, violet } from '../lib/colors'
 import { getColor } from '../lib/specialFunctions'
 
 const data = [
-  { name: 'workings', value: 70 },
-  { name: 'alerts', value: 20 },
+  { name: 'workings', value: 75 },
+  { name: 'alerts', value: 15 },
   { name: 'damaged', value: 10 }
 ]
 
@@ -59,7 +59,9 @@ class Dashboard extends Component {
       detail: null
     }
   }
-
+  componentWillMount () {
+    console.log(this.props.perimeterReports)
+  }
   render() {
     const { state, props } = this
     const { facialReports, accessReports, cameraReports, perimeterReports, vehicularReports } = props
@@ -197,7 +199,7 @@ class Dashboard extends Component {
                     <h1>Centro</h1>
                     <p>8 Sitios</p>
                     <div className="card-footer">
-                      <p className="red">6 alertas </p>
+                      <p className="red">8 alertas </p>
                     </div>
                   </Card>
                   <Card
@@ -238,7 +240,7 @@ class Dashboard extends Component {
                   </div>
                 }
                 elements={[
-                  { title: 'Historial', elements: reports},
+                  { title: 'Historial', elements: perimeterReports.concat(reports)},
                   { title: 'Alertas', elements: reports.filter($0 => $0.risk > 0)}
                 ]}
                 titles={[
@@ -262,7 +264,7 @@ Dashboard.propTypes = {
 }
 
 function mapStateToProps({facialReports, accessReports, cameraReports, perimeterReports, vehicularReports}) {
-  return {facialReports}
+  return {facialReports, perimeterReports}
 }
 
 export default connect(mapStateToProps)(Dashboard)

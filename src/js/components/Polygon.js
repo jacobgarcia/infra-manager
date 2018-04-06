@@ -58,7 +58,7 @@ function ZonePolygon(props) {
                     stroke={false}
                   >
                   <Cell fill={colors(percentage)} />
-                  <Cell fill="#303640" />
+                  <Cell fill="#ed2a20" />
                   </Pie>
                 </PieChart>
               }

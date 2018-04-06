@@ -16,7 +16,7 @@ class VideoSurveillance extends Component {
     super(props)
 
     this.state = {
-      selectedLog: this.props.cameraReports.length > 0 ? this.props.cameraReports[0] : {},
+      selectedLog: this.props.cameraReports.length > 0 ? this.props.cameraReports[0] : null,
       selectedElementIndex: this.props.cameraReports.length > 0 ? [0,0] : [null,null],
       from: new Date(),
       showLogDetail: true,
@@ -36,10 +36,12 @@ class VideoSurveillance extends Component {
       showLogDetail: true,
       selectedLog: item,
       selectedElementIndex: [index, sectionIndex],
-      playingVideo: false
+      playingVideo: false,
+      index
     }, () => {
       this.setState({
-        playingVideo: true
+        playingVideo: true,
+        selectedElementIndex: [index, sectionIndex]
       })
     })
 
@@ -105,6 +107,7 @@ class VideoSurveillance extends Component {
 
                 <div>
                     {
+                      state.playingVideo &&
                       <ReactPlayer url={'https://stream.connus.mx/hls/' + state.room + '.m3u8'} playing width="340" height="240" controls fileConfig={{ attributes: { poster: state.selectedLog.photo } }}/>
                     }
                 </div>
@@ -127,6 +130,12 @@ class VideoSurveillance extends Component {
 
                     </div>
                   }
+                  <div>
+                      {
+                        state.playingVideo &&
+                        <ReactPlayer url={'https://demo.connus.mx/static/videos/mp4/stream' + state.index + '.mp4'} playing width="340" height="240" controls fileConfig={{ attributes: { poster: state.selectedLog.photo } }}/>
+                      }
+                  </div>
                   {
                     !state.isPlaying &&
                     <p onClick={this.onVideoDemand}>Pedir Video</p>
@@ -155,6 +164,29 @@ class VideoSurveillance extends Component {
                   {title: 'Zona', className: 'hiddable'},
                   {title: 'Sitio', className: 'hiddable'},
                   {title: 'Identificador', className: 'medium hiddable'}
+                ]}
+              />
+              <Table
+                className={state.showLogDetail ? 'detailed' : ''}
+                selectedElementIndex={state.selectedElementIndex}
+                element={(item, index) =>
+                  <div
+                    className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1 ? 'selected' : ''}`}
+                    key={index}
+                    onClick={() => this.onLogSelect(item, index, 1)}>
+                    <div className="medium">{item.timestamp && `${new Date(item.timestamp).toLocaleDateString()}`}</div>
+                    <div className="hiddable">{item.site}</div>
+                    <div><RiskBar risk={item.risk} /></div>
+                    <div>{item.event}</div>
+                  </div>
+                }
+                title="Alertas"
+                elements={null}
+                titles={[
+                  {title: 'Tiempo', className: 'medium'},
+                  {title: 'Sitio', className: 'hiddable'},
+                  {title: 'Riesgo'},
+                  {title: 'Suceso', className: 'large'},
                 ]}
               />
             </div>
