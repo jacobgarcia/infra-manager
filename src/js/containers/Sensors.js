@@ -152,7 +152,7 @@ class Users extends Component {
                 </div>
               </Card>
               <Card
-                title="Corriente"
+                title="Voltaje"
                 className={`graph-container`}
               >
                 <div className="graph">
