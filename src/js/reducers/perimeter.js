@@ -2,7 +2,8 @@ export default function perimeterReports(state = dumbPerimeterLogs, action) {
   switch (action.type) {
     case 'SET_PERIMETER_REPORT':
       return [...state, {
-        day: action.timestamp,
+        timestamp: action.timestamp,
+        zone: action.zone,
         event: action.positions,
         site: action.site,
         risk: action.risk,
@@ -15,35 +16,67 @@ export default function perimeterReports(state = dumbPerimeterLogs, action) {
 
 const dumbPerimeterLogs = [
   {
-    timestamp: new Date('2018-01-15T11:37:00'),
-    event: 'Personal de seguridad detectado',
-    zone: 'Bajío',
-    site: 'SANCAR7621',
-    risk: 0,
-    status: 'Detección inofensiva'
+    timestamp: new Date('2018-04-03T11:37:00'),
+    event: 'Sensor de apertura activado',
+    zone: 'Centro',
+    site: 'MEXATZ0973',
+    risk: 2,
+    status: 'Alerta generada'
   },
   {
-    timestamp: new Date('2018-01-14T08:46:00'),
-    event: 'Perro detectado',
-    zone: 'Bajío',
-    site: 'MONRAZ3322',
-    risk: 0,
-    status: 'Detección de movimiento inofensiva'
+    timestamp: new Date('2018-04-03T10:55:00'),
+    event: 'Sensor de vibración activado',
+    zone: 'Centro',
+    site: 'MEXATZ0973',
+    risk: 1,
+    status: 'Alerta generada'
   },
   {
-    timestamp: new Date('2018-01-08T15:24:00'),
-    event: 'Peatón cruzando acceso',
-    zone: 'Bajío',
-    site: 'SANCAR7621',
-    risk: 0,
-    status: 'Detección inofensiva'
+    timestamp: new Date('2018-04-02T18:29:00'),
+    event: 'Sensor de apertura activado',
+    zone: 'Centro',
+    site: 'MEXOTU1208',
+    risk: 2,
+    status: 'Alerta generada'
   },
   {
-    timestamp: new Date('2018-01-04T05:28:00'),
-    event: 'Personal de limpieza detectado',
-    zone: 'Bajío',
-    site: 'MONRAZ3322',
-    risk: 0,
-    status: 'Detección inofensiva'
+    timestamp: new Date('2018-04-01T14:49:00'),
+    event: 'Sensor de vibración activado',
+    zone: 'Centro',
+    site: 'MEXOTU1208',
+    risk: 1,
+    status: 'Alerta generada'
+  },
+  {
+    timestamp: new Date('2018-03-30T12:49:00'),
+    event: 'Sensor de vibración activado',
+    zone: 'Centro',
+    site: 'MEXECA1058',
+    risk: 3,
+    status: 'Alerta generada'
+  },
+  {
+    timestamp: new Date('2018-03-29T11:34:00'),
+    event: 'Sensor de vibración activado',
+    zone: 'Centro',
+    site: 'MEXECA1058',
+    risk: 3,
+    status: 'Alerta generada'
+  },
+  {
+    timestamp: new Date('2018-03-29T08:11:00'),
+    event: 'Sensor de vibración activado',
+    zone: 'Centro',
+    site: 'MEXECA1058',
+    risk: 3,
+    status: 'Alerta generada'
+  },
+  {
+    timestamp: new Date('2018-03-28T17:32:00'),
+    event: 'Sensor de vibración activado',
+    zone: 'Centro',
+    site: 'MEXECA1058',
+    risk: 3,
+    status: 'Alerta generada'
   }
 ]

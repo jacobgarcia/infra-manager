@@ -65,11 +65,11 @@ class MapContainer extends Component {
             ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[i])])
         }
     }
-    console.log(ret.sort((a, b) => {
+    /*console.log(ret.sort((a, b) => {
       if(a.name < b.name) return -1
       if(a.name > b.name) return 1
       return 0
-    }))
+    }))*/
     return ret
   }
 
@@ -220,7 +220,7 @@ class MapContainer extends Component {
 
 
     return {
-      elements: this.props.zones.map(({name, positions, _id, sites = []}) => ({name, positions, _id, elements: this.state.availableSites.length, type: 'ZONE'})),
+      elements: this.props.zones.map(({name, positions, _id, sites = []}) => ({name, positions, _id, elements: sites.length, type: 'ZONE'})),
       shadow: null,
       element: null
     }

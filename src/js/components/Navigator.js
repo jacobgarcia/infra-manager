@@ -73,7 +73,6 @@ class Navigator extends Component {
           <li className="hr" />
           <li className="hr" />
           <li onClick={() => this.closeNavigator()}><NavLink to="/users" className="users"><span className="fade">Usuarios</span></NavLink></li>
-          <li onClick={() => this.closeNavigator()}><NavLink to="/reports" className="reports"><span className="fade">Reportes</span></NavLink></li>
           <li className="hr" />
           <li className="hr" />
           <li onClick={() => this.closeNavigator()}><NavLink to="/settings" className="settings"><span className="settings fade">Ajustes</span></NavLink></li>

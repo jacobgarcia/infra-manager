@@ -21,7 +21,8 @@ class VideoSurveillance extends Component {
       from: new Date(),
       showLogDetail: true,
       to: new Date(),
-      playingVideo: true
+      playingVideo: true,
+      isPlaying: false
     }
 
     this.onDayClick = this.onDayClick.bind(this)
@@ -35,10 +36,12 @@ class VideoSurveillance extends Component {
       showLogDetail: true,
       selectedLog: item,
       selectedElementIndex: [index, sectionIndex],
-      playingVideo: false
+      playingVideo: false,
+      index
     }, () => {
       this.setState({
-        playingVideo: true
+        playingVideo: true,
+        selectedElementIndex: [index, sectionIndex]
       })
     })
 
@@ -50,8 +53,10 @@ class VideoSurveillance extends Component {
     NetworkOperation.createVideoToken(state.selectedLog.site.key, state.selectedLog.id)
     .then(({data}) => {
       this.setState({
-        room: data.room
+        isLoading: true,
+        isPlaying: true
       })
+      setInterval(() => this.setState({ room: data.room, isLoading: false }), 20000)
     })
   }
 
@@ -75,7 +80,6 @@ class VideoSurveillance extends Component {
         src: 'https://bitdash-a.akamaihd.net/content/MI201109210084_1/m3u8s/f08e80da-bf1d-4e3d-8899-f0f6155f6efa.m3u8',
         type: 'application/x-mpegURL'
       }],
-      poster: state.selectedLog.photo,
       width: 340,
       height: 240,
       controlBar: {
@@ -90,38 +94,59 @@ class VideoSurveillance extends Component {
         </Helmet>
         <div className="content">
           <h2>Video Vigilancia</h2>
-          <div className="tables-detail__container">
+            <div className="tables-detail__container">
+            { this.props.cameraReports.length > 0 &&
+
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
                 {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
                 <div className="time-location">
                   <p>{state.selectedLog.name && state.selectedLog.name}</p>
-                  <p>Zona <span>{state.selectedLog.name && state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site.key}</span></p>
+                  <p>Zona <span>{state.selectedLog.name && state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site && state.selectedLog.site.key}</span></p>
                 </div>
 
                 <div>
                     {
-                      <ReactPlayer url={'https://stream.connus.mx/hls/' + state.room + '.m3u8'} playing width="340" height="240" controls/>
+                      state.playingVideo &&
+                      <ReactPlayer url={'https://stream.connus.mx/hls/' + state.room + '.m3u8'} playing width="340" height="240" controls fileConfig={{ attributes: { poster: state.selectedLog.photo } }}/>
                     }
                 </div>
                 <div className="action destructive">
-                  <p onClick={this.onVideoDemand}>Pedir Video</p>
+                  {
+                    state.isLoading &&
+                    <div className="loading">
+
+                    <ul className="loadinglist">
+                      <li>
+                        <div id="panel">
+                            <span id="loading5">
+                                  <span id="outerCircle"></span>
+                            </span>
+                          </div>
+                      </li>
+                      <br/>
+
+                   </ul>
+
+                    </div>
+                  }
+                  <div>
+                      {
+                        state.playingVideo &&
+                        <ReactPlayer url={'https://demo.connus.mx/static/videos/mp4/stream' + state.index + '.mp4'} playing width="340" height="240" controls fileConfig={{ attributes: { poster: state.selectedLog.photo } }}/>
+                      }
+                  </div>
+                  {
+                    !state.isPlaying &&
+                    <p onClick={this.onVideoDemand}>Pedir Video</p>
+                  }
                 </div>
               </div>
           </div>
+        }
             <div className="tables-container">
               <Table
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
-                actionsContainer={
-                  <div>
-                    <DateRangePicker
-                      from={state.from}
-                      to={state.to}
-                      onDayClick={this.onDayClick}
-                    />
-                    <p className="button action disabled">Filtrar</p>
-                  </div>
-                }
                 selectedElementIndex={state.selectedElementIndex}
                 element={(item, index, sectionIndex) =>
                   <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
@@ -139,6 +164,29 @@ class VideoSurveillance extends Component {
                   {title: 'Zona', className: 'hiddable'},
                   {title: 'Sitio', className: 'hiddable'},
                   {title: 'Identificador', className: 'medium hiddable'}
+                ]}
+              />
+              <Table
+                className={state.showLogDetail ? 'detailed' : ''}
+                selectedElementIndex={state.selectedElementIndex}
+                element={(item, index) =>
+                  <div
+                    className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1 ? 'selected' : ''}`}
+                    key={index}
+                    onClick={() => this.onLogSelect(item, index, 1)}>
+                    <div className="medium">{item.timestamp && `${new Date(item.timestamp).toLocaleDateString()}`}</div>
+                    <div className="hiddable">{item.site}</div>
+                    <div><RiskBar risk={item.risk} /></div>
+                    <div>{item.event}</div>
+                  </div>
+                }
+                title="Alertas"
+                elements={null}
+                titles={[
+                  {title: 'Tiempo', className: 'medium'},
+                  {title: 'Sitio', className: 'hiddable'},
+                  {title: 'Riesgo'},
+                  {title: 'Suceso', className: 'large'},
                 ]}
               />
             </div>

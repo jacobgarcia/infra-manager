@@ -9,7 +9,7 @@ const dumbCctvLogs = [
   }
 ]
 
-export default function cctvLogs(state = dumbCctvLogs, action) {
+export default function cctvLogs(state = [], action) {
   switch (action.type) {
     case 'SET_CAMERA':
       return [...state, {

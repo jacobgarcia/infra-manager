@@ -8,25 +8,25 @@ import { yellow, red, blue, darkGray, violet } from '../lib/colors'
 import { getColor } from '../lib/specialFunctions'
 
 const data = [
-  { name: 'workings', value: 100 },
-  { name: 'alerts', value: 0 },
-  { name: 'damaged', value: 0 }
+  { name: 'workings', value: 75 },
+  { name: 'alerts', value: 15 },
+  { name: 'damaged', value: 10 }
 ]
 
 const data2 = [
-  { name: '7:00 AM', uv: 2, pv: 1042, tv: 92 },
-  { name: '8:00 AM', uv: 6, pv: 1042, tv: 34 },
-  { name: '9:00 AM', uv: 24, pv: 1043, tv: 93 },
-  { name: '10:00 AM', uv: 7, pv: 940, tv: 40 },
-  { name: '11:00 AM', uv: 8, pv: 1241, tv: 541 },
-  { name: '12:00 PM', uv: 4, pv: 1043, tv: 53 },
-  { name: '1:00 PM', uv: 6, pv: 1204, tv: 14 },
-  { name: '2:00 PM', uv: 8, pv: 1143, tv: 443 },
-  { name: '3:00 PM', uv: 9, pv: 1443, tv: 263 },
-  { name: '4:00 PM', uv: 3, pv: 1143, tv: 583 },
-  { name: '5:00 PM', uv: 6, pv: 1143, tv: 583 },
-  { name: '6:00 PM', uv: 18, pv: 1042, tv: 43 },
-  { name: '7:00 PM', uv: 11, pv: 1042, tv: 51 }
+  { name: '7:00 AM', uv: 9, pv: 1042, tv: 92 },
+  { name: '8:00 AM', uv: 31, pv: 1042, tv: 34 },
+  { name: '9:00 AM', uv: 26, pv: 1043, tv: 93 },
+  { name: '10:00 AM', uv: 28, pv: 940, tv: 40 },
+  { name: '11:00 AM', uv: 17, pv: 1241, tv: 541 },
+  { name: '12:00 PM', uv: 7, pv: 1043, tv: 53 },
+  { name: '1:00 PM', uv: 5, pv: 1204, tv: 14 },
+  { name: '2:00 PM', uv: 6, pv: 1143, tv: 443 },
+  { name: '3:00 PM', uv: 4, pv: 1443, tv: 263 },
+  { name: '4:00 PM', uv: 5, pv: 1143, tv: 583 },
+  { name: '5:00 PM', uv: 12, pv: 1143, tv: 583 },
+  { name: '6:00 PM', uv: 31, pv: 1042, tv: 43 },
+  { name: '7:00 PM', uv: 13, pv: 1042, tv: 51 }
 ]
 
 const barData = [
@@ -34,15 +34,15 @@ const barData = [
       {name: '8:00 AM', pv: 100 },
       {name: '9:00 AM', pv: 100 },
       {name: '10:00 AM', pv: 100 },
-      {name: '11:00 AM', pv: 100 },
+      {name: '11:00 AM', pv: 90 },
       {name: '12:00 PM', pv: 100 },
-      {name: '1:00 AM', pv: 100 },
-      {name: '2:00 AM', pv: 100 },
-      {name: '3:00 AM', pv: 100 },
-      {name: '4:00 AM', pv: 100 },
-      {name: '5:00 AM', pv: 100 },
-      {name: '6:00 PM', pv: 100 },
-      {name: '7:00 PM', pv: 100 }
+      {name: '1:00 PM', pv: 100 },
+      {name: '2:00 PM', pv: 80 },
+      {name: '3:00 PM', pv: 100 },
+      {name: '4:00 PM', pv: 100 },
+      {name: '5:00 PM', pv: 100 },
+      {name: '6:00 PM', pv: 70 },
+      {name: '7:00 PM', pv: 70 }
 ]
 
 class Dashboard extends Component {
@@ -59,7 +59,9 @@ class Dashboard extends Component {
       detail: null
     }
   }
-
+  componentWillMount () {
+    console.log(this.props.perimeterReports)
+  }
   render() {
     const { state, props } = this
     const { facialReports, accessReports, cameraReports, perimeterReports, vehicularReports } = props
@@ -68,11 +70,6 @@ class Dashboard extends Component {
       <div className="dashboard app-content small-padding">
         <div className="content">
           <h2>Estatus <div className="actions">
-            <DateRangePicker
-              from={state.from}
-              to={state.to}
-              onDayClick={this.onDayClick}
-            />
           </div></h2>
           <div className="overall-container">
             <div className={`horizontal-container ${state.detail !== null ? 'minified' : ''}`}>
@@ -83,7 +80,7 @@ class Dashboard extends Component {
                   full={state.detail === 'performance'}
                   detailView={
                     <div className="detail-view">
-                      <h1>4<p>/300 equipos dañados (<span>1.2%</span>)</p></h1>
+                      <h1>1<p>/8 equipos dañados (<span>10%</span>)</p></h1>
                       <Table
                         selectedElementIndex={state.selectedElementIndex}
                         element={(item, index, sectionIndex) =>
@@ -134,23 +131,23 @@ class Dashboard extends Component {
                       </Pie>
                       <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                     </PieChart>
-                    <h1>100%</h1>
+                    <h1>75%</h1>
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
-                    <p>2 sitios</p>
+                    <p>7 sitios</p>
                     <div className="stats">
-                      <p><span>100%</span> funcionando</p>
-                      <p className="border button warning" onClick={() => this.setState({detail: 'performance'})}><span>0%</span> alertado</p>
-                      <p className="border button error" onClick={() => this.setState({detail: 'performance'})}><span>0%</span> dañado</p>
+                      <p><span>75%</span> funcionando</p>
+                      <p className="border button warning" onClick={() => this.setState({detail: 'performance'})}><span>20%</span> alertado</p>
+                      <p className="border button error" onClick={() => this.setState({detail: 'performance'})}><span>10%</span> dañado</p>
                     </div>
                   </div>
                 </Card>
                 <Card title="Afluencia de personas" className="horizontal">
                   <div className="info">
                     <div className="data">
-                      <h1>25 <span className="delta up">15%</span></h1>
-                      <p>4 personas por hora</p>
+                      <h1>192 <span className="delta up">15%</span></h1>
+                      <p>13 personas por hora</p>
                     </div>
                     <ul className="leyend">
                       <li className="car">Personas</li>
@@ -200,21 +197,19 @@ class Dashboard extends Component {
                     className="horizontal"
                   >
                     <h1>Centro</h1>
-                    <p>2 Sitios</p>
+                    <p>8 Sitios</p>
                     <div className="card-footer">
-                      <p className="red">1 alerta</p>
-                      <span className="action">Revisar</span>
+                      <p className="red">8 alertas </p>
                     </div>
                   </Card>
                   <Card
                     title="Sitio de mas alertas"
                     className="horizontal"
                   >
-                    <h1>CNHQ9094</h1>
+                    <h1>MEXECA1058</h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
-                      <p className="red">21 alertas</p>
-                      <span className="action">Revisar</span>
+                      <p className="red">4 alertas</p>
                     </div>
                   </Card>
                 </div>
@@ -245,7 +240,7 @@ class Dashboard extends Component {
                   </div>
                 }
                 elements={[
-                  { title: 'Historial', elements: reports},
+                  { title: 'Historial', elements: perimeterReports.concat(reports)},
                   { title: 'Alertas', elements: reports.filter($0 => $0.risk > 0)}
                 ]}
                 titles={[
@@ -269,7 +264,7 @@ Dashboard.propTypes = {
 }
 
 function mapStateToProps({facialReports, accessReports, cameraReports, perimeterReports, vehicularReports}) {
-  return {facialReports}
+  return {facialReports, perimeterReports}
 }
 
 export default connect(mapStateToProps)(Dashboard)

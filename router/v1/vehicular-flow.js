@@ -24,13 +24,15 @@ const storage = multer.diskStorage({
 })
 
 // Upload object specs
-const upload = multer({storage: storage}).fields([{ name: 'front', maxCount: 1 }, { name: 'back', maxCount: 1 }, { name: 'video', maxCount: 1 }])
+const upload = multer({storage: storage}).fields([{ name: 'front', maxCount: 1 }, { name: 'back', maxCount: 1 }, { name: 'video', maxCount: 2 }])
 const file = multer({storage: storage}).single('file')
 
 router.route('/vehicular-flow/recognize')
 .post(upload, (req, res) => {
   // Receieve photo as file and upload it
   const { key, domain } = req.body
+  const company = req._user.cmp
+
   let image = 'https://' + domain + '.connus.mx/static/vehicular-flow/' + req.files.back[0].filename
   if (process.env.NODE_ENV === "development") image = 'https://demo.connus.mx/static/img/dummy/lpr-06.jpg'
 
@@ -38,13 +40,13 @@ router.route('/vehicular-flow/recognize')
   .exec((error, detailedSite) => {
     if (error) {
       winston.error({error})
-      return res.status(500).json({ error })
+      return res.status(500).json({ success: false, message: 'Could not find site', error })
     }
 
     if (!detailedSite) return res.status(404).json({ success: false, message: 'Site not found'})
 
     // Defines the training data used by OpenALPR
-    const country = detailedSite.country
+    const country = 'us'
 
     // Recognize vehicle information
     const options = {
@@ -55,36 +57,60 @@ router.route('/vehicular-flow/recognize')
     apiInstance.recognizeUrl(image, secretKey, country, options, (error, data) => {
       if (error) {
         winston.error({error})
-        return res.status(500).json({ error })
+        return res.status(500).json({ success: false, message: 'Could not process OpenALPR API call', error })
       }
 
-      new VehicularReport({
-        vehicle: data.results[0].vehicle.body_type[0].name,
-        zone: 'Centro',
-        site: key,
-        front: '/static/vehicular-flow/' + req.files.front[0].filename,
-        back: '/static/vehicular-flow/' + req.files.back[0].filename,
-        video: '/static/vehicular-flow/' + req.files.video[0].filename,
-        brand: data.results[0].vehicle.make[0].name,
-        model: data.results[0].vehicle.make_model[0].name,
-        color: data.results[0].vehicle.color[0].name,
-        plate: data.results[0].plate,
-        region: data.results[0].region
-      })
-      .save((error, report) => {
-        if (error) {
-          winston.error({error})
-          return res.status(500).json({ error })
-        }
-        return res.status(200).json({ report })
-      })
+      if (data.results.length < 1) {
+        new VehicularReport({
+          zone: 'Centro',
+          site: key,
+          front: '/static/vehicular-flow/' + req.files.front[0].filename,
+          back: '/static/vehicular-flow/' + req.files.back[0].filename,
+          video: '/static/vehicular-flow/' + req.files.video[0].filename,
+          company,
+          risk: 1,
+          event: 'No se encontraron resultados de análisis'
+        })
+        .save((error, report) => {
+          if (error) {
+            winston.error({error})
+            return res.status(500).json({ error })
+          }
+          return res.status(404).json({ success: false, message: 'Results not found. Created alert', report })
+        })
+      }
+      else {
+        new VehicularReport({
+          vehicle: data.results[0].vehicle.body_type[0].name,
+          zone: 'Centro',
+          site: key,
+          front: '/static/vehicular-flow/' + req.files.front[0].filename,
+          back: '/static/vehicular-flow/' + req.files.back[0].filename,
+          video: '/static/vehicular-flow/' + req.files.video[0].filename,
+          brand: data.results[0].vehicle.make[0].name,
+          model: data.results[0].vehicle.make_model[0].name,
+          color: data.results[0].vehicle.color[0].name,
+          plate: data.results[0].plate,
+          region: data.results[0].region,
+          company
+        })
+        .save((error, report) => {
+          if (error) {
+            winston.error({error})
+            return res.status(500).json({ error })
+          }
+          return res.status(200).json({ report })
+        })
+      }
     })
   })
 })
 
 router.route('/vehicular-flow/reports')
 .get((req, res) => {
-  VehicularReport.find()
+  const company = req._user.cmp
+
+  VehicularReport.find({ company })
   .exec((error, reports) => {
     if (error) {
       winston.error({error})

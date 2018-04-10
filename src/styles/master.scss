@@ -29,6 +29,11 @@ body,
     background-color: $connus-blue;
     border-radius: 4px;
   }
+  .unbar {
+    width: 100%;
+    background-color: $dark-gray;
+    border-radius: 4px;
+  }
   .fuel {
     width: 100%;
     border-radius: 5px;
@@ -547,7 +552,7 @@ p span {
   .table-body {
     color: $white;
     padding-top: 45px;
-    max-height: 400px;
+    max-height: 800px;
     overflow-y: scroll;
   }
   .no-info {

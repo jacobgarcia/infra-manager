@@ -24,6 +24,7 @@ class VehicularFlow extends Component {
     this.onDayClick = this.onDayClick.bind(this)
     this.onLogSelect = this.onLogSelect.bind(this)
     this.colorDictionary = this.colorDictionary.bind(this)
+    this.regionDictionary = this.regionDictionary.bind(this)
   }
 
   onLogSelect(element, elementIndex, sectionIndex) {
@@ -42,6 +43,9 @@ class VehicularFlow extends Component {
   colorDictionary(color) {
     let esColor = ''
     switch (color) {
+      case 'red':
+        esColor = 'Rojo'
+        break
       case 'silver-gray':
         esColor = 'Gris Platinado'
         break
@@ -49,6 +53,18 @@ class VehicularFlow extends Component {
         esColor = 'N/A'
     }
     return esColor
+  }
+
+  regionDictionary(region) {
+    let esRegion = ''
+    switch (region) {
+      case 'ca':
+        esRegion = 'California'
+        break
+      default:
+        esRegion = 'N/A'
+    }
+    return esRegion
   }
 
   render() {
@@ -62,14 +78,6 @@ class VehicularFlow extends Component {
         <div className="content">
           <h2>
             Flujo Vehicular
-            <div className="actions">
-              <DateRangePicker
-                from={state.from}
-                to={state.to}
-                onDayClick={this.onDayClick}
-              />
-              <p className="button action disabled">Filtrar</p>
-            </div>
           </h2>
           <div className="tables-detail__container">
             <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
@@ -117,7 +125,7 @@ class VehicularFlow extends Component {
                     </div>
                     <div className="detail">
                       <span>Region</span>
-                      <p>{state.selectedLog.region}</p>
+                      <p>{this.regionDictionary(state.selectedLog.region)}</p>
                     </div>
                   </div>
                 </div>
@@ -157,21 +165,19 @@ class VehicularFlow extends Component {
                     className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1 ? 'selected' : ''}`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, 1)}>
-                    <div className="medium">{item.timestamp && `${item.timestamp.toString()} ${item.timestamp.toString()}`}</div>
-                    <div className="large">{item.log}</div>
+                    <div className="medium">{item.timestamp && `${new Date(item.timestamp).toLocaleDateString()}`}</div>
                     <div className="hiddable">{item.site}</div>
                     <div><RiskBar risk={item.risk} /></div>
-                    <div>{item.status}</div>
+                    <div>{item.event}</div>
                   </div>
                 }
                 title="Alertas"
                 elements={props.vehicularReports.filter($0 => $0.risk > 0)}
                 titles={[
                   {title: 'Tiempo', className: 'medium'},
-                  {title: 'Suceso', className: 'large'},
                   {title: 'Sitio', className: 'hiddable'},
                   {title: 'Riesgo'},
-                  {title: 'Estatus'}
+                  {title: 'Suceso', className: 'large'},
                 ]}
               />
             </div>

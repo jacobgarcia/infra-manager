@@ -34,6 +34,7 @@ const upload = multer({storage: storage}).fields([{ name: 'photos', maxCount: 10
 router.route('/users')
 .get(hasAccess(4), (req, res) => {
   const company = req._user.cmp
+  global.io.emit('report', report)
   // TODO add monitoring zones or subzones
   User.find({ company })
   .select('email name surname access zones')
@@ -203,7 +204,7 @@ router.route('/site/:siteKey')
 router.route('/reports')
 .get((req, res) => {
   const company = req._user.cmp
-
+  //global.io.emit('report', report)
   Site.find({ company })
   .populate('zone', 'name')
   .exec((error, sites) => {
@@ -269,14 +270,16 @@ router.route('/inventory/:_id')
 router.route('/sites/initialize')
 .post((req, res) => {
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
-  const { id, version, company, key, name, position, country } = req.body
-  let { sensors, cameras } = req.body
+  const { id, version, company, key, name, country, zone } = req.body
+  let { position, sensors, cameras } = req.body
 
-  if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country) return res.status(400).json({ success: false, message: 'Malformed request'})
+  if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country || !zone) return res.status(400).json({ success: false, message: 'Malformed request'})
   if (typeof sensors === 'string' || typeof cameras === 'string') {
     sensors = JSON.parse(sensors)
     cameras = JSON.parse(cameras)
+    position = JSON.parse(position)
   }
+
   Company.findOne({ name: company })
   .exec((error, company) => {
     if (error) {
@@ -296,46 +299,57 @@ router.route('/sites/initialize')
         return res.status(403).json({ success: false, message: 'Smartbox already registered', error })
       }
 
-      // Create site using the information in the request body
-      new Site({
-        key,
-        name,
-        position,
-        company: company._id,
-        sensors,
-        cameras,
-        smartboxes: smartbox,
-        country
-      })
-      .save(error => {
+      // Always set to zone Centro
+      Zone.findOne({ name: zone, company: company._id })
+      .exec((error, zone) => {
         if (error) {
           winston.error(error)
+          return res.status(500).json({ error })
         }
-        // Site already registred but smartbox does not. Update the site
-        Site.findOneAndUpdate({ key, company: company._id }, { $push: { smartboxes: smartbox._id }})
-        .exec((error, site) => {
+
+        if (!zone) return res.status(404).json({ success: false, message: 'Specified zone was not found'})
+        // Create site using the information in the request body
+        new Site({
+          key,
+          name,
+          position,
+          company: company._id,
+          sensors,
+          cameras,
+          smartboxes: smartbox,
+          country,
+          zone: zone._id
+        })
+        .save(error => {
           if (error) {
             winston.error(error)
-            return res.status(500).json({ success: false, message: 'Could not add the smartbox to the already created site', error })
           }
+          // Site already registred but smartbox does not. Update the site
+          Site.findOneAndUpdate({ key, company: company._id }, { $push: { smartboxes: smartbox._id }})
+          .exec((error, site) => {
+            if (error) {
+              winston.error(error)
+              return res.status(500).json({ success: false, message: 'Could not add the smartbox to the already created site', error })
+            }
 
-          if (cameras.length > 0) {
-            // Add cameras of the SmartBox
-            cameras.map(camera => {
-              const filename = base64Img.imgSync(camera.photo, 'static/uploads', shortid.generate() + Date.now())
-                new Stream({
-                  id: camera.id,
-                  name: camera.name,
-                  company,
-                  site: site._id,
-                  photo: '/' + filename
-                })
-                .save()
-            })
-          }
+            if (cameras.length > 0) {
+              // Add cameras of the SmartBox
+              cameras.map(camera => {
+                const filename = base64Img.imgSync(camera.photo, 'static/uploads', shortid.generate() + Date.now())
+                  new Stream({
+                    id: camera.id,
+                    name: camera.name,
+                    company,
+                    site: site._id,
+                    photo: '/' + filename
+                  })
+                  .save()
+              })
+            }
 
-          // Add the new site to the specified subzone
-          return res.status(200).json({ site })
+            // Add the new site to the specified subzone
+            return res.status(200).json({ site })
+          })
         })
       })
     })
@@ -345,21 +359,22 @@ router.route('/sites/initialize')
 router.route('/smartbox/exception')
 .post((req, res) => {
   const { id, description } = req.body
+  if (!id || !description) return res.status(400).json({ })
   SmartBox.findOneAndUpdate({ id }, { $push: { exceptions: { description } } })
-  .exec((error, smartbox) => {
+  .exec(error => {
     if (error) {
       winston.error(error)
       return res.status(500).json({'success': false, 'message': "Could not save exception"})
     }
-    return res.status(200).json({ 'success': true, smartbox })
+    return res.status(200).json({ 'success': true, message: 'Succesfully added exception' })
   })
 })
 
-router.route('/smartbox/debug/:id')
+router.route('/smartbox/upgrade/:key')
 .get((req, res) => {
-  const { id } = req.params
+  const { key } = req.params
 
-  SmartBox.findOne({ id })
+  Site.findOne({ key })
   .exec((error, smartbox) => {
     if (error) {
       winston.error(error)
@@ -368,16 +383,35 @@ router.route('/smartbox/debug/:id')
 
     if (!smartbox) return res.status(404).json({ success: false, message: "Specified Smartbox was not found"})
 
-    global.io.to(id).emit('debug')
+    global.io.to(key).emit('upgrade')
+    return res.status(200).json({ 'success': true, message: 'Initialized Smartbox debugging process', smartbox })
+
+  })
+})
+
+router.route('/smartbox/debug/:key')
+.get((req, res) => {
+  const { key } = req.params
+
+  Site.findOne({ key })
+  .exec((error, smartbox) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({'success': false, 'message': "Could not find Smart Box"})
+    }
+
+    if (!smartbox) return res.status(404).json({ success: false, message: "Specified Smartbox was not found"})
+
+    global.io.to(key).emit('debug')
     return res.status(200).json({ 'success': true, message: 'Initialized Smartbox debugging process', smartbox })
 
   })
 })
 
 // post Smartbox debug
-router.route('/smartbox/debug/:id')
+router.route('/smartbox/debug')
 .post(upload, (req,res) => {
-  const { id } = req.params
+  const { id } = req.body
   const photoFiles = req.files.photos
   console.log(req.files)
   const photos = []
@@ -389,13 +423,13 @@ router.route('/smartbox/debug/:id')
   })
 
   SmartBox.findOneAndUpdate({ id }, { $push: { debugs: { photos } } }, {$set: { debugs: { logFile: req.files.log[0] } }})
-  .exec((error, smartbox) => {
+  .exec(error => {
     if (error) {
       winston.error(error)
       return res.status(500).json({success: false, message: "The specified debug couldn't be created"})
     }
 
-    return res.status(200).json({ 'success': true, smartbox})
+    return res.status(200).json({ 'success': true, message: 'Succesfully debugged Smartbox'})
 
   })
 })
@@ -475,21 +509,6 @@ router.route('/video/token')
         })
       })
     })
-})
-
-router.route('/video/publish')
-.post((req, res) => {
-  const { name } = req.body
-
-  Stream.findOne({ room: name })
-  .exec((error, stream) => {
-    if (error) {
-      winston.error({error})
-      return res.status(500).json({ success: false, message: 'Could not publish streaming' })
-    }
-    if (stream) res.status(200).json({ success: true, message: 'Streaming successfully published'})
-    return res.status(403).json({ success: false, message: 'Can not publish to that room'})
-  })
 })
 
 router.route('/video/cameras')

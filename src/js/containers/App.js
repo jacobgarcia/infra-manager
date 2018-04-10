@@ -53,7 +53,7 @@ class App extends Component {
       path = `?return=${this.props.location.pathname}${this.props.location.search}`
     }
 
-    setInterval(this.cleanupAlerts, 5000)
+    setInterval(this.cleanupAlerts, 500000)
 
     if (!token) {
       localStorage.removeItem('token')
@@ -78,15 +78,6 @@ class App extends Component {
       })
     })
 
-    // Set FRM access store
-    NetworkOperationFRM.getAccess()
-    .then(({data}) => {
-      data.accessLogs.forEach(report => {
-        if (this.props.credentials.company.name === 'Connus' && report.site === 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
-        else if (this.props.credentials.company.name === 'AT&T' && report.site !== 'CNHQ9094') this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
-      })
-    })
-
     NetworkOperation.getSelf()
     .then(({data}) => {
       this.setState({
@@ -102,6 +93,22 @@ class App extends Component {
     .then(({data}) => {
       // Set all zones
       this.props.setExhaustive(data.zones)
+
+      // Set FRM access store
+      return NetworkOperationFRM.getAccess()
+    })
+    .then(({data}) => {
+      let sites = []
+      // Iterate over each zone
+      this.props.zones.map(zone => {
+        // Iterate over each site of each zone
+        zone.sites.map(site => {
+          sites.push(site)
+        })
+      })
+      data.accessLogs.map(report => {
+          if (sites.findIndex($0 => $0.key === report.site) > -1 ) this.props.setFacialReport(report.timestamp, report.event, report.success, report.risk, report.zone, report.status, report.site, report.access, report.pin, report.photo, report._id)
+        })
     })
     .catch(error => {
       const { response = {} } = error
@@ -126,21 +133,24 @@ class App extends Component {
       this.socket.emit('join', 'connus')
     })
 
-    this.socket.on('alert', alert => {
-      // Get site id based on key
-      NetworkOperation.getSiteId(alert.site)
-      .then(({data}) => {
-        const theAlert = {
-          site: alert.site,
-          alert: alert.alert,
-          id: data.site._id
-        }
-        this.setState(prev => ({
-          alerts: prev.alerts.concat([{...theAlert, timestamp: Date.now()}])
-        }))
+      if (this.props.credentials.company.name === 'AT&T' || this.props.credentials.company.name === 'Connus') {
+        this.socket.on('alert', alert => {
+        // Get site id based on key
+        NetworkOperation.getSiteId(alert.site)
+        .then(({data}) => {
+          const theAlert = {
+            /* console.log(data) */
+            site: alert.site,
+            alert: alert.alert,
+            id: data.site._id
+          }
+          this.setState(prev => ({
+            alerts: prev.alerts.concat([{...theAlert, timestamp: Date.now()}])
+          }))
+        })
       })
+    }
 
-    })
   }
 
   // Add manual alert
@@ -229,6 +239,7 @@ App.propTypes = {
   history: PropTypes.object,
   user: PropTypes.object,
   credentials: PropTypes.object,
+  zones: PropTypes.array,
   location: PropTypes.object,
   setLoading: PropTypes.func,
   setExhaustive: PropTypes.func,
@@ -267,10 +278,11 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-function mapStateToProps({loading, credentials}) {
+function mapStateToProps({zones, loading, credentials}) {
   return {
     loading,
-    credentials
+    credentials,
+    zones
   }
 }
 
