@@ -139,7 +139,7 @@ router.post('/signup/:invitation_token', (req, res) => {
   return res.status(200)
 })
 
-router.route('/authenticate').get((req, res) => {
+router.route('/authenticate').post((req, res) => {
   const { email, password } = req.body
 
   User.findOne({ email })
@@ -152,9 +152,8 @@ router.route('/authenticate').get((req, res) => {
           .json({ message: 'Authentication failed. Wrong user or password.' })
       }
 
-      // Config.secret as salt
       return bcrypt
-        .compare(password + config.secret, user.password)
+        .compare(`${password}${config.secret}`, user.password)
         .then(result => {
           const token = jwt.sign(
             {
