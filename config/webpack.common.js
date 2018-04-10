@@ -20,7 +20,7 @@ module.exports = {
               ['env', { modules: false }],
               'react',
               'stage-2'
-            ]
+              ],
           }
         }
       }
