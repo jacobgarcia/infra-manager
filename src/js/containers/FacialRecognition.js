@@ -4,10 +4,9 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
 
-import { Table, RiskBar, DateRangePicker } from '../components'
+import { Table, RiskBar } from '../components'
 import { setFacialReport } from '../actions'
 
-import { NetworkOperation, NetworkOperationFRM } from '../lib'
 import io from 'socket.io-client'
 
 class FacialRecognition extends Component {

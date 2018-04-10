@@ -3,8 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import { Table, RiskBar, DateRangePicker } from '../components'
-import {} from '../actions'
+import { Table, RiskBar } from '../components'
 
 class Accesses extends Component {
   constructor(props) {

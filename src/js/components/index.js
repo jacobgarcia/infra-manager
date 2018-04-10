@@ -29,7 +29,6 @@ export { default as DateRangePicker } from './DateRangePicker'
 
 export { default as VideoPlayer } from './VideoPlayer'
 
-
 // Charts
 export { default as BatteryChart } from './BatteryChart'
 export { default as FuelChart } from './FuelChart'

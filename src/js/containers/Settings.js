@@ -47,15 +47,15 @@ class Settings extends Component {
     })
 
     NetworkOperation.uploadProfilePhoto(this.state.file)
-    .then(({data}) => {
-      this.setState({
-        photo: data.photo,
-        changed: false
+      .then(({ data }) => {
+        this.setState({
+          photo: data.photo,
+          changed: false
+        })
       })
-    })
-    .catch(error => {
-      console.error(error)
-    })
+      .catch(error => {
+        console.error(error)
+      })
   }
 
   render() {
@@ -75,8 +75,22 @@ class Settings extends Component {
           <form onSubmit={this.onSave}>
             <div className="field">
               <label htmlFor="">Foto</label>
-              <label htmlFor="photo" className="photo" style={{backgroundImage: `url(${state.photo || (this.props.credentials.user && this.props.credentials.user.photoUrl)})`, backgroundColor: state.photo ? 'white' : 'transparent' }} />
-              <input type="file" id="photo" accept="image/png, image/jpg, image/jpeg" onChange={this.onPhotoSelect}/>
+              <label
+                htmlFor="photo"
+                className="photo"
+                style={{
+                  backgroundImage: `url(${state.photo ||
+                    (this.props.credentials.user &&
+                      this.props.credentials.user.photoUrl)})`,
+                  backgroundColor: state.photo ? 'white' : 'transparent'
+                }}
+              />
+              <input
+                type="file"
+                id="photo"
+                accept="image/png, image/jpg, image/jpeg"
+                onChange={this.onPhotoSelect}
+              />
             </div>
             <div className="field">
               <label htmlFor="name">Nombre</label>
@@ -89,16 +103,15 @@ class Settings extends Component {
             <span className="rule">Cambiar contraseña</span>
             <div className="field">
               <label htmlFor="name">Contraseña actual</label>
-              <input type="text" placeholder=""/>
+              <input type="text" placeholder="" />
             </div>
             <div className="field">
               <label htmlFor="name">Nueva contraseña</label>
-              <input type="text" placeholder=""/>
+              <input type="text" placeholder="" />
             </div>
-            {
-              state.changed &&
+            {state.changed && (
               <input type="submit" value="Guardar" className="action" />
-            }
+            )}
           </form>
         </div>
       </div>
@@ -106,11 +119,9 @@ class Settings extends Component {
   }
 }
 
-Settings.propTypes = {
+Settings.propTypes = {}
 
-}
-
-function mapStateToProps({credentials}) {
+function mapStateToProps({ credentials }) {
   return {
     credentials
   }

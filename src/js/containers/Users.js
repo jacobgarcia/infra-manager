@@ -22,8 +22,7 @@ class Users extends Component {
   }
 
   componentDidMount() {
-    NetworkOperation.getCompanyUsers()
-    .then(({data}) => {
+    NetworkOperation.getCompanyUsers().then(({ data }) => {
       this.setState({
         users: data.users,
         filteredUsers: data.users
@@ -40,7 +39,15 @@ class Users extends Component {
 
     this.setState({
       query,
-      filteredUsers: value.length > 0 ? this.state.users.filter($0 => JSON.stringify($0).toLowerCase().search(regEx) >= 0) : this.state.users
+      filteredUsers:
+        value.length > 0
+          ? this.state.users.filter(
+              $0 =>
+                JSON.stringify($0)
+                  .toLowerCase()
+                  .search(regEx) >= 0
+            )
+          : this.state.users
     })
   }
 
@@ -56,32 +63,48 @@ class Users extends Component {
         <Helmet>
           <title>Connus | Usuarios</title>
         </Helmet>
-        {
-          state.isAddingUser
-          &&
-          <div className="popover" onClick={() => this.setState({ isAddingUser: false })}>
-            <div className="popover-content" onClick={event => event.stopPropagation()}>
+        {state.isAddingUser && (
+          <div
+            className="popover"
+            onClick={() => this.setState({ isAddingUser: false })}>
+            <div
+              className="popover-content"
+              onClick={event => event.stopPropagation()}>
               <form onSubmit={this.addUser}>
                 <div>
                   <h2>Añadir usuario</h2>
                   <div>
                     <label htmlFor="name">Nombre</label>
-                    <input type="text" placeholder="Nombre" id="name" name="name" />
+                    <input
+                      type="text"
+                      placeholder="Nombre"
+                      id="name"
+                      name="name"
+                    />
                   </div>
                   <div>
                     <label htmlFor="email">Correo electrónico</label>
-                    <input type="text" placeholder="usuario@dominio.com" id="email" name="email" />
+                    <input
+                      type="text"
+                      placeholder="usuario@dominio.com"
+                      id="email"
+                      name="email"
+                    />
                   </div>
                   <div>
                     <label htmlFor="email">Zonas</label>
-                    <DropDown
-                      elements={props.zones}
-                    />
+                    <DropDown elements={props.zones} />
                   </div>
                   <div>
                     <label htmlFor="email">Servicios</label>
                     <DropDown
-                      elements={props.credentials.company ? props.credentials.company.services.map(getServiceName) : [] }
+                      elements={
+                        props.credentials.company
+                          ? props.credentials.company.services.map(
+                              getServiceName
+                            )
+                          : []
+                      }
                     />
                   </div>
                   <div>
@@ -89,13 +112,18 @@ class Users extends Component {
                   </div>
                 </div>
                 <div className="actions">
-                  <input type="button" value="Cancelar" className="destructive red" onClick={() => this.setState({ isAddingUser: false })} />
+                  <input
+                    type="button"
+                    value="Cancelar"
+                    className="destructive red"
+                    onClick={() => this.setState({ isAddingUser: false })}
+                  />
                   <input type="submit" value="Guardar" className="action" />
                 </div>
               </form>
             </div>
           </div>
-        }
+        )}
         <div className="content">
           <h2>Usuarios</h2>
           <div className="table">
@@ -113,7 +141,8 @@ class Users extends Component {
                   type="button"
                   className="action"
                   value="Añadir"
-                  onClick={() => this.setState({ isAddingUser: true })} />
+                  onClick={() => this.setState({ isAddingUser: true })}
+                />
               </div>
             </div>
             <div className="table-header">
@@ -126,17 +155,17 @@ class Users extends Component {
               </div>
             </div>
             <div className="table-body">
-              {
-                state.filteredUsers.map((user, index) =>
-                  <div className="table-item" key={index}>
-                    <div className="bold">{user.name}</div>
-                    <div>{user.email}</div>
-                    <div>{user.phone}</div>
-                    <div className="zone">{user.zones.map(({name}) => name)}</div>
-                    <div></div>
+              {state.filteredUsers.map((user, index) => (
+                <div className="table-item" key={index}>
+                  <div className="bold">{user.name}</div>
+                  <div>{user.email}</div>
+                  <div>{user.phone}</div>
+                  <div className="zone">
+                    {user.zones.map(({ name }) => name)}
                   </div>
-                )
-              }
+                  <div />
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -145,15 +174,13 @@ class Users extends Component {
   }
 }
 
-function mapStateToProps({zones, credentials}) {
+function mapStateToProps({ zones, credentials }) {
   return {
     zones,
     credentials
   }
 }
 
-Users.propTypes = {
-
-}
+Users.propTypes = {}
 
 export default connect(mapStateToProps)(Users)

@@ -21,7 +21,7 @@ class Navigator extends Component {
     })
   }
 
-  onKeyDown({ctrlKey, key}) {
+  onKeyDown({ ctrlKey, key }) {
     // TODO verify is not from input
     if (key === 'm' && ctrlKey) {
       this.setState(prev => ({
@@ -43,9 +43,26 @@ class Navigator extends Component {
     return (
       <ul className={`navigator ${state.isHidden ? 'hidden' : ''}`}>
         <ul className="navigator-header">
-          <li className="sandwitch-icon" onClick={() => this.setState(prev => ({isHidden: !prev.isHidden}))}/>
+          <li
+            className="sandwitch-icon"
+            onClick={() =>
+              this.setState(prev => ({ isHidden: !prev.isHidden }))
+            }
+          />
           <li className="username" onClick={() => this.closeNavigator()}>
-            <NavLink to="/settings" className="fade"><span className="fade">{getAccessTitle(props.credentials.user && props.credentials.user.access)}</span>{props.credentials.user && props.credentials.user.name}</NavLink><img src={props.credentials.company && props.credentials.company.logo} alt="Company Icon" className="fade"/>
+            <NavLink to="/settings" className="fade">
+              <span className="fade">
+                {getAccessTitle(
+                  props.credentials.user && props.credentials.user.access
+                )}
+              </span>
+              {props.credentials.user && props.credentials.user.name}
+            </NavLink>
+            <img
+              src={props.credentials.company && props.credentials.company.logo}
+              alt="Company Icon"
+              className="fade"
+            />
           </li>
         </ul>
         <ul>
@@ -61,21 +78,36 @@ class Navigator extends Component {
           </li>
           <li className="hr" />
           <h2 className="fade">Servicios</h2>
-          {
-            props.services.filter(service => props.credentials.company ? props.credentials.company.services.some($0 => $0 === service._id) : false).map(({title, name}) =>
+          {props.services
+            .filter(
+              service =>
+                props.credentials.company
+                  ? props.credentials.company.services.some(
+                      $0 => $0 === service._id
+                    )
+                  : false
+            )
+            .map(({ title, name }) => (
               <li key={name} onClick={() => this.closeNavigator()}>
                 <NavLink to={`/${name}`} className={name}>
                   <span className="access fade">{title}</span>
                 </NavLink>
               </li>
-            )
-          }
+            ))}
           <li className="hr" />
           <li className="hr" />
-          <li onClick={() => this.closeNavigator()}><NavLink to="/users" className="users"><span className="fade">Usuarios</span></NavLink></li>
+          <li onClick={() => this.closeNavigator()}>
+            <NavLink to="/users" className="users">
+              <span className="fade">Usuarios</span>
+            </NavLink>
+          </li>
           <li className="hr" />
           <li className="hr" />
-          <li onClick={() => this.closeNavigator()}><NavLink to="/settings" className="settings"><span className="settings fade">Ajustes</span></NavLink></li>
+          <li onClick={() => this.closeNavigator()}>
+            <NavLink to="/settings" className="settings">
+              <span className="settings fade">Ajustes</span>
+            </NavLink>
+          </li>
         </ul>
         <li onClick={() => this.closeNavigator()} className="logout">
           <NavLink exact to="/login" className="logout" onClick={this.logOut}>
@@ -93,19 +125,23 @@ Navigator.defaultProps = {
       title: 'Sensorización',
       name: 'sensors',
       _id: '00'
-    }, {
+    },
+    {
       title: 'FR',
       name: 'facial-recognition',
       _id: '01'
-    }, {
+    },
+    {
       title: 'Flujo vehícular',
       name: 'vehicular-flow',
       _id: '02'
-    }, {
+    },
+    {
       title: 'Video Vigilancia',
       name: 'video-surveillance',
       _id: '03'
-    }, {
+    },
+    {
       title: 'Inventario',
       name: 'inventory',
       _id: '04'

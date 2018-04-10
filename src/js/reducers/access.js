@@ -2,7 +2,7 @@ const dumbAccessesLogs = [
   {
     timestamp: new Date('2018-01-16T09:48:00'),
     event: 'Desconocido previamente detectado',
-    zone: {name: 'Norte'},
+    zone: { name: 'Norte' },
     site: 'CONRES9094',
     risk: 3,
     status: 'Acceso denegado. Alerta emitida desde timbre',
@@ -14,7 +14,7 @@ const dumbAccessesLogs = [
   {
     timestamp: new Date('2018-01-12T09:52:00'),
     event: 'Desconocido a la puerta',
-    zone: {name: 'Norte'},
+    zone: { name: 'Norte' },
     site: 'CONRES9094',
     risk: 2,
     status: 'Captura de desconocido. Analizando rostro',
@@ -26,7 +26,7 @@ const dumbAccessesLogs = [
   {
     timestamp: new Date('2018-01-08T11:48:00'),
     event: 'Invitado a la puerta',
-    zone: {name: 'Norte'},
+    zone: { name: 'Norte' },
     site: 'CONRES9094',
     risk: 0,
     status: 'Acceso autorizado. Invitado previamente registrado',
@@ -38,7 +38,7 @@ const dumbAccessesLogs = [
   {
     timestamp: new Date('2018-01-08T12:19:00'),
     event: 'Miembro de la casa a la puerta',
-    zone: {name: 'Norte'},
+    zone: { name: 'Norte' },
     site: 'CONRES9094',
     risk: 0,
     status: 'Acceso otorgado remotamente por miembro de la casa',
@@ -50,7 +50,7 @@ const dumbAccessesLogs = [
   {
     timestamp: new Date('2018-01-05T20:39:00'),
     event: 'Personal de entrega a la puerta',
-    zone: {name: 'Norte'},
+    zone: { name: 'Norte' },
     site: 'CONRES9094',
     risk: 0,
     status: 'Acceso otorgado internamente',
@@ -62,7 +62,7 @@ const dumbAccessesLogs = [
   {
     timestamp: new Date('2018-01-05T19:30:00'),
     event: 'Invitado a la puerta',
-    zone: {name: 'Norte'},
+    zone: { name: 'Norte' },
     site: 'CONRES9094',
     risk: 0,
     status: 'Acceso autorizado. Invitado previamente registrado',
@@ -74,7 +74,7 @@ const dumbAccessesLogs = [
   {
     timestamp: new Date('2017-12-29T09:29:00'),
     event: 'Registro de invitado exitoso',
-    zone: {name: 'Norte'},
+    zone: { name: 'Norte' },
     site: 'CONRES9094',
     risk: 0,
     status: 'Registro satisfactorio',
@@ -88,13 +88,16 @@ const dumbAccessesLogs = [
 export default function accessReports(state = dumbAccessesLogs, action) {
   switch (action.type) {
     case 'SET_ACCESS_REPORT':
-      return [...state, {
-        timestamp: action.timestamp,
-        event: action.positions,
-        site: action.site,
-        risk: action.risk,
-        status: action.status,
-      }]
+      return [
+        ...state,
+        {
+          timestamp: action.timestamp,
+          event: action.positions,
+          site: action.site,
+          risk: action.risk,
+          status: action.status
+        }
+      ]
     default:
       return state
   }

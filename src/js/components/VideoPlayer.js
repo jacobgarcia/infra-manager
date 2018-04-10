@@ -7,7 +7,6 @@ export default class VideoPlayer extends Component {
     this.player = videojs(this.videoNode, this.props)
   }
 
-
   componentWillUnmount() {
     // Dispose player on unmount
     if (this.player) {
@@ -26,7 +25,8 @@ export default class VideoPlayer extends Component {
         <video
           ref={component => {
             this.videoNode = component
-          }} className="video-js"
+          }}
+          className="video-js"
         />
       </div>
     )

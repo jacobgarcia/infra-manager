@@ -1,10 +1,25 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { PieChart, Pie, Cell, AreaChart, XAxis, LineChart, CartesianGrid, Tooltip as RechartsTooltip, ReferenceLine, Area, ResponsiveContainer,ComposedChart, YAxis, Bar, Line } from 'recharts'
+import {
+  PieChart,
+  Pie,
+  Cell,
+  AreaChart,
+  XAxis,
+  CartesianGrid,
+  Tooltip as RechartsTooltip,
+  ReferenceLine,
+  Area,
+  ResponsiveContainer,
+  ComposedChart,
+  YAxis,
+  Bar,
+  Line
+} from 'recharts'
 
-import { Card, Table, DateRangePicker, RiskBar, Tooltip } from '../components'
-import { yellow, red, blue, darkGray, violet } from '../lib/colors'
+import { Card, Table, RiskBar, Tooltip } from '../components'
+import { blue, darkGray } from '../lib/colors'
 import { getColor } from '../lib/specialFunctions'
 
 const data = [
@@ -30,19 +45,19 @@ const data2 = [
 ]
 
 const barData = [
-      {name: '7:00 AM', pv: 100 },
-      {name: '8:00 AM', pv: 100 },
-      {name: '9:00 AM', pv: 100 },
-      {name: '10:00 AM', pv: 100 },
-      {name: '11:00 AM', pv: 90 },
-      {name: '12:00 PM', pv: 100 },
-      {name: '1:00 PM', pv: 100 },
-      {name: '2:00 PM', pv: 80 },
-      {name: '3:00 PM', pv: 100 },
-      {name: '4:00 PM', pv: 100 },
-      {name: '5:00 PM', pv: 100 },
-      {name: '6:00 PM', pv: 70 },
-      {name: '7:00 PM', pv: 70 }
+  { name: '7:00 AM', pv: 100 },
+  { name: '8:00 AM', pv: 100 },
+  { name: '9:00 AM', pv: 100 },
+  { name: '10:00 AM', pv: 100 },
+  { name: '11:00 AM', pv: 90 },
+  { name: '12:00 PM', pv: 100 },
+  { name: '1:00 PM', pv: 100 },
+  { name: '2:00 PM', pv: 80 },
+  { name: '3:00 PM', pv: 100 },
+  { name: '4:00 PM', pv: 100 },
+  { name: '5:00 PM', pv: 100 },
+  { name: '6:00 PM', pv: 70 },
+  { name: '7:00 PM', pv: 70 }
 ]
 
 class Dashboard extends Component {
@@ -51,7 +66,7 @@ class Dashboard extends Component {
 
     this.state = {
       selected: 0,
-      logs: [0,0,0,0,0,0,0,0,0],
+      logs: [0, 0, 0, 0, 0, 0, 0, 0, 0],
       alerts: [],
       selectedElementIndex: [null, null],
       from: new Date(),
@@ -59,20 +74,30 @@ class Dashboard extends Component {
       detail: null
     }
   }
-  componentWillMount () {
+  componentWillMount() {
     console.log(this.props.perimeterReports)
   }
   render() {
     const { state, props } = this
-    const { facialReports, accessReports, cameraReports, perimeterReports, vehicularReports } = props
+    const {
+      facialReports,
+      accessReports,
+      cameraReports,
+      perimeterReports,
+      vehicularReports
+    } = props
     const reports = facialReports
     return (
       <div className="dashboard app-content small-padding">
         <div className="content">
-          <h2>Estatus <div className="actions">
-          </div></h2>
+          <h2>
+            Estatus <div className="actions" />
+          </h2>
           <div className="overall-container">
-            <div className={`horizontal-container ${state.detail !== null ? 'minified' : ''}`}>
+            <div
+              className={`horizontal-container ${
+                state.detail !== null ? 'minified' : ''
+              }`}>
               <div className="vertical-container">
                 <Card
                   title="Rendimiento general"
@@ -80,56 +105,80 @@ class Dashboard extends Component {
                   full={state.detail === 'performance'}
                   detailView={
                     <div className="detail-view">
-                      <h1>1<p>/8 equipos dañados (<span>10%</span>)</p></h1>
+                      <h1>
+                        1<p>
+                          /8 equipos dañados (<span>10%</span>)
+                        </p>
+                      </h1>
                       <Table
                         selectedElementIndex={state.selectedElementIndex}
-                        element={(item, index, sectionIndex) =>
-                          <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
+                        element={(item, index, sectionIndex) => (
+                          <div
+                            className={`table-item ${
+                              state.selectedElementIndex[0] === index &&
+                              state.selectedElementIndex[1] === sectionIndex
+                                ? 'selected'
+                                : ''
+                            }`}
                             key={index}
-                            onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                            {
-                              item.timestamp &&
-                              <div>{item.timestamp.toLocaleDateString('es-MX')} {item.timestamp.toLocaleTimeString('es-MX')}</div>
-                            }
+                            onClick={() =>
+                              this.onLogSelect(item, index, sectionIndex)
+                            }>
+                            {item.timestamp && (
+                              <div>
+                                {item.timestamp.toLocaleDateString('es-MX')}{' '}
+                                {item.timestamp.toLocaleTimeString('es-MX')}
+                              </div>
+                            )}
                             <div className="medium bold">{item.event}</div>
                             <div className="medium">{item.status}</div>
-                            <div><RiskBar risk={item.risk} /></div>
+                            <div>
+                              <RiskBar risk={item.risk} />
+                            </div>
                             <div>{item.site}</div>
                             <div>{item.risk}</div>
                           </div>
-                        }
+                        )}
                         elements={[
-                          { title: 'Dañados', elements: []},
-                          { title: 'Alertados', elements: []}
+                          { title: 'Dañados', elements: [] },
+                          { title: 'Alertados', elements: [] }
                         ]}
                         titles={[
-                          {title: 'Tiempo' },
-                          {title: 'Sitio', className: 'medium'},
-                          {title: 'Zona', className: 'medium'},
-                          {title: 'Suceso'},
-                          {title: 'Estatus'},
-                          {title: 'Riesgo'}
+                          { title: 'Tiempo' },
+                          { title: 'Sitio', className: 'medium' },
+                          { title: 'Zona', className: 'medium' },
+                          { title: 'Suceso' },
+                          { title: 'Estatus' },
+                          { title: 'Riesgo' }
                         ]}
                       />
                     </div>
                   }
                   detailActions={
-                    <p onClick={() => this.setState({detail: null})}>Cerrar</p>
-                  }
-                  >
+                    <p onClick={() => this.setState({ detail: null })}>
+                      Cerrar
+                    </p>
+                  }>
                   <div className="graph">
                     <PieChart width={200} height={200}>
                       <Pie
-                        animationBegin={0} dataKey="value" data={data}
-                        cx={95} cy={95} innerRadius={60} outerRadius={95}
-                        strokeWidth={0} label>
-                        {
-                          data.map(({name}, index) =>
-                            <Cell key={index} fill={getColor(name)}/>
-                          )
-                        }
+                        animationBegin={0}
+                        dataKey="value"
+                        data={data}
+                        cx={95}
+                        cy={95}
+                        innerRadius={60}
+                        outerRadius={95}
+                        strokeWidth={0}
+                        label>
+                        {data.map(({ name }, index) => (
+                          <Cell key={index} fill={getColor(name)} />
+                        ))}
                       </Pie>
-                      <RechartsTooltip isAnimationActive={false} content={Tooltip} />
+                      <RechartsTooltip
+                        isAnimationActive={false}
+                        content={Tooltip}
+                      />
                     </PieChart>
                     <h1>75%</h1>
                   </div>
@@ -137,16 +186,32 @@ class Dashboard extends Component {
                     <h3>Equipos funcionando correctamente</h3>
                     <p>7 sitios</p>
                     <div className="stats">
-                      <p><span>75%</span> funcionando</p>
-                      <p className="border button warning" onClick={() => this.setState({detail: 'performance'})}><span>20%</span> alertado</p>
-                      <p className="border button error" onClick={() => this.setState({detail: 'performance'})}><span>10%</span> dañado</p>
+                      <p>
+                        <span>75%</span> funcionando
+                      </p>
+                      <p
+                        className="border button warning"
+                        onClick={() =>
+                          this.setState({ detail: 'performance' })
+                        }>
+                        <span>20%</span> alertado
+                      </p>
+                      <p
+                        className="border button error"
+                        onClick={() =>
+                          this.setState({ detail: 'performance' })
+                        }>
+                        <span>10%</span> dañado
+                      </p>
                     </div>
                   </div>
                 </Card>
                 <Card title="Afluencia de personas" className="horizontal">
                   <div className="info">
                     <div className="data">
-                      <h1>192 <span className="delta up">15%</span></h1>
+                      <h1>
+                        192 <span className="delta up">15%</span>
+                      </h1>
                       <p>13 personas por hora</p>
                     </div>
                     <ul className="leyend">
@@ -154,58 +219,106 @@ class Dashboard extends Component {
                     </ul>
                   </div>
                   <ResponsiveContainer width="100%" height={260}>
-                    <ComposedChart data={data2}
-                          syncId="dashboard"
-                          margin={{top: 20, right: 20, bottom: 20, left: 20}}>
-                        <XAxis dataKey="name" height={15} axisLine={false} tickLine={false} />
-                        <YAxis width={21} tickLine={false} />
-                        <RechartsTooltip isAnimationActive={false} content={Tooltip} />
-                        <Bar dataKey="uv" fill="rgba(255,255,255,0.15)"/>
-                        <Line type="linear" dataKey="uv" stroke={blue}
-                          strokeWidth={1}
-                          activeDot={{ strokeWidth: 0, fill: blue }}
-                          dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
-                     </ComposedChart>
-                   </ResponsiveContainer>
+                    <ComposedChart
+                      data={data2}
+                      syncId="dashboard"
+                      margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                      <XAxis
+                        dataKey="name"
+                        height={15}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis width={21} tickLine={false} />
+                      <RechartsTooltip
+                        isAnimationActive={false}
+                        content={Tooltip}
+                      />
+                      <Bar dataKey="uv" fill="rgba(255,255,255,0.15)" />
+                      <Line
+                        type="linear"
+                        dataKey="uv"
+                        stroke={blue}
+                        strokeWidth={1}
+                        activeDot={{ strokeWidth: 0, fill: blue }}
+                        dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }}
+                      />
+                    </ComposedChart>
+                  </ResponsiveContainer>
                 </Card>
               </div>
               <div className="vertical-container">
                 <Card className="historical" title="Media de servicio">
                   <ResponsiveContainer width="100%" height={160}>
-                    <AreaChart data={barData}
+                    <AreaChart
+                      data={barData}
                       syncId="dashboard"
-                      margin={{top: 5, right: 30, left: 20, bottom: 5}}>
-                       <XAxis dataKey="name" height={20} mirror axisLine={false} padding={{right: 50}}/>
-                       <CartesianGrid stroke="#424953" horizontal={false} strokeWidth={0.5} />
-                       <defs>
-                        <linearGradient id="colorUv" x1="1" y1="0" x2="0" y2="0">
-                          <stop offset="0%" stopColor={blue} stopOpacity={0.8}/>
-                          <stop offset="100%" stopColor={blue} stopOpacity={0.1}/>
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                      <XAxis
+                        dataKey="name"
+                        height={20}
+                        mirror
+                        axisLine={false}
+                        padding={{ right: 50 }}
+                      />
+                      <CartesianGrid
+                        stroke="#424953"
+                        horizontal={false}
+                        strokeWidth={0.5}
+                      />
+                      <defs>
+                        <linearGradient
+                          id="colorUv"
+                          x1="1"
+                          y1="0"
+                          x2="0"
+                          y2="0">
+                          <stop
+                            offset="0%"
+                            stopColor={blue}
+                            stopOpacity={0.8}
+                          />
+                          <stop
+                            offset="100%"
+                            stopColor={blue}
+                            stopOpacity={0.1}
+                          />
                         </linearGradient>
                       </defs>
-                      <RechartsTooltip isAnimationActive={false} content={Tooltip} />
-                       <Area dataKey="pv" fill="url(#colorUv)" animationBegin={0}
-                         type="natural" stroke={blue} strokeWidth={2}
-                         activeDot={{ stroke: blue, strokeWidth: 2, fill: darkGray }} />
-                     <ReferenceLine y={40} stroke="red" strokeDasharray="5 5" />
-                   </AreaChart>
-                 </ResponsiveContainer>
+                      <RechartsTooltip
+                        isAnimationActive={false}
+                        content={Tooltip}
+                      />
+                      <Area
+                        dataKey="pv"
+                        fill="url(#colorUv)"
+                        animationBegin={0}
+                        type="natural"
+                        stroke={blue}
+                        strokeWidth={2}
+                        activeDot={{
+                          stroke: blue,
+                          strokeWidth: 2,
+                          fill: darkGray
+                        }}
+                      />
+                      <ReferenceLine
+                        y={40}
+                        stroke="red"
+                        strokeDasharray="5 5"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
                 </Card>
                 <div className="horizontal-container">
-                  <Card
-                    title="Zona de mas alertas"
-                    className="horizontal"
-                  >
+                  <Card title="Zona de mas alertas" className="horizontal">
                     <h1>Centro</h1>
                     <p>8 Sitios</p>
                     <div className="card-footer">
                       <p className="red">8 alertas </p>
                     </div>
                   </Card>
-                  <Card
-                    title="Sitio de mas alertas"
-                    className="horizontal"
-                  >
+                  <Card title="Sitio de mas alertas" className="horizontal">
                     <h1>MEXECA1058</h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
@@ -213,7 +326,6 @@ class Dashboard extends Component {
                     </div>
                   </Card>
                 </div>
-
               </div>
             </div>
             <div className="events-container">
@@ -225,46 +337,61 @@ class Dashboard extends Component {
                   </div>
                 }
                 selectedElementIndex={state.selectedElementIndex}
-                element={(item, index, sectionIndex) =>
-                  <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
+                element={(item, index, sectionIndex) => (
+                  <div
+                    className={`table-item ${
+                      state.selectedElementIndex[0] === index &&
+                      state.selectedElementIndex[1] === sectionIndex
+                        ? 'selected'
+                        : ''
+                    }`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                    {
-                      item.timestamp &&
-                      <div>{item.timestamp.toString()}</div>
-                    }
+                    {item.timestamp && <div>{item.timestamp.toString()}</div>}
                     <div className="medium bold">{item.event}</div>
                     <div className="medium">{item.status}</div>
-                    <div><RiskBar risk={item.risk} /></div>
+                    <div>
+                      <RiskBar risk={item.risk} />
+                    </div>
                     <div>{item.site}</div>
                   </div>
-                }
+                )}
                 elements={[
-                  { title: 'Historial', elements: perimeterReports.concat(reports)},
-                  { title: 'Alertas', elements: reports.filter($0 => $0.risk > 0)}
+                  {
+                    title: 'Historial',
+                    elements: perimeterReports.concat(reports)
+                  },
+                  {
+                    title: 'Alertas',
+                    elements: reports.filter($0 => $0.risk > 0)
+                  }
                 ]}
                 titles={[
-                  {title: 'Tiempo' },
-                  {title: 'Suceso', className: 'medium'},
-                  {title: 'Estatus', className: 'medium'},
-                  {title: 'Riesgo'},
-                  {title: 'Sitio'}
+                  { title: 'Tiempo' },
+                  { title: 'Suceso', className: 'medium' },
+                  { title: 'Estatus', className: 'medium' },
+                  { title: 'Riesgo' },
+                  { title: 'Sitio' }
                 ]}
               />
             </div>
-        </div>
+          </div>
         </div>
       </div>
     )
   }
 }
 
-Dashboard.propTypes = {
+Dashboard.propTypes = {}
 
-}
-
-function mapStateToProps({facialReports, accessReports, cameraReports, perimeterReports, vehicularReports}) {
-  return {facialReports, perimeterReports}
+function mapStateToProps({
+  facialReports,
+  // accessReports,
+  // cameraReports,
+  perimeterReports
+  // vehicularReports
+}) {
+  return { facialReports, perimeterReports }
 }
 
 export default connect(mapStateToProps)(Dashboard)

@@ -15,8 +15,8 @@ function Routes() {
     <Provider store={store}>
       <Router>
         <Switch>
-          <Route exact path="/login" component={Login}/>
-          <Route path="/" component={App}/>
+          <Route exact path="/login" component={Login} />
+          <Route path="/" component={App} />
         </Switch>
       </Router>
     </Provider>

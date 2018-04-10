@@ -11,7 +11,20 @@ export default {
   frmUrl: 'https://connus.be'
 }
 
-export const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+export const months = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre'
+]
 
 export function getFriendlyDateRange(from, to) {
   if (!from && !to) {
@@ -25,7 +38,8 @@ export function getFriendlyDateRange(from, to) {
     return `- ${to.toLocaleDateString()}`
   }
 
-  const isFromToday = from.toLocaleDateString() === new Date().toLocaleDateString()
+  const isFromToday =
+    from.toLocaleDateString() === new Date().toLocaleDateString()
   const isToToday = to.toLocaleDateString() === new Date().toLocaleDateString()
 
   if (isFromToday && isToToday) return `Hoy`
@@ -33,7 +47,13 @@ export function getFriendlyDateRange(from, to) {
   if (from.getMonth() === to.getMonth()) {
     return `${from.getDate()} - ${to.getDate()} ${months[to.getMonth()]}`
   } else if (from.getFullYear() === to.getFullYear()) {
-    return `${from.getDate()} ${months[from.getMonth()]} - ${to.getDate()} ${months[to.getMonth()]}`
+    return `${from.getDate()} ${months[from.getMonth()]} - ${to.getDate()} ${
+      months[to.getMonth()]
+    }`
   }
-  return `${from.getDate()} ${months[from.getMonth()]} ${from.getFullYear()} - ${to.getDate()} ${months[to.getMonth()]} ${to.getFullYear()}`
+  return `${from.getDate()} ${
+    months[from.getMonth()]
+  } ${from.getFullYear()} - ${to.getDate()} ${
+    months[to.getMonth()]
+  } ${to.getFullYear()}`
 }
