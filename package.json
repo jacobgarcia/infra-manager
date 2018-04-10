@@ -34,6 +34,7 @@
     "node-watch": "^0.5.8",
     "openalpr_api": "^2.0.1",
     "prop-types": "^15.6.1",
+    "python-shell": "^0.5.0",
     "query-string": "^5.1.0",
     "react": "^16.2.0",
     "react-day-picker": "^7.0.7",
