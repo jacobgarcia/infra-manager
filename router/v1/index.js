@@ -17,7 +17,15 @@ router.use(require(path.resolve('router/v1/companies')))
 router.use(require(path.resolve('router/v1/users')))
 router.use(require(path.resolve('router/v1/polygons')))
 router.use(require(path.resolve('router/v1/stats')))
-router.use(require(path.resolve('router/v1/vehicular-flow')))
+router.use(require(path.resolve('router/v1/sites')))
+router.use(require(path.resolve('router/v1/debugs')))
+router.use(require(path.resolve('router/v1/admins')))
+router.use(require(path.resolve('router/v1/cameras')))
+router.use(require(path.resolve('router/v1/alerts')))
+router.use(require(path.resolve('router/v1/access')))
+
+
+
 
 // TODO: Send user invitee (mail)
 // TODO: Accept user invitee

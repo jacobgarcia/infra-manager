@@ -23,18 +23,18 @@ function SiteMarker(props) {
   if (props.isSite) {
     sensors = props.sensors.sensors
   }
-
+  let icon = (props.isHighlighted ? '/static/img/icons/red-marker.svg' : '/static/img/icons/marker.svg')
   const position = [parseFloat(props.position[0], 10), parseFloat(props.position[1], 10)]
 
   return (
     <Marker
       position={position}
       onMouseOver={() => props.onMouseHover(props.site ? props.site._id : null)}
-      onMouseOut={() => props.onMouseHover(null)}
+      //onMouseOut={() => props.onMouseHover(null)}
       onClick={props.onClick}
       className="site-marker"
       icon={leafletIcon({
-        iconUrl: '/static/img/icons/marker.svg',
+        iconUrl: icon,
         iconSize: [40, 40],
         // shadowSize: [40, 40],
         iconAnchor: [20, 40],

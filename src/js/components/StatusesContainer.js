@@ -40,12 +40,15 @@ class StatusesContainer extends PureComponent {
     this.socket.on('debugRequest',data => {
 
       this.setState({'animate': false})
-      // if (this.props.element.key === camera){
+       //if (this.props.element.key == data.camera){
+        console.log(this.props.element.key)
+        console.log(data.camera)
         this.setState({
           photo2: 'https://connus.be' + data.image2,
-          photo3: 'https://connus.be' + data.image3
+          photo3: 'https://connus.be' + data.image3,
+          //camera: data.camera
         })
-    //  }
+      //}
     })
 
   }
@@ -92,6 +95,18 @@ class StatusesContainer extends PureComponent {
 
           if (props.type === 'SITE') {
            const sensor = substractReportValues(props.reports).sensors.find(({key}) => key === element.key)
+
+
+            if (sensor) {
+              if(sensor.key.search("cs") !== -1){
+                status = [{ name: 'bold', value: (sensor.value == 100 ? 'OK': 'BAD')}, { name: 'alerts', value: (sensor.value == 100 ? 'OK': 'BAD') }]
+                percentage = (sensor.value == 100 ? 'OK': 'BAD')
+
+              }else {
+                status = [{ name: 'bold', value: sensor.value}, { name: 'alerts', value: 100 - sensor.value }]
+                percentage = sensor.value
+              }
+            }
 
 
            if (sensor) {

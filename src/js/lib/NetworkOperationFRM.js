@@ -32,6 +32,10 @@ class NetworkOperationFRM {
   static getAccess(){
     return axios.get((`${baseUrl}/access/logs`))
   }
+  static getSensors(){
+    return axios.get((`${baseUrl}/sites/getSensors`))
+  }
+
 }
 
 export default NetworkOperationFRM
