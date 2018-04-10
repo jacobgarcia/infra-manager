@@ -1,7 +1,6 @@
 /* eslint-env node */
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -16,11 +15,7 @@ module.exports = {
           loader: require.resolve('babel-loader'),
           options: {
             cacheDirectory: true,
-            presets: [
-              ['env', { modules: false }],
-              'react',
-              'stage-2'
-              ],
+            presets: [['env', { modules: false }], 'react', 'stage-2']
           }
         }
       }
@@ -28,9 +23,6 @@ module.exports = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin(['dist/*.*'], {
-      root: path.join(__dirname, '../')
-    }),
     new HtmlWebpackPlugin({
       template: path.resolve('src/index.html'),
       filename: 'index.html'
