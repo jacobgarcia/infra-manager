@@ -14,17 +14,41 @@ const data = [
   { name: 'damaged', value: 0 }
 ]
 
-const data2 = [
-  { name: 'workings', value: 175 },
-  { name: 'alerts', value: 17 },
-  { name: 'damaged', value: 3 }
-]
+function itemAverage(item,thisArray){
+  let sum = 0
+  let count = 0
+  thisArray.map(sensor => {
+    if(sensor.key.search(item) != -1 ) {
+      sum += sensor.value
+      count++
+    }
+  })
+  return sum/count
+}
 
-const data3 = [
-  { name: 'workings', value: 17 },
-  { name: 'alerts', value: 2 },
-  { name: 'damaged', value: 4 }
-]
+function itemStatus(item,thisArray){
+  let ok = 0
+  let warn = 0
+  let bad = 0
+  let final = []
+  thisArray.map(sensor => {
+    if(sensor.key.search(item) != -1){
+      if(sensor.value === 100){
+        ok++
+      }else if (sensor.value === 0) {
+        bad++
+      }else{
+        warn++
+      }
+    }
+  })
+  return final = [
+    { name: 'workings', value: ok },
+    { name: 'alerts', value: warn },
+    { name: 'damaged', value: bad }
+  ]
+
+}
 
 
 class Users extends Component {
@@ -51,6 +75,16 @@ class Users extends Component {
 
   componentDidMount() {
 
+    NetworkOperationFRM.getSensors()
+    .then(({data}) => {
+      this.setState({
+        aperture : itemAverage("cs",data.inventoryReports).toFixed(2),
+        vibration : itemAverage("vs",data.inventoryReports).toFixed(2),
+        apertureStatus : itemStatus("cs",data.inventoryReports),
+        vibrationStatus : itemStatus("vs",data.inventoryReports)
+      })
+
+    })
     NetworkOperationFRM.getAlerts()
     .then(({data}) => {
       // this.setState({
@@ -83,7 +117,11 @@ class Users extends Component {
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0} dataKey="value" data={data}
+                      animationBegin={0} dataKey="value" data={[
+                        { name: 'workings', value: 100 },
+                        { name: 'alerts', value: 0 },
+                        { name: 'damaged', value: 0 }
+                      ]}
                       cx={75} cy={75} innerRadius={55} outerRadius={75}
                       strokeWidth={0} label>
                       {
@@ -94,7 +132,7 @@ class Users extends Component {
                     </Pie>
                     <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                   </PieChart>
-                  <h1>22º</h1>
+                  <h1>{22}</h1>
                 </div>
                 <div className="center">
                   Ningún Sitio Dañado
@@ -108,7 +146,7 @@ class Users extends Component {
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0} dataKey="value" data={data3}
+                      animationBegin={0} dataKey="value" data={this.state.vibrationStatus}
                       cx={75} cy={75} innerRadius={55} outerRadius={75}
                       strokeWidth={0} label>
                       {
@@ -119,7 +157,7 @@ class Users extends Component {
                     </Pie>
                     <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                   </PieChart>
-                  <h1>17</h1>
+                  <h1>{this.state.vibration}</h1>
                 </div>
                 <div className="center">
                   Activaciones
@@ -133,7 +171,7 @@ class Users extends Component {
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0} dataKey="value" data={data2}
+                      animationBegin={0} dataKey="value" data={this.state.apertureStatus}
                       cx={75} cy={75} innerRadius={55} outerRadius={75}
                       strokeWidth={0} label>
                       {
@@ -144,7 +182,7 @@ class Users extends Component {
                     </Pie>
                     <RechartsTooltip isAnimationActive={false} content={Tooltip} />
                   </PieChart>
-                  <h1>192</h1>
+                  <h1>{this.state.aperture}</h1>
                 </div>
                 <div className="center">
                   Accesos
@@ -152,13 +190,17 @@ class Users extends Component {
                 </div>
               </Card>
               <Card
-                title="Voltaje"
+                title="Corriente"
                 className={`graph-container`}
               >
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0} dataKey="value" data={data}
+                      animationBegin={0} dataKey="value" data={[
+                        { name: 'workings', value: 100 },
+                        { name: 'alerts', value: 0 },
+                        { name: 'damaged', value: 0 }
+                      ]}
                       cx={75} cy={75} innerRadius={55} outerRadius={75}
                       strokeWidth={0} label>
                       {
