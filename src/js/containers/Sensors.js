@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip } from 'recharts'
 import { DateRangePicker, Card, Tooltip, BatteryChart, FuelChart } from '../components'
 import { NetworkOperation, NetworkOperationFRM } from '../lib'
-import { getColor } from '../lib/specialFunctions'
+import { getColor,itemAverage,itemStatus } from '../lib/specialFunctions'
 
 const data = [
   { name: 'workings', value: 100 },
@@ -14,41 +14,6 @@ const data = [
   { name: 'damaged', value: 0 }
 ]
 
-function itemAverage(item,thisArray){
-  let sum = 0
-  let count = 0
-  thisArray.map(sensor => {
-    if(sensor.key.search(item) != -1 ) {
-      sum += sensor.value
-      count++
-    }
-  })
-  return sum/count
-}
-
-function itemStatus(item,thisArray){
-  let ok = 0
-  let warn = 0
-  let bad = 0
-  let final = []
-  thisArray.map(sensor => {
-    if(sensor.key.search(item) != -1){
-      if(sensor.value === 100){
-        ok++
-      }else if (sensor.value === 0) {
-        bad++
-      }else{
-        warn++
-      }
-    }
-  })
-  return final = [
-    { name: 'workings', value: ok },
-    { name: 'alerts', value: warn },
-    { name: 'damaged', value: bad }
-  ]
-
-}
 
 
 class Users extends Component {

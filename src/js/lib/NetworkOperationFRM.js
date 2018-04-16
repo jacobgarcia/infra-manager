@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import constants from './constants'
 
-const baseUrl = `${constants.frmUrl}/v1`
+//const baseUrl = `${constants.frmUrl}/v1`
 const baseUrl = `${constants.hostUrl}/v1`
 
 // TODO: Eliminate hardcoding token for external server requests
