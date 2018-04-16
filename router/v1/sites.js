@@ -27,7 +27,8 @@ router.route('/sites/list')
 // Register new site
 router.route('/sites/register')
 .post((req, res) => {
-  const { key, name, position, company, zone,subzone } = req.body
+  let { key, name, position, company, zone,subzone } = req.body
+  position = JSON.parse(position)
   new Site({
         key,
         name,
