@@ -55,7 +55,7 @@ router.route('/cameras/logs/:camera')
 
 // Return last status only for report
 // Return last status of access only (to know if the user is valid or not)
-router.route('/cameras/report/:site')
+router.route('/cameras/report/shit/:site')
 .get((req, res) => {
   const camera = req.params.site
 
