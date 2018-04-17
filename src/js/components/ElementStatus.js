@@ -22,38 +22,42 @@ class ElementStatus extends Component {
   render() {
     const { props } = this
     return (
-        <div
-          className="status list"
-          onMouseOver={() => props.onHover(props.id)}
-          onMouseOut={() => props.onHover(null)}
-          >
-          <div className="status-text">
-            <span className="main">{props.title} {props.name} <span> {props.siteKey}</span></span>
-            {props.type !== 'SITE' && <span>{props.elements} Sitios</span>}
-            <span>{props.alarms} Alertas</span>
-          </div>
-          <div className="chart-container">
-            <p>{props.percentage}{!props.nonPercentage && '%'}</p>
-            <PieChart width={70} height={70}>
-              <Pie
-                dataKey="value"
-                data={props.status}
-                outerRadius={35}
-                innerRadius={28}
-                startAngle={props.type === 'SITE' ? -45 : -90}
-                endAngle={props.type === 'SITE' ? 225 : 270}
-                fill=""
-                animationEase="ease"
-                animationDuration={500}
-                animationBegin={0}
-                strokeWidth={0}
-              >
+      <div
+        className="status list"
+        onMouseOver={() => props.onHover(props.id)}
+        onMouseOut={() => props.onHover(null)}>
+        <div className="status-text">
+          <span className="main">
+            {props.title} {props.name} <span> {props.siteKey}</span>
+          </span>
+          {props.type === 'GENERAL' && <span>{props.elements} Sitios</span>}
+          {props.type === 'ZONE' && <span>{props.elements} Sensores</span>}
+          <span>{props.alarms} Alertas</span>
+        </div>
+        <div className="chart-container">
+          <p>
+            {props.percentage}
+            {!props.nonPercentage && '%'}
+          </p>
+          <PieChart width={70} height={70}>
+            <Pie
+              dataKey="value"
+              data={props.status}
+              outerRadius={35}
+              innerRadius={28}
+              startAngle={props.type === 'SITE' ? -45 : -90}
+              endAngle={props.type === 'SITE' ? 225 : 270}
+              fill=""
+              animationEase="ease"
+              animationDuration={500}
+              animationBegin={0}
+              strokeWidth={0}>
               <Cell fill={colors(props.percentage)} />
               <Cell fill="#303640" />
-              </Pie>
-            </PieChart>
-          </div>
+            </Pie>
+          </PieChart>
         </div>
+      </div>
     )
   }
 }

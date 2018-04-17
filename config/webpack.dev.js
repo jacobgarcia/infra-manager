@@ -1,32 +1,40 @@
 /* eslint-env node */
 const path = require('path')
 const merge = require('webpack-merge')
-const common = require('./webpack.common.js')
 const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+
+const common = require('./webpack.common.js')
 
 module.exports = merge(common, {
+  mode: 'development',
   devtool: 'cheap-module-eval-source-map',
-  entry: [
-    'react-hot-loader/patch',
-    'webpack-hot-middleware/client',
-    path.resolve('src/js/index')
-  ],
   output: {
     path: path.resolve('dist'),
-    filename: 'bundle.min.js',
-    publicPath: '/dist/'
+    filename: 'bundle.js'
+  },
+  entry: ['webpack-hot-middleware/client', path.resolve('src/js/index')],
+  module: {
+    rules: [
+      {
+        test: /(\.css$|\.scss)/,
+        use: [
+          { loader: 'style-loader' },
+          { loader: 'css-loader' },
+          { loader: 'sass-loader' }
+        ]
+      }
+    ]
+  },
+  devServer: {
+    hot: true,
+    overlay: true,
+    compress: true
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-      template: 'src/index.ejs',
-      inject: 'body',
+    new CleanWebpackPlugin(['dist/*.*'], {
+      root: path.join(__dirname, '../')
     })
-  ],
-  devServer: {
-    overlay: true,
-    hot: true,
-    compress: true,
-  }
+  ]
 })

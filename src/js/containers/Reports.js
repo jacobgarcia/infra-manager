@@ -1,21 +1,17 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
+// import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-
-import { } from '../actions'
 
 class Reports extends Component {
   constructor(props) {
     super(props)
 
-    this.state = {
-
-    }
+    this.state = {}
   }
 
   render() {
-    const { state, props } = this
+    // const { state, props } = this
 
     return (
       <div className="app-content reports small-padding">
@@ -30,20 +26,14 @@ class Reports extends Component {
   }
 }
 
-Reports.propTypes = {
+Reports.propTypes = {}
 
-}
+// function mapStateToProps({}) {
+//   return {}
+// }
+//
+// function mapDispatchToProps(dispatch) {
+//   return {}
+// }
 
-function mapStateToProps({}) {
-  return {
-
-  }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Reports)
+export default Reports

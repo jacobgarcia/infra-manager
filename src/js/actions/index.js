@@ -154,3 +154,29 @@ export function setFacialReport(timestamp, event, success, risk, zone, status, s
     id
   }
 }
+
+export function setInventoryReport(report) {
+  return {
+    type: 'SET_INVENTORY_REPORT',
+    report
+  }
+}
+
+export function setVehicleReport(report) {
+  return {
+    type: 'SET_VEHICULAR_REPORT',
+    report
+  }
+}
+
+/*
+
+          C A M E R A S
+
+ */
+ export function setCamera(camera) {
+   return {
+     type: 'SET_CAMERA',
+     camera
+   }
+ }

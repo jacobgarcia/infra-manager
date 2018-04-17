@@ -5,27 +5,12 @@ function Card(props) {
   return (
     <div className={`card ${props.className} ${props.full ? 'full' : ''}`}>
       <div className="card-header">
-        {
-          props.title
-          &&
-          <div className="title">
-            { props.title }
-          </div>
-        }
-        {
-          props.detailActions && props.full
-          &&
-          <div className="actions">
-            { props.detailActions }
-          </div>
-        }
+        {props.title && <div className="title">{props.title}</div>}
+        {props.detailActions &&
+          props.full && <div className="actions">{props.detailActions}</div>}
       </div>
       <div className="card-content">
-        {
-          props.full
-          ? props.detailView
-          : props.children
-        }
+        {props.full ? props.detailView : props.children}
       </div>
     </div>
   )
@@ -33,7 +18,8 @@ function Card(props) {
 
 Card.propTypes = {
   className: PropTypes.string,
-  full: PropTypes.boolean
+  full: PropTypes.boolean,
+  title: PropTypes.string
 }
 
 export default Card

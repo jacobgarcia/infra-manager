@@ -6,6 +6,7 @@ dist/**
 # Uploads
 static/uploads/company-logos/**
 static/uploads/profile-pictures/**
+static/vehicular-flow
 
 yarn.lock
 

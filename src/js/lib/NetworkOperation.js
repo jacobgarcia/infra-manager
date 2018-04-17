@@ -6,16 +6,19 @@ import constants from './constants'
 const baseUrl = `${constants.hostUrl}/v1`
 
 // Request interceptors
-axios.interceptors.request.use(config => {
-  // Add token
-  config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
-  // Do something before request is sent
-  return config
-}, error => Promise.reject(error))
+axios.interceptors.request.use(
+  config => {
+    // Add token
+    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+    // Do something before request is sent
+    return config
+  },
+  error => Promise.reject(error)
+)
 
 class NetworkOperation {
-  static login({email, password}) {
-    return axios.post(`${baseUrl}/authenticate`, { email, password})
+  static login({ email, password }) {
+    return axios.post(`${baseUrl}/authenticate`, { email, password })
   }
 
   static getSelf() {
@@ -43,7 +46,7 @@ class NetworkOperation {
   }
 
   static setZone(name, positions) {
-    return axios.post(`${baseUrl}/zones`, {name, positions})
+    return axios.post(`${baseUrl}/zones`, { name, positions })
   }
 
   static setSubzone(zone, name, positions) {
@@ -51,7 +54,11 @@ class NetworkOperation {
   }
 
   static setSite(zone, subzone, name, key, position) {
-    return axios.post(`${baseUrl}/zones/${zone}/subzones/${subzone}/sites`, { key, position, name })
+    return axios.post(`${baseUrl}/zones/${zone}/subzones/${subzone}/sites`, {
+      key,
+      position,
+      name
+    })
   }
 
   static getGeneralStats(from, to) {
@@ -80,6 +87,60 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/site/${siteKey}`)
   }
 
+  static getInventory() {
+    return axios.get(`${baseUrl}/sites/sensors`)
+  }
+
+  static getVehicularReports() {
+    return axios.get(`${baseUrl}/vehicular-flow/reports`)
+  }
+
+  static updateInventoryElement(
+    id,
+    lastMantainanceFrom,
+    lastMantainanceTo,
+    maintainer,
+    supervisor,
+    place,
+    maintainanceType
+  ) {
+    return axios.put(`${baseUrl}/inventory/${id}`, {
+      lastMantainanceFrom,
+      lastMantainanceTo,
+      maintainer,
+      supervisor,
+      place,
+      maintainanceType
+    })
+  }
+
+  // Video Surveillance
+  static createVideoToken(key, id) {
+    return axios.post(`${baseUrl}/video/token`, { key, id })
+  }
+
+  static getStreams() {
+    return axios.get(`${baseUrl}/video/cameras`)
+  }
+
+  static getAvailableSites() {
+    return axios.get(`${baseUrl}/cameras/report/clients`)
+  }
+
+  static getDebug(camera) {
+    return axios.post(`${baseUrl}/cameras/single/debug`, { camera })
+  }
+
+  static getAlerts() {
+    return axios.get(`${baseUrl}/alerts`)
+  }
+
+  static getAccess() {
+    return axios.get(`${baseUrl}/access/logs`)
+  }
+  static getSensors() {
+    return axios.get(`${baseUrl}/sites/getSensors`)
+  }
 }
 
 export default NetworkOperation

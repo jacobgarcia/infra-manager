@@ -12,7 +12,7 @@ class Alerts extends Component {
       }
     }
   }
-  
+
   componentWillReceiveProps(nextProps) {
     if (this.props.alerts.length === nextProps.alerts.length) return
 
@@ -23,11 +23,11 @@ class Alerts extends Component {
     }
 
     this.props.alerts.map(alert => {
-      alert.alarms.map(({timestamp, values}) => {
+      alert.alarms.map(({ timestamp, values }) => {
         if (new Date(timestamp).getDay() === today) {
-          alerts.today = alerts.today.concat([{timestamp, ...alert}])
+          alerts.today = alerts.today.concat([{ timestamp, ...alert }])
         } else {
-          alerts.before = alerts.before.concat([{timestamp, ...alert}])
+          alerts.before = alerts.before.concat([{ timestamp, ...alert }])
         }
       })
     })
@@ -42,27 +42,28 @@ class Alerts extends Component {
     return (
       <div className={`alerts ${!props.isVisible && 'hidden'}`}>
         <div className="content">
-          <div className={`tooltip ${props.isCreating && 'hidden'}`} onClick={props.onVisibleToggle}/>
+          <div
+            className={`tooltip ${props.isCreating && 'hidden'}`}
+            onClick={props.onVisibleToggle}
+          />
           {/* <div className="mini-header">
             <span className="pop-window">Hacer ventana</span>
           </div> */}
           <div>
-            {
-              state.alerts.today.map((alert, index) =>
-                <p key={index}>{JSON.stringify(alert.timestamp)}</p>
-              )
-            }
-            {
-              state.alerts.before.map((alert, index) => {
-                const date = new Date(alert.timestamp)
+            {state.alerts.today.map((alert, index) => (
+              <p key={index}>{JSON.stringify(alert.timestamp)}</p>
+            ))}
+            {state.alerts.before.map((alert, index) => {
+              const date = new Date(alert.timestamp)
 
-                return (
-                  <div key={index}>
-                    <span className="date">{date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}</span>
-                  </div>
-                )
-              })
-            }
+              return (
+                <div key={index}>
+                  <span className="date">
+                    {date.getDate()}/{date.getMonth() + 1}/{date.getFullYear()}
+                  </span>
+                </div>
+              )
+            })}
           </div>
         </div>
       </div>
@@ -75,7 +76,6 @@ Alerts.defaultProps = {
 }
 
 export default Alerts
-
 
 // {
 //   "site": {

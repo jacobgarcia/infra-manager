@@ -3,6 +3,9 @@ module.exports = {
         "browser": true,
         "es6": true
     },
+    "globals": {
+      "module": true
+    },
     "extends": [
       "eslint:recommended",
       "plugin:react/recommended"
@@ -55,12 +58,12 @@ module.exports = {
             "error",
             "last"
         ],
-        "complexity": "off",
+        "complexity": "error",
         "computed-property-spacing": [
             "error",
             "never"
         ],
-        "consistent-return": "error",
+        "consistent-return": "off",
         "consistent-this": "error",
         "curly": "off",
         "default-case": "error",
@@ -125,8 +128,8 @@ module.exports = {
         "max-lines": "error",
         "max-nested-callbacks": "error",
         "max-params": "off",
-        "max-statements": "error",
-        "max-statements-per-line": "error",
+        "max-statements": "off",
+        "max-statements-per-line": "off",
         "multiline-ternary": "off",
         "new-cap": "error",
         "new-parens": "error",
@@ -141,8 +144,8 @@ module.exports = {
         "no-caller": "error",
         "no-catch-shadow": "error",
         "no-confusing-arrow": "off",
+        "no-console": ["error", { allow: ["warn", "error", "info"] }],
         "no-continue": "error",
-        "no-console": ["error", { allow: ["warn", "error"] }],
         "no-div-regex": "error",
         "no-duplicate-imports": "error",
         "no-else-return": "error",
@@ -175,7 +178,7 @@ module.exports = {
         "no-native-reassign": "error",
         "no-negated-condition": "off",
         "no-negated-in-lhs": "error",
-        "no-nested-ternary": "off",
+        "no-nested-ternary": "error",
         "no-new": "error",
         "no-new-func": "error",
         "no-new-object": "error",
@@ -208,8 +211,8 @@ module.exports = {
         "no-ternary": "off",
         "no-throw-literal": "error",
         "no-trailing-spaces": "error",
-        "no-undef-init": "off",
-        "no-undefined": "off",
+        "no-undef-init": "error",
+        "no-undefined": "error",
         "no-underscore-dangle": "off",
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": "error",

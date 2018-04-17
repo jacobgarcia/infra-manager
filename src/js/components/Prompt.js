@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 function Prompt(props) {
   return (
     <div className={`prompt ${props.className}`} onClick={props.onDismiss}>
-      { props.children }
+      {props.children}
     </div>
   )
 }
@@ -14,7 +14,8 @@ Prompt.defaultProps = {
 }
 
 Prompt.propTypes = {
-  onDismiss: PropTypes.func
+  onDismiss: PropTypes.func,
+  className: PropTypes.string
 }
 
 export default Prompt

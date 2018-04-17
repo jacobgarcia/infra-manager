@@ -3,41 +3,29 @@ const express = require('express')
 const path = require('path')
 const helmet = require('helmet') // Basic headers protection
 const bodyParser = require('body-parser')
-const compression = require('compression') // Files compresion
 const winston = require('winston') // Logger
 const hpp = require('hpp')
 const request = require('request')
+const cors = require('cors')
 const { exec } = require('child_process')
 const app = express()
 
 const v1 = require(path.resolve('router/v1'))
-const webpackDevServer = require(path.resolve('config/webpackDevServer')) // Dev server
-
-// RTMP Server
-const NodeMediaServer = require('node-media-server')
 
 const PORT = process.env.PORT || 8080
+const watch = require('node-watch')
+
+
+
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(helmet())
+app.use(cors()) /* Enable All CORS Requests */
 app.use(hpp())
 
-function shouldCompress(req, res) {
-  return req.headers['x-no-compression'] ? false : compression.filter(req, res)
-}
-
-// Compression
-app.use(compression({filter: shouldCompress}))
-
-// If in development use webpackDevServer
-process.env.NODE_ENV === 'development'
-&& app.use(webpackDevServer)
-
 // Images and static assets
-app.use('/static',
-  express.static(path.resolve('static'))
-)
+app.use('/static', express.static(path.resolve('static')))
 
 // TODO add API
 // Resolve API v1
@@ -86,20 +74,45 @@ app.post('/webhook', (req, res) => {
   res.status(200).json({ message: 'Webhook recieved' })
 })
 
-// Bundles
-app.use('/dist',
-  express.static('dist')
-)
+// Dist bundles
+app.use('/dist', express.static('dist'))
+
+
+// If in development use webpackDevServer
+if (process.env.NODE_ENV === 'development') {
+  app.use(require(path.resolve('config/webpackDevServer')))
+}
 
 // Send index to all other routes
 app.get('*', (req, res) =>
-  res.sendFile(process.env.NODE_ENV === 'development' ? path.resolve('src/index.html') : path.resolve('dist/index.html'))
+  res.sendFile(path.resolve('dist/index.html'))
 )
 
 // Start server
-app.listen(PORT, () =>
+const server = app.listen(PORT, () =>
   winston.info(`Connus server is listening on port: ${PORT}!`)
 )
+
+const io = require('socket.io').listen(server)
+
+io.on('connection', socket => {
+  winston.info('New client connection')
+  socket.on('join', companyId => {
+    winston.info('New join on room: ' + companyId)
+    socket.join(companyId)
+    // Emit a refresh to web platform when new camera is connected
+    io.to('web-platform').emit('refresh')
+  })
+
+  socket.on('disconnect', companyId => {
+    winston.info('Disconnected client')
+    // Emit a refresh to web platform
+    io.to('web-platform').emit('refresh')
+  })
+})
+
+global.io = io
+
 
 // Start RTMP Server
 const config = {
@@ -116,5 +129,12 @@ const config = {
   }
 }
 
-const nms = new NodeMediaServer(config)
-nms.run()
+function videoConverter(name) {
+    var file = name.split("/")
+    var old = file[3]
+    var rename = old.split(".flv")
+    exec('avconv -i ' + name + ' -codec copy ./static/videos/mp4/' + rename[0] + '.mp4', error => {
+        if (error !== null) winston.error('exec error: ' + error)
+    })
+    isTimeout = false
+}

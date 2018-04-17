@@ -1,13 +1,11 @@
 // Video Streaming Player
 import React, { Component } from 'react'
 import videojs from 'video.js'
-import videojsflash from 'videojs-flash'
 
 export default class VideoPlayer extends Component {
   componentDidMount() {
     this.player = videojs(this.videoNode, this.props)
   }
-
 
   componentWillUnmount() {
     // Dispose player on unmount
@@ -27,7 +25,8 @@ export default class VideoPlayer extends Component {
         <video
           ref={component => {
             this.videoNode = component
-          }} className="video-js"
+          }}
+          className="video-js"
         />
       </div>
     )
