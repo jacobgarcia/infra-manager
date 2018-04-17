@@ -4,9 +4,9 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip } from 'recharts'
-import { Card, Tooltip, BatteryChart, FuelChart } from '../components'
-import { NetworkOperation } from '../lib'
-import { getColor } from '../lib/specialFunctions'
+import { DateRangePicker, Card, Tooltip, BatteryChart, FuelChart } from '../components'
+import { NetworkOperation, NetworkOperationFRM } from '../lib'
+import { getColor,itemAverage,itemStatus } from '../lib/specialFunctions'
 
 const data = [
   { name: 'workings', value: 100 },
@@ -14,17 +14,7 @@ const data = [
   { name: 'damaged', value: 0 }
 ]
 
-const data2 = [
-  { name: 'workings', value: 175 },
-  { name: 'alerts', value: 17 },
-  { name: 'damaged', value: 3 }
-]
 
-const data3 = [
-  { name: 'workings', value: 17 },
-  { name: 'alerts', value: 2 },
-  { name: 'damaged', value: 4 }
-]
 
 class Users extends Component {
   constructor(props) {
@@ -49,7 +39,19 @@ class Users extends Component {
   }
 
   componentDidMount() {
-    NetworkOperation.getAlerts().then(({ data }) => {
+
+    NetworkOperationFRM.getSensors()
+    .then(({data}) => {
+      this.setState({
+        aperture : itemAverage("cs",data.inventoryReports).toFixed(2),
+        vibration : itemAverage("vs",data.inventoryReports).toFixed(2),
+        apertureStatus : itemStatus("cs",data.inventoryReports),
+        vibrationStatus : itemStatus("vs",data.inventoryReports)
+      })
+
+    })
+    NetworkOperationFRM.getAlerts()
+    .then(({data}) => {
       // this.setState({
       //   alerts: this.props.credentials.company.name === 'Connus' ? data.alerts.filter($0 => $0.site === 'CNHQ9094') : data.alerts.filter($0 => $0.site != 'CNHQ9094')
       // })
@@ -75,25 +77,25 @@ class Users extends Component {
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={data}
-                      cx={75}
-                      cy={75}
-                      innerRadius={55}
-                      outerRadius={75}
-                      strokeWidth={0}
-                      label>
-                      {data.map(({ name }, index) => (
-                        <Cell key={index} fill={getColor(name)} />
-                      ))}
+                      animationBegin={0} dataKey="value" data={[
+                        { name: 'workings', value: 100 },
+                        { name: 'alerts', value: 0 },
+                        { name: 'damaged', value: 0 }
+                      ]}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
+                      strokeWidth={0} label>
+                      {
+                        data.map(({name}, index) =>
+                          <Cell key={index} fill={getColor(name)}/>
+                        )
+                      }
                     </Pie>
                     <RechartsTooltip
                       isAnimationActive={false}
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>22º</h1>
+                  <h1>{22}</h1>
                 </div>
                 <div className="center">
                   Ningún Sitio Dañado
@@ -106,25 +108,21 @@ class Users extends Component {
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={data3}
-                      cx={75}
-                      cy={75}
-                      innerRadius={55}
-                      outerRadius={75}
-                      strokeWidth={0}
-                      label>
-                      {data.map(({ name }, index) => (
-                        <Cell key={index} fill={getColor(name)} />
-                      ))}
+                      animationBegin={0} dataKey="value" data={this.state.vibrationStatus}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
+                      strokeWidth={0} label>
+                      {
+                        data.map(({name}, index) =>
+                          <Cell key={index} fill={getColor(name)}/>
+                        )
+                      }
                     </Pie>
                     <RechartsTooltip
                       isAnimationActive={false}
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>17</h1>
+                  <h1>{this.state.vibration}</h1>
                 </div>
                 <div className="center">
                   Activaciones
@@ -137,25 +135,21 @@ class Users extends Component {
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={data2}
-                      cx={75}
-                      cy={75}
-                      innerRadius={55}
-                      outerRadius={75}
-                      strokeWidth={0}
-                      label>
-                      {data.map(({ name }, index) => (
-                        <Cell key={index} fill={getColor(name)} />
-                      ))}
+                      animationBegin={0} dataKey="value" data={this.state.apertureStatus}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
+                      strokeWidth={0} label>
+                      {
+                        data.map(({name}, index) =>
+                          <Cell key={index} fill={getColor(name)}/>
+                        )
+                      }
                     </Pie>
                     <RechartsTooltip
                       isAnimationActive={false}
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>192</h1>
+                  <h1>{this.state.aperture}</h1>
                 </div>
                 <div className="center">
                   Accesos
@@ -164,22 +158,25 @@ class Users extends Component {
                   </p>
                 </div>
               </Card>
-              <Card title="Voltaje" className={`graph-container`}>
+              <Card
+                title="Corriente"
+                className={`graph-container`}
+              >
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={data}
-                      cx={75}
-                      cy={75}
-                      innerRadius={55}
-                      outerRadius={75}
-                      strokeWidth={0}
-                      label>
-                      {data.map(({ name }, index) => (
-                        <Cell key={index} fill={getColor(name)} />
-                      ))}
+                      animationBegin={0} dataKey="value" data={[
+                        { name: 'workings', value: 100 },
+                        { name: 'alerts', value: 0 },
+                        { name: 'damaged', value: 0 }
+                      ]}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
+                      strokeWidth={0} label>
+                      {
+                        data.map(({name}, index) =>
+                          <Cell key={index} fill={getColor(name)}/>
+                        )
+                      }
                     </Pie>
                     <RechartsTooltip
                       isAnimationActive={false}
