@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Polygon, Tooltip} from 'react-leaflet'
+import { Polygon, Tooltip } from 'react-leaflet'
 import { PieChart, Pie, Cell } from 'recharts'
 
 import { getStatus, substractReportValues } from '../lib/specialFunctions'
@@ -30,19 +30,13 @@ function ZonePolygon(props) {
       fillOpacity={props.highlighted ? 0.7 : 0.4}
       onMouseOver={() => props.onMouseHover(props.zone._id)}
       onMouseOut={() => props.onMouseHover(null)}
-      onClick={props.onClick}
-      >
-      <Tooltip
-        permanent
-        opacity={1}
-      >
+      onClick={props.onClick}>
+      <Tooltip permanent opacity={1}>
         <div className={`tooltip ${props.highlighted && 'active'}`}>
           <div className="content">
             <div className="hidable chart-container">
               <p>{percentage}%</p>
-              {
-                status
-                &&
+              {status && (
                 <PieChart width={85} height={85}>
                   <Pie
                     dataKey="value"
@@ -55,18 +49,17 @@ function ZonePolygon(props) {
                     animationEase="ease"
                     animationDuration={501}
                     animationBegin={0}
-                    stroke={false}
-                  >
-                  <Cell fill={colors(percentage)} />
-                  <Cell fill="#303640" />
+                    stroke={false}>
+                    <Cell fill={colors(percentage)} />
+                    <Cell fill="#ed2a20" />
                   </Pie>
                 </PieChart>
-              }
+              )}
             </div>
             <div className={`general`}>
               <div className="icons">
                 {/* { warnings > 0 ? <span className="warnings-icon" /> : null } */}
-                { alerts > 0 ? <span className="alerts-icon" /> : null }
+                {alerts > 0 ? <span className="alerts-icon" /> : null}
               </div>
               <h3>{props.zone.name}</h3>
             </div>

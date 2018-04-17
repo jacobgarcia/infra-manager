@@ -23,28 +23,34 @@ class Overall extends PureComponent {
     if (!this.props.reports) return
 
     if (nextProps.reports.length !== this.props.reports.length) {
-      this.setState({
-        data: substractReportValues(nextProps.reports)
-      }, () => {
-        const { status, percentage } = getStatus(this.state.data || null)
+      this.setState(
+        {
+          data: substractReportValues(nextProps.reports)
+        },
+        () => {
+          const { status, percentage } = getStatus(this.state.data || null)
 
-        this.setState({
-          status,
-          percentage
-        })
-      })
+          this.setState({
+            status,
+            percentage
+          })
+        }
+      )
     }
   }
 
-  getBackLink({selectedType: type, params}) {
+  getBackLink({ selectedType: type, params }) {
     switch (type) {
-      case 'ZONE': return '/sites'
-      case 'SITE': return `/sites/${params.zoneId}`
-      default: return '/sites'
+      case 'ZONE':
+        return '/sites'
+      case 'SITE':
+        return `/sites/${params.zoneId}`
+      default:
+        return '/sites'
     }
   }
 
-  getTitle({siteId, zoneId}, name) {
+  getTitle({ siteId, zoneId }, name) {
     if (siteId) {
       return `Sitio ${name}`
     } else if (zoneId) {
@@ -57,25 +63,50 @@ class Overall extends PureComponent {
     const { state, props } = this
 
     return (
-      <div className={`overall ${state.isHidden || props.isCreating ? 'hidden' : ''}`}>
-        <div className="tooltip" onClick={() => this.setState(prev => ({ isHidden: !prev.isHidden }))} />
+      <div
+        className={`overall ${
+          state.isHidden || props.isCreating ? 'hidden' : ''
+        }`}>
+        <div
+          className="tooltip"
+          onClick={() => this.setState(prev => ({ isHidden: !prev.isHidden }))}
+        />
         <div className="content">
           <div className="mini-header">
-            <span>{props.selectedType !== 'GENERAL' && <Link to={this.getBackLink(props)}>Regresar</Link>}</span>
+            <span>
+              {props.selectedType !== 'GENERAL' && (
+                <Link to={this.getBackLink(props)}>Regresar</Link>
+              )}
+            </span>
             {/* <span className="pop-window">Hacer ventana</span> */}
           </div>
           <div className="overall-header">
-            <h3>{this.getTitle(props.params, props.element && props.element.name)}</h3>
+            <h3>
+              {this.getTitle(props.params, props.element && props.element.name)}
+            </h3>
             <span className="leyend">{state.percentage}%</span>
             <div className="bar-container">
-              <div className="normal" style={{width: `${state.percentage}%`, backgroundColor: Constants.colors(state.percentage)}} />
-              <div className="alert" style={{width: `${100 - state.percentage}%`}} />
+              <div
+                className="normal"
+                style={{
+                  width: `${state.percentage}%`,
+                  backgroundColor: Constants.colors(state.percentage)
+                }}
+              />
+              <div
+                className="alert"
+                style={{ width: `${100 - state.percentage}%` }}
+              />
             </div>
           </div>
           <StatusesContainer
             params={props.params}
             type={props.selectedType}
-            elements={props.selectedType === 'SITE' ? (props.element ? props.element.sensors : []) : props.elements}
+            elements={
+              props.selectedType === 'SITE'
+                ? props.element ? props.element.sensors : []
+                : props.elements
+            }
             reports={props.reports}
             onHover={props.onHover}
             element={props.element}

@@ -3,16 +3,19 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import { Table, RiskBar, DateRangePicker } from '../components'
-import { } from '../actions'
+import { Table, RiskBar } from '../components'
 
 class Accesses extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      selectedLog: this.props.accessReports.length > 0 ? this.props.accessReports[0] : null,
-      selectedElementIndex: this.props.accessReports.length > 0 ? [0,0] : [null,null],
+      selectedLog:
+        this.props.accessReports.length > 0
+          ? this.props.accessReports[0]
+          : null,
+      selectedElementIndex:
+        this.props.accessReports.length > 0 ? [0, 0] : [null, null],
       showLogDetail: true,
       from: new Date(),
       to: new Date()
@@ -42,16 +45,41 @@ class Accesses extends Component {
         <div className="content">
           <h2>Accesos</h2>
           <div className="tables-detail__container">
-            <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
+            <div
+              className={`log-detail-container ${
+                state.showLogDetail ? '' : 'hidden'
+              }`}>
               <div className="content">
-                <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span>
+                <span
+                  onClick={() =>
+                    this.setState({
+                      showLogDetail: false,
+                      selectedElementIndex: [null, null]
+                    })
+                  }
+                  className="close">
+                  Cerrar
+                </span>
                 <div className="time-location">
-                  <p>{state.selectedLog.timestamp && `${state.selectedLog.timestamp.toLocaleDateString('es-MX')} ${state.selectedLog.timestamp.toLocaleTimeString()}`}</p>
-                  <p>Zona <span>{state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site}</span></p>
+                  <p>
+                    {state.selectedLog.timestamp &&
+                      `${state.selectedLog.timestamp.toLocaleDateString(
+                        'es-MX'
+                      )} ${state.selectedLog.timestamp.toLocaleTimeString()}`}
+                  </p>
+                  <p>
+                    Zona <span>{state.selectedLog.zone.name}</span> Sitio{' '}
+                    <span>{state.selectedLog.site}</span>
+                  </p>
                 </div>
                 <div className="detail">
                   <span>Rostro detectado</span>
-                  <div className="image-slider" style={{backgroundImage: `url(` + state.selectedLog.photo +`)`}} />
+                  <div
+                    className="image-slider"
+                    style={{
+                      backgroundImage: `url(` + state.selectedLog.photo + `)`
+                    }}
+                  />
                 </div>
                 <div className="details-container">
                   <div className="detail">
@@ -73,7 +101,7 @@ class Accesses extends Component {
                   <div className="detail">
                     <span>Código único de identificación</span>
                     <p>{state.selectedLog.id}</p>
-                    <img src="" alt=""/>
+                    {/* <img src="" alt=""/> */}
                   </div>
                 </div>
               </div>
@@ -82,47 +110,71 @@ class Accesses extends Component {
               <Table
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
                 selectedElementIndex={state.selectedElementIndex}
-                element={(item, index, sectionIndex) =>
-                  <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === sectionIndex ? 'selected' : ''}`}
+                element={(item, index, sectionIndex) => (
+                  <div
+                    className={`table-item ${
+                      state.selectedElementIndex[0] === index &&
+                      state.selectedElementIndex[1] === sectionIndex
+                        ? 'selected'
+                        : ''
+                    }`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                    <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
+                    <div className="medium">
+                      {item.timestamp &&
+                        `${item.timestamp.toLocaleDateString(
+                          'es-MX'
+                        )} ${item.timestamp.toLocaleTimeString()}`}
+                    </div>
                     <div className="medium bold">{item.event}</div>
                     <div className="hiddable">{item.site}</div>
                     <div className="medium hiddable">{item.status}</div>
                   </div>
-                }
+                )}
                 title="Registros"
                 elements={props.accessReports.filter($0 => $0.risk < 1)}
                 titles={[
-                  {title: 'Tiempo', className: 'medium'},
-                  {title: 'Suceso', className: 'medium'},
-                  {title: 'Sitio', className: 'hiddable'},
-                  {title: 'Estatus o acción', className: 'medium hiddable'}
+                  { title: 'Tiempo', className: 'medium' },
+                  { title: 'Suceso', className: 'medium' },
+                  { title: 'Sitio', className: 'hiddable' },
+                  { title: 'Estatus o acción', className: 'medium hiddable' }
                 ]}
               />
               <Table
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
                 selectedElementIndex={state.selectedElementIndex}
-                element={(item, index) =>
-                  <div className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1 ? 'selected' : ''}`}
+                element={(item, index) => (
+                  <div
+                    className={`table-item ${
+                      state.selectedElementIndex[0] === index &&
+                      state.selectedElementIndex[1] === 1
+                        ? 'selected'
+                        : ''
+                    }`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, 1)}>
-                    <div className="medium">{item.timestamp && `${item.timestamp.toLocaleDateString('es-MX')} ${item.timestamp.toLocaleTimeString()}`}</div>
+                    <div className="medium">
+                      {item.timestamp &&
+                        `${item.timestamp.toLocaleDateString(
+                          'es-MX'
+                        )} ${item.timestamp.toLocaleTimeString()}`}
+                    </div>
                     <div className="medium bold">{item.event}</div>
                     <div className="hiddable">{item.site}</div>
-                    <div><RiskBar risk={item.risk} /></div>
+                    <div>
+                      <RiskBar risk={item.risk} />
+                    </div>
                     <div className="medium hiddable">{item.status}</div>
                   </div>
-                }
+                )}
                 title="Alertas"
                 elements={props.accessReports.filter($0 => $0.risk >= 1)}
                 titles={[
-                  {title: 'Tiempo', className: 'medium'},
-                  {title: 'Suceso', className: 'medium'},
-                  {title: 'Sitio', className: 'hiddable'},
-                  {title: 'Riesgo'},
-                  {title: 'Estatus o acción', className: 'medium hiddable'}
+                  { title: 'Tiempo', className: 'medium' },
+                  { title: 'Suceso', className: 'medium' },
+                  { title: 'Sitio', className: 'hiddable' },
+                  { title: 'Riesgo' },
+                  { title: 'Estatus o acción', className: 'medium hiddable' }
                 ]}
               />
             </div>
@@ -137,16 +189,14 @@ Accesses.propTypes = {
   accessReports: PropTypes.array
 }
 
-function mapStateToProps({accessReports}) {
+function mapStateToProps({ accessReports }) {
   return {
     accessReports
   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-
-  }
+  return {}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Accesses)

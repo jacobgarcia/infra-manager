@@ -5,18 +5,22 @@ import PropTypes from 'prop-types'
 import { DateUtils } from 'react-day-picker'
 import Slider from 'react-slick'
 
-import { } from '../actions'
-import { Table, RiskBar, DateRangePicker } from '../components'
+import {} from '../actions'
+import { Table, RiskBar } from '../components'
 
 class VehicularFlow extends Component {
   constructor(props) {
     super(props)
     this.state = {
       logs: this.props.vehicularReports,
-      alerts: [0,0,0,0,0],
-      selectedLog: this.props.vehicularReports.length > 0 ? this.props.vehicularReports[0] : null,
+      alerts: [0, 0, 0, 0, 0],
+      selectedLog:
+        this.props.vehicularReports.length > 0
+          ? this.props.vehicularReports[0]
+          : null,
       showLogDetail: true,
-      selectedElementIndex: this.props.vehicularReports.length > 0 ? [0,0] : [null,null],
+      selectedElementIndex:
+        this.props.vehicularReports.length > 0 ? [0, 0] : [null, null],
       from: new Date(),
       to: new Date()
     }
@@ -76,35 +80,45 @@ class VehicularFlow extends Component {
           <title>Connus | Flujo Vehicular</title>
         </Helmet>
         <div className="content">
-          <h2>
-            Flujo Vehicular
-            <div className="actions">
-              <DateRangePicker
-                from={state.from}
-                to={state.to}
-                onDayClick={this.onDayClick}
-              />
-              <p className="button action disabled">Filtrar</p>
-            </div>
-          </h2>
+          <h2>Flujo Vehicular</h2>
           <div className="tables-detail__container">
-            <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
-              {
-                state.selectedLog &&
+            <div
+              className={`log-detail-container ${
+                state.showLogDetail ? '' : 'hidden'
+              }`}>
+              {state.selectedLog && (
                 <div className="content">
                   {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
                   <div className="time-location">
-                    <p>{state.selectedLog.timestamp && new Date(state.selectedLog.timestamp).toLocaleString()}</p>
-                    <p>Zona <span>{state.selectedLog.zone}</span> Sitio <span>{state.selectedLog.site}</span></p>
+                    <p>
+                      {state.selectedLog.timestamp &&
+                        new Date(state.selectedLog.timestamp).toLocaleString()}
+                    </p>
+                    <p>
+                      Zona <span>{state.selectedLog.zone}</span> Sitio{' '}
+                      <span>{state.selectedLog.site}</span>
+                    </p>
                   </div>
-                  <Slider nextArrow={<button>{'>'}</button>} prevArrow={<button>{'<'}</button>}>
-                    <div className="image-slider" style={{backgroundImage: `url(` + state.selectedLog.front +`)` }}/>
-                    <div className="image-slider" style={{backgroundImage:`url(` + state.selectedLog.back +`)` }} />
+                  <Slider
+                    nextArrow={<button>{'>'}</button>}
+                    prevArrow={<button>{'<'}</button>}>
+                    <div
+                      className="image-slider"
+                      style={{
+                        backgroundImage: `url(` + state.selectedLog.front + `)`
+                      }}
+                    />
+                    <div
+                      className="image-slider"
+                      style={{
+                        backgroundImage: `url(` + state.selectedLog.back + `)`
+                      }}
+                    />
                     {/* <div className="image-slider 5"></div> */}
                   </Slider>
                   <div className="car-details">
                     <video width="340" height="240" controls muted>
-                      <source src={state.selectedLog.video} type="video/mp4"/>
+                      <source src={state.selectedLog.video} type="video/mp4" />
                     </video>
                   </div>
                   <div className="action">
@@ -137,55 +151,73 @@ class VehicularFlow extends Component {
                     </div>
                   </div>
                 </div>
-              }
+              )}
             </div>
             <div className="tables-container">
               <Table
                 className={state.showLogDetail ? 'detailed' : ''}
                 selectedElementIndex={state.selectedElementIndex}
-                element={(item, index) =>
+                element={(item, index) => (
                   <div
-                    className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 0 ? 'selected' : ''}`}
+                    className={`table-item ${
+                      state.selectedElementIndex[0] === index &&
+                      state.selectedElementIndex[1] === 0
+                        ? 'selected'
+                        : ''
+                    }`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, 0)}>
-                    <div className="medium">{item.timestamp && `${new Date(item.timestamp).toLocaleDateString()}`}</div>
+                    <div className="medium">
+                      {item.timestamp &&
+                        `${new Date(item.timestamp).toLocaleDateString()}`}
+                    </div>
                     <div>{item.plate}</div>
                     <div className="hiddable">{item.brand}</div>
                     <div>{item.model}</div>
                     <div className="hiddable">{item.site}</div>
                   </div>
-                }
+                )}
                 title="Registros"
                 elements={props.vehicularReports.filter($0 => $0.risk === 0)}
                 titles={[
-                  {title: 'Tiempo', className: 'medium'},
-                  {title: 'Placas'},
-                  {title: 'Marca', className: 'hiddable'},
-                  {title: 'Modelo'},
-                  {title: 'Sitio', className: 'hiddable'},
+                  { title: 'Tiempo', className: 'medium' },
+                  { title: 'Placas' },
+                  { title: 'Marca', className: 'hiddable' },
+                  { title: 'Modelo' },
+                  { title: 'Sitio', className: 'hiddable' }
                 ]}
               />
               <Table
                 className={state.showLogDetail ? 'detailed' : ''}
                 selectedElementIndex={state.selectedElementIndex}
-                element={(item, index) =>
+                element={(item, index) => (
                   <div
-                    className={`table-item ${state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1 ? 'selected' : ''}`}
+                    className={`table-item ${
+                      state.selectedElementIndex[0] === index &&
+                      state.selectedElementIndex[1] === 1
+                        ? 'selected'
+                        : ''
+                    }`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, 1)}>
-                    <div className="medium">{item.timestamp && `${new Date(item.timestamp).toLocaleDateString()}`}</div>
+                    <div className="medium">
+                      {item.timestamp &&
+                        `${new Date(item.timestamp).toLocaleDateString()}`}
+                    </div>
                     <div className="hiddable">{item.site}</div>
-                    <div><RiskBar risk={item.risk} /></div>
+                    <div>
+                      <RiskBar risk={item.risk} />
+                    </div>
                     <div>{item.event}</div>
                   </div>
-                }
+                )}
                 title="Alertas"
                 elements={props.vehicularReports.filter($0 => $0.risk > 0)}
                 titles={[
-                  {title: 'Tiempo', className: 'medium'},
-                  {title: 'Sitio', className: 'hiddable'},
-                  {title: 'Riesgo'},
-                  {title: 'Suceso', className: 'large'},
+                  { title: 'Tiempo', className: 'medium' },
+                  { title: 'Sitio', className: 'hiddable' },
+                  { title: 'Riesgo' },
+                  { title: 'Suceso', className: 'large' }
                 ]}
               />
             </div>
@@ -200,16 +232,14 @@ VehicularFlow.propTypes = {
   vehicularReports: PropTypes.func
 }
 
-function mapStateToProps({vehicularReports}) {
+function mapStateToProps({ vehicularReports }) {
   return {
     vehicularReports
   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return {
-
-  }
+  return {}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(VehicularFlow)

@@ -17,61 +17,59 @@ class Table extends PureComponent {
       <div className={`table-container ${props.className}`}>
         <div className="table-container-header">
           <ul className="inline-nav">
-            {
-              props.multipleTable
-              ?
-              props.elements.map(({title}, index) =>
+            {props.multipleTable ? (
+              props.elements.map(({ title }, index) => (
                 <li
                   key={index}
                   className={state.selected === index ? 'active' : ''}
-                  onClick={() => this.setState({ selected: index })}
-                  >{title}
+                  onClick={() => this.setState({ selected: index })}>
+                  {title}
                 </li>
-              )
-              :
+              ))
+            ) : (
               <li>{props.title}</li>
-            }
+            )}
           </ul>
-          { props.actionsContainer }
+          {props.actionsContainer}
         </div>
         <div className="table">
           <div className="table-header">
             <div className="table-item">
-              {
-                props.titles.map((element, index) => {
-                  switch (typeof element) {
-                    case 'string': return <div key={index}>{element}</div>
-                    case 'object': return <div key={index} className={element.className}>{element.title}</div>
-                    default: return null
-                  }
-                })
-              }
+              {props.titles.map((element, index) => {
+                switch (typeof element) {
+                  case 'string':
+                    return <div key={index}>{element}</div>
+                  case 'object':
+                    return (
+                      <div key={index} className={element.className}>
+                        {element.title}
+                      </div>
+                    )
+                  default:
+                    return null
+                }
+              })}
             </div>
           </div>
           <div className="table-body">
-            {
-              props.multipleTable
-              ?
-              ((props.elements
-                && props.elements[state.selected]
+            {props.multipleTable ? (
+              props.elements &&
+              props.elements[state.selected] &&
+              (props.elements[state.selected].elements &&
+                props.elements[state.selected].elements.length > 0) ? (
+                props.elements[state.selected].elements.map((element, index) =>
+                  props.element(element, index, state.selected)
+                )
+              ) : (
+                <p className="no-info">Sin información</p>
               )
-              &&
-              (props.elements[state.selected].elements && props.elements[state.selected].elements.length > 0)
-              ?
-              props.elements[state.selected].elements.map((element, index) =>
-                props.element(element, index, state.selected)
-              )
-              :
-              <p className="no-info">Sin información</p>)
-              :
-              ((props.elements && props.elements.length > 0)
-              ?
+            ) : props.elements && props.elements.length > 0 ? (
               props.elements.map((element, index) =>
                 props.element(element, index, state.selected)
               )
-              :
-              <p className="no-info">Sin información</p>)
-            }
+            ) : (
+              <p className="no-info">Sin información</p>
+            )}
           </div>
         </div>
       </div>
@@ -79,8 +77,6 @@ class Table extends PureComponent {
   }
 }
 
-Table.propTypes = {
-
-}
+Table.propTypes = {}
 
 export default Table

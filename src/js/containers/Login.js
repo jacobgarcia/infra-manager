@@ -41,28 +41,28 @@ class Login extends Component {
     const { email, password } = this.state
 
     NetworkOperation.login({ email, password })
-    .then(({data}) => {
-      localStorage.setItem('token', data.token)
+      .then(({ data }) => {
+        localStorage.setItem('token', data.token)
 
-      this.props.setCredentials({...data.user, token: data.token})
+        this.props.setCredentials({ ...data.user, token: data.token })
 
-      this.props.history.replace(this.state.return || '/')
-    })
-    .catch(({response = {}}) => {
-      const { status = 500 } = response
-      switch (status) {
-        case 400:
-        case 401:
-          this.setState({
-            error: 'Correo o contraseña incorrectos'
-          })
-          break
-        default:
-          this.setState({
-            error: 'Problemas al iniciar sesión, intenta nuevamente'
-          })
-      }
-    })
+        this.props.history.replace(this.state.return || '/')
+      })
+      .catch(({ response = {} }) => {
+        const { status = 500 } = response
+        switch (status) {
+          case 400:
+          case 401:
+            this.setState({
+              error: 'Correo o contraseña incorrectos'
+            })
+            break
+          default:
+            this.setState({
+              error: 'Problemas al iniciar sesión, intenta nuevamente'
+            })
+        }
+      })
   }
 
   render() {
@@ -86,7 +86,7 @@ class Login extends Component {
           params={particleParams}
         />
         <div id="logo">
-          <img src="/static/img/iso.svg" alt="" className="iso" />
+          <img src="/static/img/logo.svg" alt="" className="iso" />
         </div>
         <form onSubmit={this.onSubmit}>
           <input
@@ -108,15 +108,14 @@ class Login extends Component {
           <input
             type="submit"
             value="Iniciar sesión"
-            className={`button action ${(!state.email || !state.password) && 'disabled'}`}
+            className={`button action ${(!state.email || !state.password) &&
+              'disabled'}`}
           />
-          {
-            state.error
-            &&
+          {state.error && (
             <div className="error">
               <p>{state.error}</p>
             </div>
-          }
+          )}
         </form>
       </div>
     )
@@ -132,7 +131,7 @@ function mapDispatchToProps(dispatch) {
   return {
     setCredentials: user => {
       dispatch(setCredentials(user))
-    },
+    }
   }
 }
 

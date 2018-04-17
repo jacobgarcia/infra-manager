@@ -6,16 +6,19 @@ import constants from './constants'
 const baseUrl = `${constants.hostUrl}/v1`
 
 // Request interceptors
-axios.interceptors.request.use(config => {
-  // Add token
-  config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
-  // Do something before request is sent
-  return config
-}, error => Promise.reject(error))
+axios.interceptors.request.use(
+  config => {
+    // Add token
+    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+    // Do something before request is sent
+    return config
+  },
+  error => Promise.reject(error)
+)
 
 class NetworkOperation {
-  static login({email, password}) {
-    return axios.post(`${baseUrl}/authenticate`, { email, password})
+  static login({ email, password }) {
+    return axios.post(`${baseUrl}/authenticate`, { email, password })
   }
 
   static getSelf() {
@@ -43,7 +46,7 @@ class NetworkOperation {
   }
 
   static setZone(name, positions) {
-    return axios.post(`${baseUrl}/zones`, {name, positions})
+    return axios.post(`${baseUrl}/zones`, { name, positions })
   }
 
   static setSubzone(zone, name, positions) {
@@ -51,7 +54,11 @@ class NetworkOperation {
   }
 
   static setSite(zone, subzone, name, key, position) {
-    return axios.post(`${baseUrl}/zones/${zone}/subzones/${subzone}/sites`, { key, position, name })
+    return axios.post(`${baseUrl}/zones/${zone}/subzones/${subzone}/sites`, {
+      key,
+      position,
+      name
+    })
   }
 
   static getGeneralStats(from, to) {
@@ -88,8 +95,23 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/vehicular-flow/reports`)
   }
 
-  static updateInventoryElement(id, lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType) {
-    return axios.put(`${baseUrl}/inventory/${id}`, { lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType })
+  static updateInventoryElement(
+    id,
+    lastMantainanceFrom,
+    lastMantainanceTo,
+    maintainer,
+    supervisor,
+    place,
+    maintainanceType
+  ) {
+    return axios.put(`${baseUrl}/inventory/${id}`, {
+      lastMantainanceFrom,
+      lastMantainanceTo,
+      maintainer,
+      supervisor,
+      place,
+      maintainanceType
+    })
   }
 
   // Video Surveillance
