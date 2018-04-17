@@ -33,7 +33,7 @@ class StatusesContainer extends PureComponent {
   }
 
   initSocket() {
-    this.socket = io('https://connus.be')
+    this.socket = io('https://att.connus.mx')
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
@@ -45,8 +45,8 @@ class StatusesContainer extends PureComponent {
       // console.log(this.props.element.key)
       // console.log(data.camera)
       this.setState({
-        photo2: 'https://connus.be' + data.image2,
-        photo3: 'https://connus.be' + data.image3
+        photo2: 'https://att.connus.mx' + data.image2,
+        photo3: 'https://att.connus.mx' + data.image3
         // camera: data.camera
       })
       // }
