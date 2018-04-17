@@ -8,7 +8,7 @@ import {
   getFilteredReports
 } from '../lib/specialFunctions'
 import { ElementStatus } from './'
-import { NetworkOperationFRM } from '../lib'
+import { NetworkOperation } from '../lib'
 
 import io from 'socket.io-client'
 
@@ -85,7 +85,7 @@ class StatusesContainer extends PureComponent {
   onDebug() {
     this.setState({ animate: true })
     const { props } = this
-    NetworkOperationFRM.getDebug(props.element.key)
+    NetworkOperation.getDebug(props.element.key)
   }
 
   getContent() {

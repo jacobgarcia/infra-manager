@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
 import { Overall, Polygon, Marker, Search, CreateElementBar } from '../components'
-import { NetworkOperation, NetworkOperationFRM } from '../lib'
+import { NetworkOperation } from '../lib'
 import { setLoading, setComplete, setReport, setSubzone, setZone, setSite } from '../actions'
 import { getAreaCenter } from '../lib/specialFunctions'
 
@@ -101,7 +101,7 @@ class MapContainer extends Component {
       })
     })
 
-    NetworkOperationFRM.getAvailableSites()
+    NetworkOperation.getAvailableSites()
     .then(({data}) => {
        this.setState({
          availableSites: data.connected_sites
@@ -132,7 +132,7 @@ class MapContainer extends Component {
           })
         })
 
-        NetworkOperationFRM.getAvailableSites()
+        NetworkOperation.getAvailableSites()
         .then(({data}) => {
            this.setState({
              availableSites: data.connected_sites

@@ -122,6 +122,25 @@ class NetworkOperation {
   static getStreams() {
     return axios.get(`${baseUrl}/video/cameras`)
   }
+
+  static getAvailableSites() {
+    return axios.get(`${baseUrl}/cameras/report/clients`)
+  }
+
+  static getDebug(camera) {
+    return axios.post(`${baseUrl}/cameras/single/debug`, { camera })
+  }
+
+  static getAlerts() {
+    return axios.get(`${baseUrl}/alerts`)
+  }
+
+  static getAccess() {
+    return axios.get(`${baseUrl}/access/logs`)
+  }
+  static getSensors() {
+    return axios.get(`${baseUrl}/sites/getSensors`)
+  }
 }
 
 export default NetworkOperation
