@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip } from 'recharts'
 import { Card, Tooltip, BatteryChart, FuelChart } from '../components'
-import { NetworkOperationFRM } from '../lib'
+import { NetworkOperation } from '../lib'
 import { getColor } from '../lib/specialFunctions'
 
 const data = [
@@ -49,7 +49,7 @@ class Users extends Component {
   }
 
   componentDidMount() {
-    NetworkOperationFRM.getAlerts().then(({ data }) => {
+    NetworkOperation.getAlerts().then(({ data }) => {
       // this.setState({
       //   alerts: this.props.credentials.company.name === 'Connus' ? data.alerts.filter($0 => $0.site === 'CNHQ9094') : data.alerts.filter($0 => $0.site != 'CNHQ9094')
       // })

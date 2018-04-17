@@ -118,19 +118,9 @@ router.route('/cameras/multi/debug')
 router.route('/cameras/single/debug')
 .post((req, res) => {
   const { camera } = req.body
-  Admin.findOne({ '_id': req.U_ID })
-  .exec((error, admin) => {
-    if (error) {
-      winston.error(error)
-      return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
-    }
-    else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
-    else {
-      // Notify to all cameras
-      global.io.to(camera).emit('debug')
-      return res.status(200).json({ 'succes': true, 'message': "Initiated debugging process to all cameras" })
-    }
-  })
+  // Notify to all cameras
+  global.io.to(camera).emit('debug')
+  return res.status(200).json({ 'succes': true, 'message': "Initiated debugging process to all cameras" })
 })
 
 router.route('/cameras/single/upgrade')

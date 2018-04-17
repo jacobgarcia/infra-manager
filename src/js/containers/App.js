@@ -31,7 +31,7 @@ import {
   Inventory
 } from './'
 import { Navigator, VideoPlayer } from '../components'
-import { NetworkOperation, NetworkOperationFRM } from '../lib'
+import { NetworkOperation } from '../lib'
 
 const videoJsOptions = {
   controls: true,
@@ -122,7 +122,7 @@ class App extends Component {
         this.props.setExhaustive(data.zones)
 
         // Set FRM access store
-        return NetworkOperationFRM.getAccess()
+        return NetworkOperation.getAccess()
       })
       .then(({ data }) => {
         const sites = []

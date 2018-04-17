@@ -108,41 +108,27 @@ class VideoSurveillance extends Component {
         </Helmet>
         <div className="content">
           <h2>Video Vigilancia</h2>
-            <div className="tables-detail__container">
-            { this.props.cameraReports.length > 0 &&
-
-            <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
-              <div className="content">
-                {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
-                <div className="time-location">
-                  <p>{state.selectedLog.name && state.selectedLog.name}</p>
-                  <p>Zona <span>{state.selectedLog.name && state.selectedLog.zone.name}</span> Sitio <span>{state.selectedLog.site && state.selectedLog.site.key}</span></p>
-                </div>
-
-                <div>
-                    {
-                      state.playingVideo
-                      ?
-                      <ReactPlayer url={'https://stream.connus.mx/hls/' + state.room + '.m3u8'} playing width="340" height="240" controls fileConfig={{ attributes: { poster: state.selectedLog.photo } }}/>
-                      : null
-                    }
-                </div>
-                <div className="action destructive">
-                  {
-                    state.isLoading &&
-                    <div className="loading">
-
-                    <ul className="loadinglist">
-                      <li>
-                        <div id="panel">
-                            <span id="loading5">
-                                  <span id="outerCircle"></span>
-                            </span>
-                          </div>
-                      </li>
-                      <br/>
-
-                   </ul>
+          <div className="tables-detail__container">
+            {this.props.cameraReports.length > 0 && (
+              <div
+                className={`log-detail-container ${
+                  state.showLogDetail ? '' : 'hidden'
+                }`}>
+                <div className="content">
+                  {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
+                  <div className="time-location">
+                    <p>{state.selectedLog.name && state.selectedLog.name}</p>
+                    <p>
+                      Zona{' '}
+                      <span>
+                        {state.selectedLog.name && state.selectedLog.zone.name}
+                      </span>{' '}
+                      Sitio{' '}
+                      <span>
+                        {state.selectedLog.site && state.selectedLog.site.key}
+                      </span>
+                    </p>
+                  </div>
 
                   <div>
                     {state.playingVideo && (
