@@ -55,7 +55,7 @@ router.route('/cameras/logs/:camera')
 
 // Return last status only for report
 // Return last status of access only (to know if the user is valid or not)
-router.route('/cameras/report/:site')
+router.route('/cameras/report/shit/:site')
 .get((req, res) => {
   const camera = req.params.site
 
@@ -81,19 +81,19 @@ router.route('/cameras/report/:site')
 // Upgrade all cameras
 router.route('/cameras/multi/upgrade')
 .post((req, res) => {
-  Admin.findOne({ '_id': req.U_ID })
-  .exec((error, admin) => {
-    if (error) {
-      winston.error(error)
-      return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
-    }
-    else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
-    else {
+  // Admin.findOne({ '_id': req.U_ID })
+  // .exec((error, admin) => {
+  //   if (error) {
+  //     winston.error(error)
+  //     return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
+  //   }
+  //   else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
+  //   else {
       // Notify to cameras
       global.io.emit('upgrade')
-      return res.status(200).json({ 'succes': true, 'message': "Initiated upgrading process to all cameras" })
-    }
-  })
+    //   return res.status(200).json({ 'succes': true, 'message': "Initiated upgrading process to all cameras" })
+    // }
+  // })
 })
 
 // Get a debug report for all cameras
@@ -118,19 +118,9 @@ router.route('/cameras/multi/debug')
 router.route('/cameras/single/debug')
 .post((req, res) => {
   const { camera } = req.body
-  Admin.findOne({ '_id': req.U_ID })
-  .exec((error, admin) => {
-    if (error) {
-      winston.error(error)
-      return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
-    }
-    else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
-    else {
-      // Notify to all cameras
-      global.io.to(camera).emit('debug')
-      return res.status(200).json({ 'succes': true, 'message': "Initiated debugging process to all cameras" })
-    }
-  })
+  // Notify to all cameras
+  global.io.to(camera).emit('debug')
+  return res.status(200).json({ 'succes': true, 'message': "Initiated debugging process to all cameras" })
 })
 
 router.route('/cameras/single/upgrade')
@@ -275,10 +265,10 @@ router.route('/cameras/report/clients')
       let connected_sites = []
       let counter = 0
       sites.forEach((room) => {
-        global.io.in(room._id).clients((error, clients) => {
+        global.io.in(room.key).clients((error, clients) => {
           counter++
           // Just add the rooms who have at least one client
-          if (clients != '') connected_sites.push(room._id)
+          if (clients != '') connected_sites.push(room.key)
           if (counter === sites.length) return res.status(200).json({'success': true, connected_sites})
         })
       })

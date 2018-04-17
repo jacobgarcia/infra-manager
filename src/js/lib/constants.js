@@ -8,7 +8,7 @@ export default {
     }
     return '#FFC511'
   },
-  frmUrl: 'https://connus.be'
+  frmUrl: 'https://att.connus.mx'
 }
 
 export const months = [
