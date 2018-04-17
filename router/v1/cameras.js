@@ -124,7 +124,7 @@ router.route('/cameras/single/debug')
       winston.error(error)
       return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
     }
-    else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
+    //else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
     else {
       // Notify to all cameras
       global.io.to(camera).emit('debug')
