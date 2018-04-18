@@ -8,6 +8,10 @@ import { Card, Tooltip, BatteryChart, FuelChart } from '../components'
 import { NetworkOperation } from '../lib'
 import { getColor } from '../lib/specialFunctions'
 
+
+NetworkOperation.getSensors().then(({ data }) => {
+
+})
 const data = [
   { name: 'workings', value: 100 },
   { name: 'alerts', value: 0 },
