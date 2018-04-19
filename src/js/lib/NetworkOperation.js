@@ -90,6 +90,9 @@ class NetworkOperation {
   static getInventory() {
     return axios.get(`${baseUrl}/sites/sensors`)
   }
+  static getSensors() {
+  return axios.get(`${baseUrl}/sites/sensors/all/`)
+}
 
   static getVehicularReports() {
     return axios.get(`${baseUrl}/vehicular-flow/reports`)
@@ -138,9 +141,7 @@ class NetworkOperation {
   static getAccess() {
     return axios.get(`${baseUrl}/access/logs`)
   }
-  static getSensors() {
-    return axios.get(`${baseUrl}/sites/getSensors`)
-  }
+
 }
 
 export default NetworkOperation
