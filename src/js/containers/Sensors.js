@@ -104,7 +104,7 @@ class Users extends Component {
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>{22}</h1>
+                  <h1>{this.state.temperature && this.state.temperature}</h1>
                 </div>
                 <div className="center">
                   { (temperatureStatus && (!temperatureStatus[2].value && "activaciones")) }
@@ -131,7 +131,7 @@ class Users extends Component {
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>{this.state.vibration}</h1>
+                  <h1>{this.state.vibration && this.state.vibration}</h1>
                 </div>
                 <div className="center">
                 {  (vibrationStatus && (!vibrationStatus[2].value && "activaciones")) }
@@ -159,7 +159,7 @@ class Users extends Component {
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>{this.state.aperture}</h1>
+                  <h1>{this.state.aperture && this.state.aperture}</h1>
                 </div>
                 <div className="center">
                 {  (vibrationStatus && (!vibrationStatus[2].value && "accesos")) }
@@ -190,7 +190,7 @@ class Users extends Component {
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>5.5 A</h1>
+                  <h1>{this.state.energy && this.state.energy } A</h1>
                 </div>
                 <div className="center">
                 {this.state.energy && (!this.state.energy && "Ningún sitio dañado")}
@@ -221,7 +221,7 @@ class Users extends Component {
                   <h3>{this.state.fuel}% promedio</h3>
                   {this.state.fuel && (!this.state.fuel && "Ningún sitio dañado")}
                   <p className="border warning button" onClick={this.onSites}>
-                    {/*this.state.fuel && (this.state.fuel) */} Sitio
+                    {/*this.state.fuel && (this.state.fuel) */} Sitios
                   </p>
                 </div>
               </Card>
