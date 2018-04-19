@@ -150,6 +150,7 @@ export function itemAverage(item,thisArray){
       sum += sensor.value
       count++
     }
+
   })
   return sum/count
 }

@@ -16,6 +16,7 @@ const data = [
 
 
 
+
 class Users extends Component {
   constructor(props) {
     super(props)
@@ -41,19 +42,20 @@ class Users extends Component {
   componentDidMount() {
     NetworkOperation.getSensors()
     .then(({data}) => {
-      console.log(data.inventoryReports);
+      console.log(data)
       this.setState({
-        aperture : parseInt(itemAverage("cs",data.inventoryReports)),
-        vibration :parseInt( itemAverage("vs",data.inventoryReports)),
-        temperature :parseInt( itemAverage("vs",data.inventoryReports)),
-        energy :parseInt( itemAverage("vs",data.inventoryReports)),
-        apertureStatus : itemStatus("cs",data.inventoryReports,"upscale",80,20),
-        vibrationStatus : itemStatus("vs",data.inventoryReports,"upscale",80,20),
-        temperatureStatus : itemStatus("ts",data.inventoryReports,"between",50,0),
-        energyStatus : itemStatus("es",data.inventoryReports,"between",130,100),
-        battery :parseInt( itemAverage("vs",data.inventoryReports)),
-        fuel :parseInt( itemAverage("vs",data.inventoryReports)),
+        aperture : parseInt(itemAverage("cs",data.sensors)),
+        vibration :parseInt( itemAverage("vs",data.sensors)),
+        temperature :parseInt( itemAverage("ts",data.sensors)),
+        energy :parseInt( itemAverage("cu",data.sensors)),
+        apertureStatus : itemStatus("cs",data.sensors,"upscale",80,20),
+        vibrationStatus : itemStatus("vs",data.sensors,"upscale",80,20),
+        temperatureStatus : itemStatus("ts",data.sensors,"between",50,0),
+        energyStatus : itemStatus("cu",data.sensors,"between",130,100),
+        battery :parseInt( itemAverage("bs",data.sensors)),
+        fuel :parseInt( itemAverage("fs",data.sensors)),
       })
+      console.log(this.state.apertureStatus)
 
     })
     NetworkOperation.getAlerts()
@@ -64,9 +66,7 @@ class Users extends Component {
 
     NetworkOperation.getInventory().then(({ data }) => {
       data.sites.map(site => {
-        site.sensors.map(sensor => {
-          console.log(sensor)
-        })
+
       })
     })
   }
@@ -190,7 +190,7 @@ class Users extends Component {
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>{this.state.energy && this.state.energy } A</h1>
+                  <h1>{this.state.energy && this.state.energy }</h1>
                 </div>
                 <div className="center">
                 {this.state.energy && (!this.state.energy && "Ningún sitio dañado")}
