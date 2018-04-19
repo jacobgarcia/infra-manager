@@ -64,9 +64,7 @@ class Users extends Component {
 
     NetworkOperation.getInventory().then(({ data }) => {
       data.sites.map(site => {
-        site.sensors.map(sensor => {
-          console.log(sensor)
-        })
+        
       })
     })
   }
@@ -190,7 +188,7 @@ class Users extends Component {
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>{this.state.energy && this.state.energy } A</h1>
+                  <h1>{this.state.energy && this.state.energy }</h1>
                 </div>
                 <div className="center">
                 {this.state.energy && (!this.state.energy && "Ningún sitio dañado")}
