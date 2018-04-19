@@ -528,6 +528,8 @@ router.route('/sites/sensors').put((req, res) => {
           .status(404)
           .json({ success: false, message: 'No site found' })
 
+      global.io.emit('refresh')
+
       return res.status(200).json({
         success: true,
         message: 'Updated sensor information sucessfully',

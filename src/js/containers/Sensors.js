@@ -14,6 +14,8 @@ import {
 import { NetworkOperation } from '../lib'
 import { getColor, itemAverage, itemStatus } from '../lib/specialFunctions'
 
+import io from 'socket.io-client'
+
 const data = [
   { name: 'workings', value: 100 },
   { name: 'alerts', value: 0 },
@@ -56,6 +58,21 @@ class Users extends Component {
         battery: parseInt(itemAverage('bs', data.sensors)),
         fuel: parseInt(itemAverage('fs', data.sensors))
       })
+    })
+    // Init socket with userId and token
+    this.initSocket()
+  }
+
+  initSocket() {
+    this.socket = io('https://att.connus.mx')
+
+    this.socket.on('connect', () => {
+      this.socket.emit('join', 'connus')
+    })
+
+    this.socket.on('refresh', data => {
+      console.log('Forcing update')
+      this.forceUpdate()
     })
   }
 
