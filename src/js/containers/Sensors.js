@@ -4,9 +4,9 @@ import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip } from 'recharts'
-import { Card, Tooltip, BatteryChart, FuelChart } from '../components'
+import { DateRangePicker, Card, Tooltip, BatteryChart, FuelChart } from '../components'
 import { NetworkOperation } from '../lib'
-import { getColor } from '../lib/specialFunctions'
+import { getColor,itemAverage,itemStatus } from '../lib/specialFunctions'
 
 const data = [
   { name: 'workings', value: 100 },
@@ -14,17 +14,7 @@ const data = [
   { name: 'damaged', value: 0 }
 ]
 
-const data2 = [
-  { name: 'workings', value: 175 },
-  { name: 'alerts', value: 17 },
-  { name: 'damaged', value: 3 }
-]
 
-const data3 = [
-  { name: 'workings', value: 17 },
-  { name: 'alerts', value: 2 },
-  { name: 'damaged', value: 4 }
-]
 
 class Users extends Component {
   constructor(props) {
@@ -49,7 +39,26 @@ class Users extends Component {
   }
 
   componentDidMount() {
-    NetworkOperation.getAlerts().then(({ data }) => {
+
+    NetworkOperation.getSensors()
+    .then(({data}) => {
+      console.log(data.inventoryReports);
+      this.setState({
+        aperture : parseInt(itemAverage("cs",data.inventoryReports)),
+        vibration :parseInt( itemAverage("vs",data.inventoryReports)),
+        temperature :parseInt( itemAverage("vs",data.inventoryReports)),
+        energy :parseInt( itemAverage("vs",data.inventoryReports)),
+        apertureStatus : itemStatus("cs",data.inventoryReports,"upscale",80,20),
+        vibrationStatus : itemStatus("vs",data.inventoryReports,"upscale",80,20),
+        temperatureStatus : itemStatus("ts",data.inventoryReports,"between",50,0),
+        energyStatus : itemStatus("es",data.inventoryReports,"between",130,100),
+        battery :parseInt( itemAverage("vs",data.inventoryReports)),
+        fuel :parseInt( itemAverage("vs",data.inventoryReports)),
+      })
+
+    })
+    NetworkOperation.getAlerts()
+    .then(({data}) => {
       // this.setState({
       //   alerts: this.props.credentials.company.name === 'Connus' ? data.alerts.filter($0 => $0.site === 'CNHQ9094') : data.alerts.filter($0 => $0.site != 'CNHQ9094')
       // })
@@ -61,6 +70,9 @@ class Users extends Component {
 
   render() {
     const { state, props } = this
+    const temperatureStatus = this.state.temperatureStatus
+    const vibrationStatus = this.state.vibrationStatus
+    const apertureStatus = this.state.apertureStatus
 
     return (
       <div className="users app-content small-padding sensors">
@@ -75,30 +87,26 @@ class Users extends Component {
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={data}
-                      cx={75}
-                      cy={75}
-                      innerRadius={55}
-                      outerRadius={75}
-                      strokeWidth={0}
-                      label>
-                      {data.map(({ name }, index) => (
-                        <Cell key={index} fill={getColor(name)} />
-                      ))}
+                      animationBegin={0} dataKey="value" data={temperatureStatus}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
+                      strokeWidth={0} label>
+                      {
+                        data.map(({name}, index) =>
+                          <Cell key={index} fill={getColor(name)}/>
+                        )
+                      }
                     </Pie>
                     <RechartsTooltip
                       isAnimationActive={false}
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>22º</h1>
+                  <h1>{22}</h1>
                 </div>
                 <div className="center">
-                  Ningún Sitio Dañado
+                  { (temperatureStatus && (!temperatureStatus[2].value && "activaciones")) }
                   <p className="border button" onClick={this.onSites}>
-                    8 sitios
+                    { (temperatureStatus && (temperatureStatus[2].value && temperatureStatus[2].value)) } sitios
                   </p>
                 </div>
               </Card>
@@ -106,30 +114,27 @@ class Users extends Component {
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={data3}
-                      cx={75}
-                      cy={75}
-                      innerRadius={55}
-                      outerRadius={75}
-                      strokeWidth={0}
-                      label>
-                      {data.map(({ name }, index) => (
-                        <Cell key={index} fill={getColor(name)} />
-                      ))}
+                      animationBegin={0} dataKey="value" data={vibrationStatus}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
+                      strokeWidth={0} label>
+                      {
+                        data.map(({name}, index) =>
+                          <Cell key={index} fill={getColor(name)}/>
+                        )
+                      }
                     </Pie>
                     <RechartsTooltip
                       isAnimationActive={false}
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>17</h1>
+                  <h1>{this.state.vibration}</h1>
                 </div>
                 <div className="center">
-                  Activaciones
+                {  (vibrationStatus && (!vibrationStatus[2].value && "activaciones")) }
+
                   <p className="border button" onClick={this.onSites}>
-                    8 sitios
+                  { (vibrationStatus && (vibrationStatus[2].value && vibrationStatus[2].value)) } sitios
                   </p>
                 </div>
               </Card>
@@ -137,49 +142,45 @@ class Users extends Component {
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={data2}
-                      cx={75}
-                      cy={75}
-                      innerRadius={55}
-                      outerRadius={75}
-                      strokeWidth={0}
-                      label>
-                      {data.map(({ name }, index) => (
-                        <Cell key={index} fill={getColor(name)} />
-                      ))}
+                      animationBegin={0} dataKey="value" data={apertureStatus}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
+                      strokeWidth={0} label>
+                      {
+                        data.map(({name}, index) =>
+                          <Cell key={index} fill={getColor(name)}/>
+                        )
+                      }
                     </Pie>
                     <RechartsTooltip
                       isAnimationActive={false}
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>192</h1>
+                  <h1>{this.state.aperture}</h1>
                 </div>
                 <div className="center">
-                  Accesos
+                {  (vibrationStatus && (!vibrationStatus[2].value && "accesos")) }
+
                   <p className="border button" onClick={this.onSites}>
-                    8 sitios
+                    { (apertureStatus && (apertureStatus[2].value && apertureStatus[2].value)) } sitios
                   </p>
                 </div>
               </Card>
-              <Card title="Voltaje" className={`graph-container`}>
+              <Card
+                title="Corriente"
+                className={`graph-container`}
+              >
                 <div className="graph">
                   <PieChart width={160} height={160}>
                     <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={data}
-                      cx={75}
-                      cy={75}
-                      innerRadius={55}
-                      outerRadius={75}
-                      strokeWidth={0}
-                      label>
-                      {data.map(({ name }, index) => (
-                        <Cell key={index} fill={getColor(name)} />
-                      ))}
+                      animationBegin={0} dataKey="value" data={this.state.energyStatus}
+                      cx={75} cy={75} innerRadius={55} outerRadius={75}
+                      strokeWidth={0} label>
+                      {
+                        data.map(({name}, index) =>
+                          <Cell key={index} fill={getColor(name)}/>
+                        )
+                      }
                     </Pie>
                     <RechartsTooltip
                       isAnimationActive={false}
@@ -189,34 +190,35 @@ class Users extends Component {
                   <h1>5.5 A</h1>
                 </div>
                 <div className="center">
-                  Ningún Sitio Dañado
+                {this.state.energy && (!this.state.energy && "Ningún sitio dañado")}
+
                   <p className="border button" onClick={this.onSites}>
-                    8 sitios
+                    {/*this.state.energy && (this.state.energy) */}
+                     sitios
                   </p>
                 </div>
               </Card>
               <Card title="Nivel de Batería">
                 <div>
-                  <BatteryChart height={160} width={110} />
+                  <BatteryChart  energy={this.state.energy} height={160} width={110} />
                 </div>
                 <div className="center">
-                  <h3>90% promedio</h3>
-
-                  <p>Ningún sitio alertado</p>
+                  <h3>{this.state.energy}% promedio</h3>
+                  {this.state.battery && (!this.state.battery && "Ningún sitio dañado")}
                   <p className="border button" onClick={this.onSites}>
-                    8 Sitios
+                    {/*this.state.battery && (this.state.battery) */} Sitios
                   </p>
                 </div>
               </Card>
               <Card title="Nivel de Combustible">
                 <div>
-                  <FuelChart height={160} width={110} percentage={80} />
+                  <FuelChart fuel={this.state.fuel} height={160} width={110} percentage={80} />
                 </div>
                 <div className="center">
-                  <h3>80% promedio</h3>
-                  <p>1 alertado</p>
+                  <h3>{this.state.fuel}% promedio</h3>
+                  {this.state.fuel && (!this.state.fuel && "Ningún sitio dañado")}
                   <p className="border warning button" onClick={this.onSites}>
-                    1 Sitio
+                    {/*this.state.fuel && (this.state.fuel) */} Sitio
                   </p>
                 </div>
               </Card>

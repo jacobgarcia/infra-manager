@@ -102,20 +102,24 @@ router.route('/zones')
 // Save sensors and alarms, add to history and stream change
 router.route('/:siteKey/reports')
 .put((req, res) => {
-    const { sensors, alarms } = req.body
-    const { siteKey } = req.params
+    let { sensors, alarms } = req.body
+    let { siteKey } = req.params
     const company = req._user.cmp
 
+    alarms = JSON.parse(alarms)
+    sensors = JSON.parse(sensors)
     winston.info({key: siteKey, company})
 
     Site.findOne({key: siteKey, company})
     .exec((error, site) => {
       if (!site) return res.status(404).json({ message: 'No site found'})
 
+      //return res.status(404).json({ message: sensors})
+
       // TODO just update the returned site
       return Site.findByIdAndUpdate(site, { $push: { history: { sensors: site.sensors, alarms: site.alarms} } }, { new: true })
-      .populate('zone', 'name')
-      .populate('subzone', 'name')
+      //.populate('zone', 'name')
+      //.populate('subzone', 'name')
       .exec((error, populatedSite) => {
         if (sensors) site.sensors = sensors
         site.alarms = alarms
