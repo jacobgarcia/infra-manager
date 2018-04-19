@@ -71,8 +71,20 @@ class Users extends Component {
     })
 
     this.socket.on('refresh', data => {
-      console.log('Forcing update')
-      this.forceUpdate()
+      NetworkOperation.getSensors().then(({ data }) => {
+        this.setState({
+          aperture: parseInt(itemAverage('cs', data.sensors)),
+          vibration: parseInt(itemAverage('vs', data.sensors)),
+          temperature: parseInt(itemAverage('ts', data.sensors)),
+          energy: parseInt(itemAverage('cu', data.sensors)),
+          apertureStatus: itemStatus('cs', data.sensors, 'upscale', 80, 20),
+          vibrationStatus: itemStatus('vs', data.sensors, 'upscale', 80, 20),
+          temperatureStatus: itemStatus('ts', data.sensors, 'between', 50, 0),
+          energyStatus: itemStatus('cu', data.sensors, 'between', 130, 100),
+          battery: parseInt(itemAverage('bs', data.sensors)),
+          fuel: parseInt(itemAverage('fs', data.sensors))
+        })
+      })
     })
   }
 
@@ -97,7 +109,7 @@ class Users extends Component {
                       <Pie
                         animationBegin={0}
                         dataKey="value"
-                        data={temperatureStatus}
+                        data={temperatureStatus + 'º'}
                         cx={75}
                         cy={75}
                         innerRadius={55}
