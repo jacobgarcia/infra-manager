@@ -142,6 +142,64 @@ export function getSensorChart(type) {
       return null
   }
 }
+export function itemAverage(item,thisArray){
+  let sum = 0
+  let count = 0
+  thisArray.map(sensor => {
+    if(sensor.key.search(item) != -1 ) {
+      sum += sensor.value
+      count++
+    }
+  })
+  return sum/count
+}
+
+export function itemStatus(item,thisArray,option,max,min){
+  let ok = 0
+  let warn = 0
+  let bad = 0
+  let final = []
+
+switch(option){
+  case "upscale":
+    thisArray.map(sensor => {
+      if(sensor.key.search(item) != -1){
+        if(sensor.value >= max){
+          ok++
+        }else if (sensor.value <= min) {
+          bad++
+        }else{
+          warn++
+        }
+      }
+    })
+    break;
+  case "between":
+    thisArray.map(sensor => {
+      if(sensor.key.search(item) != -1){
+        if(sensor.value <= max && sensor.value >= min){
+          ok++
+        }else{
+          bad++
+        }
+      }
+    })
+    break;
+}
+
+  ok = (ok%2===0 ? ok/2: (ok-1)/2)
+  warn = (warn%2===0 ? warn/2: (warn+1)/2)
+  bad = (bad%2===0 ? bad/2: (bad+1)/2)
+
+
+
+  return final = [
+    { name: 'workings', value: ok },
+    { name: 'alerts', value: warn },
+    { name: 'damaged', value: bad }
+  ]
+
+}
 
 export function getStatus(data) {
   let sum = 0

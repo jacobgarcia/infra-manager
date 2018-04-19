@@ -111,7 +111,6 @@ router.route('/:siteKey/reports').put((req, res) => {
   const company = req._user.cmp
 
   winston.info({ key: siteKey, company })
-
   Site.findOne({ key: siteKey, company }).exec((error, site) => {
     if (!site) return res.status(404).json({ message: 'No site found' })
 
