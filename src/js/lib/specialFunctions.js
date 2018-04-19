@@ -142,64 +142,59 @@ export function getSensorChart(type) {
       return null
   }
 }
-export function itemAverage(item,thisArray){
+export function itemAverage(item, thisArray) {
   let sum = 0
   let count = 0
-  thisArray.map(sensor => {
-    if(sensor.key.search(item) != -1 ) {
-      sum += sensor.value
-      count++
-    }
 
+  thisArray.map(sensor => {
+    if (sensor.key.search(item) !== -1) {
+      sum += sensor.value
+      count += 1
+    }
   })
-  return sum/count
+
+  if (count !== 0) return sum / count
+  return 0
 }
 
-export function itemStatus(item,thisArray,option,max,min){
+export function itemStatus(item, thisArray, option, max, min) {
   let ok = 0
   let warn = 0
   let bad = 0
-  let final = []
 
-switch(option){
-  case "upscale":
-    thisArray.map(sensor => {
-      if(sensor.key.search(item) != -1){
-        if(sensor.value >= max){
-          ok++
-        }else if (sensor.value <= min) {
-          bad++
-        }else{
-          warn++
+  switch (option) {
+    case 'upscale':
+      thisArray.map(sensor => {
+        if (sensor.key.search(item) !== -1) {
+          if (sensor.value >= max) {
+            ok += 1
+            console.log('IN', ok)
+          } else if (sensor.value <= min) bad += 1
+          else warn += 1
         }
-      }
-    })
-    break;
-  case "between":
-    thisArray.map(sensor => {
-      if(sensor.key.search(item) != -1){
-        if(sensor.value <= max && sensor.value >= min){
-          ok++
-        }else{
-          bad++
+      })
+      break
+    case 'between':
+      thisArray.map(sensor => {
+        if (sensor.key.search(item) !== -1) {
+          if (sensor.value <= max && sensor.value >= min) ok += 1
+          else bad += 1
         }
-      }
-    })
-    break;
-}
+      })
+      break
+    default:
+      null
+  }
 
-  ok = (ok%2===0 ? ok/2: (ok-1)/2)
-  warn = (warn%2===0 ? warn/2: (warn+1)/2)
-  bad = (bad%2===0 ? bad/2: (bad+1)/2)
+  ok = ok % 2 === 0 ? ok / 2 : (ok + 1) / 2
+  warn = warn % 2 === 0 ? warn / 2 : (warn + 1) / 2
+  bad = bad % 2 === 0 ? bad / 2 : (bad + 1) / 2
 
-
-
-  return final = [
+  return [
     { name: 'workings', value: ok },
     { name: 'alerts', value: warn },
     { name: 'damaged', value: bad }
   ]
-
 }
 
 export function getStatus(data) {
