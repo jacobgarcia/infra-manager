@@ -15,20 +15,6 @@ const data = [
 ]
 
 
-NetworkOperation.getSensors("cs1").then(({ data }) => {
-  this.setState({
-    aperture : parseInt(itemAverage("cs",data.inventoryReports)),
-    vibration :parseInt( itemAverage("vs",data.inventoryReports)),
-    temperature :parseInt( itemAverage("vs",data.inventoryReports)),
-    energy :parseInt( itemAverage("vs",data.inventoryReports)),
-    apertureStatus : itemStatus("cs",data.inventoryReports,"upscale",80,20),
-    vibrationStatus : itemStatus("vs",data.inventoryReports,"upscale",80,20),
-    temperatureStatus : itemStatus("ts",data.inventoryReports,"between",50,0),
-    energyStatus : itemStatus("es",data.inventoryReports,"between",130,100),
-    battery :parseInt( itemAverage("vs",data.inventoryReports)),
-    fuel :parseInt( itemAverage("vs",data.inventoryReports)),
-  })
-})
 
 
 class Users extends Component {
@@ -56,19 +42,20 @@ class Users extends Component {
   componentDidMount() {
     NetworkOperation.getSensors()
     .then(({data}) => {
-      //console.log(data.inventoryReports);
+      console.log(data)
       this.setState({
-        aperture : parseInt(itemAverage("cs",data.inventoryReports)),
-        vibration :parseInt( itemAverage("vs",data.inventoryReports)),
-        temperature :parseInt( itemAverage("vs",data.inventoryReports)),
-        energy :parseInt( itemAverage("vs",data.inventoryReports)),
-        apertureStatus : itemStatus("cs",data.inventoryReports,"upscale",80,20),
-        vibrationStatus : itemStatus("vs",data.inventoryReports,"upscale",80,20),
-        temperatureStatus : itemStatus("ts",data.inventoryReports,"between",50,0),
-        energyStatus : itemStatus("es",data.inventoryReports,"between",130,100),
-        battery :parseInt( itemAverage("vs",data.inventoryReports)),
-        fuel :parseInt( itemAverage("vs",data.inventoryReports)),
+        aperture : parseInt(itemAverage("cs",data.sensors)),
+        vibration :parseInt( itemAverage("vs",data.sensors)),
+        temperature :parseInt( itemAverage("ts",data.sensors)),
+        energy :parseInt( itemAverage("cu",data.sensors)),
+        apertureStatus : itemStatus("cs",data.sensors,"upscale",80,20),
+        vibrationStatus : itemStatus("vs",data.sensors,"upscale",80,20),
+        temperatureStatus : itemStatus("ts",data.sensors,"between",50,0),
+        energyStatus : itemStatus("cu",data.sensors,"between",130,100),
+        battery :parseInt( itemAverage("bs",data.sensors)),
+        fuel :parseInt( itemAverage("fs",data.sensors)),
       })
+      console.log(this.state.apertureStatus)
 
     })
     NetworkOperation.getAlerts()
