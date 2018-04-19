@@ -39,7 +39,6 @@ class Users extends Component {
   }
 
   componentDidMount() {
-
     NetworkOperation.getSensors()
     .then(({data}) => {
       console.log(data.inventoryReports);
@@ -61,11 +60,15 @@ class Users extends Component {
     .then(({data}) => {
       // this.setState({
       //   alerts: this.props.credentials.company.name === 'Connus' ? data.alerts.filter($0 => $0.site === 'CNHQ9094') : data.alerts.filter($0 => $0.site != 'CNHQ9094')
-      // })
-    })
+       })
 
-    // Start socket connection
-    // this.initSockets(this.props)
+    NetworkOperation.getInventory().then(({ data }) => {
+      data.sites.map(site => {
+        site.sensors.map(sensor => {
+          console.log(sensor)
+        })
+      })
+    })
   }
 
   render() {

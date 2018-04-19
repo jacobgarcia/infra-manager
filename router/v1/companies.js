@@ -17,117 +17,118 @@ const Company = require(path.resolve('models/Company'))
 const SmartBox = require(path.resolve('models/SmartBox'))
 const Stream = require(path.resolve('models/Stream'))
 
-const { hasAccess } = require(path.resolve('router/v1/lib/middleware-functions'))
+const { hasAccess } = require(path.resolve(
+  'router/v1/lib/middleware-functions'
+))
 
 // Storage object specs
 const storage = multer.diskStorage({
   destination: (req, file, callback) => callback(null, 'static/vehicular-flow'),
   filename: (req, file, callback) => {
     crypto.pseudoRandomBytes(16, (error, raw) => {
-      callback(null, raw.toString('hex') + Date.now() + '.' + mime.getExtension(file.mimetype))
+      callback(
+        null,
+        raw.toString('hex') +
+          Date.now() +
+          '.' +
+          mime.getExtension(file.mimetype)
+      )
     })
   }
 })
 
-const upload = multer({storage: storage}).fields([{ name: 'photos', maxCount: 10}, { name: 'log', maxCount: 1}])
+const upload = multer({ storage: storage }).fields([
+  { name: 'photos', maxCount: 10 },
+  { name: 'log', maxCount: 1 }
+])
 
-router.route('/users')
-.get(hasAccess(4), (req, res) => {
+router.route('/users').get(hasAccess(4), (req, res) => {
   const company = req._user.cmp
   global.io.emit('report', report)
   // TODO add monitoring zones or subzones
   User.find({ company })
-  .select('email name surname access zones')
-  .populate('zones', 'name')
-  .then(users => {
-    return res.status(200).json({ users })
-  })
-  .catch(error => {
-    winston.error({error})
-    return res.status(500).json({ error })
-  })
-
+    .select('email name surname access zones')
+    .populate('zones', 'name')
+    .then(users => {
+      return res.status(200).json({ users })
+    })
+    .catch(error => {
+      winston.error({ error })
+      return res.status(500).json({ error })
+    })
 })
 
 // Save sites and stream change
-router.route('/zones/:zone/sites')
-.post((req, res) => {
-    const { name, position } = req.body
-    let key = req.body.key
-    const { zone } = req.params
-    const company = req._user.cmp
+router.route('/zones/:zone/sites').post((req, res) => {
+  const { name, position } = req.body
+  let key = req.body.key
+  const { zone } = req.params
+  const company = req._user.cmp
 
-    if (key === null || key === 'null') key = String(Date.now())
+  if (key === null || key === 'null') key = String(Date.now())
 
-    // Create site using the information in the request body
-    new Site({
-      key,
-      name,
-      position,
-      zone,
-      company
-    })
-    .save((error, site) => {
-      if (error) {
-        winston.error({error})
-        return res.status(500).json({ error })
-      }
-      // Add the new site to the specified subzone
-      return res.status(200).json({ site })
-    })
+  // Create site using the information in the request body
+  new Site({
+    key,
+    name,
+    position,
+    zone,
+    company
+  }).save((error, site) => {
+    if (error) {
+      winston.error({ error })
+      return res.status(500).json({ error })
+    }
+    // Add the new site to the specified subzone
+    return res.status(200).json({ site })
+  })
 })
 
 //  Save zone and stream change
-router.route('/zones')
-.post((req, res) => {
-    const { name, positions } = req.body
-    const company = req._user.cmp
+router.route('/zones').post((req, res) => {
+  const { name, positions } = req.body
+  const company = req._user.cmp
 
-    // Create subzone using the information in the request body
-    new Zone({
-      name,
-      positions,
-      company
-    })
-    .save((error, zone) => {
-        if (error) {
-          winston.error({error})
-          return res.status(500).json({ error })
-        }
+  // Create subzone using the information in the request body
+  new Zone({
+    name,
+    positions,
+    company
+  }).save((error, zone) => {
+    if (error) {
+      winston.error({ error })
+      return res.status(500).json({ error })
+    }
 
-        return res.status(200).json({ zone })
-    })
+    return res.status(200).json({ zone })
+  })
 })
 
 // Save sensors and alarms, add to history and stream change
-router.route('/:siteKey/reports')
-.put((req, res) => {
-    let { sensors, alarms } = req.body
-    let { siteKey } = req.params
-    const company = req._user.cmp
+router.route('/:siteKey/reports').put((req, res) => {
+  const { sensors, alarms } = req.body
+  const { siteKey } = req.params
+  const company = req._user.cmp
 
-    alarms = JSON.parse(alarms)
-    sensors = JSON.parse(sensors)
-    winston.info({key: siteKey, company})
+  winston.info({ key: siteKey, company })
+  Site.findOne({ key: siteKey, company }).exec((error, site) => {
+    if (!site) return res.status(404).json({ message: 'No site found' })
 
-    Site.findOne({key: siteKey, company})
-    .exec((error, site) => {
-      if (!site) return res.status(404).json({ message: 'No site found'})
-
-      //return res.status(404).json({ message: sensors})
-
-      // TODO just update the returned site
-      return Site.findByIdAndUpdate(site, { $push: { history: { sensors: site.sensors, alarms: site.alarms} } }, { new: true })
-      //.populate('zone', 'name')
-      //.populate('subzone', 'name')
+    // TODO just update the returned site
+    return Site.findByIdAndUpdate(
+      site,
+      { $push: { history: { sensors: site.sensors, alarms: site.alarms } } },
+      { new: true }
+    )
+      .populate('zone', 'name')
+      .populate('subzone', 'name')
       .exec((error, populatedSite) => {
         if (sensors) site.sensors = sensors
         site.alarms = alarms
 
         site.save((error, updatedSite) => {
-
           if (error) {
-            winston.error({error})
+            winston.error({ error })
             return res.status(500).json({ error })
           }
 
@@ -148,121 +149,127 @@ router.route('/:siteKey/reports')
           return res.status(200).json(report)
         })
       })
-
-    })
+  })
 })
 
 // Get zones. TODO: Retrieve only company zones
-router.route('/zones')
-.get((req, res) => {
+router.route('/zones').get((req, res) => {
   const company = req._user.cmp
 
-  Zone.find({ company })
-  .exec((error, zones) => {
+  Zone.find({ company }).exec((error, zones) => {
     if (error) {
-      winston.error({error})
+      winston.error({ error })
       return res.status(500).json({ error })
     }
 
-    if (!zones) return res.status(404).json({ message: 'No zones found'})
+    if (!zones) return res.status(404).json({ message: 'No zones found' })
 
     return res.status(200).json({ zones })
   })
 })
 
-router.route('/sites')
-.get((req, res) => {
+router.route('/sites').get((req, res) => {
   const company = req._user.cmp
 
-  Site.find({ company })
-  .exec((error, sites) => {
+  Site.find({ company }).exec((error, sites) => {
     if (error) {
-      winston.error({error})
+      winston.error({ error })
       return res.status(500).json({ error })
     }
 
-    if (!sites) return res.status(404).json({ message: 'No sites found'})
+    if (!sites) return res.status(404).json({ message: 'No sites found' })
 
     return res.status(200).json({ sites })
   })
 })
 
-router.route('/site/:siteKey')
-.get((req, res) => {
+router.route('/site/:siteKey').get((req, res) => {
   const { siteKey } = req.params
 
-  Site.findOne({ 'key': siteKey })
-  .exec((error, site) => {
+  Site.findOne({ key: siteKey }).exec((error, site) => {
     if (error) {
-      winston.error({error})
+      winston.error({ error })
       return res.status(500).json({ error })
     }
 
-    if (!site) return res.status(404).json({ message: 'No sites found'})
+    if (!site) return res.status(404).json({ message: 'No sites found' })
 
     return res.status(200).json({ site })
   })
 })
 
 // Get last report for all sites
-router.route('/reports')
-.get((req, res) => {
+router.route('/reports').get((req, res) => {
   const company = req._user.cmp
-  //global.io.emit('report', report)
+  // global.io.emit('report', report)
   Site.find({ company })
-  .populate('zone', 'name')
-  .exec((error, sites) => {
-    if (error) {
-      winston.error({error})
-      return res.status(500).json({ error })
-    }
+    .populate('zone', 'name')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
 
-    const reports = sites.map(site => ({
-      site: {
-        _id: site._id,
-        key: site.key
-      },
-      zone: site.zone,
-      timestamp: site.timestamp,
-      sensors: site.sensors,
-      alarms: site.alarms
-    }))
+      const reports = sites.map(site => ({
+        site: {
+          _id: site._id,
+          key: site.key
+        },
+        zone: site.zone,
+        timestamp: site.timestamp,
+        sensors: site.sensors,
+        alarms: site.alarms
+      }))
 
-    return res.status(200).json({ reports })
-  })
+      return res.status(200).json({ reports })
+    })
 })
 
 // Get zones, subzones and sites
-router.route('/exhaustive')
-.get((req, res) => {
+router.route('/exhaustive').get((req, res) => {
   const company = req._user.cmp
 
   Zone.find({ company })
-  .select('name positions subzones')
-  .populate('sites')
-  .exec((error, zones) => {
+    .select('name positions subzones')
+    .populate('sites')
+    .exec((error, zones) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+      if (!zones) return res.status(404).json({ message: 'No zones found' })
 
-    if (error) {
-      winston.error({error})
-      return res.status(500).json({ error })
-    }
-    if (!zones) return res.status(404).json({ message: 'No zones found'})
-
-    return res.status(200).json({ zones })
-
-  })
+      return res.status(200).json({ zones })
+    })
 })
 
 // Get all face recognition registers
-router.route('/inventory/:_id')
-.put((req, res) => {
+router.route('/inventory/:_id').put((req, res) => {
   const { _id } = req.params
-  const { lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType } = req.body
+  const {
+    lastMantainanceFrom,
+    lastMantainanceTo,
+    maintainer,
+    supervisor,
+    place,
+    maintainanceType
+  } = req.body
 
-  Inventory.findOneAndUpdate({ _id }, { $set: { lastMantainanceFrom, lastMantainanceTo, maintainer, supervisor, place, maintainanceType }})
-  .exec((error, inventory) => {
+  Inventory.findOneAndUpdate(
+    { _id },
+    {
+      $set: {
+        lastMantainanceFrom,
+        lastMantainanceTo,
+        maintainer,
+        supervisor,
+        place,
+        maintainanceType
+      }
+    }
+  ).exec((error, inventory) => {
     if (error) {
-      winston.error({error})
+      winston.error({ error })
       return res.status(500).json({ error })
     }
 
@@ -271,47 +278,64 @@ router.route('/inventory/:_id')
 })
 
 // Create site based on a central equipment (This endpoint must be called when a new smartbox connects to the server)
-router.route('/sites/initialize')
-.post((req, res) => {
+router.route('/sites/initialize').post((req, res) => {
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
   const { id, version, company, key, name, country, zone } = req.body
   let { position, sensors, cameras } = req.body
 
-  if (!id || !version || !company || !key || !name || !position || !sensors || !cameras || !country || !zone) return res.status(400).json({ success: false, message: 'Malformed request'})
+  if (
+    !id ||
+    !version ||
+    !company ||
+    !key ||
+    !name ||
+    !position ||
+    !sensors ||
+    !cameras ||
+    !country ||
+    !zone
+  ) return res
+      .status(400)
+      .json({ success: false, message: 'Malformed request' })
   if (typeof sensors === 'string' || typeof cameras === 'string') {
     sensors = JSON.parse(sensors)
     cameras = JSON.parse(cameras)
     position = JSON.parse(position)
   }
 
-  Company.findOne({ name: company })
-  .exec((error, company) => {
+  Company.findOne({ name: company }).exec((error, company) => {
     if (error) {
       winston.error(error)
       return res.status(500).json({ error })
     }
-    if (!company) return res.status(404).json({ success: false, message: 'Specified company was not found'})
+    if (!company) return res
+        .status(404)
+        .json({ success: false, message: 'Specified company was not found' })
 
     // Check if smartbox has been already created
     new SmartBox({
       id,
       version
-    })
-    .save((error, smartbox) => {
+    }).save((error, smartbox) => {
       if (error) {
         winston.error(error)
-        return res.status(403).json({ success: false, message: 'Smartbox already registered', error })
+        return res.status(403).json({
+          success: false,
+          message: 'Smartbox already registered',
+          error
+        })
       }
 
       // Always set to zone Centro
-      Zone.findOne({ name: zone, company: company._id })
-      .exec((error, zone) => {
+      Zone.findOne({ name: zone, company: company._id }).exec((error, zone) => {
         if (error) {
           winston.error(error)
           return res.status(500).json({ error })
         }
 
-        if (!zone) return res.status(404).json({ success: false, message: 'Specified zone was not found'})
+        if (!zone) return res
+            .status(404)
+            .json({ success: false, message: 'Specified zone was not found' })
         // Create site using the information in the request body
         new Site({
           key,
@@ -323,31 +347,40 @@ router.route('/sites/initialize')
           smartboxes: smartbox,
           country,
           zone: zone._id
-        })
-        .save(error => {
+        }).save(error => {
           if (error) {
             winston.error(error)
           }
           // Site already registred but smartbox does not. Update the site
-          Site.findOneAndUpdate({ key, company: company._id }, { $push: { smartboxes: smartbox._id }})
-          .exec((error, site) => {
+          Site.findOneAndUpdate(
+            { key, company: company._id },
+            { $push: { smartboxes: smartbox._id } }
+          ).exec((error, site) => {
             if (error) {
               winston.error(error)
-              return res.status(500).json({ success: false, message: 'Could not add the smartbox to the already created site', error })
+              return res.status(500).json({
+                success: false,
+                message:
+                  'Could not add the smartbox to the already created site',
+                error
+              })
             }
 
             if (cameras.length > 0) {
               // Add cameras of the SmartBox
               cameras.map(camera => {
-                const filename = base64Img.imgSync(camera.photo, 'static/uploads', shortid.generate() + Date.now())
-                  new Stream({
-                    id: camera.id,
-                    name: camera.name,
-                    company,
-                    site: site._id,
-                    photo: '/' + filename
-                  })
-                  .save()
+                const filename = base64Img.imgSync(
+                  camera.photo,
+                  'static/uploads',
+                  shortid.generate() + Date.now()
+                )
+                new Stream({
+                  id: camera.id,
+                  name: camera.name,
+                  company,
+                  site: site._id,
+                  photo: '/' + filename
+                }).save()
               })
             }
 
@@ -360,174 +393,243 @@ router.route('/sites/initialize')
   })
 })
 
-router.route('/smartbox/exception')
-.post((req, res) => {
+router.route('/smartbox/exception').post((req, res) => {
   const { id, description } = req.body
-  if (!id || !description) return res.status(400).json({ })
-  SmartBox.findOneAndUpdate({ id }, { $push: { exceptions: { description } } })
-  .exec(error => {
+  if (!id || !description) return res.status(400).json({})
+  SmartBox.findOneAndUpdate(
+    { id },
+    { $push: { exceptions: { description } } }
+  ).exec(error => {
     if (error) {
       winston.error(error)
-      return res.status(500).json({'success': false, 'message': "Could not save exception"})
+      return res
+        .status(500)
+        .json({ success: false, message: 'Could not save exception' })
     }
-    return res.status(200).json({ 'success': true, message: 'Succesfully added exception' })
+    return res
+      .status(200)
+      .json({ success: true, message: 'Succesfully added exception' })
   })
 })
 
-router.route('/smartbox/upgrade/:key')
-.get((req, res) => {
+router.route('/smartbox/upgrade/:key').get((req, res) => {
   const { key } = req.params
 
-  Site.findOne({ key })
-  .exec((error, smartbox) => {
+  Site.findOne({ key }).exec((error, smartbox) => {
     if (error) {
       winston.error(error)
-      return res.status(500).json({'success': false, 'message': "Could not find Smart Box"})
+      return res
+        .status(500)
+        .json({ success: false, message: 'Could not find Smart Box' })
     }
 
-    if (!smartbox) return res.status(404).json({ success: false, message: "Specified Smartbox was not found"})
+    if (!smartbox) return res
+        .status(404)
+        .json({ success: false, message: 'Specified Smartbox was not found' })
 
     global.io.to(key).emit('upgrade')
-    return res.status(200).json({ 'success': true, message: 'Initialized Smartbox debugging process', smartbox })
-
+    return res.status(200).json({
+      success: true,
+      message: 'Initialized Smartbox debugging process',
+      smartbox
+    })
   })
 })
 
-router.route('/smartbox/debug/:key')
-.get((req, res) => {
+router.route('/smartbox/debug/:key').get((req, res) => {
   const { key } = req.params
 
-  Site.findOne({ key })
-  .exec((error, smartbox) => {
+  Site.findOne({ key }).exec((error, smartbox) => {
     if (error) {
       winston.error(error)
-      return res.status(500).json({'success': false, 'message': "Could not find Smart Box"})
+      return res
+        .status(500)
+        .json({ success: false, message: 'Could not find Smart Box' })
     }
 
-    if (!smartbox) return res.status(404).json({ success: false, message: "Specified Smartbox was not found"})
+    if (!smartbox) return res
+        .status(404)
+        .json({ success: false, message: 'Specified Smartbox was not found' })
 
     global.io.to(key).emit('debug')
-    return res.status(200).json({ 'success': true, message: 'Initialized Smartbox debugging process', smartbox })
-
+    return res.status(200).json({
+      success: true,
+      message: 'Initialized Smartbox debugging process',
+      smartbox
+    })
   })
 })
 
 // post Smartbox debug
-router.route('/smartbox/debug')
-.post(upload, (req,res) => {
+router.route('/smartbox/debug').post(upload, (req, res) => {
   const { id } = req.body
   const photoFiles = req.files.photos
   console.log(req.files)
   const photos = []
 
-  if (!photoFiles) return res.status(400).json({ success: false, message: 'Malformed request. Empty photos'})
+  if (!photoFiles) return res
+      .status(400)
+      .json({ success: false, message: 'Malformed request. Empty photos' })
 
   photoFiles.forEach(photo => {
     photos.push(photo.filename)
   })
 
-  SmartBox.findOneAndUpdate({ id }, { $push: { debugs: { photos } } }, {$set: { debugs: { logFile: req.files.log[0] } }})
-  .exec(error => {
+  SmartBox.findOneAndUpdate(
+    { id },
+    { $push: { debugs: { photos } } },
+    { $set: { debugs: { logFile: req.files.log[0] } } }
+  ).exec(error => {
     if (error) {
       winston.error(error)
-      return res.status(500).json({success: false, message: "The specified debug couldn't be created"})
+      return res.status(500).json({
+        success: false,
+        message: "The specified debug couldn't be created"
+      })
     }
 
-    return res.status(200).json({ 'success': true, message: 'Succesfully debugged Smartbox'})
-
+    return res
+      .status(200)
+      .json({ success: true, message: 'Succesfully debugged Smartbox' })
   })
 })
 
-router.route('/sites/sensors')
-.put((req, res) => {
-  const { key, company, sensors } = req.body
-  console.log(sensors)
-  JSON.parse(sensors)
-  console.log(sensors)
+router.route('/sites/sensors').put((req, res) => {
+  let { sensors } = req.body
+  const { key, company } = req.body
+  if (!key || !company || !sensors) return res
+      .status(400)
+      .json({ success: false, message: 'Malformed request' })
+  if (typeof sensors === 'string') sensors = JSON.parse(sensors)
+
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
-  Company.findOne({ name: company })
-  .exec((error, company) => {
+  Company.findOne({ name: company }).exec((error, company) => {
     if (error) {
       winston.error(error)
       return res.status(500).json({ error })
     }
-    if (!company) return res.status(404).json({ success: false, message: 'Specified company was not found'})
+    if (!company) return res
+        .status(404)
+        .json({ success: false, message: 'Specified company was not found' })
 
-    Site.findOneAndUpdate({ company, key }, { $set: { sensors }})
-    .exec((error, site) => {
-      if (error) {
-        winston.error({error})
-        return res.status(500).json({ error })
+    Site.findOneAndUpdate({ company, key }, { $set: { sensors } }).exec(
+      (error, site) => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({ error })
+        }
+
+        if (!site) return res
+            .status(404)
+            .json({ success: false, message: 'No site found' })
+
+        return res.status(200).json({
+          success: true,
+          message: 'Updated sensor information sucessfully',
+          site
+        })
       }
-
-      if (!site) return res.status(404).json({ success: false, message: 'No site found'})
-
-      return res.status(200).json({ success: true, message: 'Updated sensor information sucessfully', site })
-    })
+    )
   })
 })
 
-router.route('/sites/sensors')
-.get((req, res) => {
+// Get all sensors for all company sites
+router.route('/sites/sensors').get((req, res) => {
   const company = req._user.cmp
 
   Site.find({ company })
-  .select('sensors key')
-  .exec((error, sites) => {
-    if (error) {
-      winston.error({error})
-      return res.status(500).json({ error })
-    }
+    .select('sensors key')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
 
-    if (!sites) return res.status(404).json({ message: 'No sites found'})
+      if (!sites) return res.status(404).json({ message: 'No sites found' })
 
-    return res.status(200).json({ sites })
-  })
+      return res.status(200).json({ sites })
+    })
 })
 
-router.route('/video/token')
-.post((req, res) => {
+// Get sensors of specific type for all company sites
+router.route('/sites/sensors/:type').get((req, res) => {
+  const company = req._user.cmp
+  const { type } = req.params
+
+  Site.find({ company })
+    .select('key sensors')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      if (!sites) return res.status(404).json({ message: 'No sites found' })
+      const sensors = []
+      sites.map(site => {
+        site.sensors.map(sensor => {
+          if (sensor.key === type) sensors.push(sensor)
+        })
+      })
+      return res.status(200).json({ sensors })
+    })
+})
+
+router.route('/video/token').post((req, res) => {
   const company = req._user.cmp
   const { key, id } = req.body
 
-    Site.findOne({ key })
-    .exec((error, site) => {
-      if (error) {
-        winston.error({error})
-        return res.status(500).json({ success: false, message: 'Could not create streaming', error })
-      }
-      if (!site) return res.status(404).json({ success: false, message: 'Site was not found' })
-      // Generate room unique token
-      crypto.pseudoRandomBytes(16, (error, raw) => {
-        const room = raw.toString('hex') + Date.now()
-        Stream.findOneAndUpdate({ id }, {$set: { room } })
-        .exec((error, stream) => {
+  Site.findOne({ key }).exec((error, site) => {
+    if (error) {
+      winston.error({ error })
+      return res
+        .status(500)
+        .json({ success: false, message: 'Could not create streaming', error })
+    }
+    if (!site) return res
+        .status(404)
+        .json({ success: false, message: 'Site was not found' })
+    // Generate room unique token
+    crypto.pseudoRandomBytes(16, (error, raw) => {
+      const room = raw.toString('hex') + Date.now()
+      Stream.findOneAndUpdate({ id }, { $set: { room } }).exec(
+        (error, stream) => {
           if (error) {
-            winston.error({error})
-            return res.status(500).json({ success: false, message: 'Could not create streaming', error })
+            winston.error({ error })
+            return res.status(500).json({
+              success: false,
+              message: 'Could not create streaming',
+              error
+            })
           }
           const data = { id, room }
           global.io.to(key).emit('streaming', data)
 
           return res.status(200).json({ room })
-        })
-      })
+        }
+      )
     })
+  })
 })
 
-router.route('/video/cameras')
-.get((req, res) => {
+router.route('/video/cameras').get((req, res) => {
   const company = req._user.cmp
 
   Stream.find({ company })
-  .populate('site', 'key zone')
-  .exec((error, cameras) => {
-    if (error) {
-      winston.error({error})
-      return res.status(500).json({ success: false, message: 'Could not retrieve cameras' })
-    }
-    return res.status(200).json({ success: true, message: 'Retrieved streaming cameras', cameras})
-  })
+    .populate('site', 'key zone')
+    .exec((error, cameras) => {
+      if (error) {
+        winston.error({ error })
+        return res
+          .status(500)
+          .json({ success: false, message: 'Could not retrieve cameras' })
+      }
+      return res.status(200).json({
+        success: true,
+        message: 'Retrieved streaming cameras',
+        cameras
+      })
+    })
 })
 
 module.exports = router
