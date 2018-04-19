@@ -49,14 +49,13 @@ class Users extends Component {
   }
 
   componentDidMount() {
-    NetworkOperation.getAlerts().then(({ data }) => {
-      // this.setState({
-      //   alerts: this.props.credentials.company.name === 'Connus' ? data.alerts.filter($0 => $0.site === 'CNHQ9094') : data.alerts.filter($0 => $0.site != 'CNHQ9094')
-      // })
+    NetworkOperation.getInventory().then(({ data }) => {
+      data.sites.map(site => {
+        site.sensors.map(sensor => {
+          console.log(sensor)
+        })
+      })
     })
-
-    // Start socket connection
-    // this.initSockets(this.props)
   }
 
   render() {
@@ -83,7 +82,8 @@ class Users extends Component {
                       innerRadius={55}
                       outerRadius={75}
                       strokeWidth={0}
-                      label>
+                      label
+                    >
                       {data.map(({ name }, index) => (
                         <Cell key={index} fill={getColor(name)} />
                       ))}
@@ -114,7 +114,8 @@ class Users extends Component {
                       innerRadius={55}
                       outerRadius={75}
                       strokeWidth={0}
-                      label>
+                      label
+                    >
                       {data.map(({ name }, index) => (
                         <Cell key={index} fill={getColor(name)} />
                       ))}
@@ -145,7 +146,8 @@ class Users extends Component {
                       innerRadius={55}
                       outerRadius={75}
                       strokeWidth={0}
-                      label>
+                      label
+                    >
                       {data.map(({ name }, index) => (
                         <Cell key={index} fill={getColor(name)} />
                       ))}
@@ -176,7 +178,8 @@ class Users extends Component {
                       innerRadius={55}
                       outerRadius={75}
                       strokeWidth={0}
-                      label>
+                      label
+                    >
                       {data.map(({ name }, index) => (
                         <Cell key={index} fill={getColor(name)} />
                       ))}
