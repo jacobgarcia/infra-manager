@@ -42,7 +42,6 @@ class Users extends Component {
   componentDidMount() {
     NetworkOperation.getSensors()
     .then(({data}) => {
-      console.log(data)
       this.setState({
         aperture : parseInt(itemAverage("cs",data.sensors)),
         vibration :parseInt( itemAverage("vs",data.sensors)),
@@ -55,8 +54,6 @@ class Users extends Component {
         battery :parseInt( itemAverage("bs",data.sensors)),
         fuel :parseInt( itemAverage("fs",data.sensors)),
       })
-      console.log(this.state.apertureStatus)
-
     })
     NetworkOperation.getAlerts()
     .then(({data}) => {
@@ -86,6 +83,8 @@ class Users extends Component {
           <h2>Estatus</h2>
           <div className="overall-container">
             <div className="horizontal-container">
+
+            {this.state.temperature && (
               <Card title="Temperatura" className={`graph-container`}>
                 <div className="graph">
                   <PieChart width={160} height={160}>
@@ -113,6 +112,8 @@ class Users extends Component {
                   </p>
                 </div>
               </Card>
+              ) }
+
               <Card title="Vibración" className={`graph-container`}>
                 <div className="graph">
                   <PieChart width={160} height={160}>
@@ -169,6 +170,9 @@ class Users extends Component {
                   </p>
                 </div>
               </Card>
+
+              {this.state.energy && (
+
               <Card
                 title="Corriente"
                 className={`graph-container`}
@@ -201,18 +205,25 @@ class Users extends Component {
                   </p>
                 </div>
               </Card>
+
+              )}
+              {this.state.battery  && (
               <Card title="Nivel de Batería">
                 <div>
-                  <BatteryChart  energy={this.state.energy} height={160} width={110} />
+                  <BatteryChart  energy={this.state.battery} height={160} width={110} />
                 </div>
                 <div className="center">
-                  <h3>{this.state.energy}% promedio</h3>
+                  <h3>{this.state.battery}% promedio</h3>
                   {this.state.battery && (!this.state.battery && "Ningún sitio dañado")}
                   <p className="border button" onClick={this.onSites}>
                     {/*this.state.battery && (this.state.battery) */} Sitios
                   </p>
                 </div>
               </Card>
+            )}
+
+            {this.state.fuel && (
+
               <Card title="Nivel de Combustible">
                 <div>
                   <FuelChart fuel={this.state.fuel} height={160} width={110} percentage={80} />
@@ -225,6 +236,7 @@ class Users extends Component {
                   </p>
                 </div>
               </Card>
+            )}
             </div>
           </div>
         </div>
