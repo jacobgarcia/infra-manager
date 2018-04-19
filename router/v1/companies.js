@@ -568,7 +568,7 @@ router.route('/sites/sensors/:type').get((req, res) => {
       const sensors = []
       sites.map(site => {
         site.sensors.map(sensor => {
-          if (sensor.key === type) sensors.push(sensor)
+          sensors.push(sensor)
         })
       })
       return res.status(200).json({ sensors })
