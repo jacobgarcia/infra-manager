@@ -515,24 +515,25 @@ router.route('/sites/sensors').put((req, res) => {
         .status(404)
         .json({ success: false, message: 'Specified company was not found' })
 
-    Site.findOneAndUpdate({ company, key }, { $set: { sensors } }).exec(
-      (error, site) => {
-        if (error) {
-          winston.error({ error })
-          return res.status(500).json({ error })
-        }
-
-        if (!site) return res
-            .status(404)
-            .json({ success: false, message: 'No site found' })
-
-        return res.status(200).json({
-          success: true,
-          message: 'Updated sensor information sucessfully',
-          site
-        })
+    Site.findOneAndUpdate(
+      { company, key },
+      { $set: { sensors: sensors[0] } }
+    ).exec((error, site) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
       }
-    )
+
+      if (!site) return res
+          .status(404)
+          .json({ success: false, message: 'No site found' })
+
+      return res.status(200).json({
+        success: true,
+        message: 'Updated sensor information sucessfully',
+        site
+      })
+    })
   })
 })
 
