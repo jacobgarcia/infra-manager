@@ -500,7 +500,10 @@ router.route('/sites/sensors').put((req, res) => {
   if (!key || !company || !sensors) return res
       .status(400)
       .json({ success: false, message: 'Malformed request' })
+
+  console.log(sensors)
   if (typeof sensors === 'string') sensors = JSON.parse(sensors)
+  console.log(sensors)
 
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
   Company.findOne({ name: company }).exec((error, company) => {
