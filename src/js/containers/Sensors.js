@@ -109,7 +109,7 @@ class Users extends Component {
                       <Pie
                         animationBegin={0}
                         dataKey="value"
-                        data={temperatureStatus + 'º'}
+                        data={temperatureStatus}
                         cx={75}
                         cy={75}
                         innerRadius={55}
