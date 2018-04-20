@@ -242,7 +242,7 @@ class Users extends Component {
                 </Card>
               ) : null}
               {this.state.battery ? (
-                <Card title="Nivel de Batería">
+                <Card title="Nivel de Humedad">
                   <div>
                     <BatteryChart
                       energy={this.state.battery}
