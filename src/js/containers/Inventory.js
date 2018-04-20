@@ -365,14 +365,8 @@ class Inventory extends Component {
                     </div>
                     <div className="detail">
                       <span>Estatus Detallados</span>
-                      <p>
-                        Temperatura:{' '}
-                        {state.selectedLog.detailedStatus.temperature}
-                      </p>
-                      <p>
-                        Activo:{' '}
-                        {state.selectedLog.detailedStatus.active ? 'Si' : 'No'}
-                      </p>
+                      <p>Temperatura: </p>
+                      <p>Activo: </p>
                     </div>
                   </div>
                   <Table
