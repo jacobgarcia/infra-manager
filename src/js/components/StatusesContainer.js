@@ -129,7 +129,8 @@ class StatusesContainer extends PureComponent {
               if (sensor) {
                 if (
                   sensor.key.search('cs') !== -1 ||
-                  sensor.key.search('vs') !== -1
+                  sensor.key.search('vs') !== -1 ||
+                  sensor.key.search('bs') !== -1
                 ) {
                   status = [
                     { name: 'bold', value: sensor.value == 100 ? 'OK' : 'BAD' },
@@ -169,7 +170,7 @@ class StatusesContainer extends PureComponent {
                 name = 'de combustible'
                 break
               case 'bs1':
-                name = 'de batería'
+                name = 'de humedad'
                 break
               case 'cu1':
                 name = 'de corriente'
