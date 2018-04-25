@@ -20,7 +20,9 @@ import {
 
 import { Card, Table, RiskBar, Tooltip } from '../components'
 import { blue, darkGray } from '../lib/colors'
-import { getColor } from '../lib/specialFunctions'
+import { getColor,itemStatus, pvAtTime, dataChart } from '../lib/specialFunctions'
+import { NetworkOperation } from '../lib'
+
 
 const data = [
   { name: 'workings', value: 75 },
@@ -44,21 +46,6 @@ const data2 = [
   { name: '7:00 PM', uv: 13, pv: 1042, tv: 51 }
 ]
 
-const barData = [
-  { name: '7:00 AM', pv: 100 },
-  { name: '8:00 AM', pv: 100 },
-  { name: '9:00 AM', pv: 100 },
-  { name: '10:00 AM', pv: 100 },
-  { name: '11:00 AM', pv: 90 },
-  { name: '12:00 PM', pv: 100 },
-  { name: '1:00 PM', pv: 100 },
-  { name: '2:00 PM', pv: 80 },
-  { name: '3:00 PM', pv: 100 },
-  { name: '4:00 PM', pv: 100 },
-  { name: '5:00 PM', pv: 100 },
-  { name: '6:00 PM', pv: 70 },
-  { name: '7:00 PM', pv: 70 }
-]
 
 class Dashboard extends Component {
   constructor(props) {
@@ -71,13 +58,54 @@ class Dashboard extends Component {
       selectedElementIndex: [null, null],
       from: new Date(),
       to: new Date(),
-      detail: null
+      detail: null,
     }
   }
   componentWillMount() {
-    console.log(this.props.perimeterReports)
+
+    NetworkOperation.getSensors().then(({ data }) => {
+      const csStatus  = itemStatus('cs', data.sensors, 'upscale', 80, 20)
+      const vsStatus = itemStatus('vs', data.sensors, 'upscale', 80, 20)
+      const tempData = [
+        {name: "workings", value: (csStatus[0].value < vsStatus[0].value ? csStatus[0].value : vsStatus[0].value)},
+        {name: "alerts", value: (csStatus[1].value < vsStatus[1].value ? vsStatus[1].value : csStatus[1].value)},
+        {name: "damaged", value: (csStatus[2].value < vsStatus[2].value ? vsStatus[2].value : csStatus[2].value)}
+      ]
+      const okPercent = parseInt(tempData[0].value / (tempData[0].value + tempData[1].value + tempData[2].value) *100)
+      const warPercent = parseInt(tempData[1].value / (tempData[0].value + tempData[1].value + tempData[2].value) *100)
+      const badPercent = parseInt(tempData[2].value / (tempData[0].value + tempData[1].value + tempData[2].value) *100)
+
+        this.setState({
+          sensors: tempData,
+          ok: okPercent,
+          war: warPercent,
+          bad: badPercent
+        })
+    })
+    NetworkOperation.getHistory().then(({ data }) => {
+      let history = []
+      data.sites.map(site => {
+        site.history.map(log => {
+          history.push(new Date(log.timestamp))
+        })
+      })
+
+      history.map(time => {
+        let current = new Date(time.timestamp)
+      })
+
+      this.setState({
+        chart: history
+      })
+
+    })
+
+
   }
   render() {
+
+    const now = new Date()
+
     const { state, props } = this
     const {
       facialReports,
@@ -164,7 +192,7 @@ class Dashboard extends Component {
                       <Pie
                         animationBegin={0}
                         dataKey="value"
-                        data={data}
+                        data={this.state.sensors}
                         cx={95}
                         cy={95}
                         innerRadius={60}
@@ -180,28 +208,28 @@ class Dashboard extends Component {
                         content={Tooltip}
                       />
                     </PieChart>
-                    <h1>75%</h1>
+                    <h1>{this.state.ok}%</h1>
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
                     <p>7 sitios</p>
                     <div className="stats">
                       <p>
-                        <span>75%</span> funcionando
+                        <span>{this.state.ok}%</span> funcionando
                       </p>
                       <p
                         className="border button warning"
                         onClick={() =>
                           this.setState({ detail: 'performance' })
                         }>
-                        <span>20%</span> alertado
+                        <span>{this.state.war}%</span> alertado
                       </p>
                       <p
                         className="border button error"
                         onClick={() =>
                           this.setState({ detail: 'performance' })
                         }>
-                        <span>10%</span> dañado
+                        <span>{this.state.bad}%</span> dañado
                       </p>
                     </div>
                   </div>
@@ -251,7 +279,7 @@ class Dashboard extends Component {
                 <Card className="historical" title="Media de servicio">
                   <ResponsiveContainer width="100%" height={160}>
                     <AreaChart
-                      data={barData}
+                      data={dataChart(this.state.chart)}
                       syncId="dashboard"
                       margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                       <XAxis
@@ -356,6 +384,7 @@ class Dashboard extends Component {
                     <div>{item.site}</div>
                   </div>
                 )}
+
                 elements={[
                   {
                     title: 'Historial',
