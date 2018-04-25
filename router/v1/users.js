@@ -153,9 +153,10 @@ router.route('/users/recognize').post((req, res) => {
 
     // call code for AWS facial recognition. Now using stub
     // use PythonShell to call python instance
-    return res.status(200).json({ success: 'true', message: 'all ok' })
-
-    // const faceRecognition = new PythonShell('lib/python/rekognition.py', { pythonOptions: ['-u'], args: [ 'get', pin, process.env.PWD + '/' + filename ] })
+    const faceRecognition = new PythonShell('lib/python/rekognition.py', {
+      pythonOptions: ['-u'],
+      args: ['get', pin, process.env.PWD + '/' + filename]
+    })
 
     /* Wait for the AWS response from Python to proceed */
     faceRecognition.on('message', message => {
@@ -624,7 +625,10 @@ router.route('/users/updatephoto').put((req, res) => {
 
     // call code for AWS facial recognition. Now using stub
     // use PythonShell to call python instance
-    // const faceRecognition = new PythonShell('lib/python/rekognition.py', { pythonOptions: ['-u'], args: [ 'put', user.pin, process.env.PWD + user.photo ] })
+    const faceRecognition = new PythonShell('lib/python/rekognition.py', {
+      pythonOptions: ['-u'],
+      args: ['put', user.pin, process.env.PWD + user.photo]
+    })
 
     /* Wait for the AWS response from Python to proceed */
     faceRecognition.on('message', message => {
