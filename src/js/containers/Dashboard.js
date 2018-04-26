@@ -83,20 +83,27 @@ class Dashboard extends Component {
         })
     })
     NetworkOperation.getHistory().then(({ data }) => {
+      let ranking = []
       let history = []
       data.sites.map(site => {
+        // pushing for ranking
+        ranking.push(site.history.length)
+        // pushiw each log into history
         site.history.map(log => {
           history.push(new Date(log.timestamp))
         })
       })
-
       history.map(time => {
         let current = new Date(time.timestamp)
       })
-
       this.setState({
-        chart: history
+        chart: history,
+        worst: data.sites[ranking.indexOf(Math.max.apply(Math,ranking))]
       })
+      data.sites[ranking.indexOf(Math.max.apply(Math,ranking))].history.length
+      data.sites[ranking.indexOf(Math.max.apply(Math,ranking))].key
+
+      console.log(this.state.worst.key);
 
     })
 
@@ -341,16 +348,16 @@ class Dashboard extends Component {
                 <div className="horizontal-container">
                   <Card title="Zona de mas alertas" className="horizontal">
                     <h1>Centro</h1>
-                    <p>8 Sitios</p>
+                    <p>18 Sitios</p>
                     <div className="card-footer">
                       <p className="red">8 alertas </p>
                     </div>
                   </Card>
                   <Card title="Sitio de mas alertas" className="horizontal">
-                    <h1>MEXECA1058</h1>
+                    <h1>{this.state.worst && this.state.worst.key}</h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
-                      <p className="red">4 alertas</p>
+                      <p className="red">{this.state.worst && this.state.worst.history.length} alertas</p>
                     </div>
                   </Card>
                 </div>
