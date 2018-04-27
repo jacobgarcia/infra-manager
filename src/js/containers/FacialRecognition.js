@@ -51,7 +51,7 @@ class FacialRecognition extends Component {
 
   // TODO: Clean this mess and do it at App (using redux)
   initSockets(props) {
-    this.socket = io('https://att.connus.mx')
+    this.socket = io('http://localhost')
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
@@ -213,7 +213,7 @@ class FacialRecognition extends Component {
                   <div
                     className="image-slider"
                     style={{
-                      backgroundImage: `url(https://att.connus.mx${
+                      backgroundImage: `url(http://192.168.100.6${
                         state.selectedLog.photo
                       })`
                     }}

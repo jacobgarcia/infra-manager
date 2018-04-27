@@ -22,6 +22,8 @@ export { default as FacialRecognition } from './FacialRecognition'
 
 export { default as VideoSurveillance } from './VideoSurveillance'
 
+export { default as VisualCounter } from './VisualCounter'
+
 export { default as Settings } from './Settings'
 
 export { default as Reports } from './Reports'

@@ -68,7 +68,7 @@ class Users extends Component {
   }
 
   initSocket() {
-    this.socket = io('https://att.connus.mx')
+    this.socket = io('http://192.168.100.6')
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
