@@ -4,6 +4,7 @@ import constants from './constants'
 
 // TODO check if we're in production, if it's change hostUrl to s3
 const baseUrl = `${constants.hostUrl}/v1`
+//const baseUrl = `https://att.connus.mx/v1`
 
 // Request interceptors
 axios.interceptors.request.use(
@@ -91,8 +92,11 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/sites/sensors`)
   }
   static getSensors() {
-  return axios.get(`${baseUrl}/sites/sensors/all/`)
-}
+    return axios.get(`${baseUrl}/sites/sensors/all/`)
+  }
+  static getHistory() {
+    return axios.get(`${baseUrl}/sites/sensors/history/`)
+  }
 
   static getSensors(type) {
     return axios.get(`${baseUrl}/sites/sensors/${type}`)

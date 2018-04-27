@@ -157,10 +157,11 @@ export function itemAverage(item, thisArray) {
   return 0
 }
 
-export function itemStatus(item, thisArray, option, max, min) {
+export function itemStatus(item = "", thisArray, option, max, min) {
   let ok = 0
   let warn = 0
   let bad = 0
+
 
   switch (option) {
     case 'upscale':
@@ -168,7 +169,6 @@ export function itemStatus(item, thisArray, option, max, min) {
         if (sensor.key.search(item) !== -1) {
           if (sensor.value >= max) {
             ok += 1
-            console.log('IN', ok)
           } else if (sensor.value <= min) bad += 1
           else warn += 1
         }
@@ -226,6 +226,27 @@ export function getStatus(data) {
     }
   }
   return { status: [], percentage: 0 }
+}
+
+export function pvAtTime(history,now = new Date){
+  let counter = 0
+  history.map(log => {
+      log < now && log > now.setHours(now.getHours()-1,0,0,0) && counter++
+  })
+  return 100 - (counter*100/history.length)
+}
+
+export function dataChart(chart){
+  let data = []
+  const now = new Date()
+  for(let i in Array.from({length: 13})){
+    let current = {
+      name: (now.getHours() -i > 11 ? now.getHours() -i+':PM' : now.getHours() -i+':AM')  ,
+      pv: (chart ? pvAtTime(chart,new Date(new Date().setHours(new Date().getHours()-i,0,0,0))) : 100)
+    }
+    data.push(current)
+  }
+  return data
 }
 
 export function getAreaCenter(cordinatesArray = [[], []]) {
