@@ -26,6 +26,7 @@ import {
   Perimeter,
   FacialRecognition,
   VideoSurveillance,
+  VisualCounter,
   Reports,
   Sensors,
   Inventory
@@ -170,7 +171,7 @@ class App extends Component {
   }
 
   initSockets() {
-    this.socket = io('https://att.connus.mx')
+    this.socket = io('http://192.168.100.6')
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
@@ -280,6 +281,7 @@ class App extends Component {
           <Route path="/inventory" component={Inventory} />
           <Route path="/statistics" component={Statistics} />
           <Route path="/video-surveillance" component={VideoSurveillance} />
+          <Route path="/visual-counter" component={VisualCounter} />
           <Route path="/reports" component={Reports} />
           <Route path="/settings" component={Settings} />
           <Route path="/sensors" component={Sensors} />

@@ -16,6 +16,10 @@ import { getColor, itemAverage, itemStatus } from '../lib/specialFunctions'
 
 import io from 'socket.io-client'
 
+
+NetworkOperation.getSensors().then(({ data }) => {
+
+})
 const data = [
   { name: 'workings', value: 100 },
   { name: 'alerts', value: 0 },
@@ -64,7 +68,7 @@ class Users extends Component {
   }
 
   initSocket() {
-    this.socket = io('https://att.connus.mx')
+    this.socket = io('http://192.168.100.6')
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
@@ -241,7 +245,7 @@ class Users extends Component {
                   </div>
                 </Card>
               ) : null}
-              {this.state.battery ? (
+              {this.state.energy || this.state.energy === 0 ? (
                 <Card title="Nivel de Humedad">
                   <div>
                     <BatteryChart
@@ -261,7 +265,7 @@ class Users extends Component {
                 </Card>
               ) : null}
 
-              {this.state.fuel ? (
+              {this.state.fuel || this.state.fuel === 0 ? (
                 <Card title="Nivel de Combustible">
                   <div>
                     <FuelChart
