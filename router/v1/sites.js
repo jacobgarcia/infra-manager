@@ -62,7 +62,6 @@ router.route('/sites/register').post((req, res) => {
   })
 })
 
-
 // Register new site
 router.route('/sites/down/sensor').post((req, res) => {
   let { site, sensors } = req.body
@@ -88,17 +87,16 @@ router.route('/sites/down/sensor').post((req, res) => {
             message: 'The specified site does not exist'
           })
         }
-        return res.status(200).json({ 'succes': true,'message':'sensor down' ,'site': newSite })
-
-      })
-    }
+        return res
+          .status(200)
+          .json({ succes: true, message: 'sensor down', site: newSite })
+      }
+    )
   })
 })
 
-//===deprecated==
-router.route('/sites/getSensors')
-.get((req, res) => {
-
+// ===deprecated==
+router.route('/sites/getSensors').get((req, res) => {
   const inventoryReports = []
   Site.find(
     { sensors: { $exists: true } },
