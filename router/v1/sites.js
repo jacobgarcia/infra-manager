@@ -62,38 +62,7 @@ router.route('/sites/register').post((req, res) => {
   })
 })
 
-/*
-// Register new site
-router.route('/sites/down/sensor')
-.post((req, res) => {
-  const { site,sensor,value } = req.body
-  let sensors
-  Site.find({ "key": site })
-  .exec((error, theSite) => {
-    if (error) {
-      winston.error(error)
-      return res.status(400).json({'success': "false", 'message': "The specified site does not exist"})
-    }
-    if (!site || !sensor || !value){
-      return res.status(400).json({'success': "false", 'message': "value no spicified"})
-    }
-    sensors = theSite[0].sensors
-    sensors.map(currentSensor => {
-      currentSensor.value = (currentSensor.key == sensor ? value: currentSensor.value)
-    })
-    Site.findOneAndUpdate({ "key": site }, { $set: { "sensors": sensors } })
-    .exec((error, newSite) => {
-      if (error) {
-        winston.error(error)
-        return res.status(400).json({'success': "false", 'message': "The specified site does not exist"})
-      }
-      return res.status(200).json({ 'succes': true,'message':'sensor down' ,'site': newSite })
 
-    })
-  })
-
-})
-*/
 // Register new site
 router.route('/sites/down/sensor').post((req, res) => {
   let { site, sensors } = req.body
@@ -119,30 +88,17 @@ router.route('/sites/down/sensor').post((req, res) => {
             message: 'The specified site does not exist'
           })
         }
-        return res
-          .status(200)
-          .json({ succes: true, message: 'sensor down', site: newSite })
-      }
-    )
+        return res.status(200).json({ 'succes': true,'message':'sensor down' ,'site': newSite })
 
-    /*
-    sensors = theSite[0].sensors
-    sensors.map(currentSensor => {
-      currentSensor.value = (currentSensor.key == sensor ? value: currentSensor.value)
-    })*/
-    /* Site.findOneAndUpdate({ "key": site }, { $set: { "sensors": sensors } })
-    .exec((error, newSite) => {
-      if (error) {
-        winston.error(error)
-        return res.status(400).json({'success': "false", 'message': "The specified site does not exist"})
-      }
-      return res.status(200).json({ 'succes': true,'message':'sensor down' ,'site': newSite })
-
-    })*/
+      })
+    }
   })
 })
 
-router.route('/sites/getSensors').get((req, res) => {
+//===deprecated==
+router.route('/sites/getSensors')
+.get((req, res) => {
+
   const inventoryReports = []
   Site.find(
     { sensors: { $exists: true } },

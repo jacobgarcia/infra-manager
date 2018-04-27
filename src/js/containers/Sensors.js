@@ -241,7 +241,7 @@ class Users extends Component {
                   </div>
                 </Card>
               ) : null}
-              {this.state.battery ? (
+              {this.state.energy || this.state.energy === 0 ? (
                 <Card title="Nivel de Humedad">
                   <div>
                     <BatteryChart
@@ -261,7 +261,7 @@ class Users extends Component {
                 </Card>
               ) : null}
 
-              {this.state.fuel ? (
+              {this.state.fuel || this.state.fuel === 0 ? (
                 <Card title="Nivel de Combustible">
                   <div>
                     <FuelChart
