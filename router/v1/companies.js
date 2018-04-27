@@ -638,4 +638,8 @@ router.route('/video/cameras').get((req, res) => {
     })
 })
 
+router.route('/visualcounter/count').post((req, res) => {
+  console.log(res)
+})
+
 module.exports = router
