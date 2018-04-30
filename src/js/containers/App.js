@@ -171,7 +171,7 @@ class App extends Component {
   }
 
   initSockets() {
-    this.socket = io('http://192.168.100.6')
+    this.socket = io()
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
