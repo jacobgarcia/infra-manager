@@ -195,6 +195,15 @@ router.route('/authenticate').post((req, res) => {
 })
 
 router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept'
+  )
+  next()
+})
+
+router.use((req, res, next) => {
   const bearer = req.headers.authorization || 'Bearer '
   const token = bearer.split(' ')[1]
 
