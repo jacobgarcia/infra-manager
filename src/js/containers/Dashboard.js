@@ -135,7 +135,9 @@ class Dashboard extends Component {
       data.sites[ranking.indexOf(Math.max(...ranking))].history.length
       data.sites[ranking.indexOf(Math.max(...ranking))].key
 
-      console.log(this.state.worst.key)
+      console.log(this.state.worst);
+      console.log(this.state.chart);
+
     })
   }
   render() {
