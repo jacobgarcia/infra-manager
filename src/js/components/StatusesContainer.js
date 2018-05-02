@@ -12,6 +12,8 @@ import { NetworkOperation } from '../lib'
 
 import io from 'socket.io-client'
 
+
+
 // IMPORTANT TODO if we change the site key, re-set the socket or ask to join there
 class StatusesContainer extends PureComponent {
   constructor(props) {
@@ -54,6 +56,7 @@ class StatusesContainer extends PureComponent {
   }
 
   getLink(type, element) {
+
     const { zoneId, siteId } = this.props.params
     switch (type) {
       case 'GENERAL':
@@ -92,9 +95,14 @@ class StatusesContainer extends PureComponent {
     const { props, state } = this
 
     const isSensor = props.type !== 'SITE' ? 'SENSORS' : null
+    /*
+    console.log(isSensor)
+    console.log(state.show)
+    */
 
     switch (isSensor || state.show) {
       case 'SENSORS':
+        console.log(props.elements)
         return props.elements && props.elements.length > 0 ? (
           props.elements.map(element => {
             const reports = substractReportValues(
@@ -177,6 +185,7 @@ class StatusesContainer extends PureComponent {
                 break
               default:
             }
+
             return (
               <Link key={element._id} to={this.getLink(props.type, element)}>
                 <ElementStatus
