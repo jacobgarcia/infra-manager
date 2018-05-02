@@ -65,6 +65,7 @@ class Dashboard extends Component {
     }
   }
   componentWillMount() {
+
     NetworkOperation.getSensors().then(({ data }) => {
       const csStatus = itemStatus('cs', data.sensors, 'upscale', 80, 20)
       const vsStatus = itemStatus('vs', data.sensors, 'upscale', 80, 20)
@@ -134,9 +135,8 @@ class Dashboard extends Component {
       })
       data.sites[ranking.indexOf(Math.max(...ranking))].history.length
       data.sites[ranking.indexOf(Math.max(...ranking))].key
-
-      console.log(this.state.worst);
-      console.log(this.state.chart);
+      data.sites[ranking.indexOf(Math.max.apply(Math,ranking))].history.length
+      data.sites[ranking.indexOf(Math.max.apply(Math,ranking))].key
 
     })
   }

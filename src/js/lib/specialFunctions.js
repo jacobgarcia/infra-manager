@@ -239,12 +239,12 @@ export function pvAtTime(history,now = new Date){
 export function dataChart(chart){
   let data = []
   const now = new Date()
-  for(let i in Array.from({length: 13})){
+  for(let i in Array.from({length: 11})){
     let current = {
       name: (now.getHours() -i > 11 ? now.getHours() -i+':PM' : now.getHours() -i+':AM')  ,
       pv: (chart ? pvAtTime(chart,new Date(new Date().setHours(new Date().getHours()-i,0,0,0))) : 100)
     }
-    data.push(current)
+    data.unshift(current)
   }
   return data
 }
