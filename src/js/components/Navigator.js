@@ -145,6 +145,11 @@ Navigator.defaultProps = {
       title: 'Inventario',
       name: 'inventory',
       _id: '04'
+    },
+    {
+	title: 'Contador de Personas ',
+	name: 'visual-counter',
+	_id: '05'
     }
   ]
 }

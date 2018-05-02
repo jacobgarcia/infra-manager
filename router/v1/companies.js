@@ -501,9 +501,7 @@ router.route('/sites/sensors').put((req, res) => {
       .status(400)
       .json({ success: false, message: 'Malformed request' })
 
-  console.log(sensors)
   if (typeof sensors === 'string') sensors = JSON.parse(sensors)
-  console.log(sensors)
 
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
   Company.findOne({ name: company }).exec((error, company) => {
@@ -515,10 +513,7 @@ router.route('/sites/sensors').put((req, res) => {
         .status(404)
         .json({ success: false, message: 'Specified company was not found' })
 
-    Site.findOneAndUpdate(
-      { company, key },
-      { $set: { sensors: sensors[0] } }
-    ).exec((error, site) => {
+    Site.findOne({ company, key }).exec((error, site) => {
       if (error) {
         winston.error({ error })
         return res.status(500).json({ error })
@@ -528,12 +523,28 @@ router.route('/sites/sensors').put((req, res) => {
           .status(404)
           .json({ success: false, message: 'No site found' })
 
-      global.io.emit('refresh')
+      // Update history and sensors specification
+      const history = {
+        sensors: site.sensors
+      }
 
-      return res.status(200).json({
-        success: true,
-        message: 'Updated sensor information sucessfully',
-        site
+      site.history.push(history)
+      site.sensors = sensors[0]
+      console.log(site)
+
+      site.save((error, updatedSite) => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({ error })
+        }
+
+        global.io.emit('refresh')
+
+        return res.status(200).json({
+          success: true,
+          message: 'Updated sensor information sucessfully',
+          updatedSite
+        })
       })
     })
   })
@@ -651,6 +662,10 @@ router.route('/video/cameras').get((req, res) => {
         cameras
       })
     })
+})
+
+router.route('/visualcounter/count').post((req, res) => {
+  console.log(res)
 })
 
 module.exports = router

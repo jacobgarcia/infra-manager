@@ -98,6 +98,10 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/sites/sensors/history/`)
   }
 
+  static getSensors(type) {
+    return axios.get(`${baseUrl}/sites/sensors/${type}`)
+  }
+
   static getVehicularReports() {
     return axios.get(`${baseUrl}/vehicular-flow/reports`)
   }

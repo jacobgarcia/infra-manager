@@ -10,7 +10,7 @@ import { Table, RiskBar } from '../components'
 
 import { NetworkOperation } from '../lib'
 
-class VideoSurveillance extends Component {
+class VisualCounter extends Component {
   constructor(props) {
     super(props)
 
@@ -26,7 +26,7 @@ class VideoSurveillance extends Component {
       to: new Date(),
       playingVideo: true,
       isPlaying: false,
-      iframe : { __html : '<iframe src="http://192.168.100.6:8080" width="540" height="450"></iframe>' }
+      iframe : { __html : '<iframe src="http://visualcounter.dynalias.com:8112/vc_dashboard_demo/" width="540" height="450"></iframe>' }
     }
 
     this.onDayClick = this.onDayClick.bind(this)
@@ -114,4 +114,4 @@ function mapDispatchToProps(dispatch) {
   return {}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VideoSurveillance)
+export default connect(mapStateToProps, mapDispatchToProps)(VisualCounter)

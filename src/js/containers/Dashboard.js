@@ -20,9 +20,13 @@ import {
 
 import { Card, Table, RiskBar, Tooltip } from '../components'
 import { blue, darkGray } from '../lib/colors'
-import { getColor,itemStatus, pvAtTime, dataChart } from '../lib/specialFunctions'
+import {
+  getColor,
+  itemStatus,
+  pvAtTime,
+  dataChart
+} from '../lib/specialFunctions'
 import { NetworkOperation } from '../lib'
-
 
 const data = [
   { name: 'workings', value: 75 },
@@ -46,7 +50,6 @@ const data2 = [
   { name: '7:00 PM', uv: 13, pv: 1042, tv: 51 }
 ]
 
-
 class Dashboard extends Component {
   constructor(props) {
     super(props)
@@ -58,33 +61,62 @@ class Dashboard extends Component {
       selectedElementIndex: [null, null],
       from: new Date(),
       to: new Date(),
-      detail: null,
+      detail: null
     }
   }
   componentWillMount() {
-
     NetworkOperation.getSensors().then(({ data }) => {
-      const csStatus  = itemStatus('cs', data.sensors, 'upscale', 80, 20)
+      const csStatus = itemStatus('cs', data.sensors, 'upscale', 80, 20)
       const vsStatus = itemStatus('vs', data.sensors, 'upscale', 80, 20)
       const tempData = [
-        {name: "workings", value: (csStatus[0].value < vsStatus[0].value ? csStatus[0].value : vsStatus[0].value)},
-        {name: "alerts", value: (csStatus[1].value < vsStatus[1].value ? vsStatus[1].value : csStatus[1].value)},
-        {name: "damaged", value: (csStatus[2].value < vsStatus[2].value ? vsStatus[2].value : csStatus[2].value)}
+        {
+          name: 'workings',
+          value:
+            csStatus[0].value < vsStatus[0].value
+              ? csStatus[0].value
+              : vsStatus[0].value
+        },
+        {
+          name: 'alerts',
+          value:
+            csStatus[1].value < vsStatus[1].value
+              ? vsStatus[1].value
+              : csStatus[1].value
+        },
+        {
+          name: 'damaged',
+          value:
+            csStatus[2].value < vsStatus[2].value
+              ? vsStatus[2].value
+              : csStatus[2].value
+        }
       ]
-      const okPercent = parseInt(tempData[0].value / (tempData[0].value + tempData[1].value + tempData[2].value) *100)
-      const warPercent = parseInt(tempData[1].value / (tempData[0].value + tempData[1].value + tempData[2].value) *100)
-      const badPercent = parseInt(tempData[2].value / (tempData[0].value + tempData[1].value + tempData[2].value) *100)
+      const okPercent = parseInt(
+        tempData[0].value /
+          (tempData[0].value + tempData[1].value + tempData[2].value) *
+          100
+      )
+      const warPercent = parseInt(
+        tempData[1].value /
+          (tempData[0].value + tempData[1].value + tempData[2].value) *
+          100
+      )
+      const badPercent = parseInt(
+        tempData[2].value /
+          (tempData[0].value + tempData[1].value + tempData[2].value) *
+          100
+      )
 
-        this.setState({
-          sensors: tempData,
-          ok: okPercent,
-          war: warPercent,
-          bad: badPercent
-        })
+      this.setState({
+        sensors: tempData,
+        ok: okPercent,
+        war: warPercent,
+        bad: badPercent
+      })
     })
     NetworkOperation.getHistory().then(({ data }) => {
-      let ranking = []
-      let history = []
+      const ranking = []
+      const history = []
       data.sites.map(site => {
         // pushing for ranking
         ranking.push(site.history.length)
@@ -94,23 +126,19 @@ class Dashboard extends Component {
         })
       })
       history.map(time => {
-        let current = new Date(time.timestamp)
+        const current = new Date(time.timestamp)
       })
       this.setState({
         chart: history,
-        worst: data.sites[ranking.indexOf(Math.max.apply(Math,ranking))]
+        worst: data.sites[ranking.indexOf(Math.max(...ranking))]
       })
-      data.sites[ranking.indexOf(Math.max.apply(Math,ranking))].history.length
-      data.sites[ranking.indexOf(Math.max.apply(Math,ranking))].key
+      data.sites[ranking.indexOf(Math.max(...ranking))].history.length
+      data.sites[ranking.indexOf(Math.max(...ranking))].key
 
-      console.log(this.state.worst.key);
-
+      console.log(this.state.worst.key)
     })
-
-
   }
   render() {
-
     const now = new Date()
 
     const { state, props } = this
@@ -219,7 +247,9 @@ class Dashboard extends Component {
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
-                    <p>7 sitios</p>
+                    <p>
+                      {this.state.sensors && this.state.sensors[0].value} sitios
+                    </p>
                     <div className="stats">
                       <p>
                         <span>{this.state.ok}%</span> funcionando
@@ -357,7 +387,10 @@ class Dashboard extends Component {
                     <h1>{this.state.worst && this.state.worst.key}</h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
-                      <p className="red">{this.state.worst && this.state.worst.history.length} alertas</p>
+                      <p className="red">
+                        {this.state.worst && this.state.worst.history.length}{' '}
+                        alertas
+                      </p>
                     </div>
                   </Card>
                 </div>
@@ -391,7 +424,6 @@ class Dashboard extends Component {
                     <div>{item.site}</div>
                   </div>
                 )}
-
                 elements={[
                   {
                     title: 'Historial',

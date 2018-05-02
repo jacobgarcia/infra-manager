@@ -16,6 +16,7 @@ import { getColor, itemAverage, itemStatus } from '../lib/specialFunctions'
 
 import io from 'socket.io-client'
 
+NetworkOperation.getSensors().then(({ data }) => {})
 const data = [
   { name: 'workings', value: 100 },
   { name: 'alerts', value: 0 },
@@ -64,7 +65,7 @@ class Users extends Component {
   }
 
   initSocket() {
-    this.socket = io('https://att.connus.mx')
+    this.socket = io()
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
