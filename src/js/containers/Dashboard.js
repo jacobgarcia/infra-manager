@@ -380,9 +380,9 @@ class Dashboard extends Component {
                 <div className="horizontal-container">
                   <Card title="Zona de mas alertas" className="horizontal">
                     <h1>Centro</h1>
-                    <p>18 Sitios</p>
+                    <p>{"X"} Sitios</p>
                     <div className="card-footer">
-                      <p className="red">8 alertas </p>
+                      <p className="red"> alertas </p>
                     </div>
                   </Card>
                   <Card title="Sitio de mas alertas" className="horizontal">
