@@ -100,7 +100,7 @@ router.route('/sites/getSensors').get((req, res) => {
   const inventoryReports = []
   Site.find(
     { sensors: { $exists: true } },
-    Site.find({"sensors": {"$exists": true}},{"_id":0,"key": 1,"sensors.key": 1,"sensors.value": 1})
+    { _id: 0, key: 1, 'sensors.key': 1, 'sensors.value': 1 }
   )
     .sort({ _id: 1 })
     .exec((error, sensors) => {
