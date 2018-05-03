@@ -47,8 +47,8 @@ class StatusesContainer extends PureComponent {
       // console.log(this.props.element.key)
       // console.log(data.camera)
       this.setState({
-        photo2: 'http://192.168.100.6' + data.image2,
-        photo3: 'http://192.168.100.6' + data.image3
+        photo2: 'https://demo.connus.mx' + data.image2,
+        photo3: 'https://demo.connus.mx' + data.image3
         // camera: data.camera
       })
       // }

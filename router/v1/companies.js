@@ -607,6 +607,23 @@ router.route('/sites/sensors/:type').get((req, res) => {
     })
 })
 
+// Get sensors of specific type for all company sites
+router.route('/sites/alarms/').get((req, res) => {
+  const company = req._user.cmp
+
+  Site.find({ company })
+    .populate('zone', 'name')
+    .select('key zone alarms')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      return res.status(200).json({ sites })
+    })
+})
+
 router.route('/video/token').post((req, res) => {
   const company = req._user.cmp
   const { key, id } = req.body

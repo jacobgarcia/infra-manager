@@ -65,8 +65,8 @@ class Dashboard extends Component {
     }
   }
   componentWillMount() {
-
     NetworkOperation.getSensors().then(({ data }) => {
+      console.log(data)
       const csStatus = itemStatus('cs', data.sensors, 'upscale', 80, 20)
       const vsStatus = itemStatus('vs', data.sensors, 'upscale', 80, 20)
       const tempData = [
@@ -115,6 +115,7 @@ class Dashboard extends Component {
         bad: badPercent
       })
     })
+
     NetworkOperation.getHistory().then(({ data }) => {
       const ranking = []
       const history = []
@@ -135,10 +136,9 @@ class Dashboard extends Component {
       })
       data.sites[ranking.indexOf(Math.max(...ranking))].history.length
       data.sites[ranking.indexOf(Math.max(...ranking))].key
-      data.sites[ranking.indexOf(Math.max.apply(Math,ranking))].history.length
-      data.sites[ranking.indexOf(Math.max.apply(Math,ranking))].key
-
     })
+
+    // Get most alerted zone
   }
   render() {
     const now = new Date()
