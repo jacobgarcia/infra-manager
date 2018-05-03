@@ -61,12 +61,38 @@ class Dashboard extends Component {
       selectedElementIndex: [null, null],
       from: new Date(),
       to: new Date(),
-      detail: null
+      detail: null,
+      worstZone: '',
+      worstZoneValue: 0
+
     }
   }
   componentWillMount() {
-    NetworkOperation.getSensors().then(({ data }) => {
+
+    NetworkOperation.getAlarms().then(({ data }) => {
+      console.log("alarms")
+
       console.log(data)
+        let ranking = {
+          zone:[],
+          value:[]
+        }
+
+        data.sites.forEach(function(site){
+          if(ranking.zone.indexOf(site.zone.name) != -1){
+            ranking.value[ranking.zone.indexOf(site.zone.name)] += site.alarms.length
+          }else{
+            ranking.zone.push(site.zone.name)
+            ranking.value[ranking.zone.indexOf(site.zone.name)] = site.alarms.length
+          }
+        })
+        this.setState({
+          worstZone: ranking.zone[ranking.value.indexOf(Math.max.apply(null,ranking.value))],
+          worstZoneValue: ranking.value[ranking.value.indexOf(Math.max.apply(null,ranking.value))]
+        })
+    })
+
+    NetworkOperation.getSensors().then(({ data }) => {
       const csStatus = itemStatus('cs', data.sensors, 'upscale', 80, 20)
       const vsStatus = itemStatus('vs', data.sensors, 'upscale', 80, 20)
       const tempData = [
@@ -117,6 +143,8 @@ class Dashboard extends Component {
     })
 
     NetworkOperation.getHistory().then(({ data }) => {
+      console.log("history")
+      console.log(data)
       const ranking = []
       const history = []
       data.sites.map(site => {
@@ -379,10 +407,10 @@ class Dashboard extends Component {
                 </Card>
                 <div className="horizontal-container">
                   <Card title="Zona de mas alertas" className="horizontal">
-                    <h1>Centro</h1>
-                    <p>{"X"} Sitios</p>
+                    <h1>{this.state.worstZone}</h1>
+
                     <div className="card-footer">
-                      <p className="red"> alertas </p>
+                      <p className="red">{this.state.worstZoneValue} alertas </p>
                     </div>
                   </Card>
                   <Card title="Sitio de mas alertas" className="horizontal">
