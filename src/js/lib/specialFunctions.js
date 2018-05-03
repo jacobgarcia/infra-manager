@@ -232,7 +232,7 @@ export function pvAtTime(history, now = new Date()) {
   history.map(log => {
     log < now && log > now.setHours(now.getHours() - 1, 0, 0, 0) && counter++
   })
-  return 100 - counter * 100 / history.length
+  return parseInt(100 - counter * 100 / history.length)
 }
 
 export function dataChart(chart) {
