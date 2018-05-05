@@ -20,7 +20,13 @@ import {
 
 import { Card, Table, RiskBar, Tooltip } from '../components'
 import { blue, darkGray } from '../lib/colors'
-import { getColor } from '../lib/specialFunctions'
+import {
+  getColor,
+  itemStatus,
+  pvAtTime,
+  dataChart
+} from '../lib/specialFunctions'
+import { NetworkOperation } from '../lib'
 
 const data = [
   { name: 'workings', value: 75 },
@@ -44,22 +50,6 @@ const data2 = [
   { name: '7:00 PM', uv: 13, pv: 1042, tv: 51 }
 ]
 
-const barData = [
-  { name: '7:00 AM', pv: 100 },
-  { name: '8:00 AM', pv: 100 },
-  { name: '9:00 AM', pv: 100 },
-  { name: '10:00 AM', pv: 100 },
-  { name: '11:00 AM', pv: 90 },
-  { name: '12:00 PM', pv: 100 },
-  { name: '1:00 PM', pv: 100 },
-  { name: '2:00 PM', pv: 80 },
-  { name: '3:00 PM', pv: 100 },
-  { name: '4:00 PM', pv: 100 },
-  { name: '5:00 PM', pv: 100 },
-  { name: '6:00 PM', pv: 70 },
-  { name: '7:00 PM', pv: 70 }
-]
-
 class Dashboard extends Component {
   constructor(props) {
     super(props)
@@ -71,13 +61,122 @@ class Dashboard extends Component {
       selectedElementIndex: [null, null],
       from: new Date(),
       to: new Date(),
-      detail: null
+      detail: null,
+      worstZone: '',
+      worstZoneValue: 0
+
     }
   }
   componentWillMount() {
-    console.log(this.props.perimeterReports)
+
+    NetworkOperation.getAlarms().then(({ data }) => {
+        let ranking = {
+          zone:[],
+          value:[],
+          alarms:[],
+        }
+        let damaged = []
+        data.sites.forEach(function(site){
+          //if alarms fill damaged sites
+          site.alarms.length ? damaged.push(site) : null
+          //fill array of lengths in alarms
+          ranking.alarms.push(site.alarms.length)
+          //two array [site] [count alarms site] and top to match
+          if(ranking.zone.indexOf(site.zone.name) != -1){
+            ranking.value[ranking.zone.indexOf(site.zone.name)] += site.alarms.length
+          }else{
+            ranking.zone.push(site.zone.name)
+            ranking.value[ranking.zone.indexOf(site.zone.name)] = site.alarms.length
+          }
+        })
+
+        this.setState({
+          worstZone: ranking.zone[ranking.value.indexOf(Math.max.apply(null,ranking.value))],
+          worstZoneValue: ranking.value[ranking.value.indexOf(Math.max.apply(null,ranking.value))],
+          sites: data.sites,
+          damaged: damaged
+        })
+
+    })
+
+    NetworkOperation.getSensors().then(({ data }) => {
+      const csStatus = itemStatus('cs', data.sensors, 'upscale', 80, 20)
+      const vsStatus = itemStatus('vs', data.sensors, 'upscale', 80, 20)
+      const tempData = [
+        {
+          name: 'workings',
+          value:
+            csStatus[0].value < vsStatus[0].value
+              ? csStatus[0].value
+              : vsStatus[0].value
+        },
+        {
+          name: 'alerts',
+          value:
+            csStatus[1].value < vsStatus[1].value
+              ? vsStatus[1].value
+              : csStatus[1].value
+        },
+        {
+          name: 'damaged',
+          value:
+            csStatus[2].value < vsStatus[2].value
+              ? vsStatus[2].value
+              : csStatus[2].value
+        }
+      ]
+      const okPercent = parseInt(
+        tempData[0].value /
+          (tempData[0].value + tempData[1].value + tempData[2].value) *
+          100
+      )
+      const warPercent = parseInt(
+        tempData[1].value /
+          (tempData[0].value + tempData[1].value + tempData[2].value) *
+          100
+      )
+      const badPercent = parseInt(
+        tempData[2].value /
+          (tempData[0].value + tempData[1].value + tempData[2].value) *
+          100
+      )
+
+      this.setState({
+        sensors: tempData,
+        ok: okPercent,
+        war: warPercent,
+        bad: badPercent
+      })
+    })
+
+    NetworkOperation.getHistory().then(({ data }) => {
+
+      const ranking = []
+      const history = []
+      data.sites.map(site => {
+        // pushing for ranking
+        ranking.push(site.history.length)
+        // pushiw each log into history
+        site.history.map(log => {
+          history.push(new Date(log.timestamp))
+        })
+      })
+      history.map(time => {
+        const current = new Date(time.timestamp)
+      })
+      this.setState({
+        chart: history,
+        worst: this.state.sites[ranking.indexOf(Math.max(...ranking))]
+      })
+      //data.sites[ranking.indexOf(Math.max(...ranking))].history.length
+      //data.sites[ranking.indexOf(Math.max(...ranking))].key
+    })
+
+    // Get most alerted zone
   }
   render() {
+    const now = new Date()
+
     const { state, props } = this
     const {
       facialReports,
@@ -106,8 +205,8 @@ class Dashboard extends Component {
                   detailView={
                     <div className="detail-view">
                       <h1>
-                        1<p>
-                          /8 equipos dañados (<span>10%</span>)
+                        {this.state.sensors && this.state.sensors[2].value}<p>
+                          /{this.state.sensors && this.state.sensors[0].value+this.state.sensors[1].value+this.state.sensors[2].value} equipos dañados (<span>{this.state.bad}%</span>)
                         </p>
                       </h1>
                       <Table
@@ -164,7 +263,7 @@ class Dashboard extends Component {
                       <Pie
                         animationBegin={0}
                         dataKey="value"
-                        data={data}
+                        data={this.state.sensors}
                         cx={95}
                         cy={95}
                         innerRadius={60}
@@ -180,28 +279,30 @@ class Dashboard extends Component {
                         content={Tooltip}
                       />
                     </PieChart>
-                    <h1>75%</h1>
+                    <h1>{this.state.ok}%</h1>
                   </div>
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
-                    <p>7 sitios</p>
+                    <p>
+                      {this.state.sensors && this.state.sensors[0].value} sitios
+                    </p>
                     <div className="stats">
                       <p>
-                        <span>75%</span> funcionando
+                        <span>{this.state.ok}%</span> funcionando
                       </p>
                       <p
                         className="border button warning"
                         onClick={() =>
                           this.setState({ detail: 'performance' })
                         }>
-                        <span>20%</span> alertado
+                        <span>{this.state.war}%</span> alertado
                       </p>
                       <p
                         className="border button error"
                         onClick={() =>
                           this.setState({ detail: 'performance' })
                         }>
-                        <span>10%</span> dañado
+                        <span>{this.state.bad}%</span> dañado
                       </p>
                     </div>
                   </div>
@@ -251,7 +352,7 @@ class Dashboard extends Component {
                 <Card className="historical" title="Media de servicio">
                   <ResponsiveContainer width="100%" height={160}>
                     <AreaChart
-                      data={barData}
+                      data={dataChart(this.state.chart)}
                       syncId="dashboard"
                       margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                       <XAxis
@@ -312,17 +413,20 @@ class Dashboard extends Component {
                 </Card>
                 <div className="horizontal-container">
                   <Card title="Zona de mas alertas" className="horizontal">
-                    <h1>Centro</h1>
-                    <p>8 Sitios</p>
+                    <h1>{this.state.worstZoneValue ? this.state.worstZone : 'Ninguna'}</h1>
+
                     <div className="card-footer">
-                      <p className="red">8 alertas </p>
+                      <p className="red">{this.state.worstZoneValue} alertas </p>
                     </div>
                   </Card>
                   <Card title="Sitio de mas alertas" className="horizontal">
-                    <h1>MEXECA1058</h1>
+                    <h1>{this.state.worst && this.state.worst.key}</h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
-                      <p className="red">4 alertas</p>
+                      <p className="red">
+                        {this.state.worst && this.state.worst.alarms.length}{' '}
+                        alertas
+                      </p>
                     </div>
                   </Card>
                 </div>

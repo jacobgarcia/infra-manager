@@ -8,9 +8,11 @@ import {
   getFilteredReports
 } from '../lib/specialFunctions'
 import { ElementStatus } from './'
-import { NetworkOperationFRM } from '../lib'
+import { NetworkOperation } from '../lib'
 
 import io from 'socket.io-client'
+
+
 
 // IMPORTANT TODO if we change the site key, re-set the socket or ask to join there
 class StatusesContainer extends PureComponent {
@@ -33,7 +35,7 @@ class StatusesContainer extends PureComponent {
   }
 
   initSocket() {
-    this.socket = io('https://connus.be')
+    this.socket = io()
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
@@ -45,8 +47,8 @@ class StatusesContainer extends PureComponent {
       // console.log(this.props.element.key)
       // console.log(data.camera)
       this.setState({
-        photo2: 'https://connus.be' + data.image2,
-        photo3: 'https://connus.be' + data.image3
+        photo2: 'https://demo.connus.mx' + data.image2,
+        photo3: 'https://demo.connus.mx' + data.image3
         // camera: data.camera
       })
       // }
@@ -54,6 +56,7 @@ class StatusesContainer extends PureComponent {
   }
 
   getLink(type, element) {
+
     const { zoneId, siteId } = this.props.params
     switch (type) {
       case 'GENERAL':
@@ -85,13 +88,17 @@ class StatusesContainer extends PureComponent {
   onDebug() {
     this.setState({ animate: true })
     const { props } = this
-    NetworkOperationFRM.getDebug(props.element.key)
+    NetworkOperation.getDebug(props.element.key)
   }
 
   getContent() {
     const { props, state } = this
 
     const isSensor = props.type !== 'SITE' ? 'SENSORS' : null
+    /*
+    console.log(isSensor)
+    console.log(state.show)
+    */
 
     switch (isSensor || state.show) {
       case 'SENSORS':
@@ -129,7 +136,8 @@ class StatusesContainer extends PureComponent {
               if (sensor) {
                 if (
                   sensor.key.search('cs') !== -1 ||
-                  sensor.key.search('vs') !== -1
+                  sensor.key.search('vs') !== -1 ||
+                  sensor.key.search('bs') !== -1
                 ) {
                   status = [
                     { name: 'bold', value: sensor.value == 100 ? 'OK' : 'BAD' },
@@ -169,13 +177,14 @@ class StatusesContainer extends PureComponent {
                 name = 'de combustible'
                 break
               case 'bs1':
-                name = 'de batería'
+                name = 'de humedad'
                 break
               case 'cu1':
                 name = 'de corriente'
                 break
               default:
             }
+
             return (
               <Link key={element._id} to={this.getLink(props.type, element)}>
                 <ElementStatus

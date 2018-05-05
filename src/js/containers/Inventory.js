@@ -8,7 +8,7 @@ import Slider from 'react-slick'
 import { Table, DateRangePicker } from '../components'
 import { setFacialReport, setInventoryReport } from '../actions'
 
-import { NetworkOperation, NetworkOperationFRM } from '../lib'
+import { NetworkOperation } from '../lib'
 
 class Inventory extends Component {
   constructor(props) {
@@ -205,7 +205,7 @@ class Inventory extends Component {
   }
   componentWillMount() {
     // const inventory = {}
-    NetworkOperationFRM.getSensors().then(({ data }) => {
+    NetworkOperation.getSensors().then(({ data }) => {
       // console.log(this.props.inventoryReports);
       this.props.setInventoryReport(data)
     })
@@ -365,14 +365,8 @@ class Inventory extends Component {
                     </div>
                     <div className="detail">
                       <span>Estatus Detallados</span>
-                      <p>
-                        Temperatura:{' '}
-                        {state.selectedLog.detailedStatus.temperature}
-                      </p>
-                      <p>
-                        Activo:{' '}
-                        {state.selectedLog.detailedStatus.active ? 'Si' : 'No'}
-                      </p>
+                      <p>Temperatura: </p>
+                      <p>Activo: </p>
                     </div>
                   </div>
                   <Table

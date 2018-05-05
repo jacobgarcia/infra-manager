@@ -142,6 +142,59 @@ export function getSensorChart(type) {
       return null
   }
 }
+export function itemAverage(item, thisArray) {
+  let sum = 0
+  let count = 0
+
+  thisArray.map(sensor => {
+    if (sensor.key.search(item) !== -1) {
+      sum += sensor.value
+      count += 1
+    }
+  })
+
+  if (count !== 0) return sum / count
+  return 0
+}
+
+export function itemStatus(item = '', thisArray, option, max, min) {
+  let ok = 0
+  let warn = 0
+  let bad = 0
+
+  switch (option) {
+    case 'upscale':
+      thisArray.map(sensor => {
+        if (sensor.key.search(item) !== -1) {
+          if (sensor.value >= max) {
+            ok += 1
+          } else if (sensor.value <= min) bad += 1
+          else warn += 1
+        }
+      })
+      break
+    case 'between':
+      thisArray.map(sensor => {
+        if (sensor.key.search(item) !== -1) {
+          if (sensor.value <= max && sensor.value >= min) ok += 1
+          else bad += 1
+        }
+      })
+      break
+    default:
+      null
+  }
+
+  ok = ok % 2 === 0 ? ok / 2 : (ok + 1) / 2
+  warn = warn % 2 === 0 ? warn / 2 : (warn + 1) / 2
+  bad = bad % 2 === 0 ? bad / 2 : (bad + 1) / 2
+
+  return [
+    { name: 'workings', value: ok },
+    { name: 'alerts', value: warn },
+    { name: 'damaged', value: bad }
+  ]
+}
 
 export function getStatus(data) {
   let sum = 0
@@ -172,6 +225,35 @@ export function getStatus(data) {
     }
   }
   return { status: [], percentage: 0 }
+}
+
+export function pvAtTime(history, now = new Date()) {
+  let counter = 0
+  history.map(log => {
+    log < now && log > now.setHours(now.getHours() - 1, 0, 0, 0) && counter++
+  })
+  return 100 - counter * 100 / history.length
+}
+
+export function dataChart(chart) {
+  const data = []
+  const now = new Date()
+  for (const i in Array.from({ length: 11 })) {
+    const current = {
+      name:
+        now.getHours() - i > 11
+          ? now.getHours() - i + ':PM'
+          : now.getHours() - i + ':AM',
+      pv: chart
+        ? pvAtTime(
+            chart,
+            new Date(new Date().setHours(new Date().getHours() - i, 0, 0, 0))
+          )
+        : 100
+    }
+    data.unshift(current)
+  }
+  return data
 }
 
 export function getAreaCenter(cordinatesArray = [[], []]) {

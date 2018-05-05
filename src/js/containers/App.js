@@ -26,12 +26,13 @@ import {
   Perimeter,
   FacialRecognition,
   VideoSurveillance,
+  VisualCounter,
   Reports,
   Sensors,
   Inventory
 } from './'
 import { Navigator, VideoPlayer } from '../components'
-import { NetworkOperation, NetworkOperationFRM } from '../lib'
+import { NetworkOperation } from '../lib'
 
 const videoJsOptions = {
   controls: true,
@@ -122,7 +123,7 @@ class App extends Component {
         this.props.setExhaustive(data.zones)
 
         // Set FRM access store
-        return NetworkOperationFRM.getAccess()
+        return NetworkOperation.getAccess()
       })
       .then(({ data }) => {
         const sites = []
@@ -170,7 +171,7 @@ class App extends Component {
   }
 
   initSockets() {
-    this.socket = io('https://att.connus.mx')
+    this.socket = io()
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
@@ -280,6 +281,7 @@ class App extends Component {
           <Route path="/inventory" component={Inventory} />
           <Route path="/statistics" component={Statistics} />
           <Route path="/video-surveillance" component={VideoSurveillance} />
+          <Route path="/visual-counter" component={VisualCounter} />
           <Route path="/reports" component={Reports} />
           <Route path="/settings" component={Settings} />
           <Route path="/sensors" component={Sensors} />

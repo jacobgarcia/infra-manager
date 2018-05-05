@@ -6,13 +6,14 @@ function FuelChart(props) {
     <div
       className="fuel-chart"
       style={{ width: props.width, height: props.height }}>
-      <div className="fuel" style={{ height: `${props.percentage}%` }} />
+      <div className="fuel" style={{ height: `${props.fuel}%` }} />
     </div>
   )
 }
 
 FuelChart.defaultProps = {
-  percentage: 0
+  percentage: 0,
+  fuel: 0
 }
 
 FuelChart.propTypes = {
