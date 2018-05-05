@@ -70,15 +70,18 @@ class Dashboard extends Component {
   componentWillMount() {
 
     NetworkOperation.getAlarms().then(({ data }) => {
-      console.log("alarms")
-
-      console.log(data)
         let ranking = {
           zone:[],
-          value:[]
+          value:[],
+          alarms:[],
         }
-
+        let damaged = []
         data.sites.forEach(function(site){
+          //if alarms fill damaged sites
+          site.alarms.length ? damaged.push(site) : null
+          //fill array of lengths in alarms
+          ranking.alarms.push(site.alarms.length)
+          //two array [site] [count alarms site] and top to match
           if(ranking.zone.indexOf(site.zone.name) != -1){
             ranking.value[ranking.zone.indexOf(site.zone.name)] += site.alarms.length
           }else{
@@ -86,10 +89,14 @@ class Dashboard extends Component {
             ranking.value[ranking.zone.indexOf(site.zone.name)] = site.alarms.length
           }
         })
+
         this.setState({
           worstZone: ranking.zone[ranking.value.indexOf(Math.max.apply(null,ranking.value))],
-          worstZoneValue: ranking.value[ranking.value.indexOf(Math.max.apply(null,ranking.value))]
+          worstZoneValue: ranking.value[ranking.value.indexOf(Math.max.apply(null,ranking.value))],
+          sites: data.sites,
+          damaged: damaged
         })
+
     })
 
     NetworkOperation.getSensors().then(({ data }) => {
@@ -143,8 +150,7 @@ class Dashboard extends Component {
     })
 
     NetworkOperation.getHistory().then(({ data }) => {
-      console.log("history")
-      console.log(data)
+
       const ranking = []
       const history = []
       data.sites.map(site => {
@@ -160,10 +166,10 @@ class Dashboard extends Component {
       })
       this.setState({
         chart: history,
-        worst: data.sites[ranking.indexOf(Math.max(...ranking))]
+        worst: this.state.sites[ranking.indexOf(Math.max(...ranking))]
       })
-      data.sites[ranking.indexOf(Math.max(...ranking))].history.length
-      data.sites[ranking.indexOf(Math.max(...ranking))].key
+      //data.sites[ranking.indexOf(Math.max(...ranking))].history.length
+      //data.sites[ranking.indexOf(Math.max(...ranking))].key
     })
 
     // Get most alerted zone
@@ -199,8 +205,8 @@ class Dashboard extends Component {
                   detailView={
                     <div className="detail-view">
                       <h1>
-                        1<p>
-                          /8 equipos dañados (<span>10%</span>)
+                        {this.state.sensors && this.state.sensors[2].value}<p>
+                          /{this.state.sensors && this.state.sensors[0].value+this.state.sensors[1].value+this.state.sensors[2].value} equipos dañados (<span>{this.state.bad}%</span>)
                         </p>
                       </h1>
                       <Table
@@ -407,7 +413,7 @@ class Dashboard extends Component {
                 </Card>
                 <div className="horizontal-container">
                   <Card title="Zona de mas alertas" className="horizontal">
-                    <h1>{this.state.worstZone}</h1>
+                    <h1>{this.state.worstZoneValue ? this.state.worstZone : 'Ninguna'}</h1>
 
                     <div className="card-footer">
                       <p className="red">{this.state.worstZoneValue} alertas </p>
@@ -418,7 +424,7 @@ class Dashboard extends Component {
                     <p>Zona Centro</p>
                     <div className="card-footer">
                       <p className="red">
-                        {this.state.worst && this.state.worst.history.length}{' '}
+                        {this.state.worst && this.state.worst.alarms.length}{' '}
                         alertas
                       </p>
                     </div>
