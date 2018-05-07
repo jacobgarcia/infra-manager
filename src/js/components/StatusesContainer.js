@@ -102,7 +102,6 @@ class StatusesContainer extends PureComponent {
 
     switch (isSensor || state.show) {
       case 'SENSORS':
-        console.log(props.elements)
         return props.elements && props.elements.length > 0 ? (
           props.elements.map(element => {
             const reports = substractReportValues(

@@ -17,7 +17,7 @@ const watch = require('node-watch')
 
 app.use(bodyParser.urlencoded({ limit: '12mb' })) /* URL Encoding */
 app.use(bodyParser.json({ limit: '12mb' })) // JSON responses
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use(helmet())
 app.use(cors()) /* Enable All CORS Requests */
@@ -43,7 +43,7 @@ function slackMessage(body) {
   })
 }
 
-app.post('/webhook', (req, res) => {
+app.post('/webhook-master', (req, res) => {
   slackMessage({
     text: '*Build started*'
   })
