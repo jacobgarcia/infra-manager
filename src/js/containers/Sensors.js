@@ -104,7 +104,7 @@ class Users extends Component {
           <div className="overall-container">
             <div className="horizontal-container">
               {this.state.temperature ? (
-                <Card title="Temperatura" className={`graph-container`}>
+                <Card title="Temperatura del procesador" className={`graph-container`}>
                   <div className="graph">
                     <PieChart width={160} height={160}>
                       <Pie
@@ -242,26 +242,6 @@ class Users extends Component {
                   </div>
                 </Card>
               ) : null}
-              {this.state.energy || this.state.energy === 0 ? (
-                <Card title="Nivel de Humedad">
-                  <div>
-                    <BatteryChart
-                      energy={this.state.battery}
-                      height={160}
-                      width={110}
-                    />
-                  </div>
-                  <div className="center">
-                    <h3>{this.state.battery}% promedio</h3>
-                    {this.state.battery &&
-                      (!this.state.battery && 'Ningún sitio dañado')}
-                    <p className="border button" onClick={this.onSites}>
-                      {/* this.state.battery && (this.state.battery) */} Sitios
-                    </p>
-                  </div>
-                </Card>
-              ) : null}
-
               {this.state.fuel || this.state.fuel === 0 ? (
                 <Card title="Nivel de Combustible">
                   <div>
