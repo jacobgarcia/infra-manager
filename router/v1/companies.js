@@ -531,7 +531,6 @@ router.route('/sites/sensors').put((req, res) => {
 
       site.history.push(history)
       site.sensors = sensors[0]
-      console.log(site)
 
       site.save((error, updatedSite) => {
         if (error) {
