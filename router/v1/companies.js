@@ -544,7 +544,6 @@ router.route('/sites/sensors').put((req, res) => {
         return res.status(200).json({
           success: true,
           message: 'Updated sensor information sucessfully',
-          updatedSite
         })
       })
     })
