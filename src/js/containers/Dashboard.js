@@ -166,10 +166,8 @@ class Dashboard extends Component {
       })
       this.setState({
         chart: history,
-        worst: this.state.sites[ranking.indexOf(Math.max(...ranking))]
+        worst: this.state.sites && this.state.sites[ranking.indexOf(Math.max(...ranking))]
       })
-      //data.sites[ranking.indexOf(Math.max(...ranking))].history.length
-      //data.sites[ranking.indexOf(Math.max(...ranking))].key
     })
 
     // Get most alerted zone
@@ -198,10 +196,12 @@ class Dashboard extends Component {
                 state.detail !== null ? 'minified' : ''
               }`}>
               <div className="vertical-container">
+              <div className="events-container">
+              </div>
                 <Card
                   title="Rendimiento general"
                   className={`graph-container`}
-                  full={state.detail === 'performance'}
+                  full={state.detail === 'warning' || state.detail === 'damaged'}
                   detailView={
                     <div className="detail-view">
                       <h1>
@@ -210,6 +210,12 @@ class Dashboard extends Component {
                         </p>
                       </h1>
                       <Table
+                      multipleTable
+                      actionsContainer={
+                        <div>
+                          <p className="button action disabled">Filtrar</p>
+                        </div>
+                      }
                         selectedElementIndex={state.selectedElementIndex}
                         element={(item, index, sectionIndex) => (
                           <div
@@ -239,8 +245,14 @@ class Dashboard extends Component {
                           </div>
                         )}
                         elements={[
-                          { title: 'Dañados', elements: [] },
-                          { title: 'Alertados', elements: [] }
+                          {
+                            title: 'Dañados',
+                            elements: perimeterReports.concat(reports).filter($0 => $0.risk > 2)
+                          },
+                          {
+                            title: 'Alertados',
+                            elements: perimeterReports.concat(reports).filter($0 => $0.risk < 3)
+                          }
                         ]}
                         titles={[
                           { title: 'Tiempo' },
@@ -250,7 +262,9 @@ class Dashboard extends Component {
                           { title: 'Estatus' },
                           { title: 'Riesgo' }
                         ]}
+
                       />
+
                     </div>
                   }
                   detailActions={
@@ -293,14 +307,14 @@ class Dashboard extends Component {
                       <p
                         className="border button warning"
                         onClick={() =>
-                          this.setState({ detail: 'performance' })
+                          this.setState({ detail: 'warning' })
                         }>
                         <span>{this.state.war}%</span> alertado
                       </p>
                       <p
                         className="border button error"
                         onClick={() =>
-                          this.setState({ detail: 'performance' })
+                          this.setState({ detail: 'damaged' })
                         }>
                         <span>{this.state.bad}%</span> dañado
                       </p>

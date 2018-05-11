@@ -1,5 +1,6 @@
 export default {
   hostUrl: window.location.origin,
+  //hostUrl: 'https://att.connus.mx',
   colors: value => {
     if (value > 75) {
       return '#00adee'
