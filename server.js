@@ -15,11 +15,8 @@ const v1 = require(path.resolve('router/v1'))
 const PORT = process.env.PORT || 8080
 const watch = require('node-watch')
 
-
-
-
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ limit: '12mb' })) /* URL Encoding */
+app.use(bodyParser.json({ limit: '12mb' })) // JSON responses
 app.use(helmet())
 app.use(cors()) /* Enable All CORS Requests */
 app.use(hpp())
@@ -33,7 +30,8 @@ app.use('/v1', v1)
 
 function slackMessage(body) {
   request({
-    url: 'https://hooks.slack.com/services/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',
+    url:
+      'https://hooks.slack.com/services/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',
     method: 'POST',
     headers: {
       'Content-type': 'application/json'
@@ -43,7 +41,7 @@ function slackMessage(body) {
   })
 }
 
-app.post('/webhook', (req, res) => {
+app.post('/webhook-master', (req, res) => {
   slackMessage({
     text: '*Build started*'
   })
@@ -77,16 +75,13 @@ app.post('/webhook', (req, res) => {
 // Dist bundles
 app.use('/dist', express.static('dist'))
 
-
 // If in development use webpackDevServer
 if (process.env.NODE_ENV === 'development') {
   app.use(require(path.resolve('config/webpackDevServer')))
 }
 
 // Send index to all other routes
-app.get('*', (req, res) =>
-  res.sendFile(path.resolve('dist/index.html'))
-)
+app.get('*', (req, res) => res.sendFile(path.resolve('dist/index.html')))
 
 // Start server
 const server = app.listen(PORT, () =>
@@ -113,7 +108,6 @@ io.on('connection', socket => {
 
 global.io = io
 
-
 // Start RTMP Server
 const config = {
   rtmp: {
@@ -130,11 +124,18 @@ const config = {
 }
 
 function videoConverter(name) {
-    var file = name.split("/")
-    var old = file[3]
-    var rename = old.split(".flv")
-    exec('avconv -i ' + name + ' -codec copy ./static/videos/mp4/' + rename[0] + '.mp4', error => {
-        if (error !== null) winston.error('exec error: ' + error)
-    })
-    isTimeout = false
+  var file = name.split('/')
+  var old = file[3]
+  var rename = old.split('.flv')
+  exec(
+    'avconv -i ' +
+      name +
+      ' -codec copy ./static/videos/mp4/' +
+      rename[0] +
+      '.mp4',
+    error => {
+      if (error !== null) winston.error('exec error: ' + error)
+    }
+  )
+  isTimeout = false
 }

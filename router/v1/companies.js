@@ -500,6 +500,7 @@ router.route('/sites/sensors').put((req, res) => {
   if (!key || !company || !sensors) return res
       .status(400)
       .json({ success: false, message: 'Malformed request' })
+
   if (typeof sensors === 'string') sensors = JSON.parse(sensors)
 
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
@@ -512,24 +513,40 @@ router.route('/sites/sensors').put((req, res) => {
         .status(404)
         .json({ success: false, message: 'Specified company was not found' })
 
-    Site.findOneAndUpdate({ company, key }, { $set: { sensors } }).exec(
-      (error, site) => {
+    Site.findOne({ company, key }).exec((error, site) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      if (!site) return res
+          .status(404)
+          .json({ success: false, message: 'No site found' })
+
+      // Update history and sensors specification
+      const history = {
+        sensors: site.sensors
+      }
+
+      site.history.push(history)
+      site.sensors = sensors[0]
+      console.log(site)
+
+      site.save((error, updatedSite) => {
         if (error) {
           winston.error({ error })
           return res.status(500).json({ error })
         }
 
-        if (!site) return res
-            .status(404)
-            .json({ success: false, message: 'No site found' })
+        global.io.emit('refresh')
 
         return res.status(200).json({
           success: true,
           message: 'Updated sensor information sucessfully',
-          site
+          updatedSite
         })
-      }
-    )
+      })
+    })
   })
 })
 
@@ -547,6 +564,21 @@ router.route('/sites/sensors').get((req, res) => {
 
       if (!sites) return res.status(404).json({ message: 'No sites found' })
 
+      return res.status(200).json({ sites })
+    })
+})
+
+// Get all sensors for all company hsitory
+router.route('/sites/sensors/history').get((req, res) => {
+  const company = req._user.cmp
+  Site.find({ company })
+    .select('history key')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+      if (!sites) return res.status(404).json({ message: 'No sites found' })
       return res.status(200).json({ sites })
     })
 })
@@ -572,6 +604,23 @@ router.route('/sites/sensors/:type').get((req, res) => {
         })
       })
       return res.status(200).json({ sensors })
+    })
+})
+
+// Get sensors of specific type for all company sites
+router.route('/sites/alarms/').get((req, res) => {
+  const company = req._user.cmp
+
+  Site.find({ company })
+    .populate('zone', 'name')
+    .select('key zone alarms')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      return res.status(200).json({ sites })
     })
 })
 
@@ -630,6 +679,10 @@ router.route('/video/cameras').get((req, res) => {
         cameras
       })
     })
+})
+
+router.route('/visualcounter/count').post((req, res) => {
+  console.log(res)
 })
 
 module.exports = router

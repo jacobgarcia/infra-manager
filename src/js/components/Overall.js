@@ -61,6 +61,9 @@ class Overall extends PureComponent {
 
   render() {
     const { state, props } = this
+    /*console.log(props.selectedType === 'SITE'
+      ? props.element ? props.element.sensors : []
+      : props.elements)*/
 
     return (
       <div

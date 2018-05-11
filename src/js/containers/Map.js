@@ -86,7 +86,6 @@ class MapContainer extends Component {
   }
 
   componentDidMount() {
-
     NetworkOperation.getAvailableStates()
     .then(({data}) => {
       this.setState({
@@ -103,6 +102,7 @@ class MapContainer extends Component {
 
     NetworkOperation.getAvailableSites()
     .then(({data}) => {
+      //console.log(data);
        this.setState({
          availableSites: data.connected_sites
        })
@@ -323,6 +323,7 @@ class MapContainer extends Component {
   }
 
   render() {
+    //console.log(this.state.availableSites);
     const { state, props } = this
     if (!props.credentials.user) {
       return (null)

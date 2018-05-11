@@ -4,6 +4,7 @@ import constants from './constants'
 
 // TODO check if we're in production, if it's change hostUrl to s3
 const baseUrl = `${constants.hostUrl}/v1`
+//const baseUrl = `https://att.connus.mx/v1`
 
 // Request interceptors
 axios.interceptors.request.use(
@@ -70,34 +71,33 @@ class NetworkOperation {
     formData.append('photo', photoFile)
     return axios.post(`${baseUrl}/users/self/photo`, formData)
   }
-
   static getGeneralAlarms(from, to) {
     return axios.get(`${baseUrl}/alarms?from=${from}&to=${to}`)
   }
-
   static getCompanyUsers() {
     return axios.get(`${baseUrl}/users`)
   }
-
   static getFaceRecognition() {
     return axios.get(`${baseUrl}/facerecognition`)
   }
-
   static getSiteId(siteKey) {
     return axios.get(`${baseUrl}/site/${siteKey}`)
   }
-
   static getInventory() {
     return axios.get(`${baseUrl}/sites/sensors`)
   }
   static getSensors() {
-  return axios.get(`${baseUrl}/sites/sensors/all/`)
-}
-
+    return axios.get(`${baseUrl}/sites/sensors/all/`)
+  }
+  static getHistory() {
+    return axios.get(`${baseUrl}/sites/sensors/history/`)
+  }
+  static getSensors(type) {
+    return axios.get(`${baseUrl}/sites/sensors/${type}`)
+  }
   static getVehicularReports() {
     return axios.get(`${baseUrl}/vehicular-flow/reports`)
   }
-
   static updateInventoryElement(
     id,
     lastMantainanceFrom,
@@ -142,6 +142,9 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/access/logs`)
   }
 
+  static getAlarms() {
+    return axios.get(`${baseUrl}/sites/alarms`)
+  }
 }
 
 export default NetworkOperation
