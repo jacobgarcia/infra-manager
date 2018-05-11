@@ -41,7 +41,7 @@ function slackMessage(body) {
   })
 }
 
-app.post('/webhook', (req, res) => {
+app.post('/webhook-master', (req, res) => {
   slackMessage({
     text: '*Build started*'
   })

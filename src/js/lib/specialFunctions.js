@@ -157,11 +157,10 @@ export function itemAverage(item, thisArray) {
   return 0
 }
 
-export function itemStatus(item = "", thisArray, option, max, min) {
+export function itemStatus(item = '', thisArray, option, max, min) {
   let ok = 0
   let warn = 0
   let bad = 0
-
 
   switch (option) {
     case 'upscale':
@@ -228,21 +227,29 @@ export function getStatus(data) {
   return { status: [], percentage: 0 }
 }
 
-export function pvAtTime(history,now = new Date){
+export function pvAtTime(history, now = new Date()) {
   let counter = 0
   history.map(log => {
-      log < now && log > now.setHours(now.getHours()-1,0,0,0) && counter++
+    log < now && log > now.setHours(now.getHours() - 1, 0, 0, 0) && counter++
   })
-  return 100 - (counter*100/history.length)
+  return 100 - counter * 100 / history.length
 }
 
-export function dataChart(chart){
-  let data = []
+export function dataChart(chart) {
+  const data = []
   const now = new Date()
-  for(let i in Array.from({length: 11})){
-    let current = {
-      name: (now.getHours() -i > 11 ? now.getHours() -i+':PM' : now.getHours() -i+':AM')  ,
-      pv: (chart ? pvAtTime(chart,new Date(new Date().setHours(new Date().getHours()-i,0,0,0))) : 100)
+  for (const i in Array.from({ length: 11 })) {
+    const current = {
+      name:
+        now.getHours() - i > 11
+          ? now.getHours() - i + ':PM'
+          : now.getHours() - i + ':AM',
+      pv: chart
+        ? pvAtTime(
+            chart,
+            new Date(new Date().setHours(new Date().getHours() - i, 0, 0, 0))
+          )
+        : 100
     }
     data.unshift(current)
   }
