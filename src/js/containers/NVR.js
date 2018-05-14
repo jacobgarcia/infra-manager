@@ -26,7 +26,7 @@ class VideoSurveillance extends Component {
       to: new Date(),
       playingVideo: true,
       isPlaying: false,
-      iframe : { __html : '<iframe src="http://192.168.0.217:8080" width="540" height="450"></iframe>' }
+      iframe : { __html : '<iframe src="http://192.168.0.102" width="540" height="450"></iframe>' }
     }
 
     this.onDayClick = this.onDayClick.bind(this)

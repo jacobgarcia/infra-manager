@@ -750,7 +750,7 @@ router.route('/visualcounter/count').get((req, res) => {
 
   //TODO Counter must be part of a Site
   Counter.find({})
-    .sort({ timestamp: 1})
+    .sort({ timestamp: -1})
     .exec((error, counts) => {
       const counter = counts[0]
       let sum = []

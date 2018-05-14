@@ -47,7 +47,7 @@ const data2 = [
   { name: '4:00 PM', uv: 5, pv: 1143, tv: 583 },
   { name: '5:00 PM', uv: 12, pv: 1143, tv: 583 },
   { name: '6:00 PM', uv: 31, pv: 1042, tv: 43 },
-  { name: '7:00 PM', uv: 13, pv: 1042, tv: 51 }
+  { name: '7:00 PM', uv: 0, pv: 1042, tv: 51 }
 ]
 
 class Dashboard extends Component {
@@ -77,7 +77,7 @@ class Dashboard extends Component {
         { name: '4:00 PM', uv: 5, pv: 1143, tv: 583 },
         { name: '5:00 PM', uv: 12, pv: 1143, tv: 583 },
         { name: '6:00 PM', uv: 31, pv: 1042, tv: 43 },
-        { name: '7:00 PM', uv: 13, pv: 1042, tv: 51 }
+        { name: '7:00 PM', uv: 0, pv: 1042, tv: 51 }
       ]
     }
   }
@@ -191,7 +191,8 @@ class Dashboard extends Component {
       console.log('Counter', data)
       const { chartCounter } = this.state
       data.counts.map((count, index) => {
-        chartCounter[index].uv = count
+        chartCounter[11].uv = 0
+	chartCounter[index].uv = count
         this.setState({
           chartCounter
         })

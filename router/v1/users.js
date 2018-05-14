@@ -223,7 +223,7 @@ router.route('/users/recognize').post((req, res) => {
           site: user.site,
           access: event === 'login' ? 'Inicio de sesión' : 'Cierre de sesión',
           pin: data.pin,
-          photo: process.env.PWD + '/' + filename
+          photo: '/' + filename
         }).save((error, access) => {
           if (error) {
             winston.error(error)
