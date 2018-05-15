@@ -68,7 +68,6 @@ class Dashboard extends Component {
     }
   }
   componentWillMount() {
-
     NetworkOperation.getAlarms().then(({ data }) => {
         let ranking = {
           zone:[],
@@ -168,7 +167,7 @@ class Dashboard extends Component {
         chart: history,
         worst: this.state.sites && this.state.sites[ranking.indexOf(Math.max(...ranking))]
       })
-    })
+    }) 
 
     // Get most alerted zone
   }
@@ -498,6 +497,7 @@ class Dashboard extends Component {
       </div>
     )
   }
+
 }
 
 Dashboard.propTypes = {}
