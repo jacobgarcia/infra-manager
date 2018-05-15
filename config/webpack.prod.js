@@ -5,7 +5,7 @@ const common = require(path.resolve('config/webpack.common.js'))
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 const webpack = require('webpack')
-const WorkboxPlugin = require('workbox-webpack-plugin')
+const { GenerateSW } = require('workbox-webpack-plugin')
 const WebpackPwaManifest = require('webpack-pwa-manifest')
 
 module.exports = merge(common, {
@@ -14,7 +14,7 @@ module.exports = merge(common, {
   output: {
     path: path.resolve('dist'),
     filename: '[name]-[chunkhash].min.js',
-    publicPath: '/dist/'
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -22,7 +22,11 @@ module.exports = merge(common, {
         test: /(\.css$|\.scss)/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use: ['css-loader', 'sass-loader']
+          use: [
+            'css-loader?minimize',
+            'resolve-url-loader',
+            'sass-loader?sourceMap'
+          ]
         })
       }
     ]
@@ -34,31 +38,34 @@ module.exports = merge(common, {
     new UglifyJSPlugin({
       sourceMap: true
     }),
+    new ExtractTextPlugin({
+      filename: 'master-[chunkhash].min.css',
+      allChunks: true
+    }),
+    new GenerateSW({
+      swDest: 'sw.js',
+      clientsClaim: true,
+      skipWaiting: true
+    }),
     new WebpackPwaManifest({
       name: 'Connus',
       short_name: 'Connus',
       description: 'Connus',
-      background_color: '#ffffff',
-      theme_color: '#ffffff',
-      start_url: '.',
+      background_color: '#1d2229',
+      theme_color: '#1d2229',
+      start_url: '/',
       icons: [
         {
           src: path.resolve('src/assets/app-icon.png'),
-          sizes: [96, 128, 192, 256, 384, 512] // multiple sizes
+          sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
+          destination: 'assets'
         },
         {
           src: path.resolve('src/assets/app-large-icon.png'),
-          size: '1024x1024' // you can also use the specifications pattern
+          size: '1024x1024', // you can also use the specifications pattern
+          destination: 'assets'
         }
       ]
-    }),
-    new ExtractTextPlugin('master.min.css'),
-    new WorkboxPlugin({
-      globDirectory: 'dist',
-      globPatterns: ['**/*.{html,js,css}'],
-      swDest: path.join('dist', 'sw.js'),
-      clientsClaim: true,
-      skipWaiting: true
-    }),
+    })
   ]
 })

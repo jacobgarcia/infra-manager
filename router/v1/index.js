@@ -24,9 +24,6 @@ router.use(require(path.resolve('router/v1/cameras')))
 router.use(require(path.resolve('router/v1/alerts')))
 router.use(require(path.resolve('router/v1/access')))
 
-
-
-
 // TODO: Send user invitee (mail)
 // TODO: Accept user invitee
 

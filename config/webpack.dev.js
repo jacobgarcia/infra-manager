@@ -2,7 +2,6 @@
 const path = require('path')
 const merge = require('webpack-merge')
 const webpack = require('webpack')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
 
 const common = require('./webpack.common.js')
 
@@ -11,17 +10,19 @@ module.exports = merge(common, {
   devtool: 'cheap-module-eval-source-map',
   output: {
     path: path.resolve('dist'),
-    filename: 'bundle.js'
+    filename: '[name].bundle.js',
+    publicPath: '/'
   },
-  entry: ['webpack-hot-middleware/client', path.resolve('src/js/index')],
+  entry: ['webpack-hot-middleware/client', path.resolve('src/index')],
   module: {
     rules: [
       {
         test: /(\.css$|\.scss)/,
-        use: [
-          { loader: 'style-loader' },
-          { loader: 'css-loader' },
-          { loader: 'sass-loader' }
+        loaders: [
+          'style-loader?sourceMap',
+          'css-loader?sourceMap',
+          'resolve-url-loader?sourceMap',
+          'sass-loader?sourceMap'
         ]
       }
     ]
@@ -31,10 +32,5 @@ module.exports = merge(common, {
     overlay: true,
     compress: true
   },
-  plugins: [
-    new webpack.HotModuleReplacementPlugin(),
-    new CleanWebpackPlugin(['dist/*.*'], {
-      root: path.join(__dirname, '../')
-    })
-  ]
+  plugins: [new webpack.HotModuleReplacementPlugin()]
 })
