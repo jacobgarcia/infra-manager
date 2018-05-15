@@ -1,17 +1,25 @@
 {
   "name": "connus",
-  "version": "0.1.0",
-  "description": "React, Redux, Hot-Reload, SCSS, Stage 2, ESLint, Express, ES2015",
+  "version": "0.2.1",
+  "description": "Connus",
   "main": "server.js",
   "scripts": {
     "build:prod": "webpack --config ./config/webpack.prod.js",
-    "push:prod": "aws s3 sync build-prod s3://connus.nure.mx/ --cache-control max-age=2592000 --delete --profile connus",
+    "sync:prod": "aws s3 sync ./dist s3://connus --delete --exclude .DS_Store --acl public-read ",
     "test": "echo \"Error: no test specified\" && exit 0",
     "reload:prod": "pm2 reload all -i max",
-    "start": "NODE_ENV=\"development\" nodemon --config ./config/nodemon.json"
+    "start": "NODE_ENV=\"development\" nodemon --config ./config/nodemon.json",
+    "invalidate": "aws cloudfront create-invalidation --distribution-id EM10IZXCVQFDQ --paths /index.html"
   },
   "author": "nure,",
   "license": "UNLICENSED",
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "precommit": "lint-staged",
   "dependencies": {
     "axios": "^0.18.0",
     "base64-img": "^1.0.4",
@@ -73,6 +81,8 @@
     "eslint-plugin-react": "^7.8.2",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "html-webpack-plugin": "^3.2.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.1.0",
     "node-sass": "^4.9.0",
     "offline-plugin": "^4.9.0",
     "pre-commit": "^1.2.2",
