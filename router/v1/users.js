@@ -7,7 +7,6 @@ const multer = require('multer')
 const mime = require('mime')
 const mongoose = require('mongoose')
 const nev = require('email-verification')(mongoose)
-const jwt = require('jsonwebtoken')
 const base64Img = require('base64-img')
 const shortid = require('shortid')
 const PythonShell = require('python-shell')
@@ -17,17 +16,13 @@ const imagemin = require('imagemin')
 const imageminMozjpeg = require('imagemin-mozjpeg')
 const imageminPngquant = require('imagemin-pngquant')
 
-const Guest = require(path.resolve('models/Guest'))
+// const Guest = require(path.resolve('models/Guest'))
 const Site = require(path.resolve('models/Site'))
 const User = require(path.resolve('models/User'))
 const FrmUser = require(path.resolve('models/FrmUser'))
 const Access = require(path.resolve('models/Access'))
 
 const Admin = require(path.resolve('models/Admin'))
-
-const config = require(path.resolve('config/config'))
-
-mongoose.connect(config.database)
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
