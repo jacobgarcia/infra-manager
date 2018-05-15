@@ -5,20 +5,22 @@
   "main": "server.js",
   "scripts": {
     "build:prod": "webpack --config ./config/webpack.prod.js",
-    "sync:prod": "aws s3 sync ./dist s3://connus --delete --exclude .DS_Store --acl public-read ",
+    "sync:prod":
+      "aws s3 sync ./dist s3://connus --delete --exclude .DS_Store --acl public-read ",
     "test": "echo \"Error: no test specified\" && exit 0",
     "reload:prod": "pm2 reload all -i max",
     "start": "NODE_ENV=\"development\" nodemon --config ./config/nodemon.json",
-    "invalidate": "aws cloudfront create-invalidation --distribution-id EM10IZXCVQFDQ --paths /index.html",
-    "lint:staged": "lint-staged",
-    "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern internals/scripts"
+    "invalidate":
+      "aws cloudfront create-invalidation --distribution-id EM10IZXCVQFDQ --paths /index.html",
+    "lint:staged":
+      "eslint --ignore-path .gitignore --ignore-pattern internals/scripts"
   },
   "author": "nure,",
   "license": "UNLICENSED",
   "lint-staged": {
     "*.js": "lint:eslint"
   },
-  "precommit": "lint:staged",
+  "pre-commit": "lint:staged",
   "dependencies": {
     "axios": "^0.18.0",
     "base64-img": "^1.0.4",
