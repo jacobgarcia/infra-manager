@@ -20,7 +20,6 @@ mongoose
   .then(() => {
     winston.info('Connected to DB')
   })
-
   .catch(() => {
     winston.error('\n|\n|  Could not connect to DB\n|')
   })
