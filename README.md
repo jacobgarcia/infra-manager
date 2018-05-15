@@ -10,7 +10,7 @@ Ensure MongoDB instance is running and run **development mode**
 > yarn start
 ```
 
-With _Docker_
+With _Docker_ (hot reloading app, but no server.js nor router)
 
 ```
 > docker run -v ~/${PATH}/connus/src:/usr/src/app/src -p 8080:8080 connus:v1.0
