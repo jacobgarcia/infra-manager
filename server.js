@@ -11,7 +11,7 @@ const app = express()
 const webhook = require(path.resolve('lib/webhook'))
 const v1 = require(path.resolve('router/v1'))
 
-const { PORT = 8080, NODE_ENV: mode } = process.env
+const { PORT = 8080, HOST = '0.0.0.0', NODE_ENV: mode } = process.env
 
 app.use(bodyParser.urlencoded({ limit: '12mb', extended: true }))
 app.use(bodyParser.json({ limit: '12mb' }))
@@ -33,8 +33,8 @@ if (mode === 'development') {
 app.get('*', (req, res) => res.sendFile(path.resolve('dist/index.html')))
 
 // Start server
-const server = app.listen(PORT, () =>
-  winston.info(`Connus server is listening on port: ${PORT}!`)
+const server = app.listen(PORT, HOST, () =>
+  winston.info(`Connus server is listening\nPort: ${PORT}\nHost: ${HOST}`)
 )
 
 const io = require('socket.io').listen(server)

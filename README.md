@@ -2,16 +2,32 @@
 
 ## Usage
 
+### Development
+
 Ensure MongoDB instance is running and run **development mode**
 
 ```
 > yarn start
 ```
 
+With _Docker_
+
+```
+> docker run -v ~/${PATH}/connus/src:/usr/src/app/src -p 8080:8080 connus:v1.0
+```
+
+### Production
+
 For production run
 
 ```
 > yarn start:prod
+```
+
+With _Docker_
+
+```
+> # Comming soon
 ```
 
 ## Codes
