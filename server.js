@@ -7,11 +7,23 @@ const winston = require('winston')
 const hpp = require('hpp')
 const cors = require('cors')
 const app = express()
+const mongoose = require('mongoose')
 
+const projectConfig = require(path.resolve('config/config'))
 const webhook = require(path.resolve('lib/webhook'))
 const v1 = require(path.resolve('router/v1'))
 
-const { PORT = 8080, HOST = '0.0.0.0', NODE_ENV: mode } = process.env
+const { PORT = 8080, HOST = '0.0.0.0', NODE_ENV: MODE } = process.env
+
+mongoose
+  .connect(projectConfig.database)
+  .then(() => {
+    winston.info('Connected to DB')
+  })
+
+  .catch(() => {
+    winston.error('\n|\n|  Could not connect to DB\n|')
+  })
 
 app.use(bodyParser.urlencoded({ limit: '12mb', extended: true }))
 app.use(bodyParser.json({ limit: '12mb' }))
@@ -22,10 +34,11 @@ app.use(hpp())
 app.use('/static', express.static(path.resolve('static')))
 app.use('/v1', v1)
 app.use(webhook)
+
 app.use(express.static('dist'))
 
 // Check if we're in development mode to use webpackDevServer middleware
-if (mode === 'development') {
+if (MODE === 'development') {
   app.use(require(path.resolve('config/webpackDevServer')))
 }
 
@@ -34,7 +47,9 @@ app.get('*', (req, res) => res.sendFile(path.resolve('dist/index.html')))
 
 // Start server
 const server = app.listen(PORT, HOST, () =>
-  winston.info(`Connus server is listening\nPort: ${PORT}\nHost: ${HOST}`)
+  winston.info(
+    `Connus server is listening\n  Port: ${PORT}\n  Host: ${HOST}\n  Mode: ${MODE}`
+  )
 )
 
 const io = require('socket.io').listen(server)

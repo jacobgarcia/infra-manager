@@ -3,11 +3,6 @@ const express = require('express')
 const path = require('path')
 const router = new express.Router()
 require(path.resolve('models/Company'))
-const mongoose = require('mongoose')
-
-const config = require(path.resolve('config/config'))
-
-mongoose.connect(config.database)
 
 // Authenticate before any possible request
 router.use(require(path.resolve('router/v1/auth')))

@@ -4,12 +4,13 @@
   "description": "Connus",
   "main": "server.js",
   "scripts": {
+    "start": "pm2-dev ecosystem.config.js",
+    "start:prod": "pm2 start ecosystem.config.js --env production",
     "build:prod": "webpack --config ./config/webpack.prod.js",
     "sync:prod":
       "aws s3 sync ./dist s3://connus --delete --exclude .DS_Store --acl public-read ",
-    "test": "echo \"Error: no test specified\" && exit 0",
     "reload:prod": "pm2 reload all -i max",
-    "start": "NODE_ENV=\"development\" nodemon --config ./config/nodemon.json",
+    "test": "echo \"Error: no test specified\" && exit 0",
     "invalidate":
       "aws cloudfront create-invalidation --distribution-id EM10IZXCVQFDQ --paths /index.html",
     "lint:staged":

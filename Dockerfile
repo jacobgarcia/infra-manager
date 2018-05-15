@@ -5,7 +5,7 @@ COPY . /usr/src/app
 WORKDIR /usr/src/app
 
 RUN npm i -g yarn
-RUN yarn global add nodemon
+RUN yarn global add pm2
 RUN yarn
 
 CMD ["yarn", "start"]

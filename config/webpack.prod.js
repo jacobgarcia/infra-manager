@@ -10,7 +10,6 @@ const WebpackPwaManifest = require('webpack-pwa-manifest')
 
 module.exports = merge(common, {
   mode: 'production',
-  devtool: 'source-map',
   output: {
     path: path.resolve('dist'),
     filename: '[name]-[chunkhash].min.js',
@@ -36,7 +35,7 @@ module.exports = merge(common, {
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
     new UglifyJSPlugin({
-      sourceMap: true
+      sourceMap: false
     }),
     new ExtractTextPlugin({
       filename: 'master-[chunkhash].min.css',
