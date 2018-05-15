@@ -3,6 +3,8 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 
+const config = require(path.resolve('config'))
+
 module.exports = {
   entry: {
     bundle: path.resolve('src/index')
@@ -63,7 +65,8 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: path.resolve('src/index.html'),
-      filename: 'index.html'
+      filename: 'index.html',
+      title: config.project.name
     })
   ]
 }

@@ -13,6 +13,7 @@ module.exports = merge(common, {
     filename: '[name].bundle.js',
     publicPath: '/'
   },
+
   entry: ['webpack-hot-middleware/client', path.resolve('src/index')],
   module: {
     rules: [

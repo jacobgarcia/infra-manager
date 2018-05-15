@@ -9,14 +9,14 @@ const cors = require('cors')
 const app = express()
 const mongoose = require('mongoose')
 
-const projectConfig = require(path.resolve('config/config'))
+const { databaseUri, project: { name } } = require(path.resolve('config'))
 const webhook = require(path.resolve('lib/webhook'))
 const v1 = require(path.resolve('router/v1'))
 
 const { PORT = 8080, HOST = '0.0.0.0', NODE_ENV: MODE } = process.env
 
 mongoose
-  .connect(projectConfig.database)
+  .connect(databaseUri)
   .then(() => {
     winston.info('Connected to DB')
   })
@@ -48,7 +48,7 @@ app.get('*', (req, res) => res.sendFile(path.resolve('dist/index.html')))
 // Start server
 const server = app.listen(PORT, HOST, () =>
   winston.info(
-    `Connus server is listening\n  Port: ${PORT}\n  Host: ${HOST}\n  Mode: ${MODE}`
+    `${name} server is listening\n  Port: ${PORT}\n  Host: ${HOST}\n  Mode: ${MODE}`
   )
 )
 

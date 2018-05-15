@@ -5,7 +5,7 @@ const winston = require('winston')
 const router = new express.Router()
 const bcrypt = require('bcrypt-nodejs')
 const jwt = require('jsonwebtoken')
-const config = require(path.resolve('config/config'))
+const config = require(path.resolve('config'))
 
 // const Site = require(path.resolve('models/Site'))
 // const Zone = require(path.resolve('models/Zone'))
