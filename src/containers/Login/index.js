@@ -8,6 +8,7 @@ import Particles from 'react-particles-js'
 import { NetworkOperation } from 'lib'
 import { setCredentials } from 'actions'
 import * as particleParams from 'lib/particlesjs-config.json'
+import logo from 'assets/logo.svg'
 
 class Login extends Component {
   constructor(props) {
@@ -86,7 +87,7 @@ class Login extends Component {
           params={particleParams}
         />
         <div id="logo">
-          <img src="/static/img/logo.svg" alt="" className="iso" />
+          <img src={logo} alt="Connus" className="iso" />
         </div>
         <form onSubmit={this.onSubmit}>
           <input

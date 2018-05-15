@@ -4,8 +4,8 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import { hot } from 'react-hot-loader'
 
-import App from 'containers/App'
-import Login from 'containers/Login'
+import App from 'containers/App/Loadable'
+import Login from 'containers/Login/Loadable'
 
 // Redux
 import appReducer from 'reducers'

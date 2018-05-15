@@ -5,16 +5,13 @@
   "main": "server.js",
   "scripts": {
     "build:prod": "webpack --config ./config/webpack.prod.js",
-    "sync:prod":
-      "aws s3 sync ./dist s3://connus --delete --exclude .DS_Store --acl public-read ",
+    "sync:prod": "aws s3 sync ./dist s3://connus --delete --exclude .DS_Store --acl public-read ",
     "test": "echo \"Error: no test specified\" && exit 0",
     "reload:prod": "pm2 reload all -i max",
     "start": "NODE_ENV=\"development\" nodemon --config ./config/nodemon.json",
-    "invalidate":
-      "aws cloudfront create-invalidation --distribution-id EM10IZXCVQFDQ --paths /index.html",
+    "invalidate": "aws cloudfront create-invalidation --distribution-id EM10IZXCVQFDQ --paths /index.html",
     "lint:staged": "lint-staged",
-    "lint:eslint":
-      "eslint --ignore-path .gitignore --ignore-pattern internals/scripts"
+    "lint:eslint": "eslint --ignore-path .gitignore --ignore-pattern internals/scripts"
   },
   "author": "nure,",
   "license": "UNLICENSED",
@@ -82,8 +79,10 @@
     "css-loader": "^0.28.11",
     "eslint-plugin-react": "^7.8.2",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "husky": "^0.14.3",
+    "image-webpack-loader": "^4.2.0",
     "lint-staged": "^7.1.0",
     "node-sass": "^4.9.0",
     "offline-plugin": "^4.9.0",
