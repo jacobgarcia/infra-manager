@@ -29,7 +29,8 @@ import {
   VisualCounter,
   Reports,
   Sensors,
-  Inventory
+  Inventory,
+  NVR
 } from './'
 import { Navigator, VideoPlayer } from '../components'
 import { NetworkOperation } from '../lib'
@@ -289,6 +290,7 @@ class App extends Component {
             path="/streaming"
             render={() => <VideoPlayer {...videoJsOptions} />}
           />
+	  <Route path="/dvr" component={NVR} />
         </Switch>
       </div>
     )

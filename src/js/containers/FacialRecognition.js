@@ -213,7 +213,7 @@ class FacialRecognition extends Component {
                   <div
                     className="image-slider"
                     style={{
-                      backgroundImage: `url(http://192.168.100.6${
+                      backgroundImage: `url(http://192.168.0.217:8081${
                         state.selectedLog.photo
                       })`
                     }}

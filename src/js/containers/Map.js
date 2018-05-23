@@ -20,7 +20,7 @@ class MapContainer extends Component {
 
     this.state = {
       currentPosition: defaultPosition,
-      currentZoom: 3,
+      currentZoom: 5,
       shadow: null,
       element: null,
       elements: [],
@@ -173,7 +173,7 @@ class MapContainer extends Component {
       // Update state
       this.setState(prev => ({
         currentPosition: siteId ? element.position : shadow ? getAreaCenter(shadow) : prev.currentPosition,
-        currentZoom: siteId ? 13 : zoneId ? 7 : 5,
+        currentZoom: siteId ? 13 : zoneId ? 6 : 5,
         element,
         shadow,
         elements

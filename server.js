@@ -12,11 +12,13 @@ const app = express()
 
 const v1 = require(path.resolve('router/v1'))
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8081
 const watch = require('node-watch')
 
 app.use(bodyParser.urlencoded({ limit: '12mb' })) /* URL Encoding */
 app.use(bodyParser.json({ limit: '12mb' })) // JSON responses
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.json())
 app.use(helmet())
 app.use(cors()) /* Enable All CORS Requests */
 app.use(hpp())
@@ -41,7 +43,7 @@ function slackMessage(body) {
   })
 }
 
-app.post('/webhook', (req, res) => {
+app.post('/webhook-master', (req, res) => {
   slackMessage({
     text: '*Build started*'
   })

@@ -242,12 +242,12 @@ export function dataChart(chart) {
     const current = {
       name:
         now.getHours() - i > 11
-          ? now.getHours() - i + ':PM'
-          : now.getHours() - i + ':AM',
+          ? now.getHours() - i + 'PM'
+          : now.getHours() - i + 'AM',
       pv: chart
-        ? pvAtTime(
+        ? Math.ceil(pvAtTime(
             chart,
-            new Date(new Date().setHours(new Date().getHours() - i, 0, 0, 0))
+            new Date(new Date().setHours(new Date().getHours() - i, 0, 0, 0)))
           )
         : 100
     }
