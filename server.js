@@ -12,7 +12,7 @@ const app = express()
 
 const v1 = require(path.resolve('router/v1'))
 
-const PORT = process.env.PORT || 8081
+const PORT = process.env.PORT || 8080
 const watch = require('node-watch')
 
 app.use(bodyParser.urlencoded({ limit: '12mb' })) /* URL Encoding */

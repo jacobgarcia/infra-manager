@@ -82,35 +82,41 @@ class Dashboard extends Component {
     }
   }
   componentWillMount() {
-
     NetworkOperation.getAlarms().then(({ data }) => {
-        let ranking = {
-          zone:[],
-          value:[],
-          alarms:[],
+      const ranking = {
+        zone: [],
+        value: [],
+        alarms: []
+      }
+      const damaged = []
+      data.sites.forEach(site => {
+        // if alarms fill damaged sites
+        site.alarms.length ? damaged.push(site) : null
+        // fill array of lengths in alarms
+        ranking.alarms.push(site.alarms.length)
+        // two array [site] [count alarms site] and top to match
+        if (ranking.zone.indexOf(site.zone.name) != -1) {
+          ranking.value[ranking.zone.indexOf(site.zone.name)] +=
+            site.alarms.length
+        } else {
+          ranking.zone.push(site.zone.name)
+          ranking.value[ranking.zone.indexOf(site.zone.name)] =
+            site.alarms.length
         }
-        let damaged = []
-        data.sites.forEach(function(site){
-          //if alarms fill damaged sites
-          site.alarms.length ? damaged.push(site) : null
-          //fill array of lengths in alarms
-          ranking.alarms.push(site.alarms.length)
-          //two array [site] [count alarms site] and top to match
-          if(ranking.zone.indexOf(site.zone.name) != -1){
-            ranking.value[ranking.zone.indexOf(site.zone.name)] += site.alarms.length
-          }else{
-            ranking.zone.push(site.zone.name)
-            ranking.value[ranking.zone.indexOf(site.zone.name)] = site.alarms.length
-          }
-        })
+      })
 
-        this.setState({
-          worstZone: ranking.zone[ranking.value.indexOf(Math.max.apply(null,ranking.value))],
-          worstZoneValue: ranking.value[ranking.value.indexOf(Math.max.apply(null,ranking.value))],
-          sites: data.sites,
-          damaged: damaged
-        })
-
+      this.setState({
+        worstZone:
+          ranking.zone[
+            ranking.value.indexOf(Math.max.apply(null, ranking.value))
+          ],
+        worstZoneValue:
+          ranking.value[
+            ranking.value.indexOf(Math.max.apply(null, ranking.value))
+          ],
+        sites: data.sites,
+        damaged: damaged
+      })
     })
 
     NetworkOperation.getSensors().then(({ data }) => {
@@ -164,7 +170,6 @@ class Dashboard extends Component {
     })
 
     NetworkOperation.getHistory().then(({ data }) => {
-
       const ranking = []
       const history = []
       data.sites.map(site => {
@@ -182,8 +187,8 @@ class Dashboard extends Component {
         chart: history,
         worst: this.state.sites[ranking.indexOf(Math.max(...ranking))]
       })
-      //data.sites[ranking.indexOf(Math.max(...ranking))].history.length
-      //data.sites[ranking.indexOf(Math.max(...ranking))].key
+      // data.sites[ranking.indexOf(Math.max(...ranking))].history.length
+      // data.sites[ranking.indexOf(Math.max(...ranking))].key
     })
 
     // Get Visual Counter information
@@ -192,7 +197,7 @@ class Dashboard extends Component {
       const { chartCounter } = this.state
       data.counts.map((count, index) => {
         chartCounter[11].uv = 0
-	chartCounter[index].uv = count
+        chartCounter[index].uv = count
         this.setState({
           chartCounter
         })
@@ -230,8 +235,13 @@ class Dashboard extends Component {
                   detailView={
                     <div className="detail-view">
                       <h1>
-                        {this.state.sensors && this.state.sensors[2].value}<p>
-                          /{this.state.sensors && this.state.sensors[0].value+this.state.sensors[1].value+this.state.sensors[2].value} equipos dañados (<span>{this.state.bad}%</span>)
+                        {this.state.sensors && this.state.sensors[2].value}
+                        <p>
+                          /{this.state.sensors &&
+                            this.state.sensors[0].value +
+                              this.state.sensors[1].value +
+                              this.state.sensors[2].value}{' '}
+                          equipos dañados (<span>{this.state.bad}%</span>)
                         </p>
                       </h1>
                       <Table
@@ -336,9 +346,34 @@ class Dashboard extends Component {
                   <div className="info">
                     <div className="data">
                       <h1>
-                        {this.state.chartCounter.reduce((a, b) => ({ uv: parseInt(a.uv) + parseInt(b.uv) })).uv} personas <span className="delta up">{Math.ceil((this.state.chartCounter.reduce((a, b) => ({ uv: parseInt(a.uv) + parseInt(b.uv) })).uv)/(Math.ceil((this.state.chartCounter.reduce((a, b) => ({ uv: parseInt(a.uv) + parseInt(b.uv) })).uv)/12)))}%</span>
+                        {
+                          this.state.chartCounter.reduce((a, b) => ({
+                            uv: parseInt(a.uv) + parseInt(b.uv)
+                          })).uv
+                        }{' '}
+                        personas{' '}
+                        <span className="delta up">
+                          {Math.ceil(
+                            this.state.chartCounter.reduce((a, b) => ({
+                              uv: parseInt(a.uv) + parseInt(b.uv)
+                            })).uv /
+                              Math.ceil(
+                                this.state.chartCounter.reduce((a, b) => ({
+                                  uv: parseInt(a.uv) + parseInt(b.uv)
+                                })).uv / 12
+                              )
+                          )}%
+                        </span>
                       </h1>
-                      <p>Promedio: {Math.ceil((this.state.chartCounter.reduce((a, b) => ({ uv: parseInt(a.uv) + parseInt(b.uv) })).uv)/12)} personas por hora</p>
+                      <p>
+                        Promedio:{' '}
+                        {Math.ceil(
+                          this.state.chartCounter.reduce((a, b) => ({
+                            uv: parseInt(a.uv) + parseInt(b.uv)
+                          })).uv / 12
+                        )}{' '}
+                        personas por hora
+                      </p>
                     </div>
                     <ul className="leyend">
                       <li className="car">Personas</li>
@@ -438,10 +473,16 @@ class Dashboard extends Component {
                 </Card>
                 <div className="horizontal-container">
                   <Card title="Zona de mas alertas" className="horizontal">
-                    <h1>{this.state.worstZoneValue ? this.state.worstZone : 'Ninguna'}</h1>
+                    <h1>
+                      {this.state.worstZoneValue
+                        ? this.state.worstZone
+                        : 'Ninguna'}
+                    </h1>
 
                     <div className="card-footer">
-                      <p className="red">{this.state.worstZoneValue} alertas </p>
+                      <p className="red">
+                        {this.state.worstZoneValue} alertas{' '}
+                      </p>
                     </div>
                   </Card>
                   <Card title="Sitio de mas alertas" className="horizontal">
