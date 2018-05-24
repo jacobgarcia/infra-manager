@@ -34,7 +34,7 @@ app.use('/static', express.static(path.resolve('static')))
 app.use('/v1', v1)
 app.use(webhook)
 
-app.use(express.static('dist'))
+app.use('/', express.static('dist'))
 
 // Check if we're in development mode to use webpackDevServer middleware
 if (MODE === 'development') {
