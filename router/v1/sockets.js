@@ -2,7 +2,7 @@
 const winston = require('winston')
 const jwt = require('jsonwebtoken')
 const path = require('path')
-const config = require(path.resolve('config/config'))
+const config = require(path.resolve('config'))
 const Site = require(path.resolve('models/Site'))
 const User = require(path.resolve('models/User'))
 

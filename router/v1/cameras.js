@@ -6,7 +6,6 @@ const router = new express.Router()
 
 // const Site = require(path.resolve('models/Site'))
 // const Zone = require(path.resolve('models/Zone'))
-const mongoose = require('mongoose')
 const base64Img = require('base64-img')
 const shortid = require('shortid')
 const Battery = require(path.resolve('models/Battery'))

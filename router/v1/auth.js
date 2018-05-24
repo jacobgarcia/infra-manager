@@ -11,7 +11,7 @@ const nev = require('email-verification')(mongoose)
 const User = require(path.resolve('models/User'))
 const Guest = require(path.resolve('models/Guest'))
 
-const config = require(path.resolve('config/config'))
+const config = require(path.resolve('config'))
 
 const Stream = require(path.resolve('models/Stream'))
 
