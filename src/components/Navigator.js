@@ -150,6 +150,11 @@ Navigator.defaultProps = {
 	title: 'Contador de Personas ',
 	name: 'visual-counter',
 	_id: '05'
+    },
+    {
+	title: 'DVR',
+	name: 'dvr',
+	_id: '06'
     }
   ]
 }

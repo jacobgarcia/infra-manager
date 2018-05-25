@@ -145,6 +145,10 @@ class NetworkOperation {
   static getAlarms() {
     return axios.get(`${baseUrl}/sites/alarms`)
   }
+
+  static getCounter() {
+    return axios.get(`${baseUrl}/visualcounter/count`)
+  }
 }
 
 export default NetworkOperation

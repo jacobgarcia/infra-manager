@@ -45,27 +45,40 @@ const data2 = [
   { name: '4:00 PM', uv: 5, pv: 1143, tv: 583 },
   { name: '5:00 PM', uv: 12, pv: 1143, tv: 583 },
   { name: '6:00 PM', uv: 31, pv: 1042, tv: 43 },
-  { name: '7:00 PM', uv: 13, pv: 1042, tv: 51 }
+  { name: '7:00 PM', uv: 0, pv: 1042, tv: 51 }
 ]
 
 class Dashboard extends Component {
-  static propTypes = {
-    facialReports: PropTypes.object,
-    perimeterReports: PropTypes.array
-  }
+  constructor(props) {
+    super(props)
 
-  state = {
-    selected: 0,
-    logs: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-    alerts: [],
-    selectedElementIndex: [null, null],
-    from: new Date(),
-    to: new Date(),
-    detail: null,
-    worstZone: '',
-    worstZoneValue: 0
+    this.state = {
+      selected: 0,
+      logs: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      alerts: [],
+      selectedElementIndex: [null, null],
+      from: new Date(),
+      to: new Date(),
+      detail: null,
+      worstZone: '',
+      worstZoneValue: 0,
+      chartCounter: [
+        { name: '7:00 AM', uv: 9, pv: 1042, tv: 92 },
+        { name: '8:00 AM', uv: 31, pv: 1042, tv: 34 },
+        { name: '9:00 AM', uv: 26, pv: 1043, tv: 93 },
+        { name: '10:00 AM', uv: 28, pv: 940, tv: 40 },
+        { name: '11:00 AM', uv: 17, pv: 1241, tv: 541 },
+        { name: '12:00 PM', uv: 7, pv: 1043, tv: 53 },
+        { name: '1:00 PM', uv: 5, pv: 1204, tv: 14 },
+        { name: '2:00 PM', uv: 6, pv: 1143, tv: 443 },
+        { name: '3:00 PM', uv: 4, pv: 1443, tv: 263 },
+        { name: '4:00 PM', uv: 5, pv: 1143, tv: 583 },
+        { name: '5:00 PM', uv: 12, pv: 1143, tv: 583 },
+        { name: '6:00 PM', uv: 31, pv: 1042, tv: 43 },
+        { name: '7:00 PM', uv: 0, pv: 1042, tv: 51 }
+      ]
+    }
   }
-
   componentWillMount() {
     NetworkOperation.getAlarms().then(({ data }) => {
       const ranking = {
@@ -179,7 +192,18 @@ class Dashboard extends Component {
       // data.sites[ranking.indexOf(Math.max(...ranking))].key
     })
 
-    // Get most alerted zone
+    // Get Visual Counter information
+    NetworkOperation.getCounter().then(({ data }) => {
+      console.log('Counter', data)
+      const { chartCounter } = this.state
+      data.counts.map((count, index) => {
+        chartCounter[11].uv = 0
+        chartCounter[index].uv = count
+        this.setState({
+          chartCounter
+        })
+      })
+    })
   }
   render() {
     const {
@@ -326,9 +350,34 @@ class Dashboard extends Component {
                   <div className="info">
                     <div className="data">
                       <h1>
-                        192 <span className="delta up">15%</span>
+                        {
+                          this.state.chartCounter.reduce((a, b) => ({
+                            uv: parseInt(a.uv) + parseInt(b.uv)
+                          })).uv
+                        }{' '}
+                        personas{' '}
+                        <span className="delta up">
+                          {Math.ceil(
+                            this.state.chartCounter.reduce((a, b) => ({
+                              uv: parseInt(a.uv) + parseInt(b.uv)
+                            })).uv /
+                              Math.ceil(
+                                this.state.chartCounter.reduce((a, b) => ({
+                                  uv: parseInt(a.uv) + parseInt(b.uv)
+                                })).uv / 12
+                              )
+                          )}%
+                        </span>
                       </h1>
-                      <p>13 personas por hora</p>
+                      <p>
+                        Promedio:{' '}
+                        {Math.ceil(
+                          this.state.chartCounter.reduce((a, b) => ({
+                            uv: parseInt(a.uv) + parseInt(b.uv)
+                          })).uv / 12
+                        )}{' '}
+                        personas por hora
+                      </p>
                     </div>
                     <ul className="leyend">
                       <li className="car">Personas</li>
@@ -336,7 +385,7 @@ class Dashboard extends Component {
                   </div>
                   <ResponsiveContainer width="100%" height={260}>
                     <ComposedChart
-                      data={data2}
+                      data={this.state.chartCounter}
                       syncId="dashboard"
                       margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                       <XAxis

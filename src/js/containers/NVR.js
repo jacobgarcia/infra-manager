@@ -3,8 +3,12 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
+import ReactPlayer from 'react-player'
+import * as WebView from 'react-electron-web-view';
+import {} from '../actions'
+import { Table, RiskBar } from '../components'
 
-import { NetworkOperation } from 'lib'
+import { NetworkOperation } from '../lib'
 
 class VideoSurveillance extends Component {
   constructor(props) {
@@ -22,10 +26,7 @@ class VideoSurveillance extends Component {
       to: new Date(),
       playingVideo: true,
       isPlaying: false,
-      iframe: {
-        __html:
-          '<iframe src="https://demo.connus.mx:8081" width="540" height="450"></iframe>'
-      }
+      iframe : { __html : '<iframe src="http://192.168.0.102" width="540" height="450"></iframe>' }
     }
 
     this.onDayClick = this.onDayClick.bind(this)
@@ -62,7 +63,7 @@ class VideoSurveillance extends Component {
     ).then(({ data }) => {
       this.setState({
         isLoading: true,
-        isPlaying: true
+        isPlaying: true,
       })
       setInterval(
         () => this.setState({ room: data.room, isLoading: false }),
@@ -81,6 +82,7 @@ class VideoSurveillance extends Component {
     console.warn('Component had error', error)
   }
 
+
   render() {
     const { state, props } = this
     return (
@@ -90,7 +92,7 @@ class VideoSurveillance extends Component {
         </Helmet>
         <div className="content vertical">
           <h2>Video Vigilancia</h2>
-          <div dangerouslySetInnerHTML={state.iframe} />
+          <div dangerouslySetInnerHTML = {state.iframe} />
         </div>
       </div>
     )
@@ -100,6 +102,7 @@ class VideoSurveillance extends Component {
 VideoSurveillance.propTypes = {
   cameraReports: PropTypes.array
 }
+
 
 function mapStateToProps({ cameraReports }) {
   return {

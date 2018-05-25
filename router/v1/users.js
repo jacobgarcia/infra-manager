@@ -218,7 +218,7 @@ router.route('/users/recognize').post((req, res) => {
           site: user.site,
           access: event === 'login' ? 'Inicio de sesión' : 'Cierre de sesión',
           pin: data.pin,
-          photo: process.env.PWD + '/' + filename
+          photo: '/' + filename
         }).save((error, access) => {
           if (error) {
             winston.error(error)
@@ -487,8 +487,8 @@ router.route('/users/update').put((req, res) => {
 })
 
 router.route('/users/photo').put((req, res) => {
-  // console.log(req.body)
-  console.log(req.headers)
+  console.log(req.body)
+  // console.log(req.headers)
   const { pin, photo } = req.body
   if (!photo) return res
       .status(400)

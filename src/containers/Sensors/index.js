@@ -46,6 +46,7 @@ class Users extends Component {
         apertureStatus: itemStatus('cs', data.sensors, 'upscale', 80, 20),
         vibrationStatus: itemStatus('vs', data.sensors, 'upscale', 80, 20),
         temperatureStatus: itemStatus('ts', data.sensors, 'between', 50, 0),
+        ambienceStatus: itemStatus('as', data.sensors, 'between', 40, 0),
         energyStatus: itemStatus('cu', data.sensors, 'between', 130, 100),
         battery: parseInt(itemAverage('bs', data.sensors), 10),
         fuel: parseInt(itemAverage('fs', data.sensors), 10)
@@ -72,6 +73,7 @@ class Users extends Component {
           apertureStatus: itemStatus('cs', data.sensors, 'upscale', 80, 20),
           vibrationStatus: itemStatus('vs', data.sensors, 'upscale', 80, 20),
           temperatureStatus: itemStatus('ts', data.sensors, 'between', 50, 0),
+          ambienceStatus: itemStatus('as', data.sensors, 'between', 40, 0),
           energyStatus: itemStatus('cu', data.sensors, 'between', 130, 100),
           battery: parseInt(itemAverage('bs', data.sensors), 10),
           fuel: parseInt(itemAverage('fs', data.sensors), 10)
@@ -95,7 +97,9 @@ class Users extends Component {
           <div className="overall-container">
             <div className="horizontal-container">
               {this.state.temperature ? (
-                <Card title="Temperatura" className={`graph-container`}>
+                <Card
+                  title="Temperatura del procesador"
+                  className={`graph-container`}>
                   <div className="graph">
                     <PieChart width={160} height={160}>
                       <Pie
@@ -126,6 +130,46 @@ class Users extends Component {
                       {temperatureStatus &&
                         (temperatureStatus[2].value &&
                           temperatureStatus[2].value)}{' '}
+                      sitios
+                    </p>
+                  </div>
+                </Card>
+              ) : null}
+
+              {this.state.ambience ? (
+                <Card
+                  title="Temperatura Ambiente"
+                  className={`graph-container`}>
+                  <div className="graph">
+                    <PieChart width={160} height={160}>
+                      <Pie
+                        animationBegin={0}
+                        dataKey="value"
+                        data={ambienceStatus}
+                        cx={75}
+                        cy={75}
+                        innerRadius={55}
+                        outerRadius={75}
+                        strokeWidth={0}
+                        label>
+                        {data.map(({ name }, index) => (
+                          <Cell key={index} fill={getColor(name)} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip
+                        isAnimationActive={false}
+                        content={Tooltip}
+                      />
+                    </PieChart>
+                    <h1>{this.state.ambience && this.state.ambience}</h1>
+                  </div>
+                  <div className="center">
+                    {ambienceStatus &&
+                      (!ambienceStatus[2].value && 'Alertados')}
+                    <p className="border button" onClick={this.onSites}>
+                      {ambienceStatus &&
+                        (ambienceStatus[2].value &&
+                          ambienceStatus[2].value)}{' '}
                       sitios
                     </p>
                   </div>
@@ -233,26 +277,6 @@ class Users extends Component {
                   </div>
                 </Card>
               ) : null}
-              {this.state.energy || this.state.energy === 0 ? (
-                <Card title="Nivel de Humedad">
-                  <div>
-                    <BatteryChart
-                      energy={this.state.battery}
-                      height={160}
-                      width={110}
-                    />
-                  </div>
-                  <div className="center">
-                    <h3>{this.state.battery}% promedio</h3>
-                    {this.state.battery &&
-                      (!this.state.battery && 'Ningún sitio dañado')}
-                    <p className="border button" onClick={this.onSites}>
-                      {/* this.state.battery && (this.state.battery) */} Sitios
-                    </p>
-                  </div>
-                </Card>
-              ) : null}
-
               {this.state.fuel || this.state.fuel === 0 ? (
                 <Card title="Nivel de Combustible">
                   <div>
