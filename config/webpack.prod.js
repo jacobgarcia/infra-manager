@@ -1,20 +1,21 @@
 /* eslint-env node */
-const merge = require('webpack-merge')
+const webpack = require('webpack')
 const path = require('path')
-const common = require(path.resolve('config/webpack.common.js'))
+const merge = require('webpack-merge')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
-const webpack = require('webpack')
-const WorkboxPlugin = require('workbox-webpack-plugin')
+const { GenerateSW } = require('workbox-webpack-plugin')
 const WebpackPwaManifest = require('webpack-pwa-manifest')
+
+const config = require(path.resolve('config'))
+const common = require(path.resolve('config/webpack.common.js'))
 
 module.exports = merge(common, {
   mode: 'production',
-  devtool: 'source-map',
   output: {
     path: path.resolve('dist'),
     filename: '[name]-[chunkhash].min.js',
-    publicPath: '/dist/'
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -22,7 +23,11 @@ module.exports = merge(common, {
         test: /(\.css$|\.scss)/,
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use: ['css-loader', 'sass-loader']
+          use: [
+            'css-loader?minimize',
+            'resolve-url-loader',
+            'sass-loader?sourceMap'
+          ]
         })
       }
     ]
@@ -32,33 +37,36 @@ module.exports = merge(common, {
       'process.env.NODE_ENV': JSON.stringify('production')
     }),
     new UglifyJSPlugin({
-      sourceMap: true
+      sourceMap: false
     }),
-    new WebpackPwaManifest({
-      name: 'Connus',
-      short_name: 'Connus',
-      description: 'Connus',
-      background_color: '#ffffff',
-      theme_color: '#ffffff',
-      start_url: '.',
-      icons: [
-        {
-          src: path.resolve('src/assets/app-icon.png'),
-          sizes: [96, 128, 192, 256, 384, 512] // multiple sizes
-        },
-        {
-          src: path.resolve('src/assets/app-large-icon.png'),
-          size: '1024x1024' // you can also use the specifications pattern
-        }
-      ]
+    new ExtractTextPlugin({
+      filename: 'master-[chunkhash].min.css',
+      allChunks: true
     }),
-    new ExtractTextPlugin('master.min.css'),
-    new WorkboxPlugin({
-      globDirectory: 'dist',
-      globPatterns: ['**/*.{html,js,css}'],
-      swDest: path.join('dist', 'sw.js'),
+    new GenerateSW({
+      swDest: 'sw.js',
       clientsClaim: true,
       skipWaiting: true
     }),
+    new WebpackPwaManifest({
+      name: config.project.name,
+      short_name: config.project.shortName,
+      description: config.project.description,
+      background_color: config.project.backgroundColor,
+      theme_color: config.project.themeColor,
+      start_url: '/',
+      icons: [
+        {
+          src: path.resolve('src/assets/app-icon.png'),
+          sizes: [96, 128, 192, 256, 384, 512], // multiple sizes
+          destination: 'assets'
+        },
+        {
+          src: path.resolve('src/assets/app-large-icon.png'),
+          size: '1024x1024', // you can also use the specifications pattern
+          destination: 'assets'
+        }
+      ]
+    })
   ]
 })

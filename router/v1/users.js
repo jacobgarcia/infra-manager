@@ -7,7 +7,6 @@ const multer = require('multer')
 const mime = require('mime')
 const mongoose = require('mongoose')
 const nev = require('email-verification')(mongoose)
-const jwt = require('jsonwebtoken')
 const base64Img = require('base64-img')
 const shortid = require('shortid')
 const PythonShell = require('python-shell')
@@ -17,17 +16,13 @@ const imagemin = require('imagemin')
 const imageminMozjpeg = require('imagemin-mozjpeg')
 const imageminPngquant = require('imagemin-pngquant')
 
-const Guest = require(path.resolve('models/Guest'))
+// const Guest = require(path.resolve('models/Guest'))
 const Site = require(path.resolve('models/Site'))
 const User = require(path.resolve('models/User'))
 const FrmUser = require(path.resolve('models/FrmUser'))
 const Access = require(path.resolve('models/Access'))
 
 const Admin = require(path.resolve('models/Admin'))
-
-const config = require(path.resolve('config/config'))
-
-mongoose.connect(config.database)
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -223,7 +218,7 @@ router.route('/users/recognize').post((req, res) => {
           site: user.site,
           access: event === 'login' ? 'Inicio de sesión' : 'Cierre de sesión',
           pin: data.pin,
-          photo: process.env.PWD + '/' + filename
+          photo: '/' + filename
         }).save((error, access) => {
           if (error) {
             winston.error(error)
@@ -492,8 +487,8 @@ router.route('/users/update').put((req, res) => {
 })
 
 router.route('/users/photo').put((req, res) => {
-  // console.log(req.body)
-  console.log(req.headers)
+  console.log(req.body)
+  // console.log(req.headers)
   const { pin, photo } = req.body
   if (!photo) return res
       .status(400)

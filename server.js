@@ -1,82 +1,43 @@
 /* eslint-env node */
 const express = require('express')
 const path = require('path')
-const helmet = require('helmet') // Basic headers protection
+const helmet = require('helmet')
 const bodyParser = require('body-parser')
-const winston = require('winston') // Logger
+const winston = require('winston')
 const hpp = require('hpp')
-const request = require('request')
 const cors = require('cors')
-const { exec } = require('child_process')
 const app = express()
+const mongoose = require('mongoose')
 
+const { databaseUri, project: { name } } = require(path.resolve('config'))
+const webhook = require(path.resolve('lib/webhook'))
 const v1 = require(path.resolve('router/v1'))
 
-const PORT = process.env.PORT || 8080
-const watch = require('node-watch')
+const { PORT = 8080, HOST = '0.0.0.0', NODE_ENV: MODE } = process.env
 
-app.use(bodyParser.urlencoded({ limit: '12mb' })) /* URL Encoding */
-app.use(bodyParser.json({ limit: '12mb' })) // JSON responses
+mongoose
+  .connect(databaseUri)
+  .then(() => {
+    winston.info('Connected to DB')
+  })
+  .catch(() => {
+    winston.error('\n|\n|  Could not connect to DB\n|')
+  })
+
+app.use(bodyParser.urlencoded({ limit: '12mb', extended: true }))
+app.use(bodyParser.json({ limit: '12mb' }))
 app.use(helmet())
-app.use(cors()) /* Enable All CORS Requests */
+app.use(cors())
 app.use(hpp())
 
-// Images and static assets
 app.use('/static', express.static(path.resolve('static')))
-
-// TODO add API
-// Resolve API v1
 app.use('/v1', v1)
+app.use(webhook)
 
-function slackMessage(body) {
-  request({
-    url:
-      'https://hooks.slack.com/services/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',
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
-    json: true,
-    body
-  })
-}
+app.use('/', express.static('dist'))
 
-app.post('/webhook-master', (req, res) => {
-  slackMessage({
-    text: '*Build started*'
-  })
-
-  exec('git pull; yarn; yarn build:prod', (error, stdout, stderr) => {
-    if (error) {
-      slackMessage({
-        text: `*Build errored*\nOutput: ${error}`
-      })
-
-      return
-    }
-
-    if (stdout) {
-      exec('yarn reload:prod')
-      slackMessage({
-        text: `*Build succeed!*\nYou're awersome`
-      })
-    }
-
-    if (stderr) {
-      slackMessage({
-        text: `*Errors and warnings:*\n${stderr}`
-      })
-    }
-  })
-
-  res.status(200).json({ message: 'Webhook recieved' })
-})
-
-// Dist bundles
-app.use('/dist', express.static('dist'))
-
-// If in development use webpackDevServer
-if (process.env.NODE_ENV === 'development') {
+// Check if we're in development mode to use webpackDevServer middleware
+if (MODE === 'development') {
   app.use(require(path.resolve('config/webpackDevServer')))
 }
 
@@ -84,8 +45,10 @@ if (process.env.NODE_ENV === 'development') {
 app.get('*', (req, res) => res.sendFile(path.resolve('dist/index.html')))
 
 // Start server
-const server = app.listen(PORT, () =>
-  winston.info(`Connus server is listening on port: ${PORT}!`)
+const server = app.listen(PORT, HOST, () =>
+  winston.info(
+    `${name} server is listening\n  Port: ${PORT}\n  Host: ${HOST}\n  Mode: ${MODE}`
+  )
 )
 
 const io = require('socket.io').listen(server)
@@ -99,9 +62,9 @@ io.on('connection', socket => {
     io.to('web-platform').emit('refresh')
   })
 
-  socket.on('disconnect', companyId => {
+  socket.on('disconnect', () => {
     winston.info('Disconnected client')
-    // Emit a refresh to web platform
+    // TODO Emit a refresh to web platform
     io.to('web-platform').emit('refresh')
   })
 })
@@ -121,21 +84,4 @@ const config = {
     port: 8000,
     allow_origin: '*'
   }
-}
-
-function videoConverter(name) {
-  var file = name.split('/')
-  var old = file[3]
-  var rename = old.split('.flv')
-  exec(
-    'avconv -i ' +
-      name +
-      ' -codec copy ./static/videos/mp4/' +
-      rename[0] +
-      '.mp4',
-    error => {
-      if (error !== null) winston.error('exec error: ' + error)
-    }
-  )
-  isTimeout = false
 }
