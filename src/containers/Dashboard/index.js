@@ -80,97 +80,118 @@ class Dashboard extends Component {
     }
   }
   componentWillMount() {
-    NetworkOperation.getAlarms().then(({ data }) => {
-      const ranking = {
-        zone: [],
-        value: [],
-        alarms: []
+    NetworkOperation.getHistory().then(({ data }) => {
+
+      // == HISTORY section fill ==
+      let history = []
+      let siteHistory = {}
+
+      data.sites.map(site => {
+        site.history.map(currentHistory =>{
+
+          siteHistory = {
+            timestamp: currentHistory.timestamp ? currentHistory.timestamp :new Date('2018-04-03T11:37:00'),
+            event: 'Sensor de apertura activado',
+            zone: site.zone.name ? site.zone.name :'Centro',
+            site: site.key ? site.key : 'MEXATZ0973',
+            risk: Math.round(Math.random()*3),
+            status: 'Alerta generada'
+          }
+          history.push(siteHistory)
+        })
+
+        this.setState({
+          sitesHistory: history
+        })
+      })
+
+      //most damaged zone/site seccion
+      let ranking = {
+        zone:[],
+        value:[],
+        alarms:[],
       }
-      const damaged = []
-      data.sites.forEach(site => {
-        // if alarms fill damaged sites
-        site.alarms.length ? damaged.push(site) : null
-        // fill array of lengths in alarms
-        ranking.alarms.push(site.alarms.length)
-        // two array [site] [count alarms site] and top to match
-        if (ranking.zone.indexOf(site.zone.name) != -1) {
-          ranking.value[ranking.zone.indexOf(site.zone.name)] +=
-            site.alarms.length
-        } else {
+      let damaged = []
+      data.sites.forEach(function(site){
+        //if alarms fill damaged sites
+        site.history.length ? damaged.push(site) : null
+        //fill array of lengths in alarms
+        ranking.alarms.push(site.history.length)
+        //two array [site] [count alarms site] and top to match
+        if(ranking.zone.includes(site.zone.name)){
+          ranking.value[ranking.zone.indexOf(site.zone.name)] += site.history.length
+        }else{
           ranking.zone.push(site.zone.name)
-          ranking.value[ranking.zone.indexOf(site.zone.name)] =
-            site.alarms.length
+          ranking.value[ranking.zone.indexOf(site.zone.name)] = site.history.length
         }
+
       })
 
       this.setState({
-        worstZone:
-          ranking.zone[
-            ranking.value.indexOf(Math.max.apply(null, ranking.value))
-          ],
-        worstZoneValue:
-          ranking.value[
-            ranking.value.indexOf(Math.max.apply(null, ranking.value))
-          ],
+        worstZone: ranking.zone[ranking.value.indexOf(Math.max.apply(null,ranking.value))],
+        //there is a false value
+        worstZoneValue: ranking.value[ranking.value.indexOf(Math.max.apply(null,ranking.value))],
         sites: data.sites,
         damaged: damaged
       })
     })
 
-    NetworkOperation.getSensors().then(({ data }) => {
-      const csStatus = itemStatus('cs', data.sensors, 'upscale', 80, 20)
-      const vsStatus = itemStatus('vs', data.sensors, 'upscale', 80, 20)
-      const tempData = [
-        {
-          name: 'workings',
-          value:
-            csStatus[0].value < vsStatus[0].value
-              ? csStatus[0].value
-              : vsStatus[0].value
-        },
-        {
-          name: 'alerts',
-          value:
-            csStatus[1].value < vsStatus[1].value
-              ? vsStatus[1].value
-              : csStatus[1].value
-        },
-        {
-          name: 'damaged',
-          value:
-            csStatus[2].value < vsStatus[2].value
-              ? vsStatus[2].value
-              : csStatus[2].value
-        }
-      ]
-      const okPercent = parseInt(
-        tempData[0].value /
-          (tempData[0].value + tempData[1].value + tempData[2].value) *
-          100,
-        10
-      )
-      const warPercent = parseInt(
-        tempData[1].value /
-          (tempData[0].value + tempData[1].value + tempData[2].value) *
-          100,
-        10
-      )
-      const badPercent = parseInt(
-        tempData[2].value /
-          (tempData[0].value + tempData[1].value + tempData[2].value) *
-          100,
-        10
-      )
+    NetworkOperation.getAvailableSites().then(currentSites => {
+      NetworkOperation.getSites().then(allSites => {
+          // === CIRCULAR chart percentaje ===
+          const connected = allSites.data.sites.filter(site => (currentSites.data.connected_sites.includes(site.key) && site.alarms.length === 0))
+          const noConnected = allSites.data.sites.filter(site => (currentSites.data.connected_sites.includes(site.key) ? false :true ))
+          const alerted = allSites.data.sites.filter(site => site.alarms.length > 0)
+          const tempData = [
+            {
+              name: 'workings',
+              value: connected.length
+            },
+            {
+              name: 'alerts',
+              value: alerted.length
+            },
+            {
+              name: 'damaged',
+              value: noConnected.length
+            }
+          ]
+          this.setState({
+            ok: parseInt(connected.length/allSites.data.sites.length*100),
+            bad: parseInt(noConnected.length/allSites.data.sites.length*100),
+            war: parseInt(alerted.length/allSites.data.sites.length*100),
+            sensors: tempData
+          })
 
-      this.setState({
-        sensors: tempData,
-        ok: okPercent,
-        war: warPercent,
-        bad: badPercent
-      })
+          // == ALARMS section fill ==
+
+          let allAlarms = []
+          let sitesAlarms = {}
+          allSites.data.sites.map(site => {
+            site.alarms.map(currentAlarm =>{
+              sitesAlarms = {
+                timestamp: currentAlarm.timestamp ? currentAlarm.timestamp :new Date('2018-04-03T11:37:00'),
+                event: 'Sensor de apertura activado',
+                zone: site.zone.name ? site.zone.name :'Centro',
+                site: site.key ? site.key : 'MEXATZ0973',
+                risk: Math.round(Math.random()*3),
+                status: 'Alerta generada'
+              }
+              allAlarms.push(sitesAlarms)
+            })
+            this.setState({
+              allAlarms: allAlarms
+            })
+          })
+          console.log(allAlarms);
+        })
+        //alerts section info
     })
 
     NetworkOperation.getHistory().then(({ data }) => {
+
+      // === 'Media del servicio' chart ===
+
       const ranking = []
       const history = []
       data.sites.map(site => {
@@ -181,15 +202,10 @@ class Dashboard extends Component {
           history.push(new Date(log.timestamp))
         })
       })
-      history.map(time => {
-        const current = new Date(time.timestamp)
-      })
       this.setState({
         chart: history,
-        worst: this.state.sites[ranking.indexOf(Math.max(...ranking))]
+        worst: data.sites[ranking.indexOf(Math.max(...ranking))]
       })
-      // data.sites[ranking.indexOf(Math.max(...ranking))].history.length
-      // data.sites[ranking.indexOf(Math.max(...ranking))].key
     })
 
     // Get Visual Counter information
@@ -219,7 +235,7 @@ class Dashboard extends Component {
 
     // TODO fix
     const reports = []
-
+    //console.log(perimeterReports);
     return (
       <div className="dashboard app-content small-padding">
         <div className="content">
@@ -232,119 +248,128 @@ class Dashboard extends Component {
                 state.detail !== null ? 'minified' : ''
               }`}>
               <div className="vertical-container">
-                <Card
-                  title="Rendimiento general"
-                  className={`graph-container`}
-                  full={state.detail === 'performance'}
-                  detailView={
-                    <div className="detail-view">
-                      <h1>
-                        {this.state.sensors && this.state.sensors[2].value}
-                        <p>
-                          /{this.state.sensors &&
-                            this.state.sensors[0].value +
-                              this.state.sensors[1].value +
-                              this.state.sensors[2].value}{' '}
-                          equipos dañados (<span>{this.state.bad}%</span>)
-                        </p>
-                      </h1>
-                      <Table
-                        selectedElementIndex={state.selectedElementIndex}
-                        element={(item, index, sectionIndex) => (
-                          <div
-                            className={`table-item ${
-                              state.selectedElementIndex[0] === index &&
-                              state.selectedElementIndex[1] === sectionIndex
-                                ? 'selected'
-                                : ''
-                            }`}
-                            key={index}
-                            onClick={() =>
-                              this.onLogSelect(item, index, sectionIndex)
-                            }>
-                            {item.timestamp && (
-                              <div>
-                                {item.timestamp.toLocaleDateString('es-MX')}{' '}
-                                {item.timestamp.toLocaleTimeString('es-MX')}
-                              </div>
-                            )}
-                            <div className="medium bold">{item.event}</div>
-                            <div className="medium">{item.status}</div>
+              <Card
+                title="Rendimiento general"
+                className={`graph-container`}
+                full={state.detail === 'warning' || state.detail === 'damaged'}
+                detailView={
+                  <div className="detail-view">
+                    <h1>
+                      {this.state.sensors && this.state.sensors[2].value}<p>
+                        /{this.state.sensors && this.state.sensors[0].value+this.state.sensors[1].value+this.state.sensors[2].value} equipos dañados (<span>{this.state.bad}%</span>)
+                      </p>
+                    </h1>
+                    <Table
+                    multipleTable
+                    actionsContainer={
+                      <div>
+                        <p className="button action disabled">Filtrar</p>
+                      </div>
+                    }
+                      selectedElementIndex={state.selectedElementIndex}
+                      element={(item, index, sectionIndex) => (
+                        <div
+                          className={`table-item ${
+                            state.selectedElementIndex[0] === index &&
+                            state.selectedElementIndex[1] === sectionIndex
+                              ? 'selected'
+                              : ''
+                          }`}
+                          key={index}
+                          onClick={() =>
+                            this.onLogSelect(item, index, sectionIndex)
+                          }>
+                          {item.timestamp && (
                             <div>
-                              <RiskBar risk={item.risk} />
+                              {item.timestamp/*.toLocaleDateString('es-MX') ? item.timestamp.toLocaleDateString('es-MX'): item.timestamp*/ }{' '}
                             </div>
-                            <div>{item.site}</div>
-                            <div>{item.risk}</div>
+                          )}
+                          <div className="medium bold">{item.event}</div>
+                          <div className="medium">{item.status}</div>
+                          <div>
+                            <RiskBar risk={item.risk} />
                           </div>
-                        )}
-                        elements={[
-                          { title: 'Dañados', elements: [] },
-                          { title: 'Alertados', elements: [] }
-                        ]}
-                        titles={[
-                          { title: 'Tiempo' },
-                          { title: 'Sitio', className: 'medium' },
-                          { title: 'Zona', className: 'medium' },
-                          { title: 'Suceso' },
-                          { title: 'Estatus' },
-                          { title: 'Riesgo' }
-                        ]}
-                      />
-                    </div>
-                  }
-                  detailActions={
-                    <p onClick={() => this.setState({ detail: null })}>
-                      Cerrar
-                    </p>
-                  }>
-                  <div className="graph">
-                    <PieChart width={200} height={200}>
-                      <Pie
-                        animationBegin={0}
-                        dataKey="value"
-                        data={this.state.sensors}
-                        cx={95}
-                        cy={95}
-                        innerRadius={60}
-                        outerRadius={95}
-                        strokeWidth={0}
-                        label>
-                        {data.map(({ name }, index) => (
-                          <Cell key={index} fill={getColor(name)} />
-                        ))}
-                      </Pie>
-                      <RechartsTooltip
-                        isAnimationActive={false}
-                        content={Tooltip}
-                      />
-                    </PieChart>
-                    <h1>{this.state.ok}%</h1>
+                          <div>{item.site}</div>
+                          <div>{item.risk}</div>
+                        </div>
+                      )}
+                      elements={[
+                        {
+                          title: 'Dañados',
+                          elements: this.state.sitesHistory && this.state.sitesHistory.length > 0 ? this.state.sitesHistory.filter(history => history.risk > 2) : null
+                        },
+                        {
+                          title: 'Alertados',
+                          elements: this.state.sitesHistory && this.state.sitesHistory.length > 0 ? this.state.sitesHistory.filter(history => history.risk < 3) : null
+                        }
+                      ]}
+                      titles={[
+                        { title: 'Tiempo' },
+                        { title: 'Sitio', className: 'medium' },
+                        { title: 'Estatus' },
+                        { title: 'Zona', className: 'medium' },
+                        { title: 'Riesgo' },
+                        { title: 'Suceso' }
+
+                      ]}
+
+                    />
+
                   </div>
-                  <div>
-                    <h3>Equipos funcionando correctamente</h3>
+                }
+                detailActions={
+                  <p onClick={() => this.setState({ detail: null })}>
+                    Cerrar
+                  </p>
+                }>
+                <div className="graph">
+                  <PieChart width={200} height={200}>
+                    <Pie
+                      animationBegin={0}
+                      dataKey="value"
+                      data={this.state.sensors}
+                      cx={95}
+                      cy={95}
+                      innerRadius={60}
+                      outerRadius={95}
+                      strokeWidth={0}
+                      label>
+                      {data.map(({ name }, index) => (
+                        <Cell key={index} fill={getColor(name)} />
+                      ))}
+                    </Pie>
+                    <RechartsTooltip
+                      isAnimationActive={false}
+                      content={Tooltip}
+                    />
+                  </PieChart>
+                  <h1>{this.state.ok}%</h1>
+                </div>
+                <div>
+                  <h3>Equipos funcionando correctamente</h3>
+                  <p>
+                    {this.state.sensors && this.state.sensors[0].value} sitios
+                  </p>
+                  <div className="stats">
                     <p>
-                      {this.state.sensors && this.state.sensors[0].value} sitios
+                      <span>{this.state.ok}%</span> funcionando
                     </p>
-                    <div className="stats">
-                      <p>
-                        <span>{this.state.ok}%</span> funcionando
-                      </p>
-                      <p
-                        className="border button warning"
-                        onClick={() =>
-                          this.setState({ detail: 'performance' })
-                        }>
-                        <span>{this.state.war}%</span> alertado
-                      </p>
-                      <p
-                        className="border button error"
-                        onClick={() =>
-                          this.setState({ detail: 'performance' })
-                        }>
-                        <span>{this.state.bad}%</span> dañado
-                      </p>
-                    </div>
+                    <p
+                      className="border button warning"
+                      onClick={() =>
+                        this.setState({ detail: 'warning' })
+                      }>
+                      <span>{this.state.war}%</span> alertado
+                    </p>
+                    <p
+                      className="border button error"
+                      onClick={() =>
+                        this.setState({ detail: 'damaged' })
+                      }>
+                      <span>{this.state.bad}%</span> dañado
+                    </p>
                   </div>
+                </div>
                 </Card>
                 <Card title="Afluencia de personas" className="horizontal">
                   <div className="info">
@@ -494,7 +519,7 @@ class Dashboard extends Component {
                     <p>Zona Centro</p>
                     <div className="card-footer">
                       <p className="red">
-                        {this.state.worst && this.state.worst.alarms.length}{' '}
+                        {this.state.worst && this.state.worst.history.length}{' '}
                         alertas
                       </p>
                     </div>
@@ -533,11 +558,12 @@ class Dashboard extends Component {
                 elements={[
                   {
                     title: 'Historial',
-                    elements: perimeterReports.concat(reports)
+                    elements: this.state.sitesHistory
                   },
                   {
                     title: 'Alertas',
-                    elements: reports.filter($0 => $0.risk > 0)
+                    elements: this.state.allAlarms
+                    //reports.filter($0 => $0.risk > 0)
                   }
                 ]}
                 titles={[

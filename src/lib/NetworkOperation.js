@@ -3,8 +3,9 @@ import axios from 'axios'
 import constants from './constants'
 
 // TODO check if we're in production, if it's change hostUrl to s3
-const baseUrl = `${constants.hostUrl}/v1`
-// const baseUrl = `https://att.connus.mx/v1`
+//const baseUrl = `${constants.hostUrl}/v1`
+ const baseUrl = `https://att.connus.mx/v1`
+//const baseUrl = `http://localhost:8080/v1`
 
 // Request interceptors
 axios.interceptors.request.use(
@@ -128,6 +129,9 @@ class NetworkOperation {
 
   static getAvailableSites() {
     return axios.get(`${baseUrl}/cameras/report/clients`)
+  }
+  static getSites() {
+    return axios.get(`${baseUrl}/sites/list`)
   }
 
   static getDebug(camera) {
