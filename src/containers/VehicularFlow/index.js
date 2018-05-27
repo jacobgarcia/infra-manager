@@ -105,13 +105,13 @@ class VehicularFlow extends Component {
                     <div
                       className="image-slider"
                       style={{
-                        backgroundImage: `url(` 'https://demo.connus.mx' + state.selectedLog.front + `)`
+                        backgroundImage: `url(https://demo.connus.mx` + state.selectedLog.front + `)`
                       }}
                     />
                     <div
                       className="image-slider"
                       style={{
-                        backgroundImage: `url(` 'https://demo.connus.mx'  + state.selectedLog.back + `)`
+                        backgroundImage: `url(https://demo.connus.mx` + state.selectedLog.back + `)`
                       }}
                     />
                     {/* <div className="image-slider 5"></div> */}
