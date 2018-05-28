@@ -376,7 +376,7 @@ router.route('/cameras/access/facedetection').post((req, res) => {
       winston.error(error)
       return res.status(400).json({
         success: 'false',
-        message: error /* "error":error*/
+        message: 'The specified camera does not exist' /* "error":error*/
       })
     }
     return res
