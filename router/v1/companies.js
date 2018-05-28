@@ -16,7 +16,6 @@ const Inventory = require(path.resolve('models/Inventory'))
 const Company = require(path.resolve('models/Company'))
 const SmartBox = require(path.resolve('models/SmartBox'))
 const Stream = require(path.resolve('models/Stream'))
-const Counter = require(path.resolve('models/Counter'))
 
 const { hasAccess } = require(path.resolve(
   'router/v1/lib/middleware-functions'
@@ -531,6 +530,7 @@ router.route('/sites/sensors').put((req, res) => {
 
       site.history.push(history)
       site.sensors = sensors[0]
+      console.log(site)
 
       site.save((error, updatedSite) => {
         if (error) {
@@ -543,6 +543,7 @@ router.route('/sites/sensors').put((req, res) => {
         return res.status(200).json({
           success: true,
           message: 'Updated sensor information sucessfully',
+          updatedSite
         })
       })
     })
@@ -571,7 +572,8 @@ router.route('/sites/sensors').get((req, res) => {
 router.route('/sites/sensors/history').get((req, res) => {
   const company = req._user.cmp
   Site.find({ company })
-    .select('history key')
+    .populate('zone', 'name')
+    .select('history key zone')
     .exec((error, sites) => {
       if (error) {
         winston.error({ error })
@@ -605,7 +607,7 @@ router.route('/sites/sensors/:type').get((req, res) => {
       return res.status(200).json({ sensors })
     })
 })
-
+// deprecated method
 // Get sensors of specific type for all company sites
 router.route('/sites/alarms/').get((req, res) => {
   const company = req._user.cmp
@@ -741,9 +743,9 @@ router.route('/visualcounter/count').post((req, res) => {
       message: 'Saved counter information',
       counter
     })
-  })
+  console.log(res)
 })
-
+}) 
 router.route('/visualcounter/count').get((req, res) => {
   const company = req._user.cmp
 
@@ -770,6 +772,5 @@ router.route('/visualcounter/count').get((req, res) => {
       })
     })
 })
-
 
 module.exports = router
