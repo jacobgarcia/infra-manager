@@ -37,6 +37,7 @@ class Users extends Component {
   }
 
   componentDidMount() {
+    console.log(this);
     NetworkOperation.getSensors().then(({ data }) => {
       this.setState({
         aperture: parseInt(itemAverage('cs', data.sensors), 10),
@@ -87,6 +88,7 @@ class Users extends Component {
       state: { temperatureStatus, vibrationStatus, apertureStatus }
     } = this
 
+
     return (
       <div className="users app-content small-padding sensors">
         <Helmet>
@@ -96,7 +98,7 @@ class Users extends Component {
           <h2>Estatus</h2>
           <div className="overall-container">
             <div className="horizontal-container">
-              {this.state.temperature ? (
+              {this.state.temperature && !this.props.credentials.company.name === "AT&T" ? (
                 <Card
                   title="Temperatura del procesador"
                   className={`graph-container`}>
@@ -277,7 +279,7 @@ class Users extends Component {
                   </div>
                 </Card>
               ) : null}
-              {this.state.fuel || this.state.fuel === 0 ? (
+              {this.state.fuel || this.state.fuel === 0 && !this.props.credentials.company.name === "AT&T" ? (
                 <Card title="Nivel de Combustible">
                   <div>
                     <FuelChart

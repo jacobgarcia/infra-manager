@@ -243,6 +243,11 @@ router.route('/cameras/alarm/photos').post((req, res) => {
 
   // Emit alert socket
   // global.io.to('ATT').emit('photo-alarm', data)
+  base64Img.imgSync(
+    photo,
+    'static/alerts',
+    shortid.generate() + Date.now()
+  )
 
   return res
     .status(200)
@@ -371,7 +376,7 @@ router.route('/cameras/access/facedetection').post((req, res) => {
       winston.error(error)
       return res.status(400).json({
         success: 'false',
-        message: 'The specified camera does not exist' /* "error":error*/
+        message: error /* "error":error*/
       })
     }
     return res

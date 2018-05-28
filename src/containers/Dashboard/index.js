@@ -183,34 +183,39 @@ class Dashboard extends Component {
               allAlarms: allAlarms
             })
           })
-          console.log(allAlarms);
+          //console.log(allAlarms);
         })
         //alerts section info
     })
 
     NetworkOperation.getHistory().then(({ data }) => {
-
       // === 'Media del servicio' chart ===
 
-      const ranking = []
-      const history = []
+      let sites = []
+      let ranking = []
+      let history = []
       data.sites.map(site => {
+        site.history.length && sites.push({'key':site.key,'history':site.history})
+      })
+      sites.map(site => {
         // pushing for ranking
         ranking.push(site.history.length)
         // pushiw each log into history
         site.history.map(log => {
           history.push(new Date(log.timestamp))
+          //new Date(date.setDate(new Date().getDate() - 7)) <  new Date(log.timestamp) ? console.log("gg")
         })
       })
+
       this.setState({
         chart: history,
-        worst: data.sites[ranking.indexOf(Math.max(...ranking))]
+        worst: sites[ranking.indexOf(Math.max(...ranking))]
       })
     })
 
     // Get Visual Counter information
     NetworkOperation.getCounter().then(({ data }) => {
-      console.log('Counter', data)
+      //console.log('Counter', data)
       const { chartCounter } = this.state
       data.counts.map((count, index) => {
         chartCounter[11].uv = 0
@@ -515,6 +520,16 @@ class Dashboard extends Component {
                     </div>
                   </Card>
                   <Card title="Sitio de mas alertas" className="horizontal">
+                    <h1>{this.state.worst && this.state.worst.key}</h1>
+                    <p>Zona Centro</p>
+                    <div className="card-footer">
+                      <p className="red">
+                        {this.state.worst && this.state.worst.history.length}{' '}
+                        alertas
+                      </p>
+                    </div>
+                  </Card>
+                  <Card title="Top semanal" className="horizontal">
                     <h1>{this.state.worst && this.state.worst.key}</h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
