@@ -243,6 +243,11 @@ router.route('/cameras/alarm/photos').post((req, res) => {
 
   // Emit alert socket
   // global.io.to('ATT').emit('photo-alarm', data)
+  base64Img.imgSync(
+    photo,
+    'static/alerts',
+    shortid.generate() + Date.now()
+  )
 
   return res
     .status(200)

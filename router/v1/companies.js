@@ -585,6 +585,17 @@ router.route('/sites/sensors/history').get((req, res) => {
     })
 })
 
+// Get all sensors for all company hsitory
+router.route('/sites/sensors/dismiss/:key').post((req, res) => {
+  const company = req._user.cmp
+  const { key } = req.params
+  Site.findOneAndUpdate({company,key},{$set:{alarms:[]}})
+  .exec((error, sites) => {
+    if (error) return res.status(404).json({ message: 'No sites found' })
+    return  res.status(200).json({ sites })
+  })
+})
+
 // Get sensors of specific type for all company sites
 router.route('/sites/sensors/:type').get((req, res) => {
   const company = req._user.cmp
@@ -746,6 +757,7 @@ router.route('/visualcounter/count').post((req, res) => {
     console.log(res)
   })
 })
+
 router.route('/visualcounter/count').get((req, res) => {
   const company = req._user.cmp
 
