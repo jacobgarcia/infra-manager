@@ -22,8 +22,9 @@ const schema = new Schema({
   position: { type: [Number], required: true }, // Lat, lng
   sensors: [
     {
-      key: String,
-      value: Number
+      key: Number,
+      value: Number,
+      class: String
     },
     { _id: false }
   ],

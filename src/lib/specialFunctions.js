@@ -147,7 +147,7 @@ export function itemAverage(item, thisArray) {
   let count = 0
 
   thisArray.map(sensor => {
-    if (sensor.key.search(item) !== -1) {
+    if (sensor.class === item) {
       sum += sensor.value
       count += 1
     }
@@ -165,7 +165,7 @@ export function itemStatus(item = '', thisArray, option, max, min) {
   switch (option) {
     case 'upscale':
       thisArray.map(sensor => {
-        if (sensor.key.search(item) !== -1) {
+        if (sensor.class === item) {
           if (sensor.value >= max) {
             ok += 1
           } else if (sensor.value <= min) bad += 1
@@ -175,7 +175,7 @@ export function itemStatus(item = '', thisArray, option, max, min) {
       break
     case 'between':
       thisArray.map(sensor => {
-        if (sensor.key.search(item) !== -1) {
+        if (sensor.class === item) {
           if (sensor.value <= max && sensor.value >= min) ok += 1
           else bad += 1
         }
@@ -200,12 +200,7 @@ export function getStatus(data) {
   let sum = 0
   let counter = 0
   data.sensors.map(current => {
-    if (
-      current.key === 'cs1' ||
-      current.key === 'cs2' ||
-      current.key === 'vs1' ||
-      current.key === 'vs2'
-    ) {
+    if (current.class === 'contact' || current.class === 'vibration') {
       sum += current.value
       counter += 1
     }
@@ -245,9 +240,11 @@ export function dataChart(chart) {
           ? now.getHours() - i + 'PM'
           : now.getHours() - i + 'AM',
       pv: chart
-        ? Math.ceil(pvAtTime(
-            chart,
-            new Date(new Date().setHours(new Date().getHours() - i, 0, 0, 0)))
+        ? Math.ceil(
+            pvAtTime(
+              chart,
+              new Date(new Date().setHours(new Date().getHours() - i, 0, 0, 0))
+            )
           )
         : 100
     }

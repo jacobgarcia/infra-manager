@@ -113,15 +113,18 @@ class StatusesContainer extends PureComponent {
               )
 
               if (sensor) {
-                if (sensor.key.search('cs') !== -1) {
+                if (sensor.class === 'contact') {
                   status = [
-                    { name: 'bold', value: sensor.value == 100 ? 'OK' : 'BAD' },
+                    {
+                      name: 'bold',
+                      value: sensor.value === 100 ? 'OK' : 'BAD'
+                    },
                     {
                       name: 'alerts',
-                      value: sensor.value == 100 ? 'OK' : 'BAD'
+                      value: sensor.value === 100 ? 'OK' : 'BAD'
                     }
                   ]
-                  percentage = sensor.value == 100 ? 'OK' : 'BAD'
+                  percentage = sensor.value === 100 ? 'OK' : 'BAD'
                 } else {
                   status = [
                     { name: 'bold', value: sensor.value },
@@ -133,9 +136,9 @@ class StatusesContainer extends PureComponent {
 
               if (sensor) {
                 if (
-                  sensor.key.search('cs') !== -1 ||
-                  sensor.key.search('vs') !== -1 ||
-                  sensor.key.search('bs') !== -1
+                  sensor.class === 'contact' ||
+                  sensor.class === 'vibration' ||
+                  sensor.class === 'battery'
                 ) {
                   status = [
                     { name: 'bold', value: sensor.value == 100 ? 'OK' : 'BAD' },
@@ -155,30 +158,24 @@ class StatusesContainer extends PureComponent {
               }
             }
 
-            switch (element.key) {
-              case 'cs1':
-                name = 'de contacto 1'
+            switch (element.class) {
+              case 'contact':
+                name = 'de contacto'
                 break
-              case 'cs2':
-                name = 'de contacto 2'
+              case 'vibration':
+                name = 'de vibración'
                 break
-              case 'vs1':
-                name = 'de vibración 1'
-                break
-              case 'vs2':
-                name = 'de vibración 2'
-                break
-              case 'ts1':
+              case 'temperature':
                 name = 'de temperatura'
                 break
-              case 'fs1':
+              case 'fuel':
                 name = 'de combustible'
                 break
-              case 'bs1':
-                name = 'de humedad'
+              case 'battery':
+                name = 'de bateria'
                 break
-              case 'cu1':
-                name = 'de corriente'
+              case 'cpu':
+                name = 'de temperatura del CPU'
                 break
               default:
             }
@@ -189,7 +186,11 @@ class StatusesContainer extends PureComponent {
                   id={element._id}
                   title={
                     name
-                      ? this.getElementTitle(props.type) + ' ' + name
+                      ? this.getElementTitle(props.type) +
+                        ' ' +
+                        name +
+                        ' ' +
+                        element.key
                       : this.getElementTitle(props.type)
                   }
                   name={element.name}
