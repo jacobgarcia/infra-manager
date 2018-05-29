@@ -529,17 +529,62 @@ router.route('/sites/sensors').put((req, res) => {
       sensors.map(sensor => {
         switch (sensor.class) {
           case 'contact':
+            if (sensor.value === 0) {
+              const alarm = {
+                event: 'Alerta de apertura',
+                status: 'Sensor abierto',
+                risk: 3
+              }
+              site.alarms.push(alarm)
+            }
+            break
           case 'vibration':
-            if (sensor.value === 0) site.alarms.push(sensor)
+            if (sensor.value === 0) {
+              const alarm = {
+                event: 'Alerta de vibración',
+                status: 'Sensor activado',
+                risk: 2
+              }
+              site.alarms.push(alarm)
+            }
             break
           case 'temperature':
-            if (sensor.value < 5 || sensor.value > 40) site.alarms.push(sensor)
+            if (sensor.value < 5) {
+              const alarm = {
+                event: 'Alerta de temperatura',
+                status: 'Temperatura baja',
+                risk: 2
+              }
+              site.alarms.push(alarm)
+            }
+            if (sensor.value > 40) {
+              const alarm = {
+                event: 'Alerta de temperatura',
+                status: 'Temperatura alta',
+                risk: 1
+              }
+              site.alarms.push(alarm)
+            }
             break
           case 'cpu':
-            if (sensor.value > 60) site.alarms.push(sensor)
+            if (sensor.value > 60) {
+              const alarm = {
+                event: 'Alerta de temperatura del CPU',
+                status: 'Temperatura alta',
+                risk: 2
+              }
+              site.alarms.push(alarm)
+            }
             break
           case 'battery':
-            if (sensor.value <= 15) site.alarms.push(sensor)
+            if (sensor.value <= 15) {
+              const alarm = {
+                event: 'Alerta de batería',
+                status: 'Bateria baja',
+                risk: 2
+              }
+              site.alarms.push(alarm)
+            }
             break
           default:
         }

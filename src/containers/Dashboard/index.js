@@ -625,11 +625,11 @@ class Dashboard extends Component {
                 )}
                 elements={[
                   {
-                    title: 'Historial',
+                    title: 'Alertas',
                     elements: this.state.sitesHistory
                   },
                   {
-                    title: 'Alertas',
+                    title: 'Historial',
                     elements: this.state.allAlarms
                     // reports.filter($0 => $0.risk > 0)
                   }

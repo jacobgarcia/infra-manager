@@ -30,9 +30,10 @@ const schema = new Schema({
   ],
   alarms: [
     {
-      key: Number, // Sensor id
-      value: Number,
-      class: String
+      timestamp: { type: Date, default: Date.now },
+      event: String,
+      status: String,
+      risk: 0
     },
     { _id: false }
   ],
