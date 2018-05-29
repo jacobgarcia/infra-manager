@@ -6,14 +6,10 @@ class SiteClass {}
 
 const History = new Schema({
   _id: false,
-  timestamp: { type: Date, default: new Date() },
-  sensors: [
-    {
-      name: String,
-      value: Number
-    },
-    { _id: false }
-  ]
+  timestamp: { type: Date, default: Date.now },
+  event: String,
+  status: String,
+  risk: 0
 })
 
 const schema = new Schema({

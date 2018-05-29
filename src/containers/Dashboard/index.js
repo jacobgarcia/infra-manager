@@ -208,15 +208,19 @@ class Dashboard extends Component {
 
     NetworkOperation.getHistory().then(({ data }) => {
       // === 'Media del servicio' chart ===
-
       const sites = []
       const ranking = []
       const history = []
       data.sites.map(site => {
-        site.history.length &&
-          sites.push({ key: site.key, history: site.history })
+        (site.alarms.length || site.history.length) &&
+          sites.push({
+            key: site.key,
+            alarms: site.alarms,
+            history: site.history
+          })
       })
       sites.map(site => {
+        console.log('Pinche sitio', site)
         // pushing for ranking
         ranking.push(site.alarms.length)
         // pushiw each log into history
@@ -626,11 +630,11 @@ class Dashboard extends Component {
                 elements={[
                   {
                     title: 'Alertas',
-                    elements: this.state.sitesHistory
+                    elements: this.state.allAlarms
                   },
                   {
                     title: 'Historial',
-                    elements: this.state.allAlarms
+                    elements: this.state.siteHistory
                     // reports.filter($0 => $0.risk > 0)
                   }
                 ]}

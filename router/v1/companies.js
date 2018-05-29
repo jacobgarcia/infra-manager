@@ -590,12 +590,7 @@ router.route('/sites/sensors').put((req, res) => {
         }
       })
 
-      // Update history and sensors specification
-      const history = {
-        sensors: site.sensors
-      }
-
-      site.history.push(history)
+      // Update sensors
       site.sensors = sensors[0]
 
       site.save(error => {
@@ -636,7 +631,7 @@ router.route('/sites/sensors/history').get((req, res) => {
   const company = req._user.cmp
   Site.find({ company })
     .populate('zone', 'name')
-    .select('history key zone')
+    .select('alarms history key zone')
     .exec((error, sites) => {
       if (error) {
         winston.error({ error })
