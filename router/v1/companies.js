@@ -501,6 +501,7 @@ router.route('/sites/sensors').put((req, res) => {
       .status(400)
       .json({ success: false, message: 'Malformed request' })
 
+  // Parse JSON format from Python
   if (typeof sensors === 'string') sensors = JSON.parse(sensors)
 
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
@@ -513,6 +514,7 @@ router.route('/sites/sensors').put((req, res) => {
         .status(404)
         .json({ success: false, message: 'Specified company was not found' })
 
+    // Find and update site with new information
     Site.findOne({ company, key }).exec((error, site) => {
       if (error) {
         winston.error({ error })
@@ -530,24 +532,23 @@ router.route('/sites/sensors').put((req, res) => {
 
       site.history.push(history)
       site.sensors = sensors[0]
-      console.log(site)
 
-      site.save((error, updatedSite) => {
+      site.save(error => {
         if (error) {
           winston.error({ error })
           return res.status(500).json({ error })
         }
 
-        global.io.emit('refresh')
-
         return res.status(200).json({
           success: true,
-          message: 'Updated sensor information sucessfully',
-          updatedSite
+          message: 'Updated sensor information sucessfully'
         })
       })
+      return true
     })
+    return true
   })
+  return true
 })
 
 // Get all sensors for all company sites
@@ -696,7 +697,7 @@ router.route('/video/cameras').get((req, res) => {
 router.route('/visualcounter/count').post((req, res) => {
   let { entries, exits } = req.body
   const start = 83
-  const end =  238
+  const end = 238
   // Parse since code comoes as plain text
   entries = JSON.parse(entries)
   exits = JSON.parse(exits)
@@ -717,8 +718,8 @@ router.route('/visualcounter/count').post((req, res) => {
   // Sum values for every 12 entries. Will be 1 hour
   const cont = 12
   let sum = 0
-  let filteredEntries = []
-  let filteredExits = []
+  const filteredEntries = []
+  const filteredExits = []
 
   entries.map((entry, index) => {
     sum += entry
@@ -741,8 +742,7 @@ router.route('/visualcounter/count').post((req, res) => {
   new Counter({
     inputs: filteredEntries,
     outputs: filteredExits
-  })
-  .save((error, counter) => {
+  }).save((error, counter) => {
     if (error) {
       winston.error({ error })
       return res
@@ -754,27 +754,28 @@ router.route('/visualcounter/count').post((req, res) => {
       message: 'Saved counter information',
       counter
     })
-  console.log(res)
+    console.log(res)
+  })
 })
-})
+
 router.route('/visualcounter/count').get((req, res) => {
   const company = req._user.cmp
 
-
-  //TODO Counter must be part of a Site
+  // TODO Counter must be part of a Site
   Counter.find({})
-    .sort({ timestamp: -1})
+    .sort({ timestamp: -1 })
     .exec((error, counts) => {
       const counter = counts[0]
-      let sum = []
+      const sum = []
       counter.inputs.map((count, index) => {
         sum[index] = count + counter.outputs[index]
       })
       if (error) {
         winston.error({ error })
-        return res
-          .status(500)
-          .json({ success: false, message: 'Could not retrieve counter information' })
+        return res.status(500).json({
+          success: false,
+          message: 'Could not retrieve counter information'
+        })
       }
       return res.status(200).json({
         success: true,
