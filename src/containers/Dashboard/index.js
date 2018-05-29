@@ -79,7 +79,8 @@ class Dashboard extends Component {
       ]
     }
   }
-  componentWillMount() {
+
+  componentDidMount() {
     NetworkOperation.getHistory().then(({ data }) => {
       // == HISTORY section fill ==
       const history = []
@@ -120,11 +121,11 @@ class Dashboard extends Component {
         // two array [site] [count alarms site] and top to match
         if (ranking.zone.includes(site.zone.name)) {
           ranking.value[ranking.zone.indexOf(site.zone.name)] +=
-            site.history.length
+            site.alarms.length
         } else {
           ranking.zone.push(site.zone.name)
           ranking.value[ranking.zone.indexOf(site.zone.name)] =
-            site.history.length
+            site.alarms.length
         }
       })
 
@@ -208,31 +209,37 @@ class Dashboard extends Component {
     NetworkOperation.getHistory().then(({ data }) => {
       // === 'Media del servicio' chart ===
 
-      let sites = []
-      let ranking = []
-      let history = []
+      const sites = []
+      const ranking = []
+      const history = []
       data.sites.map(site => {
-        site.history.length && sites.push({'key':site.key,'history':site.history})
+        site.history.length &&
+          sites.push({ key: site.key, history: site.history })
       })
       sites.map(site => {
         // pushing for ranking
-        ranking.push(site.history.length)
+        ranking.push(site.alarms.length)
         // pushiw each log into history
         site.history.map(log => {
           history.push(new Date(log.timestamp))
-          //new Date(date.setDate(new Date().getDate() - 7)) <  new Date(log.timestamp) ? console.log("gg")
+          // new Date(date.setDate(new Date().getDate() - 7)) <  new Date(log.timestamp) ? console.log("gg")
         })
       })
 
-      this.setState({
-        chart: history,
-        worst: sites[ranking.indexOf(Math.max(...ranking))]
-      })
+      this.setState(
+        {
+          chart: history,
+          worst: sites[ranking.indexOf(Math.max(...ranking))]
+        },
+        () => {
+          console.log(ranking)
+        }
+      )
     })
 
     // Get Visual Counter information
     NetworkOperation.getCounter().then(({ data }) => {
-      //console.log('Counter', data)
+      // console.log('Counter', data)
       const { chartCounter } = this.state
       data.counts.map((count, index) => {
         chartCounter[11].uv = 0
@@ -244,10 +251,7 @@ class Dashboard extends Component {
     })
   }
   render() {
-    const {
-      state,
-      props
-    } = this
+    const { state, props } = this
 
     // TODO fix
     const reports = []
@@ -401,9 +405,12 @@ class Dashboard extends Component {
                     </div>
                   </div>
                 </Card>
-                { this.props.credentials.company.services.map(item => (
-                  item === '06'
-                  ? <Card title="Afluencia de personas" className="horizontal">
+                {this.props.credentials.company.services.map(
+                  item =>
+                    item === '06' ? (
+                      <Card
+                        title="Afluencia de personas"
+                        className="horizontal">
                         <div className="info">
                           <div className="data">
                             <h1>
@@ -419,9 +426,11 @@ class Dashboard extends Component {
                                     uv: parseInt(a.uv) + parseInt(b.uv)
                                   })).uv /
                                     Math.ceil(
-                                      this.state.chartCounter.reduce((a, b) => ({
-                                        uv: parseInt(a.uv) + parseInt(b.uv)
-                                      })).uv / 12
+                                      this.state.chartCounter.reduce(
+                                        (a, b) => ({
+                                          uv: parseInt(a.uv) + parseInt(b.uv)
+                                        })
+                                      ).uv / 12
                                     )
                                 )}%
                               </span>
@@ -444,7 +453,12 @@ class Dashboard extends Component {
                           <ComposedChart
                             data={this.state.chartCounter}
                             syncId="dashboard"
-                            margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                            margin={{
+                              top: 20,
+                              right: 20,
+                              bottom: 20,
+                              left: 20
+                            }}>
                             <XAxis
                               dataKey="name"
                               height={15}
@@ -463,13 +477,19 @@ class Dashboard extends Component {
                               stroke={blue}
                               strokeWidth={1}
                               activeDot={{ strokeWidth: 0, fill: blue }}
-                              dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }}
+                              dot={{
+                                stroke: blue,
+                                strokeWidth: 2,
+                                fill: darkGray
+                              }}
                             />
                           </ComposedChart>
                         </ResponsiveContainer>
-                    </Card>
-                  : []
-                ))}
+                      </Card>
+                    ) : (
+                      []
+                    )
+                )}
               </div>
               <div className="vertical-container">
                 <Card className="historical" title="Media de servicio">
@@ -549,21 +569,25 @@ class Dashboard extends Component {
                     </div>
                   </Card>
                   <Card title="Sitio de mas alertas" className="horizontal">
-                    <h1>{this.state.worst && this.state.worst.key}</h1>
+                    <h1>
+                      {this.state.worst ? this.state.worst.key : 'Ninguno'}
+                    </h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
                       <p className="red">
-                        {this.state.worst && this.state.worst.history.length}{' '}
+                        {this.state.worst ? this.state.worst.history.length : 0}{' '}
                         alertas
                       </p>
                     </div>
                   </Card>
                   <Card title="Top semanal" className="horizontal">
-                    <h1>{this.state.worst && this.state.worst.key}</h1>
+                    <h1>
+                      {this.state.worst ? this.state.worst.key : 'Ninguno'}
+                    </h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
                       <p className="red">
-                        {this.state.worst && this.state.worst.history.length}{' '}
+                        {this.state.worst ? this.state.worst.history.length : 0}{' '}
                         alertas
                       </p>
                     </div>
