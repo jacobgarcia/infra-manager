@@ -525,6 +525,26 @@ router.route('/sites/sensors').put((req, res) => {
           .status(404)
           .json({ success: false, message: 'No site found' })
 
+      // Generate alarms based on sensors values
+      sensors.map(sensor => {
+        switch (sensor.class) {
+          case 'contact':
+          case 'vibration':
+            if (sensor.value === 0) site.alarms.push(sensor)
+            break
+          case 'temperature':
+            if (sensor.value < 5 || sensor.value > 40) site.alarms.push(sensor)
+            break
+          case 'cpu':
+            if (sensor.value > 60) site.alarms.push(sensor)
+            break
+          case 'battery':
+            if (sensor.value <= 15) site.alarms.push(sensor)
+            break
+          default:
+        }
+      })
+
       // Update history and sensors specification
       const history = {
         sensors: site.sensors
@@ -544,11 +564,8 @@ router.route('/sites/sensors').put((req, res) => {
           message: 'Updated sensor information sucessfully'
         })
       })
-      return true
     })
-    return true
   })
-  return true
 })
 
 // Get all sensors for all company sites
@@ -589,11 +606,12 @@ router.route('/sites/sensors/history').get((req, res) => {
 router.route('/sites/sensors/dismiss/:key').post((req, res) => {
   const company = req._user.cmp
   const { key } = req.params
-  Site.findOneAndUpdate({company,key},{$set:{alarms:[]}})
-  .exec((error, sites) => {
-    if (error) return res.status(404).json({ message: 'No sites found' })
-    return  res.status(200).json({ sites })
-  })
+  Site.findOneAndUpdate({ company, key }, { $set: { alarms: [] } }).exec(
+    (error, sites) => {
+      if (error) return res.status(404).json({ message: 'No sites found' })
+      return res.status(200).json({ sites })
+    }
+  )
 })
 
 // Get sensors of specific type for all company sites

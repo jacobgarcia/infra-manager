@@ -30,8 +30,9 @@ const schema = new Schema({
   ],
   alarms: [
     {
-      key: String, // Sensor id
-      value: Number
+      key: Number, // Sensor id
+      value: Number,
+      class: String
     },
     { _id: false }
   ],
