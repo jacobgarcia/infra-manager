@@ -246,13 +246,7 @@ class Dashboard extends Component {
   render() {
     const {
       state,
-      props: {
-        // facialReports,
-        // accessReports,
-        // cameraReports,
-        perimeterReports
-        // vehicularReports
-      }
+      props
     } = this
 
     // TODO fix
@@ -407,71 +401,75 @@ class Dashboard extends Component {
                     </div>
                   </div>
                 </Card>
-                <Card title="Afluencia de personas" className="horizontal">
-                  <div className="info">
-                    <div className="data">
-                      <h1>
-                        {
-                          this.state.chartCounter.reduce((a, b) => ({
-                            uv: parseInt(a.uv) + parseInt(b.uv)
-                          })).uv
-                        }{' '}
-                        personas{' '}
-                        <span className="delta up">
-                          {Math.ceil(
-                            this.state.chartCounter.reduce((a, b) => ({
-                              uv: parseInt(a.uv) + parseInt(b.uv)
-                            })).uv /
-                              Math.ceil(
+                { this.props.credentials.company.services.map(item => (
+                  item === '06'
+                  ? <Card title="Afluencia de personas" className="horizontal">
+                        <div className="info">
+                          <div className="data">
+                            <h1>
+                              {
+                                this.state.chartCounter.reduce((a, b) => ({
+                                  uv: parseInt(a.uv) + parseInt(b.uv)
+                                })).uv
+                              }{' '}
+                              personas{' '}
+                              <span className="delta up">
+                                {Math.ceil(
+                                  this.state.chartCounter.reduce((a, b) => ({
+                                    uv: parseInt(a.uv) + parseInt(b.uv)
+                                  })).uv /
+                                    Math.ceil(
+                                      this.state.chartCounter.reduce((a, b) => ({
+                                        uv: parseInt(a.uv) + parseInt(b.uv)
+                                      })).uv / 12
+                                    )
+                                )}%
+                              </span>
+                            </h1>
+                            <p>
+                              Promedio:{' '}
+                              {Math.ceil(
                                 this.state.chartCounter.reduce((a, b) => ({
                                   uv: parseInt(a.uv) + parseInt(b.uv)
                                 })).uv / 12
-                              )
-                          )}%
-                        </span>
-                      </h1>
-                      <p>
-                        Promedio:{' '}
-                        {Math.ceil(
-                          this.state.chartCounter.reduce((a, b) => ({
-                            uv: parseInt(a.uv) + parseInt(b.uv)
-                          })).uv / 12
-                        )}{' '}
-                        personas por hora
-                      </p>
-                    </div>
-                    <ul className="leyend">
-                      <li className="car">Personas</li>
-                    </ul>
-                  </div>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <ComposedChart
-                      data={this.state.chartCounter}
-                      syncId="dashboard"
-                      margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                      <XAxis
-                        dataKey="name"
-                        height={15}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <YAxis width={21} tickLine={false} />
-                      <RechartsTooltip
-                        isAnimationActive={false}
-                        content={Tooltip}
-                      />
-                      <Bar dataKey="uv" fill="rgba(255,255,255,0.15)" />
-                      <Line
-                        type="linear"
-                        dataKey="uv"
-                        stroke={blue}
-                        strokeWidth={1}
-                        activeDot={{ strokeWidth: 0, fill: blue }}
-                        dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }}
-                      />
-                    </ComposedChart>
-                  </ResponsiveContainer>
-                </Card>
+                              )}{' '}
+                              personas por hora
+                            </p>
+                          </div>
+                          <ul className="leyend">
+                            <li className="car">Personas</li>
+                          </ul>
+                        </div>
+                        <ResponsiveContainer width="100%" height={260}>
+                          <ComposedChart
+                            data={this.state.chartCounter}
+                            syncId="dashboard"
+                            margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                            <XAxis
+                              dataKey="name"
+                              height={15}
+                              axisLine={false}
+                              tickLine={false}
+                            />
+                            <YAxis width={21} tickLine={false} />
+                            <RechartsTooltip
+                              isAnimationActive={false}
+                              content={Tooltip}
+                            />
+                            <Bar dataKey="uv" fill="rgba(255,255,255,0.15)" />
+                            <Line
+                              type="linear"
+                              dataKey="uv"
+                              stroke={blue}
+                              strokeWidth={1}
+                              activeDot={{ strokeWidth: 0, fill: blue }}
+                              dot={{ stroke: blue, strokeWidth: 2, fill: darkGray }}
+                            />
+                          </ComposedChart>
+                        </ResponsiveContainer>
+                    </Card>
+                  : []
+                ))}
               </div>
               <div className="vertical-container">
                 <Card className="historical" title="Media de servicio">
@@ -628,14 +626,19 @@ class Dashboard extends Component {
   }
 }
 
+Dashboard.propTypes = {
+  credentials: PropTypes.object
+}
+
 function mapStateToProps({
   facialReports,
   // accessReports,
   // cameraReports,
-  perimeterReports
+  perimeterReports,
+  credentials
   // vehicularReports
 }) {
-  return { facialReports, perimeterReports }
+  return { facialReports, perimeterReports, credentials }
 }
 
 export default connect(mapStateToProps)(Dashboard)
