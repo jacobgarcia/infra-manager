@@ -6,14 +6,10 @@ class SiteClass {}
 
 const History = new Schema({
   _id: false,
-  timestamp: { type: Date, default: new Date() },
-  sensors: [
-    {
-      name: String,
-      value: Number
-    },
-    { _id: false }
-  ]
+  timestamp: { type: Date, default: Date.now },
+  event: String,
+  status: String,
+  risk: 0
 })
 
 const schema = new Schema({
@@ -22,15 +18,18 @@ const schema = new Schema({
   position: { type: [Number], required: true }, // Lat, lng
   sensors: [
     {
-      key: String,
-      value: Number
+      key: Number,
+      value: Number,
+      class: String
     },
     { _id: false }
   ],
   alarms: [
     {
-      key: String, // Sensor id
-      value: Number
+      timestamp: { type: Date, default: Date.now },
+      event: String,
+      status: String,
+      risk: 0
     },
     { _id: false }
   ],

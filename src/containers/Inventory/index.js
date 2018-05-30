@@ -34,22 +34,22 @@ class Inventory extends Component {
   onSensorName = sensor => {
     let sensorName = ''
     switch (sensor) {
-      case 'cs':
+      case 'contact':
         sensorName = 'Sensor de contacto'
         break
-      case 'vs':
+      case 'vibration':
         sensorName = 'Sensor de vibración'
         break
-      case 'bs':
+      case 'battery':
         sensorName = 'UPS'
         break
-      case 'fs':
+      case 'fuel':
         sensorName = 'Tanque de combustible'
         break
-      case 'cu':
+      case 'cpu':
         sensorName = 'UPS'
         break
-      case 'ts':
+      case 'temperature':
         sensorName = 'Aire acondicionado'
         break
       default:
@@ -62,22 +62,22 @@ class Inventory extends Component {
   onSensorBrand = sensor => {
     let sensorName = ''
     switch (sensor) {
-      case 'cs':
+      case 'contact':
         sensorName = 'iSmart'
         break
-      case 'vs':
+      case 'vibration':
         sensorName = 'OEM'
         break
-      case 'bs':
+      case 'battery':
         sensorName = 'APS'
         break
-      case 'fs':
+      case 'fuel':
         sensorName = 'Turk'
         break
-      case 'cu':
+      case 'cpu':
         sensorName = 'APC'
         break
-      case 'ts':
+      case 'temperature':
         sensorName = 'LG'
         break
       default:
@@ -90,22 +90,22 @@ class Inventory extends Component {
   onSensorModel = sensor => {
     let sensorName = ''
     switch (sensor) {
-      case 'cs':
+      case 'contact':
         sensorName = '2PK'
         break
-      case 'vs':
+      case 'vibration':
         sensorName = 'SW-420'
         break
-      case 'bs':
+      case 'battery':
         sensorName = 'Pro 1000'
         break
-      case 'fs':
+      case 'fuel':
         sensorName = 'OE: 3982793'
         break
-      case 'cu':
+      case 'cpu':
         sensorName = 'Pro 1000'
         break
-      case 'ts':
+      case 'temperature':
         sensorName = 'ARTMIRCC18'
         break
       default:
@@ -118,22 +118,22 @@ class Inventory extends Component {
   onSensorMaker(sensor) {
     let sensorName = ''
     switch (sensor) {
-      case 'cs':
+      case 'contact':
         sensorName = 'DWS3R'
         break
-      case 'vs':
+      case 'vibration':
         sensorName = 'SW420'
         break
-      case 'bs':
+      case 'battery':
         sensorName = 'APCHL1289'
         break
-      case 'fs':
+      case 'fuel':
         sensorName = 'OE3490'
         break
-      case 'cu':
+      case 'cpu':
         sensorName = 'APCHL1289'
         break
-      case 'ts':
+      case 'temperature':
         sensorName = 'LGCC18'
         break
       default:
@@ -146,22 +146,22 @@ class Inventory extends Component {
   onSensorPhoto(sensor) {
     let sensorName = ''
     switch (sensor) {
-      case 'cs':
+      case 'contact':
         sensorName = '/static/img/dummy/contact-sensor.jpg'
         break
-      case 'vs':
+      case 'vibration':
         sensorName = '/static/img/dummy/vibration-sensor.jpg'
         break
-      case 'bs':
+      case 'battery':
         sensorName = '/static/img/dummy/ups-sensor.jpg'
         break
-      case 'fs':
+      case 'fuel':
         sensorName = '/static/img/dummy/fuel-sensor.jpg'
         break
-      case 'cu':
+      case 'cpu':
         sensorName = '/static/img/dummy/ups-sensor.jpg'
         break
-      case 'ts':
+      case 'temperature':
         sensorName = '/static/img/dummy/air-sensor.jpg'
         break
       default:
@@ -171,7 +171,7 @@ class Inventory extends Component {
     return sensorName
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (
       !this.props.inventoryReports ||
       this.props.inventoryReports.length === 0
@@ -189,7 +189,8 @@ class Inventory extends Component {
       }
     }
   }
-  componentWillMount() {
+
+  UNSAFE_componentWillMount() {
     NetworkOperation.getSensors().then(({ data }) => {
       this.props.setInventoryReport(data)
     })
@@ -205,15 +206,15 @@ class Inventory extends Component {
               name: 'Centro'
             },
             site: site.key,
-            name: this.onSensorName(sensor.key.substring(0, 2)),
-            brand: this.onSensorBrand(sensor.key.substring(0, 2)),
-            model: this.onSensorModel(sensor.key.substring(0, 2)),
+            name: this.onSensorName(sensor.class),
+            brand: this.onSensorBrand(sensor.class),
+            model: this.onSensorModel(sensor.class),
             type: 'Analogico',
             status: 'Activo',
             _id: Math.floor(Math.random() * Math.floor(10000)),
             version: '1.0',
-            makerId: this.onSensorMaker(sensor.key.substring(0, 2)),
-            photo: this.onSensorPhoto(sensor.key.substring(0, 2)),
+            makerId: this.onSensorMaker(sensor.class),
+            photo: this.onSensorPhoto(sensor.class),
             detailedStatus: {
               active: true
             }

@@ -37,19 +37,32 @@ class Users extends Component {
   }
 
   componentDidMount() {
+    console.log(this)
     NetworkOperation.getSensors().then(({ data }) => {
       this.setState({
-        aperture: parseInt(itemAverage('cs', data.sensors), 10),
-        vibration: parseInt(itemAverage('vs', data.sensors), 10),
-        temperature: parseInt(itemAverage('ts', data.sensors), 10),
-        energy: parseInt(itemAverage('cu', data.sensors), 10),
-        apertureStatus: itemStatus('cs', data.sensors, 'upscale', 80, 20),
-        vibrationStatus: itemStatus('vs', data.sensors, 'upscale', 80, 20),
-        temperatureStatus: itemStatus('ts', data.sensors, 'between', 50, 0),
-        ambienceStatus: itemStatus('as', data.sensors, 'between', 40, 0),
-        energyStatus: itemStatus('cu', data.sensors, 'between', 130, 100),
-        battery: parseInt(itemAverage('bs', data.sensors), 10),
-        fuel: parseInt(itemAverage('fs', data.sensors), 10)
+        aperture: parseInt(itemAverage('contact', data.sensors), 10),
+        vibration: parseInt(itemAverage('vibration', data.sensors), 10),
+        temperature: parseInt(itemAverage('cpu', data.sensors), 10),
+        energy: parseInt(itemAverage('battery', data.sensors), 10),
+        apertureStatus: itemStatus('contact', data.sensors, 'upscale', 80, 20),
+        vibrationStatus: itemStatus(
+          'vibration',
+          data.sensors,
+          'upscale',
+          80,
+          20
+        ),
+        temperatureStatus: itemStatus('cpu', data.sensors, 'between', 50, 0),
+        ambienceStatus: itemStatus(
+          'temperature',
+          data.sensors,
+          'between',
+          40,
+          0
+        ),
+        energyStatus: itemStatus('battery', data.sensors, 'between', 130, 100),
+        battery: parseInt(itemAverage('battery', data.sensors), 10),
+        fuel: parseInt(itemAverage('fuel', data.sensors), 10)
       })
     })
     // Init socket with userId and token
@@ -66,17 +79,41 @@ class Users extends Component {
     this.socket.on('refresh', () => {
       NetworkOperation.getSensors().then(({ data }) => {
         this.setState({
-          aperture: parseInt(itemAverage('cs', data.sensors), 10),
-          vibration: parseInt(itemAverage('vs', data.sensors), 10),
-          temperature: parseInt(itemAverage('ts', data.sensors), 10),
-          energy: parseInt(itemAverage('cu', data.sensors), 10),
-          apertureStatus: itemStatus('cs', data.sensors, 'upscale', 80, 20),
-          vibrationStatus: itemStatus('vs', data.sensors, 'upscale', 80, 20),
-          temperatureStatus: itemStatus('ts', data.sensors, 'between', 50, 0),
-          ambienceStatus: itemStatus('as', data.sensors, 'between', 40, 0),
-          energyStatus: itemStatus('cu', data.sensors, 'between', 130, 100),
-          battery: parseInt(itemAverage('bs', data.sensors), 10),
-          fuel: parseInt(itemAverage('fs', data.sensors), 10)
+          aperture: parseInt(itemAverage('contact', data.sensors), 10),
+          vibration: parseInt(itemAverage('vibration', data.sensors), 10),
+          temperature: parseInt(itemAverage('cpu', data.sensors), 10),
+          energy: parseInt(itemAverage('battery', data.sensors), 10),
+          apertureStatus: itemStatus(
+            'contact',
+            data.sensors,
+            'upscale',
+            80,
+            20
+          ),
+          vibrationStatus: itemStatus(
+            'vibration',
+            data.sensors,
+            'upscale',
+            80,
+            20
+          ),
+          temperatureStatus: itemStatus('cpu', data.sensors, 'between', 50, 0),
+          ambienceStatus: itemStatus(
+            'temperature',
+            data.sensors,
+            'between',
+            40,
+            0
+          ),
+          energyStatus: itemStatus(
+            'battery',
+            data.sensors,
+            'between',
+            130,
+            100
+          ),
+          battery: parseInt(itemAverage('battery', data.sensors), 10),
+          fuel: parseInt(itemAverage('fuel', data.sensors), 10)
         })
       })
     })
@@ -96,7 +133,8 @@ class Users extends Component {
           <h2>Estatus</h2>
           <div className="overall-container">
             <div className="horizontal-container">
-              {this.state.temperature ? (
+              {this.state.temperature &&
+              !this.props.credentials.company.name === 'AT&T' ? (
                 <Card
                   title="Temperatura del procesador"
                   className={`graph-container`}>
@@ -277,7 +315,9 @@ class Users extends Component {
                   </div>
                 </Card>
               ) : null}
-              {this.state.fuel || this.state.fuel === 0 ? (
+              {this.state.fuel ||
+              (this.state.fuel === 0 &&
+                !this.props.credentials.company.name === 'AT&T') ? (
                 <Card title="Nivel de Combustible">
                   <div>
                     <FuelChart
