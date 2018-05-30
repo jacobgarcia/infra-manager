@@ -124,7 +124,9 @@ class Overall extends PureComponent {
 
 Overall.propTypes = {
   selectedType: PropTypes.string.isRequired,
+  element: PropTypes.object,
   reports: PropTypes.array
+
 }
 
 Overall.defaultProps = {

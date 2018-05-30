@@ -535,8 +535,7 @@ class MapContainer extends Component {
                   onMouseHover={this.onElementOver}
                   onClick={() => {
                     if (state.isCreating !== null) return null
-                    if (selectedZone === null)
-                      return props.history.push(`/sites/${element._id}`)
+                    if (selectedZone === null) return props.history.push(`/sites/${element._id}`)
                     return null
                   }}
                 />
