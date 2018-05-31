@@ -116,7 +116,7 @@ class StatusesContainer extends PureComponent {
                 if (
                   element.class === 'contact' ||
                   element.class === 'vibration' ||
-                  element.class === 'battery'
+                  (element.class === 'battery' && element.ac_present)
                 ) {
                   status = [
                     {
