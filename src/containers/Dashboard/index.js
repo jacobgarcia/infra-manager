@@ -85,7 +85,6 @@ class Dashboard extends Component {
       // == HISTORY section fill ==
       const history = []
       let siteHistory = {}
-      console.log('Sites', data.sites)
       data.sites.map(site => {
         site.history.map(currentHistory => {
           siteHistory = {
@@ -236,7 +235,7 @@ class Dashboard extends Component {
           weeklyAlerts: sites[ranking.indexOf(Math.max(...ranking))]
         },
         () => {
-          console.log(this.state.weeklyAlerts)
+          console.log('Weekly Alerts', this.state.weeklyAlerts.history)
         }
       )
     })
