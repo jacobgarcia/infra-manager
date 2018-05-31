@@ -235,7 +235,12 @@ class Dashboard extends Component {
           weeklyAlerts: sites[ranking.indexOf(Math.max(...ranking))]
         },
         () => {
-          console.log('Weekly Alerts', this.state.weeklyAlerts.history)
+          console.log(
+            'Weekly Alerts',
+            this.state.weeklyAlerts.history.filter(
+              $0 => $0.timestamp > Date.now()
+            )
+          )
         }
       )
     })
