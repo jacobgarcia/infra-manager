@@ -85,7 +85,7 @@ class Dashboard extends Component {
       // == HISTORY section fill ==
       const history = []
       let siteHistory = {}
-
+      console.log('Sites', data.sites)
       data.sites.map(site => {
         site.history.map(currentHistory => {
           siteHistory = {
@@ -220,7 +220,6 @@ class Dashboard extends Component {
           })
       })
       sites.map(site => {
-        console.log('Pinche sitio', site)
         // pushing for ranking
         ranking.push(site.alarms.length)
         // pushiw each log into history
@@ -233,10 +232,11 @@ class Dashboard extends Component {
       this.setState(
         {
           chart: history,
-          worst: sites[ranking.indexOf(Math.max(...ranking))]
+          worst: sites[ranking.indexOf(Math.max(...ranking))],
+          weeklyAlerts: sites[ranking.indexOf(Math.max(...ranking))]
         },
         () => {
-          console.log(ranking)
+          console.log(this.state.weeklyAlerts)
         }
       )
     })
@@ -579,19 +579,23 @@ class Dashboard extends Component {
                     <p>Zona Centro</p>
                     <div className="card-footer">
                       <p className="red">
-                        {this.state.worst ? this.state.worst.history.length : 0}{' '}
+                        {this.state.worst ? this.state.worst.history.length : 0}
                         alertas
                       </p>
                     </div>
                   </Card>
                   <Card title="Top semanal" className="horizontal">
                     <h1>
-                      {this.state.worst ? this.state.worst.key : 'Ninguno'}
+                      {this.state.weeklyAlerts
+                        ? this.state.weeklyAlerts.key
+                        : 'Ninguno'}
                     </h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
                       <p className="red">
-                        {this.state.worst ? this.state.worst.history.length : 0}{' '}
+                        {this.state.weeklyAlerts
+                          ? this.state.weeklyAlerts.history.length
+                          : 0}
                         alertas
                       </p>
                     </div>
@@ -634,7 +638,7 @@ class Dashboard extends Component {
                   },
                   {
                     title: 'Historial',
-                    elements: this.state.siteHistory
+                    elements: this.state.sitesHistory
                     // reports.filter($0 => $0.risk > 0)
                   }
                 ]}
