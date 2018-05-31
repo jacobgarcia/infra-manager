@@ -16,6 +16,7 @@ const Inventory = require(path.resolve('models/Inventory'))
 const Company = require(path.resolve('models/Company'))
 const SmartBox = require(path.resolve('models/SmartBox'))
 const Stream = require(path.resolve('models/Stream'))
+const Counter = require(path.resolve('models/Counter'))
 
 const { hasAccess } = require(path.resolve(
   'router/v1/lib/middleware-functions'
