@@ -593,7 +593,7 @@ router.route('/sites/sensors').put((req, res) => {
       })
 
       // Update sensors
-      site.sensors = sensors[0]
+      site.sensors = sensors
 
       site.save(error => {
         if (error) {
