@@ -113,47 +113,28 @@ class StatusesContainer extends PureComponent {
               )
 
               if (sensor) {
-                if (sensor.class === 'contact') {
+                if (
+                  element.class === 'contact' ||
+                  element.class === 'vibration' ||
+                  element.class === 'battery'
+                ) {
                   status = [
                     {
                       name: 'bold',
-                      value: sensor.value === 100 ? 'OK' : 'BAD'
+                      value: element.value === 100 ? 'OK' : 'BAD'
                     },
                     {
                       name: 'alerts',
-                      value: sensor.value === 100 ? 'OK' : 'BAD'
+                      value: element.value === 100 ? 'OK' : 'BAD'
                     }
                   ]
-                  percentage = sensor.value === 100 ? 'OK' : 'BAD'
+                  percentage = element.value === 100 ? 'OK' : 'BAD'
                 } else {
                   status = [
-                    { name: 'bold', value: sensor.value },
-                    { name: 'alerts', value: 100 - sensor.value }
+                    { name: 'bold', value: element.value },
+                    { name: 'alerts', value: 100 - element.value }
                   ]
-                  percentage = sensor.value
-                }
-              }
-
-              if (sensor) {
-                if (
-                  sensor.class === 'contact' ||
-                  sensor.class === 'vibration' ||
-                  sensor.class === 'battery'
-                ) {
-                  status = [
-                    { name: 'bold', value: sensor.value == 100 ? 'OK' : 'BAD' },
-                    {
-                      name: 'alerts',
-                      value: sensor.value == 100 ? 'OK' : 'BAD'
-                    }
-                  ]
-                  percentage = sensor.value == 100 ? 'OK' : 'BAD'
-                } else {
-                  status = [
-                    { name: 'bold', value: sensor.value },
-                    { name: 'alerts', value: 100 - sensor.value }
-                  ]
-                  percentage = sensor.value
+                  percentage = element.value
                 }
               }
             }
@@ -186,11 +167,7 @@ class StatusesContainer extends PureComponent {
                   id={element._id}
                   title={
                     name
-                      ? this.getElementTitle(props.type) +
-                        ' ' +
-                        name +
-                        ' ' +
-                        element.key
+                      ? this.getElementTitle(props.type) + ' ' + name
                       : this.getElementTitle(props.type)
                   }
                   name={element.name}
