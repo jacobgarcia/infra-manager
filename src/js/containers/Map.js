@@ -346,6 +346,7 @@ class MapContainer extends Component {
           reports={this.getElementReports()}
           element={state.element}
           isCreating={state.isCreating}
+          sensors={null}
         />
         {
           state.isSearching

@@ -21,7 +21,7 @@ function SiteMarker(props) {
 
   let sensors = []
   if (props.isSite) {
-    sensors = props.sensors.sensors
+    props.sensors ? sensors = props.sensors.sensors : sensors = []
   }
   const icon = props.isHighlighted
     ? '/static/img/icons/red-marker.svg'
@@ -108,8 +108,10 @@ SiteMarker.propTypes = {
   site: PropTypes.object,
   onMouseHover: PropTypes.func,
   isHighlighted: PropTypes.bool,
+  isSite: PropTypes.bool,
   onClick: PropTypes.func,
   reports: PropTypes.array,
+  sensors: PropTypes.object,
   title: PropTypes.string
 }
 
