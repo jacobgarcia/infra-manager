@@ -20,7 +20,12 @@ const schema = new Schema({
     {
       key: Number,
       value: Number,
-      class: String
+      class: String,
+      // battery fields
+      fully_charged: Boolean,
+      charging: Boolean,
+      ac_present: Boolean,
+      needs_replacement: Boolean
     },
     { _id: false }
   ],
