@@ -228,19 +228,20 @@ class Dashboard extends Component {
         })
       })
 
+      const rankedSites = sites[ranking.indexOf(Math.max(...ranking))]
+      const weeklyAlerts = {
+        history: rankedSites.history.filter($0 => $0.timestamp < Date.now()),
+        key: rankedSites.key
+      }
+
       this.setState(
         {
           chart: history,
-          worst: sites[ranking.indexOf(Math.max(...ranking))],
-          weeklyAlerts: sites[ranking.indexOf(Math.max(...ranking))]
+          worst: rankedSites,
+          weeklyAlerts
         },
         () => {
-          console.log(
-            'Weekly Alerts',
-            this.state.weeklyAlerts.history.filter(
-              $0 => $0.timestamp > Date.now()
-            )
-          )
+          console.log('Weekly Alerts', rankedSites)
         }
       )
     })
@@ -583,14 +584,15 @@ class Dashboard extends Component {
                     <p>Zona Centro</p>
                     <div className="card-footer">
                       <p className="red">
-                        {this.state.worst ? this.state.worst.history.length : 0}
-                        alertas
+                        {this.state.worst ? this.state.worst.history.length : 0}{' '}
+                        alertas{' '}
                       </p>
                     </div>
                   </Card>
                   <Card title="Top semanal" className="horizontal">
                     <h1>
-                      {this.state.weeklyAlerts
+                      {this.state.weeklyAlerts &&
+                      this.state.weeklyAlerts.history.length > 0
                         ? this.state.weeklyAlerts.key
                         : 'Ninguno'}
                     </h1>
@@ -599,8 +601,8 @@ class Dashboard extends Component {
                       <p className="red">
                         {this.state.weeklyAlerts
                           ? this.state.weeklyAlerts.history.length
-                          : 0}
-                        alertas
+                          : 0}{' '}
+                        alertas{' '}
                       </p>
                     </div>
                   </Card>
