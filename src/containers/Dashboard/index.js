@@ -230,7 +230,10 @@ class Dashboard extends Component {
 
       const rankedSites = sites[ranking.indexOf(Math.max(...ranking))]
       const weeklyAlerts = {
-        history: rankedSites.history.filter($0 => $0.timestamp < Date.now()),
+        history: rankedSites.history.filter(
+          $0 =>
+            $0.timestamp > Date.now() - 604800000 && $0.timestamp < Date.now()
+        ), // 1 week difference
         key: rankedSites.key
       }
 
