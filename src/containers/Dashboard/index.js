@@ -626,7 +626,12 @@ class Dashboard extends Component {
                     }`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
-                    {item.timestamp && <div>{item.timestamp.toString()}</div>}
+                    {item.timestamp && (
+                      <div>
+                        {new Date(item.timestamp).toLocaleDateString()}{' '}
+                        {new Date(item.timestamp).toLocaleTimeString()}
+                      </div>
+                    )}
                     <div className="medium bold">{item.event}</div>
                     <div className="medium">{item.status}</div>
                     <div>
@@ -643,7 +648,6 @@ class Dashboard extends Component {
                   {
                     title: 'Historial',
                     elements: this.state.sitesHistory
-                    // reports.filter($0 => $0.risk > 0)
                   }
                 ]}
                 titles={[
