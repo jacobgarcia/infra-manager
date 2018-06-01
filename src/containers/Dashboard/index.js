@@ -237,16 +237,11 @@ class Dashboard extends Component {
         key: rankedSites.key
       }
 
-      this.setState(
-        {
-          chart: history,
-          worst: rankedSites,
-          weeklyAlerts
-        },
-        () => {
-          console.log('Weekly Alerts', rankedSites)
-        }
-      )
+      this.setState({
+        chart: history,
+        worst: rankedSites,
+        weeklyAlerts
+      })
     })
 
     // Get Visual Counter information
