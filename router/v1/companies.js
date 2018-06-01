@@ -43,6 +43,36 @@ const upload = multer({ storage: storage }).fields([
   { name: 'log', maxCount: 1 }
 ])
 
+/**
+ * Generates a MongoDB-style ObjectId in Node.js. Uses nanosecond timestamp in place of counter;
+ * should be impossible for same process to generate multiple objectId in same nanosecond? (clock
+ * drift can result in an *extremely* remote possibility of id conflicts).
+ *
+ * @returns {string} Id in same format as MongoDB ObjectId.
+ */
+const objectId = () => {
+  const os = require('os')
+  const crypto = require('crypto')
+
+  const seconds = Math.floor(new Date() / 1000).toString(16)
+  const machineId = crypto
+    .createHash('md5')
+    .update(os.hostname())
+    .digest('hex')
+    .slice(0, 6)
+  const processId = process.pid
+    .toString(16)
+    .slice(0, 4)
+    .padStart(4, '0')
+  const counter = process
+    .hrtime()[1]
+    .toString(16)
+    .slice(0, 6)
+    .padStart(6, '0')
+
+  return seconds + machineId + processId + counter
+}
+
 router.route('/users').get(hasAccess(4), (req, res) => {
   const company = req._user.cmp
   global.io.emit('report', report)
@@ -505,7 +535,7 @@ router.route('/sites/sensors').put((req, res) => {
   // Parse JSON format from Python
   if (typeof sensors === 'string') sensors = JSON.parse(sensors)
 
-  // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
+  // Since it's not human to check which company ObjectId wants to be used, a search based on the name is done
   Company.findOne({ name: company }).exec((error, company) => {
     if (error) {
       winston.error(error)
@@ -532,59 +562,77 @@ router.route('/sites/sensors').put((req, res) => {
           case 'contact':
             if (sensor.value === 0) {
               const alarm = {
+                _id: objectId(),
                 event: 'Alerta de apertura',
                 status: 'Sensor abierto',
                 risk: 3
               }
               site.alarms.push(alarm)
+              // Send socket asking for media files
+              global.io.to(key).emit('alarm', alarm)
             }
             break
           case 'vibration':
             if (sensor.value === 0) {
               const alarm = {
+                _id: objectId(),
                 event: 'Alerta de vibración',
                 status: 'Sensor activado',
                 risk: 2
               }
               site.alarms.push(alarm)
+              // Send socket asking for media files
+              global.io.to(key).emit('alarm', alarm)
             }
             break
           case 'temperature':
             if (sensor.value < 5) {
               const alarm = {
+                _id: objectId(),
                 event: 'Alerta de temperatura',
                 status: 'Temperatura baja',
                 risk: 2
               }
               site.alarms.push(alarm)
+              // Send socket asking for media files
+              global.io.to(key).emit('alarm', alarm)
             }
             if (sensor.value > 40) {
               const alarm = {
+                _id: objectId(),
                 event: 'Alerta de temperatura',
                 status: 'Temperatura alta',
                 risk: 1
               }
               site.alarms.push(alarm)
+              // Send socket asking for media files
+              global.io.to(key).emit('alarm', alarm)
             }
             break
           case 'cpu':
             if (sensor.value > 60) {
               const alarm = {
+                _id: objectId(),
                 event: 'Alerta de temperatura del CPU',
                 status: 'Temperatura alta',
                 risk: 2
               }
               site.alarms.push(alarm)
+              // Send socket asking for media files
+              global.io.to(key).emit('alarm', alarm)
             }
             break
           case 'battery':
             if (sensor.value <= 15) {
               const alarm = {
+                _id: objectId(),
                 event: 'Alerta de batería',
                 status: 'Bateria baja',
                 risk: 2
               }
               site.alarms.push(alarm)
+              // Send socket asking for media files
+              global.io.to(key).emit('alarm', alarm)
             }
             break
           default:
@@ -603,6 +651,61 @@ router.route('/sites/sensors').put((req, res) => {
         return res.status(200).json({
           success: true,
           message: 'Updated sensor information sucessfully'
+        })
+      })
+    })
+  })
+})
+
+// Get sensors of specific type for all company sites
+router.route('/sites/alarms').put(upload, (req, res) => {
+  const { key, company, alarm } = req.body
+  const photoFiles = req.files.photos
+  const photos = []
+
+  console.log(req.files)
+
+  if (!key || !company || !photoFiles) return res
+      .status(400)
+      .json({ success: false, message: 'Malformed request' })
+
+  // Since it's not human to check which company ObjectId wants to be used, a search based on the name is done
+  Company.findOne({ name: company }).exec((error, company) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({ error })
+    }
+    if (!company) return res
+        .status(404)
+        .json({ success: false, message: 'Specified company was not found' })
+
+    // Find and update site with new information
+    photoFiles.map(photo => {
+      photos.push(photo.filename)
+    })
+
+    Site.findOne({ company, key }).exec((error, site) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+      if (!site) return res.status(404).json({ message: 'No sites found' })
+      const alarmIndex = site.alarms.findIndex($0 => {
+        $0._id === alarm
+      })
+
+      // Push photo files to specified alarm
+      site.alarms[alarmIndex].photos.push(photos)
+
+      site.save(error => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({ error })
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: 'Sucessfully pushed photos to the specified alarm'
         })
       })
     })

@@ -5,7 +5,6 @@ const Schema = mongoose.Schema
 class SiteClass {}
 
 const History = new Schema({
-  _id: false,
   timestamp: { type: Number, default: Date.now() },
   event: String,
   status: String,
@@ -34,9 +33,9 @@ const schema = new Schema({
       timestamp: { type: Number, default: Date.now() },
       event: String,
       status: String,
-      risk: 0
-    },
-    { _id: false }
+      risk: 0,
+      photos: [String]
+    }
   ],
   timestamp: { type: Date, default: new Date() }, // Last updated
   history: { type: [History], default: [] },
