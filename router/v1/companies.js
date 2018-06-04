@@ -730,8 +730,8 @@ router.route('/sites/sensors').get((req, res) => {
     })
 })
 
-// Get all sensors for all company hsitory
-router.route('/sites/sensors/history').get((req, res) => {
+// Get alarms and history for all sites of company
+router.route('/sites/sensors/alarmshistory').get((req, res) => {
   const company = req._user.cmp
   Site.find({ company })
     .populate('zone', 'name')
