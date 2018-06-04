@@ -39,7 +39,6 @@ class Dashboard extends Component {
     this.state = {
       selected: 0,
       logs: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      alerts: [],
       selectedElementIndex: [null, null],
       from: new Date(),
       to: new Date(),
@@ -61,19 +60,28 @@ class Dashboard extends Component {
         { name: '6:00 PM', uv: 31, pv: 1042, tv: 43 },
         { name: '7:00 PM', uv: 0, pv: 1042, tv: 51 }
       ],
-      history: []
+      history: [],
+      alarms: []
     }
   }
 
   componentDidMount() {
     NetworkOperation.getAlarmsHistory().then(({ data }) => {
       const history = []
+      const alarms = []
       const alertedZones = []
+      const ranking = []
+      const historyShitty = []
 
       data.sites.map(site => {
         // Populate history array
         site.history.map(currentHistory => {
           history.push(currentHistory)
+        })
+
+        // Populate alarms array
+        site.alarms.map(currentAlarm => {
+          alarms.push(currentAlarm)
         })
 
         // two array [site] [count alarms site] and top to match
@@ -87,105 +95,25 @@ class Dashboard extends Component {
           }
           alertedZones.push(alertedZone)
         }
+
+        // pushing for ranking
+        ranking.push(site.alarms.length)
+        // pushiw each log into history
+        site.history.map(log => {
+          historyShitty.push(new Date(log.timestamp))
+        })
       })
 
       this.setState({
         history,
+        alarms,
         worstZone: alertedZones.find(
           $0 => $0.value === Math.max(...alertedZones.map($0 => $0.value))
         ),
         sites: data.sites
       })
-    })
 
-    NetworkOperation.getAvailableSites().then(currentSites => {
-      NetworkOperation.getSites().then(allSites => {
-        // === CIRCULAR chart percentaje ===
-        const connected = allSites.data.sites.filter(
-          site =>
-            currentSites.data.connected_sites.includes(site.key) &&
-            site.alarms.length === 0
-        )
-        const noConnected = allSites.data.sites.filter(
-          site => !currentSites.data.connected_sites.includes(site.key)
-        )
-        const alerted = allSites.data.sites.filter(
-          site => site.alarms.length > 0
-        )
-        const tempData = [
-          {
-            name: 'workings',
-            value: connected.length
-          },
-          {
-            name: 'alerts',
-            value: alerted.length
-          },
-          {
-            name: 'damaged',
-            value: noConnected.length
-          }
-        ]
-        this.setState({
-          ok: parseInt(connected.length / allSites.data.sites.length * 100, 10),
-          bad: parseInt(
-            noConnected.length / allSites.data.sites.length * 100,
-            10
-          ),
-          war: parseInt(alerted.length / allSites.data.sites.length * 100, 10),
-          sensors: tempData
-        })
-
-        // == ALARMS section fill ==
-
-        const allAlarms = []
-        let sitesAlarms = {}
-        allSites.data.sites.map(site => {
-          site.alarms.map(currentAlarm => {
-            sitesAlarms = {
-              timestamp: currentAlarm.timestamp
-                ? currentAlarm.timestamp
-                : new Date('2018-04-03T11:37:00'),
-              event: 'Sensor de apertura activado',
-              zone: site.zone.name ? site.zone.name : 'Centro',
-              site: site.key ? site.key : 'MEXATZ0973',
-              status: 'Alerta generada',
-              risk: currentAlarm.risk
-            }
-            allAlarms.push(sitesAlarms)
-          })
-          this.setState({
-            allAlarms: allAlarms
-          })
-        })
-      })
-      // alerts section info
-    })
-
-    NetworkOperation.getAlarmsHistory().then(({ data }) => {
-      // === 'Media del servicio' chart ===
-      const sites = []
-      const ranking = []
-      const history = []
-      data.sites.map(site => {
-        (site.alarms.length || site.history.length) &&
-          sites.push({
-            key: site.key,
-            alarms: site.alarms,
-            history: site.history
-          })
-      })
-      sites.map(site => {
-        // pushing for ranking
-        ranking.push(site.alarms.length)
-        // pushiw each log into history
-        site.history.map(log => {
-          history.push(new Date(log.timestamp))
-          // new Date(date.setDate(new Date().getDate() - 7)) <  new Date(log.timestamp) ? console.log("gg")
-        })
-      })
-
-      const rankedSites = sites[ranking.indexOf(Math.max(...ranking))]
+      const rankedSites = data.sites[ranking.indexOf(Math.max(...ranking))]
       const weeklyAlerts = {
         history: rankedSites.history.filter(
           $0 =>
@@ -195,9 +123,52 @@ class Dashboard extends Component {
       }
 
       this.setState({
-        chart: history,
+        chart: historyShitty,
         worst: rankedSites,
         weeklyAlerts
+      })
+    })
+
+    NetworkOperation.getAvailableSites().then(currentSites => {
+      NetworkOperation.getSites().then(allSites => {
+        // === CIRCULAR chart percentaje ===
+        const workings = allSites.data.sites.filter(
+          site =>
+            currentSites.data.connected_sites.includes(site.key) &&
+            site.alarms.length === 0
+        )
+
+        const damaged = allSites.data.sites.filter(
+          site => !currentSites.data.connected_sites.includes(site.key)
+        )
+
+        const alerted = allSites.data.sites.filter(
+          site =>
+            site.alarms.length > 0 &&
+            currentSites.data.connected_sites.includes(site.key)
+        )
+
+        const tempData = [
+          {
+            name: 'workings',
+            value: workings.length
+          },
+          {
+            name: 'alerts',
+            value: alerted.length
+          },
+          {
+            name: 'damaged',
+            value: damaged.length
+          }
+        ]
+
+        this.setState({
+          ok: parseInt(workings.length / allSites.data.sites.length * 100, 10),
+          bad: parseInt(damaged.length / allSites.data.sites.length * 100, 10),
+          war: parseInt(alerted.length / allSites.data.sites.length * 100, 10),
+          sensors: tempData
+        })
       })
     })
 
@@ -610,7 +581,7 @@ class Dashboard extends Component {
                 elements={[
                   {
                     title: 'Alertas',
-                    elements: this.state.allAlarms
+                    elements: this.state.alarms
                   },
                   {
                     title: 'Historial',
