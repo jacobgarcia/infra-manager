@@ -99,6 +99,7 @@ class MapContainer extends Component {
       })
     })
 
+    // Reports have all site information
     NetworkOperation.getReports().then(({ data }) => {
       data.reports.map(report => {
         this.props.setReport(report)

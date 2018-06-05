@@ -101,9 +101,6 @@ class App extends Component {
     })
 
     // Get all alarms and history of all sites. But set all sites with this information
-    NetworkOperation.getAlarmsHistory().then(({ data }) => {
-      data.sites.map(site => {})
-    })
 
     // Get User Credentials
     NetworkOperation.getSelf()

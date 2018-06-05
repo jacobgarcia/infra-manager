@@ -233,7 +233,7 @@ router.route('/site/:siteKey').get((req, res) => {
 router.route('/reports').get((req, res) => {
   const company = req._user.cmp
   Site.find({ company })
-    .populate('zone')
+    .populate('zone', 'name')
     .exec((error, sites) => {
       if (error) {
         winston.error({ error })
