@@ -26,25 +26,14 @@ import { blue, darkGray } from 'lib/colors'
 import { getColor, dataChart } from 'lib/specialFunctions'
 import { NetworkOperation } from 'lib'
 
-const data = [
-  { name: 'workings', value: 75 },
-  { name: 'alerts', value: 15 },
-  { name: 'damaged', value: 10 }
-]
-
 class Dashboard extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      selected: 0,
-      logs: [0, 0, 0, 0, 0, 0, 0, 0, 0],
       selectedElementIndex: [null, null],
-      from: new Date(),
-      to: new Date(),
       detail: null,
-      worstZone: '',
-      worstZoneValue: 0,
+      worstZone: null,
       chartCounter: [
         { name: '7:00 AM', uv: 9, pv: 1042, tv: 92 },
         { name: '8:00 AM', uv: 31, pv: 1042, tv: 34 },
@@ -61,7 +50,12 @@ class Dashboard extends Component {
         { name: '7:00 PM', uv: 0, pv: 1042, tv: 51 }
       ],
       history: [],
-      alarms: []
+      alarms: [],
+      data: [
+        { name: 'workings', value: 75 },
+        { name: 'alerts', value: 15 },
+        { name: 'damaged', value: 10 }
+      ]
     }
   }
 
@@ -70,12 +64,14 @@ class Dashboard extends Component {
       const history = []
       const alarms = []
       const alertedZones = []
-      const ranking = []
-      const historyShitty = []
+      const alertedSites = []
+      const chart = []
 
       data.sites.map(site => {
-        // Populate history array
         site.history.map(currentHistory => {
+          // Populate chart dates
+          chart.push(new Date(currentHistory.timestamp))
+          // Populate history array
           history.push(currentHistory)
         })
 
@@ -84,7 +80,7 @@ class Dashboard extends Component {
           alarms.push(currentAlarm)
         })
 
-        // two array [site] [count alarms site] and top to match
+        // Most alerted zone
         const zone = alertedZones.find($0 => $0.name === site.zone.name)
         if (zone) {
           zone.value += site.alarms.length
@@ -96,42 +92,52 @@ class Dashboard extends Component {
           alertedZones.push(alertedZone)
         }
 
-        // pushing for ranking
-        ranking.push(site.alarms.length)
-        // pushiw each log into history
-        site.history.map(log => {
-          historyShitty.push(new Date(log.timestamp))
-        })
+        // Most alerted site
+        const theSite = alertedSites.find($0 => $0.name === site.key)
+        if (theSite) {
+          theSite.value += site.alarms.length
+        } else {
+          const alertedSite = {
+            name: site.key,
+            value: site.alarms.length,
+            history: site.history
+          }
+          alertedSites.push(alertedSite)
+        }
       })
+
+      // Find the most alerted site
+      const worstSite = alertedSites.find(
+        $0 => $0.value === Math.max(...alertedSites.map($0 => $0.value))
+      )
+
+      // Find the most alerted zone
+      const worstZone = alertedZones.find(
+        $0 => $0.value === Math.max(...alertedZones.map($0 => $0.value))
+      )
+
+      const weeklyAlerts = {
+        history: worstSite.history.filter(
+          $0 =>
+            $0.timestamp > Date.now() - 604800000 && $0.timestamp < Date.now()
+        ), // 1 week difference
+        key: worstSite.name
+      }
 
       this.setState({
         history,
         alarms,
-        worstZone: alertedZones.find(
-          $0 => $0.value === Math.max(...alertedZones.map($0 => $0.value))
-        ),
-        sites: data.sites
-      })
-
-      const rankedSites = data.sites[ranking.indexOf(Math.max(...ranking))]
-      const weeklyAlerts = {
-        history: rankedSites.history.filter(
-          $0 =>
-            $0.timestamp > Date.now() - 604800000 && $0.timestamp < Date.now()
-        ), // 1 week difference
-        key: rankedSites.key
-      }
-
-      this.setState({
-        chart: historyShitty,
-        worst: rankedSites,
-        weeklyAlerts
+        worstZone,
+        sites: data.sites,
+        worstSite,
+        weeklyAlerts,
+        chart
       })
     })
 
     NetworkOperation.getAvailableSites().then(currentSites => {
       NetworkOperation.getSites().then(allSites => {
-        // === CIRCULAR chart percentaje ===
+        // CIRCULAR Chart
         const workings = allSites.data.sites.filter(
           site =>
             currentSites.data.connected_sites.includes(site.key) &&
@@ -174,7 +180,6 @@ class Dashboard extends Component {
 
     // Get Visual Counter information
     NetworkOperation.getCounter().then(({ data }) => {
-      // console.log('Counter', data)
       const { chartCounter } = this.state
       data.counts.map((count, index) => {
         chartCounter[11].uv = 0
@@ -303,7 +308,7 @@ class Dashboard extends Component {
                         outerRadius={95}
                         strokeWidth={0}
                         label>
-                        {data.map(({ name }, index) => (
+                        {this.state.data.map(({ name }, index) => (
                           <Cell key={index} fill={getColor(name)} />
                         ))}
                       </Pie>
@@ -509,13 +514,16 @@ class Dashboard extends Component {
 
                     <div className="card-footer">
                       <p className="red">
-                        {this.state.worstZone.value} alertas{' '}
+                        {this.state.worstZone && this.state.worstZone.value}{' '}
+                        alertas{' '}
                       </p>
                     </div>
                   </Card>
                   <Card title="Sitio de mas alertas" className="horizontal">
                     <h1>
-                      {this.state.worst ? this.state.worst.key : 'Ninguno'}
+                      {this.state.worstSite
+                        ? this.state.worstSite.name
+                        : 'Ninguno'}
                     </h1>
                     <p>Zona Centro</p>
                     <div className="card-footer">
@@ -608,14 +616,7 @@ Dashboard.propTypes = {
   credentials: PropTypes.object
 }
 
-function mapStateToProps({
-  facialReports,
-  // accessReports,
-  // cameraReports,
-  perimeterReports,
-  credentials
-  // vehicularReports
-}) {
+function mapStateToProps({ facialReports, perimeterReports, credentials }) {
   return { facialReports, perimeterReports, credentials }
 }
 
