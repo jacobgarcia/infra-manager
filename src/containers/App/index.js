@@ -10,7 +10,6 @@ import {
   setComplete,
   setLoading,
   setExhaustive,
-  setReport,
   setFacialReport,
   setVehicleReport,
   setCamera
@@ -87,20 +86,26 @@ class App extends Component {
 
     this.props.setLoading()
 
-    // Set Vehicular Reports
+    // Get all vehicular reports
     NetworkOperation.getVehicularReports().then(({ data }) => {
       data.reports.map(report => {
         this.props.setVehicleReport(report)
       })
     })
 
-    // Set Cameras
+    // Get the cameras of all sites
     NetworkOperation.getStreams().then(({ data }) => {
       data.cameras.map(camera => {
         this.props.setCamera(camera)
       })
     })
 
+    // Get all alarms and history of all sites. But set all sites with this information
+    NetworkOperation.getAlarmsHistory().then(({ data }) => {
+      data.sites.map(site => {})
+    })
+
+    // Get User Credentials
     NetworkOperation.getSelf()
       .then(({ data }) => {
         this.setState({
@@ -159,7 +164,6 @@ class App extends Component {
         }
       })
       .then(() => {
-        console.log('END LOADING LOADING')
         this.props.setComplete()
         this.setState({
           isLoading: false
@@ -307,9 +311,6 @@ App.propTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
-    setReport: report => {
-      dispatch(setReport(report))
-    },
     setCredentials: user => {
       dispatch(setCredentials(user))
     },

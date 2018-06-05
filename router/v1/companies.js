@@ -229,12 +229,11 @@ router.route('/site/:siteKey').get((req, res) => {
   })
 })
 
-// Get last report for all sites
+// Get all report for all sites from a specified company
 router.route('/reports').get((req, res) => {
   const company = req._user.cmp
-  // global.io.emit('report', report)
   Site.find({ company })
-    .populate('zone', 'name')
+    .populate('zone')
     .exec((error, sites) => {
       if (error) {
         winston.error({ error })
@@ -249,7 +248,8 @@ router.route('/reports').get((req, res) => {
         zone: site.zone,
         timestamp: site.timestamp,
         sensors: site.sensors,
-        alarms: site.alarms
+        alarms: site.alarms,
+        history: site.history
       }))
 
       return res.status(200).json({ reports })

@@ -91,15 +91,6 @@ export function setSubzone(zoneId, subzoneId, name, positions) {
   }
 }
 
-export function setAllSites(zoneId, subzoneId, sites) {
-  return {
-    type: 'SET_ALL_SITES',
-    zoneId,
-    subzoneId,
-    sites
-  }
-}
-
 export function setSite(zoneId, subzoneId, siteId, key, name, position) {
   return {
     type: 'SET_SITE',
@@ -124,13 +115,6 @@ export function setReport(report) {
   }
 }
 
-export function setInitialReports(reports) {
-  return {
-    type: 'SET_INITAL_REPORTS',
-    reports
-  }
-}
-
 export function dismissReport(reportId) {
   return {
     type: 'DISMISS_REPORT',
@@ -138,7 +122,19 @@ export function dismissReport(reportId) {
   }
 }
 
-export function setFacialReport(timestamp, event, success, risk, zone, status, site, access, pin, photo, id) {
+export function setFacialReport(
+  timestamp,
+  event,
+  success,
+  risk,
+  zone,
+  status,
+  site,
+  access,
+  pin,
+  photo,
+  id
+) {
   return {
     type: 'SET_FACIAL_REPORT',
     timestamp,
@@ -174,9 +170,9 @@ export function setVehicleReport(report) {
           C A M E R A S
 
  */
- export function setCamera(camera) {
-   return {
-     type: 'SET_CAMERA',
-     camera
-   }
- }
+export function setCamera(camera) {
+  return {
+    type: 'SET_CAMERA',
+    camera
+  }
+}

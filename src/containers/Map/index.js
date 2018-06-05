@@ -100,14 +100,13 @@ class MapContainer extends Component {
     })
 
     NetworkOperation.getReports().then(({ data }) => {
-      data.reports.forEach(report => {
+      data.reports.map(report => {
         this.props.setReport(report)
       })
     })
 
     NetworkOperation.getAvailableSites()
       .then(({ data }) => {
-        //console.log(data);
         this.setState({
           availableSites: data.connected_sites
         })
@@ -146,7 +145,7 @@ class MapContainer extends Component {
     }, 30000)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { zoneId = null, siteId = null } = nextProps.match.params
     if (this.props.match.params === nextProps.match.params) return
 
@@ -205,8 +204,7 @@ class MapContainer extends Component {
   getElementsToRender = props => {
     const { zoneId = null, siteId = null } = props.match.params
 
-    if (!this.props.zones || this.props.zones.length === 0)
-      return { elements: [], shadow: null }
+    if (!this.props.zones || this.props.zones.length === 0) return { elements: [], shadow: null }
 
     if (siteId) {
       const { sites = [], positions } = this.props.zones.find(
@@ -377,7 +375,7 @@ class MapContainer extends Component {
   }
 
   render() {
-    //console.log(this.state.availableSites);
+    // console.log(this.state.availableSites);
     const { state, props } = this
     if (!props.credentials.user) {
       return null
@@ -442,8 +440,7 @@ class MapContainer extends Component {
                     className="button back"
                     onClick={() => {
                       if (state.isCreating) this.toggleCreate()
-                      if (selectedSite)
-                        props.history.push(`/sites/${selectedZone}`)
+                      if (selectedSite) props.history.push(`/sites/${selectedZone}`)
                       else if (selectedZone) props.history.push('/sites')
                     }}>
                     Regresar <span>{selectedSite ? 'zona' : 'general'}</span>
@@ -486,8 +483,7 @@ class MapContainer extends Component {
               weight={0}
               onClick={() => {
                 if (state.isCreating) return null
-                if (selectedSite)
-                  return props.history.push(`/sites/${selectedZone}`)
+                if (selectedSite) return props.history.push(`/sites/${selectedZone}`)
                 if (selectedZone) return props.history.push(`/sites`)
                 return null
               }}
