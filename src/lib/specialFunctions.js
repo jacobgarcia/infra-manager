@@ -39,7 +39,7 @@ export function substractReportValues(reports = []) {
   const alarms = []
   const sensors = []
   reports.map(report => {
-    alarms.push(...report.alarms[0].values)
+    alarms.push(...report.alarms)
     sensors.push(...report.sensors[0].values)
   })
 

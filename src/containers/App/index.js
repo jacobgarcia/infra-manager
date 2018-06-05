@@ -101,6 +101,7 @@ class App extends Component {
     })
 
     // Get all alarms and history of all sites. But set all sites with this information
+    // Reports have all site information
 
     // Get User Credentials
     NetworkOperation.getSelf()
@@ -303,7 +304,8 @@ App.propTypes = {
   setComplete: PropTypes.func,
   setFacialReport: PropTypes.func,
   setVehicleReport: PropTypes.func,
-  setCamera: PropTypes.func
+  setCamera: PropTypes.func,
+  setReport: PropTypes.func
 }
 
 function mapDispatchToProps(dispatch) {

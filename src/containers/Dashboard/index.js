@@ -61,12 +61,14 @@ class Dashboard extends Component {
 
   componentDidMount() {
     NetworkOperation.getAlarmsHistory().then(({ data }) => {
+      const { props } = this
       const history = []
       const alarms = []
       const alertedZones = []
       const alertedSites = []
       const chart = []
 
+      console.log(props)
       data.sites.map(site => {
         site.history.map(currentHistory => {
           // Populate chart dates
@@ -613,11 +615,16 @@ class Dashboard extends Component {
 }
 
 Dashboard.propTypes = {
-  credentials: PropTypes.object
+  credentials: PropTypes.object,
+  reports: PropTypes.array
 }
 
-function mapStateToProps({ facialReports, perimeterReports, credentials }) {
-  return { facialReports, perimeterReports, credentials }
+function mapStateToProps(props) {
+  const { reports, credentials } = props
+  return {
+    reports,
+    credentials
+  }
 }
 
 export default connect(mapStateToProps)(Dashboard)

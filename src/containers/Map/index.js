@@ -98,14 +98,11 @@ class MapContainer extends Component {
         states: data.states
       })
     })
-
-    // Reports have all site information
     NetworkOperation.getReports().then(({ data }) => {
       data.reports.map(report => {
         this.props.setReport(report)
       })
     })
-
     NetworkOperation.getAvailableSites()
       .then(({ data }) => {
         this.setState({
@@ -118,32 +115,6 @@ class MapContainer extends Component {
         })
       })
       .catch(console.error)
-
-    setInterval(() => {
-      NetworkOperation.getAvailableStates().then(({ data }) => {
-        this.setState({
-          states: data.states
-        })
-      })
-
-      NetworkOperation.getReports().then(({ data }) => {
-        data.reports.forEach(report => {
-          this.props.setReport(report)
-        })
-      })
-
-      NetworkOperation.getAvailableSites()
-        .then(({ data }) => {
-          this.setState({
-            availableSites: data.connected_sites
-          })
-          const { elements = [] } = this.getElementsToRender(this.props)
-          this.setState({
-            elements
-          })
-        })
-        .catch(console.error)
-    }, 30000)
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

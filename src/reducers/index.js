@@ -48,25 +48,18 @@ function reports(state = [], action) {
         ({ site }) => site.key === action.report.site.key
       )
       const newState = [...state] // BUG: It only creates a shallow copy
-      // console.log({report: action.report, foundIndex})
 
       foundIndex > -1
         ? (newState[foundIndex] = {
             site: newState[foundIndex].site,
             zone: action.report.zone,
             _id: action.report._id,
-            alarms: [
-              {
-                timestamp: action.report.timestamp,
-                values: [...(action.report.alarms || [])],
-                attended: false
-              },
-              ...(newState[foundIndex].alarms || [])
-            ],
+            alarms: [...(newState[foundIndex].alarms || [])],
+            history: [...(newState[foundIndex].history || [])],
             sensors: [
               {
                 timestamp: action.report.timestamp,
-                values: [...(action.report.sensors || [])]
+                values: [...[]]
               },
               ...(newState[foundIndex].sensors || [])
             ]
@@ -75,13 +68,8 @@ function reports(state = [], action) {
             site: action.report.site,
             zone: action.report.zone,
             _id: action.report._id,
-            alarms: [
-              {
-                timestamp: action.report.timestamp,
-                values: [...(action.report.alarms || [])],
-                attended: false
-              }
-            ],
+            alarms: action.report.alarms,
+            history: action.report.history,
             sensors: [
               {
                 timestamp: action.report.timestamp,
