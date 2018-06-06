@@ -72,13 +72,13 @@ class Dashboard extends Component {
         // Populate chart dates
         chart.push(new Date(currentHistory.timestamp))
         // Populate history array
-        currentHistory.site = site.key
+        currentHistory.site = site.site.key
         history.push(currentHistory)
       })
 
       // Populate alarms array
       site.alarms.map(currentAlarm => {
-        currentAlarm.site = site.key
+        currentAlarm.site = site.site.key
         alarms.push(currentAlarm)
       })
 
