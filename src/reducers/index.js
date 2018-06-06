@@ -59,7 +59,7 @@ function reports(state = [], action) {
             sensors: [
               {
                 timestamp: action.report.timestamp,
-                values: [...[]]
+                values: [...(action.report.sensors || [])]
               },
               ...(newState[foundIndex].sensors || [])
             ]
