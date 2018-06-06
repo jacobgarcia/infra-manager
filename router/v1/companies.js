@@ -248,8 +248,21 @@ router.route('/reports').get((req, res) => {
         zone: site.zone,
         timestamp: site.timestamp,
         sensors: site.sensors,
-        alarms: site.alarms,
-        history: site.history
+        alarms: {
+          timestamp: site.alarms.timestamp,
+          photos: site.alarms.photos,
+          event: site.alarms.event,
+          status: site.alarms.status,
+          risk: site.alarms.risk,
+          site: site.key
+        },
+        history: {
+          timestamp: site.history.timestamp,
+          event: site.history.event,
+          status: site.history.status,
+          risk: site.history.risk,
+          site: site.key
+        }
       }))
 
       return res.status(200).json({ reports })
