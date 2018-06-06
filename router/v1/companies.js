@@ -730,22 +730,6 @@ router.route('/sites/sensors').get((req, res) => {
     })
 })
 
-// Get alarms and history for all sites of company
-router.route('/sites/sensors/alarmshistory').get((req, res) => {
-  const company = req._user.cmp
-  Site.find({ company })
-    .populate('zone', 'name')
-    .select('alarms history key zone')
-    .exec((error, sites) => {
-      if (error) {
-        winston.error({ error })
-        return res.status(500).json({ error })
-      }
-      if (!sites) return res.status(404).json({ message: 'No sites found' })
-      return res.status(200).json({ sites })
-    })
-})
-
 // Get all sensors for all company hsitory
 router.route('/sites/sensors/dismiss/:key').post((req, res) => {
   const company = req._user.cmp

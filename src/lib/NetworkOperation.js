@@ -90,10 +90,6 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/sites/sensors`)
   }
 
-  static getAlarmsHistory() {
-    return axios.get(`${baseUrl}/sites/sensors/alarmshistory`)
-  }
-
   static getSensors(type) {
     return axios.get(`${baseUrl}/sites/sensors/${type}`)
   }

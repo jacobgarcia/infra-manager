@@ -60,81 +60,77 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    NetworkOperation.getAlarmsHistory().then(({ data }) => {
-      const { props } = this
-      const history = []
-      const alarms = []
-      const alertedZones = []
-      const alertedSites = []
-      const chart = []
+    const { props } = this
+    const history = []
+    const alarms = []
+    const alertedZones = []
+    const alertedSites = []
+    const chart = []
 
-      console.log(props)
-      data.sites.map(site => {
-        site.history.map(currentHistory => {
-          // Populate chart dates
-          chart.push(new Date(currentHistory.timestamp))
-          // Populate history array
-          history.push(currentHistory)
-        })
-
-        // Populate alarms array
-        site.alarms.map(currentAlarm => {
-          alarms.push(currentAlarm)
-        })
-
-        // Most alerted zone
-        const zone = alertedZones.find($0 => $0.name === site.zone.name)
-        if (zone) {
-          zone.value += site.alarms.length
-        } else {
-          const alertedZone = {
-            name: site.zone.name,
-            value: site.alarms.length
-          }
-          alertedZones.push(alertedZone)
-        }
-
-        // Most alerted site
-        const theSite = alertedSites.find($0 => $0.name === site.key)
-        if (theSite) {
-          theSite.value += site.alarms.length
-        } else {
-          const alertedSite = {
-            name: site.key,
-            value: site.alarms.length,
-            history: site.history
-          }
-          alertedSites.push(alertedSite)
-        }
+    props.reports.map(site => {
+      site.history.map(currentHistory => {
+        // Populate chart dates
+        chart.push(new Date(currentHistory.timestamp))
+        // Populate history array
+        history.push(currentHistory)
       })
 
-      // Find the most alerted site
-      const worstSite = alertedSites.find(
-        $0 => $0.value === Math.max(...alertedSites.map($0 => $0.value))
-      )
+      // Populate alarms array
+      site.alarms.map(currentAlarm => {
+        alarms.push(currentAlarm)
+      })
 
-      // Find the most alerted zone
-      const worstZone = alertedZones.find(
-        $0 => $0.value === Math.max(...alertedZones.map($0 => $0.value))
-      )
-
-      const weeklyAlerts = {
-        history: worstSite.history.filter(
-          $0 =>
-            $0.timestamp > Date.now() - 604800000 && $0.timestamp < Date.now()
-        ), // 1 week difference
-        key: worstSite.name
+      // Most alerted zone
+      const zone = alertedZones.find($0 => $0.name === site.zone.name)
+      if (zone) {
+        zone.value += site.alarms.length
+      } else {
+        const alertedZone = {
+          name: site.zone.name,
+          value: site.alarms.length
+        }
+        alertedZones.push(alertedZone)
       }
 
-      this.setState({
-        history,
-        alarms,
-        worstZone,
-        sites: data.sites,
-        worstSite,
-        weeklyAlerts,
-        chart
-      })
+      // Most alerted site
+      const theSite = alertedSites.find($0 => $0.name === site.site.key)
+      if (theSite) {
+        theSite.value += site.alarms.length
+      } else {
+        const alertedSite = {
+          name: site.site.key,
+          value: site.alarms.length,
+          history: site.history
+        }
+        alertedSites.push(alertedSite)
+      }
+    })
+
+    // Find the most alerted site
+    const worstSite = alertedSites.find(
+      $0 => $0.value === Math.max(...alertedSites.map($0 => $0.value))
+    )
+
+    // Find the most alerted zone
+    const worstZone = alertedZones.find(
+      $0 => $0.value === Math.max(...alertedZones.map($0 => $0.value))
+    )
+
+    const weeklyAlerts = {
+      history: worstSite.history.filter(
+        $0 => $0.timestamp > Date.now() - 604800000 && $0.timestamp < Date.now()
+      ), // 1 week difference
+      key: worstSite.name
+    }
+
+    this.setState({
+      history,
+      alarms,
+      worstZone,
+      sites: props.reports,
+      worstSite,
+      weeklyAlerts,
+      chart
     })
 
     NetworkOperation.getAvailableSites().then(currentSites => {
@@ -530,7 +526,9 @@ class Dashboard extends Component {
                     <p>Zona Centro</p>
                     <div className="card-footer">
                       <p className="red">
-                        {this.state.worst ? this.state.worst.history.length : 0}{' '}
+                        {this.state.worstSite
+                          ? this.state.worstSite.history.length
+                          : 0}{' '}
                         alertas{' '}
                       </p>
                     </div>
