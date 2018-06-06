@@ -100,6 +100,16 @@ function reports(state = [], action) {
   }
 }
 
+function history(state = [], action) {
+  switch (action.type) {
+    case 'SET_HISTORY': {
+      return [action.history]
+    }
+    default:
+      return state
+  }
+}
+
 function zones(state = [], action) {
   switch (action.type) {
     case 'SET_EXHAUSTIVE':
@@ -186,5 +196,6 @@ export default combineReducers({
   inventoryReports: inventoryLogs,
   administrators,
   appAlert,
-  reports
+  reports,
+  history
 })

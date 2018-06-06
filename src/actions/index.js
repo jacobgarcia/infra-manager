@@ -122,6 +122,18 @@ export function dismissReport(reportId) {
   }
 }
 
+/*
+
+        H I S T O R Y
+
+ */
+export function setHistory(history) {
+  return {
+    type: 'SET_HISTORY',
+    history
+  }
+}
+
 export function setFacialReport(
   timestamp,
   event,

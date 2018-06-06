@@ -13,7 +13,8 @@ import {
   setFacialReport,
   setVehicleReport,
   setCamera,
-  setReport
+  setReport,
+  setHistory
 } from 'actions'
 
 import Dashboard from 'containers/Dashboard'
@@ -107,6 +108,11 @@ class App extends Component {
     NetworkOperation.getReports().then(({ data }) => {
       data.reports.map(report => {
         this.props.setReport(report)
+        // Populate history array
+        report.history.map(currentHistory => {
+          currentHistory.site = report.site.key
+          this.props.setHistory(currentHistory)
+        })
       })
     })
 
@@ -313,13 +319,17 @@ App.propTypes = {
   setFacialReport: PropTypes.func,
   setVehicleReport: PropTypes.func,
   setCamera: PropTypes.func,
-  setReport: PropTypes.func
+  setReport: PropTypes.func,
+  setHistory: PropTypes.func
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     setReport: report => {
       dispatch(setReport(report))
+    },
+    setHistory: history => {
+      dispatch(setHistory(history))
     },
     setCredentials: user => {
       dispatch(setCredentials(user))
@@ -371,11 +381,12 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-function mapStateToProps({ zones, loading, credentials }) {
+function mapStateToProps({ zones, loading, credentials, history }) {
   return {
     loading,
     credentials,
-    zones
+    zones,
+    history
   }
 }
 
