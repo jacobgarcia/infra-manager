@@ -16,7 +16,7 @@ import {
   setReport
 } from 'actions'
 
-import Dashboard from 'containers/Dashboard/Loadable'
+import Dashboard from 'containers/Dashboard'
 import Users from 'containers/Users/Loadable'
 import Statistics from 'containers/Statistics/Loadable'
 import Settings from 'containers/Settings/Loadable'
@@ -30,6 +30,7 @@ import VisualCounter from 'containers/VisualCounter/Loadable'
 import Reports from 'containers/Reports/Loadable'
 import Sensors from 'containers/Sensors/Loadable'
 import Inventory from 'containers/Inventory/Loadable'
+import Alarms from 'containers/Alarms/Loadable'
 
 import Navigator from 'components/Navigator'
 import VideoPlayer from 'components/VideoPlayer'
@@ -288,6 +289,7 @@ class App extends Component {
           <Route path="/reports" component={Reports} />
           <Route path="/settings" component={Settings} />
           <Route path="/sensors" component={Sensors} />
+          <Route path="/alarms" component={Alarms} />
           <Route
             path="/streaming"
             render={() => <VideoPlayer {...videoJsOptions} />}
