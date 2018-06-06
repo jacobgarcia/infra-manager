@@ -16,14 +16,7 @@ import Marker from 'components/Marker'
 import Search from 'components/Search'
 import CreateElementBar from 'components/CreateElementBar'
 import { NetworkOperation } from 'lib'
-import {
-  setLoading,
-  setComplete,
-  setReport,
-  setSubzone,
-  setZone,
-  setSite
-} from 'actions'
+import { setLoading, setComplete, setSubzone, setZone, setSite } from 'actions'
 import { getAreaCenter, arrayDifference } from 'lib/specialFunctions'
 
 class MapContainer extends Component {
@@ -81,11 +74,7 @@ class MapContainer extends Component {
         states: data.states
       })
     })
-    NetworkOperation.getReports().then(({ data }) => {
-      data.reports.map(report => {
-        this.props.setReport(report)
-      })
-    })
+
     NetworkOperation.getAvailableSites()
       .then(({ data }) => {
         this.setState({
@@ -577,7 +566,6 @@ MapContainer.propTypes = {
   zones: PropTypes.array,
   match: PropTypes.object,
   reports: PropTypes.array,
-  setReport: PropTypes.func,
   setSite: PropTypes.func,
   setZone: PropTypes.func,
   setSubzone: PropTypes.func,
@@ -614,9 +602,6 @@ function mapDispatchToProps(dispatch) {
     },
     setComplete: () => {
       dispatch(setComplete())
-    },
-    setReport: report => {
-      dispatch(setReport(report))
     }
   }
 }

@@ -12,7 +12,8 @@ import {
   setExhaustive,
   setFacialReport,
   setVehicleReport,
-  setCamera
+  setCamera,
+  setReport
 } from 'actions'
 
 import Dashboard from 'containers/Dashboard/Loadable'
@@ -102,6 +103,11 @@ class App extends Component {
 
     // Get all alarms and history of all sites. But set all sites with this information
     // Reports have all site information
+    NetworkOperation.getReports().then(({ data }) => {
+      data.reports.map(report => {
+        this.props.setReport(report)
+      })
+    })
 
     // Get User Credentials
     NetworkOperation.getSelf()
@@ -310,6 +316,9 @@ App.propTypes = {
 
 function mapDispatchToProps(dispatch) {
   return {
+    setReport: report => {
+      dispatch(setReport(report))
+    },
     setCredentials: user => {
       dispatch(setCredentials(user))
     },
