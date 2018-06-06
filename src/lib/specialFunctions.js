@@ -2,6 +2,22 @@
 
 import { yellow, red, blue } from '../lib/colors'
 
+export function arrayDifference(arrayOne, arrayTwo) {
+  const ret = []
+  arrayOne.sort()
+  arrayTwo.sort()
+
+  // Compare only with keys
+  const arrayTwoKeys = arrayTwo.map($0 => $0.key)
+  for (let $i = 0; $i < arrayOne.length; $i += 1) {
+    if (arrayTwoKeys.indexOf(arrayOne[$i]) > -1) {
+      ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[$i])])
+    }
+  }
+
+  return ret
+}
+
 export function getColor(name) {
   switch (name) {
     case 'working':

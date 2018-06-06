@@ -24,7 +24,7 @@ import {
   setZone,
   setSite
 } from 'actions'
-import { getAreaCenter } from 'lib/specialFunctions'
+import { getAreaCenter, arrayDifference } from 'lib/specialFunctions'
 
 class MapContainer extends Component {
   constructor(props) {
@@ -61,23 +61,6 @@ class MapContainer extends Component {
     this.onElementNameChange = this.onElementNameChange.bind(this)
     this.onElementPositionsChange = this.onElementPositionsChange.bind(this)
     this.onCreateElement = this.onCreateElement.bind(this)
-    this.arrayDifference = this.arrayDifference.bind(this)
-  }
-
-  arrayDifference(arrayOne, arrayTwo) {
-    var ret = []
-    arrayOne.sort()
-    arrayTwo.sort()
-
-    // Compare only with keys
-    const arrayTwoKeys = arrayTwo.map(a => a.key)
-    for (let i = 0; i < arrayOne.length; i += 1) {
-      if (arrayTwoKeys.indexOf(arrayOne[i]) > -1) {
-        ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[i])])
-      }
-    }
-
-    return ret
   }
 
   onViewportChanged = ({ zoom }) => {
@@ -149,16 +132,34 @@ class MapContainer extends Component {
           shadow = null
         } = this.getElementsToRender(nextProps)
 
+        // Get currentPosition in map
+        let currentPosition = 0
+        if (siteId) {
+          currentPosition = element.position
+        } else if (shadow) {
+          currentPosition = getAreaCenter(shadow)
+        } else {
+          currentPosition = this.state.currentPosition
+        }
+
+        // Get currentZoom in map
+        let currentZoom = 0
+        if (siteId) {
+          currentZoom = 13
+        } else if (zoneId) {
+          currentZoom = 7
+        } else {
+          currentZoom = 5
+        }
+
         // Update state
-        this.setState(prev => ({
-          currentPosition: siteId
-            ? element.position
-            : shadow ? getAreaCenter(shadow) : prev.currentPosition,
-          currentZoom: siteId ? 13 : zoneId ? 7 : 5,
+        this.setState({
+          currentPosition,
+          currentZoom,
           element,
           shadow,
           elements
-        }))
+        })
       }
     )
   }
@@ -166,11 +167,21 @@ class MapContainer extends Component {
   toggleCreate = () => {
     const { zoneId = null } = this.props.match.params
 
-    this.setState(prev => ({
+    // Check which element is being created
+    let isCreating = null
+    if (this.state.isCreating) {
+      isCreating = null
+    } else if (zoneId) {
+      isCreating = 'SITE'
+    } else {
+      isCreating = 'ZONE'
+    }
+
+    this.setState({
       newPositions: [],
-      isCreating: prev.isCreating ? null : zoneId ? 'SITE' : 'ZONE',
+      isCreating,
       showing: null
-    }))
+    })
   }
 
   getElementsToRender = props => {
@@ -183,10 +194,7 @@ class MapContainer extends Component {
         ({ _id }) => _id === zoneId
       )
       const element = sites.find(({ _id }) => _id === siteId)
-      const availableSites = this.arrayDifference(
-        this.state.availableSites,
-        sites
-      )
+      const availableSites = arrayDifference(this.state.availableSites, sites)
 
       return {
         elements: availableSites,
@@ -196,10 +204,7 @@ class MapContainer extends Component {
     } else if (zoneId) {
       const zone = this.props.zones.find(({ _id }) => _id === zoneId)
       const { sites = [], positions: shadow } = zone
-      const availableSites = this.arrayDifference(
-        this.state.availableSites,
-        sites
-      )
+      const availableSites = arrayDifference(this.state.availableSites, sites)
 
       return {
         elements: availableSites.map(site => ({ ...site, type: 'SITE' })),
@@ -248,13 +253,15 @@ class MapContainer extends Component {
     const positions =
       this.state.newPositions.length > 0 ? this.state.newPositions : [[]]
 
-    name === 'lat'
-      ? positions[positions.length - 1][0]
+    if (name === 'lat') {
+      positions[positions.length - 1][0]
         ? (positions[positions.length - 1][0] = value)
         : (positions[positions.length - 1] = [value, 0])
-      : positions[positions.length - 1][1]
+    } else {
+      positions[positions.length - 1][1]
         ? (positions[positions.length - 1][1] = value)
         : (positions[positions.length - 1] = [0, value])
+    }
 
     this.setState({
       newPositions: positions,
@@ -358,6 +365,16 @@ class MapContainer extends Component {
       siteId: selectedSite = null
     } = props.match.params
 
+    // selectedType
+    let selectedType = null
+    if (selectedSite) {
+      selectedType = 'SITE'
+    } else if (selectedZone) {
+      selectedType = 'ZONE'
+    } else {
+      selectedType = 'GENERAL'
+    }
+
     return (
       <div
         id="map-container"
@@ -370,9 +387,7 @@ class MapContainer extends Component {
           alerts={null}
           onHover={this.onElementOver}
           elements={state.elements}
-          selectedType={
-            selectedSite ? 'SITE' : selectedZone ? 'ZONE' : 'GENERAL'
-          }
+          selectedType={selectedType}
           onVisibleToggle={() => this.toggleVisible('OVERALL')}
           reports={this.getElementReports()}
           element={state.element}
