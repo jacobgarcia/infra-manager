@@ -222,6 +222,7 @@ router.use((req, res, next) => {
     }
 
     req._user = decoded
+    req._token = token
     return next()
   })
 })
