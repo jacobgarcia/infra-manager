@@ -110,6 +110,16 @@ function history(state = [], action) {
   }
 }
 
+function alarms(state = [], action) {
+  switch (action.type) {
+    case 'SET_ALARM': {
+      return [action.alarm]
+    }
+    default:
+      return state
+  }
+}
+
 function zones(state = [], action) {
   switch (action.type) {
     case 'SET_EXHAUSTIVE':
@@ -197,5 +207,6 @@ export default combineReducers({
   administrators,
   appAlert,
   reports,
-  history
+  history,
+  alarms
 })

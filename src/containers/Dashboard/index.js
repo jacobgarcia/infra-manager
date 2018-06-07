@@ -49,8 +49,6 @@ class Dashboard extends Component {
         { name: '6:00 PM', uv: 31, pv: 1042, tv: 43 },
         { name: '7:00 PM', uv: 0, pv: 1042, tv: 51 }
       ],
-      history: [],
-      alarms: [],
       data: [
         { name: 'workings', value: 75 },
         { name: 'alerts', value: 15 },
@@ -61,8 +59,6 @@ class Dashboard extends Component {
 
   componentDidMount() {
     const { props } = this
-    const history = []
-    const alarms = []
     const alertedZones = []
     const alertedSites = []
     const chart = []
@@ -71,15 +67,6 @@ class Dashboard extends Component {
       site.history.map(currentHistory => {
         // Populate chart dates
         chart.push(new Date(currentHistory.timestamp))
-        // Populate history array
-        currentHistory.site = site.site.key
-        history.push(currentHistory)
-      })
-
-      // Populate alarms array
-      site.alarms.map(currentAlarm => {
-        currentAlarm.site = site.site.key
-        alarms.push(currentAlarm)
       })
 
       // Most alerted zone
@@ -126,10 +113,7 @@ class Dashboard extends Component {
     }
 
     this.setState({
-      history,
-      alarms,
       worstZone,
-      sites: props.reports,
       worstSite,
       weeklyAlerts,
       chart
@@ -191,7 +175,7 @@ class Dashboard extends Component {
     })
   }
   render() {
-    const { state } = this
+    const { state, props } = this
     return (
       <div className="dashboard app-content small-padding">
         <div className="content">
@@ -591,11 +575,11 @@ class Dashboard extends Component {
                 elements={[
                   {
                     title: 'Alertas',
-                    elements: this.state.alarms
+                    elements: props.alarms
                   },
                   {
                     title: 'Historial',
-                    elements: this.state.history
+                    elements: props.history
                   }
                 ]}
                 titles={[
@@ -616,14 +600,18 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   credentials: PropTypes.object,
-  reports: PropTypes.array
+  reports: PropTypes.array,
+  alarms: PropTypes.array,
+  history: PropTypes.array
 }
 
 function mapStateToProps(props) {
-  const { reports, credentials } = props
+  const { reports, credentials, alarms, history } = props
   return {
     reports,
-    credentials
+    credentials,
+    alarms,
+    history
   }
 }
 

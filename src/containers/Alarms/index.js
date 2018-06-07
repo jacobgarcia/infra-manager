@@ -92,12 +92,12 @@ class Alarms extends Component {
                   )}
                 </div>
                 <div className="detail">
-                  <span>Rostro detectado</span>
+                  <span>IMAGENES RELACIONADAS</span>
                   <div
                     className="image-slider"
                     style={{
                       backgroundImage: `url(https://demo.connus.mx${
-                        state.selectedLog.photo
+                        state.selectedLog.photos
                       })`
                     }}
                   />
@@ -112,16 +112,12 @@ class Alarms extends Component {
                     </p>
                   </div>
                   <div className="detail">
-                    <span>Tipo de ingreso</span>
-                    <p>{state.selectedLog.access}</p>
+                    <span>Tipo de alerta</span>
+                    <p>{state.selectedLog.event}</p>
                   </div>
                   <div className="detail">
-                    <span>Usuario Autorizado</span>
-                    <p>{state.selectedLog.pin}</p>
-                  </div>
-                  <div className="detail">
-                    <span>Coincide con registro</span>
-                    <p>{state.selectedLog.success ? 'Si' : 'No'}</p>
+                    <span>Nivel de Riesgo</span>
+                    <p>{state.selectedLog.risk}</p>
                   </div>
                   <div className="detail">
                     <span>Estatus</span>
@@ -129,7 +125,7 @@ class Alarms extends Component {
                   </div>
                   <div className="detail">
                     <span>Código único de identificación</span>
-                    <p>{state.selectedLog.id}</p>
+                    <p>{state.selectedLog._id}</p>
                     {/* <img src="" alt=""/> */}
                   </div>
                 </div>
@@ -158,20 +154,16 @@ class Alarms extends Component {
                       {new Date(item.timestamp).toLocaleDateString()}
                     </div>
                     <div className="large">{item.event}</div>
-                    {/* <div className="hiddable">{item.zone.name}</div> */}
                     <div className="hiddable">{item.site}</div>
-                    {/* <div><RiskBar risk={item.risk} /></div> */}
                     <div className="large hiddable">{item.status}</div>
                   </div>
                 )}
                 title="Historial"
-                elements={props.facialReports.filter($0 => $0.risk === 0)}
+                elements={props.history}
                 titles={[
                   { title: 'Tiempo', className: 'medium' },
                   { title: 'Suceso', className: 'large' },
-                  // {title: 'Zona', className: 'hiddable'},
                   { title: 'Sitio', className: 'hiddable' },
-                  // {title: 'Riesgo'},
                   { title: 'Estatus o acción', className: 'large hiddable' }
                 ]}
               />
@@ -201,7 +193,7 @@ class Alarms extends Component {
                   </div>
                 )}
                 title="Alertas"
-                elements={props.facialReports.filter($0 => $0.risk > 0)}
+                elements={props.alarms}
                 titles={[
                   { title: 'Tiempo', className: 'medium' },
                   { title: 'Suceso', className: 'large' },
@@ -219,14 +211,17 @@ class Alarms extends Component {
 }
 
 Alarms.propTypes = {
-  appAlert: PropTypes.array,
-  facialReports: PropTypes.array
+  facialReports: PropTypes.array,
+  history: PropTypes.array,
+  alarms: PropTypes.array
 }
 
-function mapStateToProps({ zones, facialReports }) {
+function mapStateToProps({ zones, facialReports, history, alarms }) {
   return {
     zones,
-    facialReports
+    facialReports,
+    history,
+    alarms
   }
 }
 

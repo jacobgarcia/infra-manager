@@ -134,6 +134,18 @@ export function setHistory(history) {
   }
 }
 
+/*
+
+        A L A R M S
+
+ */
+export function setAlarm(alarm) {
+  return {
+    type: 'SET_ALARM',
+    alarm
+  }
+}
+
 export function setFacialReport(
   timestamp,
   event,

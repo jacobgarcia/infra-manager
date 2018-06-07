@@ -14,7 +14,8 @@ import {
   setVehicleReport,
   setCamera,
   setReport,
-  setHistory
+  setHistory,
+  setAlarm
 } from 'actions'
 
 import Dashboard from 'containers/Dashboard'
@@ -111,7 +112,14 @@ class App extends Component {
         // Populate history array
         report.history.map(currentHistory => {
           currentHistory.site = report.site.key
+          currentHistory.zone = report.zone
           this.props.setHistory(currentHistory)
+        })
+        // Populate alarms array
+        report.alarms.map(currentAlarm => {
+          currentAlarm.site = report.site.key
+          currentAlarm.zone = report.zone
+          this.props.setAlarm(currentAlarm)
         })
       })
     })
@@ -320,7 +328,9 @@ App.propTypes = {
   setVehicleReport: PropTypes.func,
   setCamera: PropTypes.func,
   setReport: PropTypes.func,
-  setHistory: PropTypes.func
+  setHistory: PropTypes.func,
+  setAlarm: PropTypes.func,
+  alarms: PropTypes.object
 }
 
 function mapDispatchToProps(dispatch) {
@@ -330,6 +340,9 @@ function mapDispatchToProps(dispatch) {
     },
     setHistory: history => {
       dispatch(setHistory(history))
+    },
+    setAlarm: alarm => {
+      dispatch(setAlarm(alarm))
     },
     setCredentials: user => {
       dispatch(setCredentials(user))
@@ -381,12 +394,13 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-function mapStateToProps({ zones, loading, credentials, history }) {
+function mapStateToProps({ zones, loading, credentials, history, alarms }) {
   return {
     loading,
     credentials,
     zones,
-    history
+    history,
+    alarms
   }
 }
 

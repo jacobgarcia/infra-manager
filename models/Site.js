@@ -8,7 +8,8 @@ const History = new Schema({
   timestamp: { type: Number, default: Date.now() },
   event: String,
   status: String,
-  risk: 0
+  risk: { type: Number, default: 0 },
+  photos: [String]
 })
 
 const schema = new Schema({
@@ -20,7 +21,6 @@ const schema = new Schema({
       key: Number,
       value: Number,
       class: String,
-      // battery fields
       fully_charged: Boolean,
       charging: Boolean,
       ac_present: Boolean,
@@ -33,7 +33,7 @@ const schema = new Schema({
       timestamp: { type: Number, default: Date.now() },
       event: String,
       status: String,
-      risk: 0,
+      risk: { type: Number, default: 0 },
       photos: [String]
     }
   ],
