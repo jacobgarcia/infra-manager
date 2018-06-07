@@ -89,7 +89,8 @@ class Alarms extends Component {
                   <Slider
                     nextArrow={<button>{'>'}</button>}
                     prevArrow={<button>{'<'}</button>}>
-                    {state.selectedLog.photos ? (
+                    {state.selectedLog.photos &&
+                    state.selectedLog.photos.length > 0 ? (
                       state.selectedLog.photos.map((photo, index) => {
                         return (
                           <div
