@@ -97,8 +97,8 @@ class Navigator extends Component {
           <li className="hr" />
           <li className="hr" />
           <li onClick={() => this.closeNavigator()}>
-            <NavLink to="/alarms" className="vehicular-flow">
-              <span className="fade">Usuarios</span>
+            <NavLink to="/alarms" className="alarms">
+              <span className="fade">Alertas</span>
             </NavLink>
           </li>
           <li onClick={() => this.closeNavigator()}>

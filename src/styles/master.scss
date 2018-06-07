@@ -1677,16 +1677,19 @@ $dark: #1d212d;
     margin-left: 0;
   }
   .sensors::before {
-    background-position: -75px;
+    background-position: -68px;
   }
   .sites::before {
-    background-position: -25px;
+    background-position: -23px;
   }
   .accesses::before {
-    background-position: -50px;
+    background-position: -58px;
   }
   .vehicular-flow::before {
     background-position: -125px;
+  }
+  .alarms::before {
+    background-position: -301px;
   }
   .perimeter::before {
     background-position: -75px;
@@ -1695,26 +1698,26 @@ $dark: #1d212d;
     background-position: -150px;
   }
   .facial-recognition::before {
-    background-position: -100px;
+    background-position: -93px;
   }
   .inventory::before {
     background-position: -200px;
   }
   .settings::before {
-    background-position: -225px;
+    background-position: -205px;
   }
   .dvr::before {
     background-position: -150px;
   }
 
   .users::before {
-    background-position: -175px;
+    background-position: -161px;
   }
   .reports::before {
     background-position: 0px;
   }
   .logout::before {
-    background-position: -250px;
+    background-position: -230px;
   }
   h2 {
     color: $gray;
