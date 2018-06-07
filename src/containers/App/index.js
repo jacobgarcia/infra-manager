@@ -316,7 +316,7 @@ class App extends Component {
 
 App.propTypes = {
   setCredentials: PropTypes.func,
-  history: PropTypes.object,
+  history: PropTypes.array,
   user: PropTypes.object,
   credentials: PropTypes.object,
   zones: PropTypes.array,
@@ -330,7 +330,7 @@ App.propTypes = {
   setReport: PropTypes.func,
   setHistory: PropTypes.func,
   setAlarm: PropTypes.func,
-  alarms: PropTypes.object
+  alarms: PropTypes.array
 }
 
 function mapDispatchToProps(dispatch) {

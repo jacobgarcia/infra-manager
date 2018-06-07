@@ -21,11 +21,7 @@ class VisualCounter extends Component {
       showLogDetail: true,
       to: new Date(),
       playingVideo: true,
-      isPlaying: false,
-      iframe: {
-        __html:
-          '<iframe src="http://visualcounter.dynalias.com:8112/vc_dashboard_demo/" width="540" height="450"></iframe>'
-      }
+      isPlaying: false
     }
 
     this.onDayClick = this.onDayClick.bind(this)
@@ -77,12 +73,12 @@ class VisualCounter extends Component {
     this.setState(range)
   }
 
-  componentDidCatch(error, info) {
+  componentDidCatch(error) {
     console.warn('Component had error', error)
   }
 
   render() {
-    const { state, props } = this
+    const { state } = this
     return (
       <div className="app-content small-padding">
         <Helmet>
@@ -107,8 +103,4 @@ function mapStateToProps({ cameraReports }) {
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {}
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(VisualCounter)
+export default connect(mapStateToProps)(VisualCounter)
