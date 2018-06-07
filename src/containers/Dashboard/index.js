@@ -329,6 +329,7 @@ class Dashboard extends Component {
                   item =>
                     item === '06' ? (
                       <Card
+                        full={false}
                         title="Afluencia de personas"
                         className="horizontal">
                         <div className="info">
@@ -426,7 +427,10 @@ class Dashboard extends Component {
                 )}
               </div>
               <div className="vertical-container">
-                <Card className="historical" title="Media de servicio">
+                <Card
+                  className="historical"
+                  title="Media de servicio"
+                  full={false}>
                   <ResponsiveContainer width="100%" height={160}>
                     <AreaChart
                       data={dataChart(this.state.chart)}
@@ -489,7 +493,10 @@ class Dashboard extends Component {
                   </ResponsiveContainer>
                 </Card>
                 <div className="horizontal-container">
-                  <Card title="Zona de mas alertas" className="horizontal">
+                  <Card
+                    title="Zona de mas alertas"
+                    className="horizontal"
+                    full={false}>
                     <h1>
                       {this.state.worstZone
                         ? this.state.worstZone.name
@@ -503,7 +510,10 @@ class Dashboard extends Component {
                       </p>
                     </div>
                   </Card>
-                  <Card title="Sitio de mas alertas" className="horizontal">
+                  <Card
+                    title="Sitio de mas alertas"
+                    className="horizontal"
+                    full={false}>
                     <h1>
                       {this.state.worstSite
                         ? this.state.worstSite.name
@@ -519,7 +529,7 @@ class Dashboard extends Component {
                       </p>
                     </div>
                   </Card>
-                  <Card title="Top semanal" className="horizontal">
+                  <Card title="Top semanal" className="horizontal" full={false}>
                     <h1>
                       {this.state.weeklyAlerts &&
                       this.state.weeklyAlerts.history.length > 0
