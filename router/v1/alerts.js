@@ -19,6 +19,14 @@ router.route('/alerts').post((req, res) => {
 
   // First, find the sensor for the specified KEY
   Site.findOne({ key: site }).exec((error, currentSite) => {
+    if (error) {
+      winston.error(error)
+      return res
+        .status(500)
+        .json({ success: false, message: 'Could not update sensors' })
+    }
+    if (!currentSite) return res.status(404).json({ success: false, message: 'Site not found' })
+
     // Since we have shitty name for sensors we have to transform it into the new way of doing it
     let key,
       type = null
@@ -46,6 +54,9 @@ router.route('/alerts').post((req, res) => {
     const sensor = currentSite.sensors.find(
       $0 => $0.key === key && $0.class === type
     )
+
+    console.log(sensor, key, type, currentSite)
+
     // Set sensor value to 0. All 0's are bad in thos context
     if (sensor) sensor.value = 0
     const body = {
