@@ -2,87 +2,72 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-import { DateUtils } from 'react-day-picker'
-
-import { NetworkOperation } from 'lib'
 
 class VideoSurveillance extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      selectedLog:
-        this.props.cameraReports.length > 0
-          ? this.props.cameraReports[0]
-          : null,
-      selectedElementIndex:
-        this.props.cameraReports.length > 0 ? [0, 0] : [null, null],
-      from: new Date(),
-      showLogDetail: true,
-      to: new Date(),
-      playingVideo: true,
-      isPlaying: false,
-      iframe: {
-        __html:
-          '<iframe src="https://demo.connus.mx:8081" width="540" height="450"></iframe>'
-      }
-    }
-
-    this.onDayClick = this.onDayClick.bind(this)
-    this.onLogSelect = this.onLogSelect.bind(this)
-    this.onVideoDemand = this.onVideoDemand.bind(this)
   }
 
-  onLogSelect(item, index, sectionIndex) {
-    console.log('https://stream.connus.mx/hls/' + this.state.room + '.m3u8')
-    this.setState(
-      {
-        showLogDetail: true,
-        selectedLog: item,
-        selectedElementIndex: [index, sectionIndex],
-        playingVideo: false,
-        index
-      },
-      () => {
-        this.setState({
-          playingVideo: true,
-          selectedElementIndex: [index, sectionIndex]
-        })
+  componentDidMount() {
+    let frame1 = document.createElement('iframe')
+    frame1.src = "http://192.168.100.119:8080/?single-player=27"
+    frame1.orchidId = "0ab98ec0-753a-4596-b8d1-74d68787b2f7"
+    frame1.setAttribute('onload', this.init(frame1))
+    console.log("src defining")
+    let container = document.getElementById('players')
+    container.appendChild(frame1)
+  }
+
+  init(frame) {
+    this.getFusionToken(token => {
+        frame.authToken = token
+        this.renewJWT(frame)
+        window.setInterval(() => {
+          this.renewJWT(frame)
+        }, 60000)
       }
     )
-
-    this.forceUpdate()
   }
 
-  onVideoDemand() {
-    const { state } = this
-    NetworkOperation.createVideoToken(
-      state.selectedLog.site.key,
-      state.selectedLog.id
-    ).then(({ data }) => {
-      this.setState({
-        isLoading: true,
-        isPlaying: true
-      })
-      setInterval(
-        () => this.setState({ room: data.room, isLoading: false }),
-        20000
-      )
+  setJWT(frame, jwt) {
+    console.log(jwt)
+    frame.contentWindow.postMessage({'jwt': jwt}, '*')
+  }
+
+  renewJWT(frame) {
+    let xhttp = new XMLHttpRequest()
+    xhttp.open("GET", "http://192.168.100.119:8080/fusion/tokens?type=orchid", true)
+    xhttp.setRequestHeader("Authorization", "Bearer " + frame.authToken)
+    xhttp.onreadystatechange = () => {
+      if (xhttp.readyState === 4 && xhttp.status === 200) {
+      // Success-- retrieve our JWT from the response
+      console.log("JWT obtained")
+      let jwt = JSON.parse(xhttp.responseText)[frame.orchidId]
+      this.setJWT(frame, jwt)
+      }
+    }
+    xhttp.send()
+  }
+  getFusionToken(callback) {
+    let data = JSON.stringify({
+      "username": "admin",
+      "password": "admin"
     })
-  }
-
-  onDayClick(day) {
-    // TODO Network operation for selected period
-    const range = DateUtils.addDayToRange(day, this.state)
-    this.setState(range)
-  }
-
-  componentDidCatch(error, info) {
-    console.warn('Component had error', error)
+    let xhttp = new XMLHttpRequest()
+    xhttp.withCredentials = true
+    xhttp.open("POST", "http://192.168.100.119:8080/fusion/users/login")
+    xhttp.setRequestHeader("content-type", "application/json")
+    xhttp.onreadystatechange = () => {
+      if (xhttp.readyState === 4 && xhttp.status === 200) {
+        console.log("Token obtaind")
+        callback(JSON.parse(xhttp.responseText).token)
+      }
+    }
+    xhttp.send(data)
   }
 
   render() {
-    const { state, props } = this
+    const {state} = this
     return (
       <div className="app-content small-padding">
         <Helmet>
@@ -90,7 +75,7 @@ class VideoSurveillance extends Component {
         </Helmet>
         <div className="content vertical">
           <h2>Video Vigilancia</h2>
-          <div dangerouslySetInnerHTML={state.iframe} />
+          <div id="players" />
         </div>
       </div>
     )
