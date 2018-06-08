@@ -24,19 +24,19 @@ router.route('/alerts').post((req, res) => {
       type = null
     switch (alert) {
       case 'contactsensor1':
-        key = '1'
+        key = 1
         type = 'contact'
         break
       case 'contactsensor2':
-        key = '2'
+        key = 2
         type = 'contact'
         break
       case 'vibrationsensor1':
-        key = '1'
+        key = 1
         type = 'vibration'
         break
       case 'vibrationsensor2':
-        key = '2'
+        key = 2
         type = 'vibration'
         break
       default:
@@ -47,7 +47,7 @@ router.route('/alerts').post((req, res) => {
       $0 => $0.key === key && $0.class === type
     )
     // Set sensor value to 0. All 0's are bad in thos context
-    sensor.value = 0
+    if (sensor) sensor.value = 0
     const body = {
       key: site,
       company: 'AT&T',
