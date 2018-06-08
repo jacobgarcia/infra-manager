@@ -84,14 +84,13 @@ router.route('/alerts').post((req, res) => {
           },
           body: JSON.stringify(body)
         },
-        (error, response) => {
+        error => {
           if (error) {
             winston.error(error)
             return res
               .status(500)
               .json({ success: false, message: 'Could not update sensors' })
           }
-          console.log(response)
           return res
             .status(200)
             .json({ success: true, message: 'Sent alert to client' })
