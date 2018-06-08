@@ -81,7 +81,7 @@ router.route('/alerts').post((req, res) => {
           headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + req._token,
-            body
+            body: JSON.stringify(body)
           }
         },
         (error, response) => {
