@@ -4,9 +4,7 @@ RUN mkdir /usr/src/app
 COPY . /usr/src/app
 WORKDIR /usr/src/app
 
-RUN npm i -g yarn
-RUN yarn global add pm2
-RUN yarn
+RUN npm i -g yarn && yarn global add pm2 && yarn
 
 CMD ["yarn", "start"]
 
