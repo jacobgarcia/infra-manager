@@ -3,61 +3,74 @@ const express = require('express')
 const path = require('path')
 const winston = require('winston')
 const router = new express.Router()
+const request = require('request')
 
-// const Site = require(path.resolve('models/Site'))
-// const Zone = require(path.resolve('models/Zone'))
-// const Admin = require(path.resolve('models/Admin'))
 const Alert = require(path.resolve('models/Alert'))
+const Site = require(path.resolve('models/Site'))
 
 /** *** ALERTS ****/
-router.route('/alerts/').post((req, res) => {
+// PATCH: This method will be DEPRECATED but since ATT FRMs are using this, until we update them we'll be using this patch
+router.route('/alerts').post((req, res) => {
   const { site, alert } = req.body
   const data = { site, alert }
 
   // Emit alert socket
-  global.io.to('ATT').emit('alert', data)
   global.io.to('connus').emit('alert', data)
 
-  // Mail options
-  const mailOneOptions = {
-    from: 'ingenieria@connus.mx',
-    to: 'enrique@connus.mx',
-    subject: 'ALERTA EN SITIO ' + site,
-    text:
-      'Sensor ' +
-      alert +
-      ' alertado en sitio ' +
-      site +
-      '. Por favor póngase en contacto con el cliente lo antes posible'
-  }
+  // First, find the sensor for the specified KEY
+  Site.findOne({ key: site }).exec((error, currentSite) => {
+    // Since we have shitty name for sensors we have to transform it into the new way of doing it
+    let key,
+      type = null
+    switch (alert) {
+      case 'contactsensor1':
+        key = '1'
+        type = 'contact'
+        break
+      case 'contactsensor2':
+        key = '2'
+        type = 'contact'
+        break
+      case 'vibrationsensor1':
+        key = '1'
+        type = 'vibration'
+        break
+      case 'vibrationsensor2':
+        key = '2'
+        type = 'vibration'
+        break
+      default:
+    }
 
-  const mailTwoOptions = {
-    from: 'ingenieria@connus.mx',
-    to: 'aida@connus.mx',
-    subject: 'ALERTA EN SITIO ' + site,
-    text:
-      'Sensor ' +
-      alert +
-      ' alertado en sitio ' +
-      site +
-      '. Por favor póngase en contacto con el cliente lo antes posible'
-  }
+    // Find which element must need to be modified
+    const sensor = currentSite.sensors.find(
+      $0 => $0.key === key && $0.class === type
+    )
+    // Set sensor value to 0. All 0's are bad in thos context
+    sensor.value = 0
+    const body = {
+      key: site,
+      company: 'AT&T',
+      sensors: currentSite.sensors
+    }
 
-  // transporter.sendMail(mailOneOptions, (error, info) => {
-  //   if (error) winston.error(error)
-  //   else winston.info('First email sent: ' + info.response)
-  // })
-  //
-  // transporter.sendMail(mailTwoOptions, (error, info) => {
-  //   if (error) winston.error(error)
-  //   else winston.info('Second email sent: ' + info.response)
-  // })
-
+    request.put(
+      {
+        url: 'https://api.connus.mx/v1/sites/sensors',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + req._token,
+          body
+        }
+      },
+      (error, response) => {}
+    )
+  })
   // Insert alert to database
   new Alert({
     site,
     alert
-  }).save((error, log) => {
+  }).save(error => {
     // Save the log
     if (error) {
       winston.error(error)
