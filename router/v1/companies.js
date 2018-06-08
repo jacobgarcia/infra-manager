@@ -8,6 +8,8 @@ const mime = require('mime')
 const router = new express.Router()
 const base64Img = require('base64-img')
 const shortid = require('shortid')
+const mongo = require('mongodb')
+const ObjectID = mongo.ObjectID
 
 const Site = require(path.resolve('models/Site'))
 const Zone = require(path.resolve('models/Zone'))
@@ -42,36 +44,6 @@ const upload = multer({ storage: storage }).fields([
   { name: 'photos', maxCount: 10 },
   { name: 'log', maxCount: 1 }
 ])
-
-/**
- * Generates a MongoDB-style ObjectId in Node.js. Uses nanosecond timestamp in place of counter;
- * should be impossible for same process to generate multiple objectId in same nanosecond? (clock
- * drift can result in an *extremely* remote possibility of id conflicts).
- *
- * @returns {string} Id in same format as MongoDB ObjectId.
- */
-const objectId = () => {
-  const os = require('os')
-  const crypto = require('crypto')
-
-  const seconds = Math.floor(new Date() / 1000).toString(16)
-  const machineId = crypto
-    .createHash('md5')
-    .update(os.hostname())
-    .digest('hex')
-    .slice(0, 6)
-  const processId = process.pid
-    .toString(16)
-    .slice(0, 4)
-    .padStart(4, '0')
-  const counter = process
-    .hrtime()[1]
-    .toString(16)
-    .slice(0, 6)
-    .padStart(6, '0')
-
-  return seconds + machineId + processId + counter
-}
 
 router.route('/users').get(hasAccess(4), (req, res) => {
   const company = req._user.cmp
@@ -562,7 +534,7 @@ router.route('/sites/sensors').put((req, res) => {
           case 'contact':
             if (sensor.value === 0) {
               const alarm = {
-                _id: objectId(),
+                _id: new ObjectID(),
                 event: 'Alerta de apertura',
                 status: 'Sensor abierto',
                 risk: 3
@@ -575,7 +547,7 @@ router.route('/sites/sensors').put((req, res) => {
           case 'vibration':
             if (sensor.value === 0) {
               const alarm = {
-                _id: objectId(),
+                _id: new ObjectID(),
                 event: 'Alerta de vibración',
                 status: 'Sensor activado',
                 risk: 2
@@ -588,7 +560,7 @@ router.route('/sites/sensors').put((req, res) => {
           case 'temperature':
             if (sensor.value < 5) {
               const alarm = {
-                _id: objectId(),
+                _id: new ObjectID(),
                 event: 'Alerta de temperatura',
                 status: 'Temperatura baja',
                 risk: 2
@@ -599,7 +571,7 @@ router.route('/sites/sensors').put((req, res) => {
             }
             if (sensor.value > 40) {
               const alarm = {
-                _id: objectId(),
+                _id: new ObjectID(),
                 event: 'Alerta de temperatura',
                 status: 'Temperatura alta',
                 risk: 1
@@ -612,7 +584,7 @@ router.route('/sites/sensors').put((req, res) => {
           case 'cpu':
             if (sensor.value > 60) {
               const alarm = {
-                _id: objectId(),
+                _id: new ObjectID(),
                 event: 'Alerta de temperatura del CPU',
                 status: 'Temperatura alta',
                 risk: 2
@@ -625,7 +597,7 @@ router.route('/sites/sensors').put((req, res) => {
           case 'battery':
             if (sensor.value <= 15) {
               const alarm = {
-                _id: objectId(),
+                _id: new ObjectID(),
                 event: 'Alerta de batería',
                 status: 'Bateria baja',
                 risk: 2

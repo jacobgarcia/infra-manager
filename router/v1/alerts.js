@@ -63,24 +63,18 @@ router.route('/alerts').post((req, res) => {
           body
         }
       },
-      (error, response) => {}
+      error => {
+        if (error) {
+          winston.error(error)
+          return res
+            .status(500)
+            .json({ success: false, message: 'Could not update sensors' })
+        }
+        return res
+          .status(200)
+          .json({ success: true, message: 'Sent alert to client' })
+      }
     )
-  })
-  // Insert alert to database
-  new Alert({
-    site,
-    alert
-  }).save(error => {
-    // Save the log
-    if (error) {
-      winston.error(error)
-      return res
-        .status(500)
-        .json({ success: 'false', message: 'Could not save log.' })
-    }
-    return res
-      .status(200)
-      .json({ success: true, message: 'Sent alert to client' })
   })
 })
 
