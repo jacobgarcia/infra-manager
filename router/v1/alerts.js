@@ -80,9 +80,9 @@ router.route('/alerts').post((req, res) => {
           url: 'https://api.connus.mx/v1/sites/sensors',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + req._token,
-            body: JSON.stringify(body)
-          }
+            Authorization: 'Bearer ' + req._token
+          },
+          body
         },
         (error, response) => {
           if (error) {
