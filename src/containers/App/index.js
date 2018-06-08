@@ -204,16 +204,9 @@ class App extends Component {
     ) {
       this.socket.on('alert', alert => {
         // Get site id based on key
-        NetworkOperation.getSiteId(alert.site).then(({ data }) => {
-          const theAlert = {
-            site: alert.site,
-            alert: alert.alert,
-            id: data.site._id
-          }
-          this.setState(prev => ({
-            alerts: prev.alerts.concat([{ ...theAlert, timestamp: Date.now() }])
-          }))
-        })
+        this.setState(prev => ({
+          alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now() }])
+        }))
       })
     }
   }
@@ -278,10 +271,10 @@ class App extends Component {
               }`}>
               <div className="alert__image" />
               <div className="alert__body">
-                <Link to={`/sites/59d84e3a2b12461001e6dc5a/${alert.id}`}>
+                <Link to={`/alarms`}>
                   <p>{alert.site}</p>
                 </Link>
-                <p>{alert.alert}</p>
+                <p>{alert.event}</p>
               </div>
             </div>
           ))}

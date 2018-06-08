@@ -535,6 +535,7 @@ router.route('/sites/sensors').put((req, res) => {
             if (sensor.value === 0) {
               const alarm = {
                 _id: new ObjectID(),
+                timestamp: Date.now(),
                 event: 'Alerta de apertura',
                 status: 'Sensor abierto',
                 risk: 3,
@@ -551,6 +552,7 @@ router.route('/sites/sensors').put((req, res) => {
             if (sensor.value === 0) {
               const alarm = {
                 _id: new ObjectID(),
+                timestamp: Date.now(),
                 event: 'Alerta de vibración',
                 status: 'Sensor activado',
                 risk: 2,
@@ -567,6 +569,7 @@ router.route('/sites/sensors').put((req, res) => {
             if (sensor.value < 5) {
               const alarm = {
                 _id: new ObjectID(),
+                timestamp: Date.now(),
                 event: 'Alerta de temperatura',
                 status: 'Temperatura baja',
                 risk: 2,
@@ -581,6 +584,7 @@ router.route('/sites/sensors').put((req, res) => {
             if (sensor.value > 40) {
               const alarm = {
                 _id: new ObjectID(),
+                timestamp: Date.now(),
                 event: 'Alerta de temperatura',
                 status: 'Temperatura alta',
                 risk: 1,
@@ -597,6 +601,7 @@ router.route('/sites/sensors').put((req, res) => {
             if (sensor.value > 60) {
               const alarm = {
                 _id: new ObjectID(),
+                timestamp: Date.now(),
                 event: 'Alerta de temperatura del CPU',
                 status: 'Temperatura alta',
                 risk: 2,
@@ -613,6 +618,7 @@ router.route('/sites/sensors').put((req, res) => {
             if (sensor.value <= 15) {
               const alarm = {
                 _id: new ObjectID(),
+                timestamp: Date.now(),
                 event: 'Alerta de batería',
                 status: 'Bateria baja',
                 risk: 2,
