@@ -67,7 +67,7 @@ router.route('/alerts').post((req, res) => {
         $0 => $0.key === key && $0.class === type
       )
 
-      console.log(sensor, key, type, currentSite)
+      console.log('SENSOR', sensor)
 
       // Set sensor value to 0. All 0's are bad in thos context
       if (sensor) sensor.value = 0
