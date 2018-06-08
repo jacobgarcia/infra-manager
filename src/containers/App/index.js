@@ -73,10 +73,12 @@ class App extends Component {
   }
 
   componentDidMount() {
+    console.log('PROPS', this.props)
     const token = localStorage.getItem('token')
-    let path = ''
+    let returnPath = ''
+
     if (this.props.location.pathname !== '/') {
-      path = `?return=${this.props.location.pathname}${
+      returnPath = `?return=${this.props.location.pathname}${
         this.props.location.search
       }`
     }
@@ -85,7 +87,8 @@ class App extends Component {
 
     if (!token) {
       localStorage.removeItem('token')
-      this.props.history.replace(`/login${path}`)
+      console.log('HISTORY', this.props.history)
+      this.props.history.replace(`/login${returnPath}`)
     }
 
     this.props.setLoading()
@@ -179,7 +182,7 @@ class App extends Component {
           response.status === 400 ||
           response.status === 404
         ) {
-          this.props.history.replace(`/login${path}`)
+          this.props.history.replace(`/login${returnPath}`)
         }
       })
       .then(() => {
@@ -287,9 +290,7 @@ class App extends Component {
         </div>
         <Navigator credentials={this.props.credentials} />
         <Switch>
-          {/* MAYBE TODO lazy load this component  */}
           <Route exact path="/" component={Dashboard} />
-          {/* TODO lazy load this component  */}
           <Route path="/sites/:zoneId?/:siteId?" component={Map} />
           <Route path="/users" component={Users} />
           <Route path="/accesses" component={Accesses} />
@@ -394,12 +395,11 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-function mapStateToProps({ zones, loading, credentials, history, alarms }) {
+function mapStateToProps({ zones, loading, credentials, alarms }) {
   return {
     loading,
     credentials,
     zones,
-    history,
     alarms
   }
 }
