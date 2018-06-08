@@ -103,7 +103,7 @@ function reports(state = [], action) {
 function history(state = [], action) {
   switch (action.type) {
     case 'SET_HISTORY': {
-      return [action.history]
+      return [...state, action.history]
     }
     default:
       return state
@@ -113,7 +113,7 @@ function history(state = [], action) {
 function alarms(state = [], action) {
   switch (action.type) {
     case 'SET_ALARM': {
-      return [action.alarm]
+      return [...state, action.alarm]
     }
     default:
       return state

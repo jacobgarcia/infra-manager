@@ -73,7 +73,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log('PROPS', this.props)
     const token = localStorage.getItem('token')
     let returnPath = ''
 
@@ -87,7 +86,6 @@ class App extends Component {
 
     if (!token) {
       localStorage.removeItem('token')
-      console.log('HISTORY', this.props.history)
       this.props.history.replace(`/login${returnPath}`)
     }
 
