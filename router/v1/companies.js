@@ -537,11 +537,14 @@ router.route('/sites/sensors').put((req, res) => {
                 _id: new ObjectID(),
                 event: 'Alerta de apertura',
                 status: 'Sensor abierto',
-                risk: 3
+                risk: 3,
+                site: key
               }
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
+              // Emit alert socket
+              global.io.to('connus').emit('alert', alarm)
             }
             break
           case 'vibration':
@@ -550,11 +553,14 @@ router.route('/sites/sensors').put((req, res) => {
                 _id: new ObjectID(),
                 event: 'Alerta de vibración',
                 status: 'Sensor activado',
-                risk: 2
+                risk: 2,
+                site: key
               }
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
+              // Emit alert socket
+              global.io.to('connus').emit('alert', alarm)
             }
             break
           case 'temperature':
@@ -563,22 +569,28 @@ router.route('/sites/sensors').put((req, res) => {
                 _id: new ObjectID(),
                 event: 'Alerta de temperatura',
                 status: 'Temperatura baja',
-                risk: 2
+                risk: 2,
+                site: key
               }
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
+              // Emit alert socket
+              global.io.to('connus').emit('alert', alarm)
             }
             if (sensor.value > 40) {
               const alarm = {
                 _id: new ObjectID(),
                 event: 'Alerta de temperatura',
                 status: 'Temperatura alta',
-                risk: 1
+                risk: 1,
+                site: key
               }
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
+              // Emit alert socket
+              global.io.to('connus').emit('alert', alarm)
             }
             break
           case 'cpu':
@@ -587,11 +599,14 @@ router.route('/sites/sensors').put((req, res) => {
                 _id: new ObjectID(),
                 event: 'Alerta de temperatura del CPU',
                 status: 'Temperatura alta',
-                risk: 2
+                risk: 2,
+                site: key
               }
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
+              // Emit alert socket
+              global.io.to('connus').emit('alert', alarm)
             }
             break
           case 'battery':
@@ -600,11 +615,14 @@ router.route('/sites/sensors').put((req, res) => {
                 _id: new ObjectID(),
                 event: 'Alerta de batería',
                 status: 'Bateria baja',
-                risk: 2
+                risk: 2,
+                site: key
               }
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
+              // Emit alert socket
+              global.io.to('connus').emit('alert', alarm)
             }
             break
           default:

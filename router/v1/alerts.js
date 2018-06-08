@@ -13,10 +13,6 @@ const Company = require(path.resolve('models/Company'))
 // PATCH: This method will be DEPRECATED but since ATT FRMs are using this, until we update them we'll be using this patch
 router.route('/alerts').post((req, res) => {
   const { site, alert } = req.body
-  const data = { site, alert }
-
-  // Emit alert socket
-  global.io.to('connus').emit('alert', data)
 
   Company.findOne({ name: 'AT&T' }).exec((error, company) => {
     if (error) {
