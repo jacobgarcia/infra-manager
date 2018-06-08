@@ -237,18 +237,36 @@ router.route('/cameras/log/battery').post((req, res) => {
   })
 })
 
-// Delete already registered users
+// PATCH: This method is still used in old AT&T cameras. It's marked as UNSAFE and needsn to be DEPRECATED
 router.route('/cameras/alarm/photos').post((req, res) => {
-  const data = ({ camera, photo, pc1, pc2 } = req.body)
+  const { camera, photo, pc1, pc2 } = req.body
 
-  // Emit alert socket
-  // global.io.to('ATT').emit('photo-alarm', data)
-  base64Img.imgSync(
+  // Generate images in folder
+  // Front photo
+  base64Img.img(
     photo,
     'static/alerts',
-    shortid.generate() + Date.now()
+    shortid.generate() + Date.now(),
+    (error, filepath) => {
+      // Left photo
+      base64Img.img(
+        pc1,
+        'static/alerts',
+        shortid.generate() + Date.now(),
+        (error, filepath) => {
+          // Right photo
+          base64Img.img(
+            pc2,
+            'static/alerts',
+            shortid.generate() + Date.now(),
+            (error, filepath) => {}
+          )
+        }
+      )
+    }
   )
 
+  Site.findOneAndUpdate({ key: camera }, { $set: {} })
   return res
     .status(200)
     .json({ success: true, message: 'Bacan' /* ,'data':data*/ })

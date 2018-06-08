@@ -93,7 +93,6 @@ router.route('/debug/request').post((req, res) => {
 })
 
 // post camera debug
-
 // debug camera request for simple id
 router.route('/debug/request/:id').get((req, res) => {
   const id = req.params.id
@@ -123,7 +122,7 @@ router.route('/debug/request/multiple').post(upload, (req, res) => {
     photo: '/static/uploads/' + photos[0].filename,
     pc1: '/static/uploads/' + photos[1].filename,
     pc2: '/static/uploads/' + photos[2].filename
-  }).save((error, debug) => {
+  }).save(error => {
     // Save debug request
     if (error) {
       winston.error(error)
@@ -133,7 +132,8 @@ router.route('/debug/request/multiple').post(upload, (req, res) => {
         error: error
       })
     }
-    data = {
+
+    const data = {
       image1: '/static/uploads/' + photos[0].filename,
       image2: '/static/uploads/' + photos[1].filename,
       image3: '/static/uploads/' + photos[2].filename,
