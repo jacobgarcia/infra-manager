@@ -284,7 +284,7 @@ router.route('/cameras/alarm/photos').post((req, res) => {
                 const photo = '/' + photo3
                 photos.push(photo)
                 // Push photos to latest alarm created
-                site.alarms.photos = photos
+                site.alarms[0].photos = photos
 
                 // Save site with new urls
                 site.save((error, updatedSite) => {
