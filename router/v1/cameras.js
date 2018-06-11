@@ -255,7 +255,7 @@ router.route('/cameras/alarm/photos').post((req, res) => {
 
     // Sort alarms by timestamp
     site.alarms.sort(($0, $1) => {
-      return $0.timestamp - $1.timestamp
+      return $1.timestamp - $0.timestamp
     })
 
     // Generate images in folder
