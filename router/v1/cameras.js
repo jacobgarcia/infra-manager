@@ -242,7 +242,7 @@ router.route('/cameras/alarm/photos').post((req, res) => {
   const { camera, photo, pc1, pc2 } = req.body
   const photos = []
 
-  Site.findOne({ key: camera, company: 'AT&T' }).exec((error, site) => {
+  Site.findOne({ key: camera }).exec((error, site) => {
     if (error) {
       winston.error(error)
       return res

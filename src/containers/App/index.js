@@ -38,20 +38,6 @@ import Navigator from 'components/Navigator'
 import VideoPlayer from 'components/VideoPlayer'
 
 import { NetworkOperation } from 'lib'
-
-const videoJsOptions = {
-  controls: true,
-  autoplay: true,
-  sources: [
-    {
-      src: 'rtmp://91.230.211.87:1935/720p&hd',
-      type: 'rtmp/mp4'
-    }
-  ],
-  preload: 'auto',
-  techorder: ['flash']
-}
-
 class App extends Component {
   state = {
     error: false,
@@ -296,10 +282,6 @@ class App extends Component {
           <Route path="/settings" component={Settings} />
           <Route path="/sensors" component={Sensors} />
           <Route path="/alarms" component={Alarms} />
-          <Route
-            path="/streaming"
-            render={() => <VideoPlayer {...videoJsOptions} />}
-          />
         </Switch>
       </div>
     )
