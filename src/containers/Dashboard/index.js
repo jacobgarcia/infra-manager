@@ -89,7 +89,8 @@ class Dashboard extends Component {
         const alertedSite = {
           name: site.site.key,
           value: site.alarms.length,
-          history: site.history
+          history: site.history,
+          alarms: site.alarms
         }
         alertedSites.push(alertedSite)
       }
@@ -106,7 +107,7 @@ class Dashboard extends Component {
     )
 
     const weeklyAlerts = {
-      history: worstSite.history.filter(
+      alarms: worstSite.alarms.filter(
         $0 => $0.timestamp > Date.now() - 604800000 && $0.timestamp < Date.now()
       ), // 1 week difference
       key: worstSite.name
@@ -523,7 +524,7 @@ class Dashboard extends Component {
                     <div className="card-footer">
                       <p className="red">
                         {this.state.worstSite
-                          ? this.state.worstSite.history.length
+                          ? this.state.worstSite.alarms.length
                           : 0}{' '}
                         alertas{' '}
                       </p>
@@ -532,7 +533,7 @@ class Dashboard extends Component {
                   <Card title="Top semanal" className="horizontal" full={false}>
                     <h1>
                       {this.state.weeklyAlerts &&
-                      this.state.weeklyAlerts.history.length > 0
+                      this.state.weeklyAlerts.alarms.length > 0
                         ? this.state.weeklyAlerts.key
                         : 'Ninguno'}
                     </h1>
@@ -540,7 +541,7 @@ class Dashboard extends Component {
                     <div className="card-footer">
                       <p className="red">
                         {this.state.weeklyAlerts
-                          ? this.state.weeklyAlerts.history.length
+                          ? this.state.weeklyAlerts.alarms.length
                           : 0}{' '}
                         alertas{' '}
                       </p>
