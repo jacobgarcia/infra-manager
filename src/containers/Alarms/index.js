@@ -4,16 +4,31 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
 import Slider from 'react-slick'
+import { parse } from 'qs'
 
 import { Table, RiskBar } from 'components'
 
 import io from 'socket.io-client'
 
 class Alarms extends Component {
-  state = {
-    selectedLog: this.props.alarms.length > 0 ? this.props.alarms[0] : {},
-    selectedElementIndex: this.props.alarms.length > 0 ? [0, 1] : [null, null],
-    showLogDetail: true
+  constructor(props) {
+    super(props)
+
+    const { '?id': alarmId } = parse(props.location.search)
+
+    this.state = {
+      selectedLog:
+        this.props.alarms.length > 0 && alarmId
+          ? this.props.alarms.find($0 => $0._id === alarmId)
+          : {},
+      selectedElementIndex:
+        this.props.alarms.length > 0
+          ? [this.props.alarms.findIndex($0 => $0._id === alarmId), 1]
+          : [null, null],
+      showLogDetail: true
+    }
+
+    console.log(this.props.alarms.findIndex($0 => $0._id === alarmId))
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -222,7 +237,8 @@ class Alarms extends Component {
 
 Alarms.propTypes = {
   history: PropTypes.array,
-  alarms: PropTypes.array
+  alarms: PropTypes.array,
+  location: PropTypes.object
 }
 
 function mapStateToProps({ zones, history, alarms }) {
