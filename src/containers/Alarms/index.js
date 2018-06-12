@@ -15,7 +15,11 @@ class Alarms extends Component {
     super(props)
 
     const { '?id': alarmId } = parse(props.location.search)
-
+    this.props.alarms
+      .sort(($0, $1) => {
+        return $0.timestamp - $1.timestamp
+      })
+      .reverse()
     this.state = {
       selectedLog:
         this.props.alarms.length > 0 && alarmId
@@ -27,8 +31,6 @@ class Alarms extends Component {
           : [null, null],
       showLogDetail: true
     }
-
-    console.log(this.props.alarms.findIndex($0 => $0._id === alarmId))
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {

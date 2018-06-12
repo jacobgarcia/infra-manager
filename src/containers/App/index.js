@@ -35,7 +35,6 @@ import Inventory from 'containers/Inventory/Loadable'
 import Alarms from 'containers/Alarms/Loadable'
 
 import Navigator from 'components/Navigator'
-import VideoPlayer from 'components/VideoPlayer'
 
 import { NetworkOperation } from 'lib'
 class App extends Component {
