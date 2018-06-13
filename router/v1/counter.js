@@ -4,16 +4,18 @@ const path = require('path')
 const winston = require('winston')
 const router = new express.Router()
 
-const Counter = require(path.resolve('models/Counter'))
+const Site = require(path.resolve('models/Site'))
+const Company = require(path.resolve('models/Company'))
 
 /* VISUAL COUNTER DEVICE POSTS HERE ITS INFORMATION */
 router
   .route('/counter/count')
   .post((req, res) => {
+    const { key, company } = req.body
     let { entries, exits } = req.body
-    const start = 83
-    const end = 238
-    // Parse since code comoes as plain text
+    const start = 83 // 7:00AM
+    const end = 238 // 7:00PM
+    // Parse since code comes as plain text
     entries = JSON.parse(entries)
     exits = JSON.parse(exits)
 
@@ -21,7 +23,7 @@ router
     entries = entries.slice(start, end)
     exits = exits.slice(start, end)
 
-    // Clean arrays from shitty coding
+    // Clean arrays from shitty coding. That means remove 65535 when no count has take place
     entries.map(($0, index) => {
       if ($0 === 65535) entries[index] = 0
     })
@@ -30,7 +32,7 @@ router
       if ($0 === 65535) exits[index] = 0
     })
 
-    // Sum values for every 12 entries. Will be 1 hour
+    // Sum values for every 12 entries. This will be 1 hour
     const cont = 12
     let sum = 0
     const filteredEntries = []
@@ -44,6 +46,7 @@ router
       }
     })
 
+    // Sum values for every 12 exits. This will be 1 hour
     sum = 0
     exits.map((entry, index) => {
       sum += entry
@@ -53,36 +56,61 @@ router
       }
     })
 
-    // Save both arrays to Counter
-    new Counter({
-      inputs: filteredEntries,
-      outputs: filteredExits
-    }).save((error, counter) => {
+    Company.findOne({ name: company }).exec((error, company) => {
       if (error) {
         winston.error({ error })
         return res.status(500).json({
           success: false,
-          message: 'Could not save counter information'
+          message: 'Could not retrieve company'
         })
       }
-      return res.status(200).json({
-        success: true,
-        message: 'Saved counter information',
-        counter
+
+      if (!company) return res
+          .status(404)
+          .json({ success: false, message: 'Company was not found' })
+      const counter = {
+        inputs: filteredEntries,
+        outputs: filteredExits
+      }
+      // Save both arrays to Counter
+      return Site.findOneAndUpdate(
+        { company, key },
+        { $push: { counter } }
+      ).exec(error => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({
+            success: false,
+            message: 'Could not update site with counter information'
+          })
+        }
+        return res.status(200).json({
+          success: true,
+          message: 'Saved counter information',
+          counter
+        })
       })
     })
   })
 
   /* GET COUNTER INFORMATION */
   .get((req, res) => {
-    // TODO Counter must be part of a Site
-    Counter.find({})
-      .sort({ timestamp: -1 })
-      .exec((error, counts) => {
-        const counter = counts[0]
-        const sum = []
-        counter.inputs.map((count, index) => {
-          sum[index] = count + counter.outputs[index]
+    const company = req._user.cmp
+    const sum = []
+
+    Site.find({ company })
+      .select('counter')
+      .exec((error, sites) => {
+        sites.map(site => {
+          // Sort counters by timestamp
+          site.counter.sort(($0, $1) => {
+            return $0.timestamp - $1.timestamp
+          })
+          const counter = site.counter[0] // Get the lastest entries
+          // Sum inputs and outputs
+          counter.inputs.map((count, index) => {
+            sum[index] = count + counter.outputs[index]
+          })
         })
         if (error) {
           winston.error({ error })

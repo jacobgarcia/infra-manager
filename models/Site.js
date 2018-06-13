@@ -2,14 +2,18 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-class SiteClass {}
-
 const History = new Schema({
   timestamp: { type: Number, default: Date.now() },
   event: String,
   status: String,
   risk: { type: Number, default: 0 },
   photos: [String]
+})
+
+const Counter = new Schema({
+  inputs: [Number],
+  outputs: [Number],
+  timestamp: { type: Number, default: Date.now }
 })
 
 const schema = new Schema({
@@ -51,13 +55,13 @@ const schema = new Schema({
       room: String,
       videos: [String]
     }
-  ]
+  ],
+  counter: { type: [Counter], default: [] }
 })
 
 // Set company-key unique
 schema.index({ key: 1, company: 1 }, { unique: true })
 
-schema.loadClass(SiteClass)
-
 module.exports = mongoose.model('Site', schema)
 module.exports.History = mongoose.model('History', History)
+module.exports.Counter = mongoose.model('Counter', Counter)
