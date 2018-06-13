@@ -64,11 +64,10 @@ router.route('/sites/list').get((req, res) => {
 
 // Register new site
 router.route('/sites/register').post((req, res) => {
-  let { key, name, position, company, zone, subzone } = req.body
+  let { position } = req.body
+  const { key, name, company, zone, subzone } = req.bdoy
 
   position = JSON.parse(position)
-
-  // return res.status(200).json({ 'success': true, 'message':position })
 
   new Site({
     key,
@@ -77,7 +76,7 @@ router.route('/sites/register').post((req, res) => {
     company,
     zone,
     subzone
-  }).save((error, site) => {
+  }).save(error => {
     // Save the user form
     if (error) {
       winston.error(error)
@@ -95,9 +94,10 @@ router.route('/sites/register').post((req, res) => {
 
 // Register new site
 router.route('/sites/down/sensor').post((req, res) => {
-  let { site, sensors } = req.body
+  const { site } = req.body
+  let { sensors } = req.body
   sensors = JSON.parse(sensors)
-  Site.find({ key: site }).exec((error, theSite) => {
+  Site.find({ key: site }).exec(error => {
     if (error) {
       winston.error(error)
       return res.status(400).json({
@@ -109,20 +109,21 @@ router.route('/sites/down/sensor').post((req, res) => {
         .status(400)
         .json({ success: 'false', message: 'value no spicified' })
     }
-    Site.findOneAndUpdate({ key: site }, { $set: { sensors: sensors } }).exec(
-      (error, newSite) => {
-        if (error) {
-          winston.error(error)
-          return res.status(400).json({
-            success: 'false',
-            message: 'The specified site does not exist'
-          })
-        }
-        return res
-          .status(200)
-          .json({ succes: true, message: 'sensor down', site: newSite })
+    return Site.findOneAndUpdate(
+      { key: site },
+      { $set: { sensors: sensors } }
+    ).exec((error, newSite) => {
+      if (error) {
+        winston.error(error)
+        return res.status(400).json({
+          success: 'false',
+          message: 'The specified site does not exist'
+        })
       }
-    )
+      return res
+        .status(200)
+        .json({ succes: true, message: 'sensor down', site: newSite })
+    })
   })
 })
 
@@ -139,7 +140,7 @@ router.route('/sites/getSensors').get((req, res) => {
 
       sensors.forEach(site => {
         site.sensors.forEach(sensor => {
-          newSensor = {
+          const newSensor = {
             site: site.key,
             key: sensor.key,
             value: sensor.value,
