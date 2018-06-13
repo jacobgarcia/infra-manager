@@ -47,7 +47,6 @@ const upload = multer({ storage: storage }).fields([
 
 router.route('/users').get(hasAccess(4), (req, res) => {
   const company = req._user.cmp
-  global.io.emit('report', report)
   // TODO add monitoring zones or subzones
   User.find({ company })
     .select('email name surname access zones')
@@ -306,7 +305,7 @@ router.route('/sites/initialize').post((req, res) => {
     position = JSON.parse(position)
   }
 
-  Company.findOne({ name: company }).exec((error, company) => {
+  return Company.findOne({ name: company }).exec((error, company) => {
     if (error) {
       winston.error(error)
       return res.status(500).json({ error })
@@ -316,7 +315,7 @@ router.route('/sites/initialize').post((req, res) => {
         .json({ success: false, message: 'Specified company was not found' })
 
     // Check if smartbox has been already created
-    new SmartBox({
+    return new SmartBox({
       id,
       version
     }).save((error, smartbox) => {
@@ -330,68 +329,77 @@ router.route('/sites/initialize').post((req, res) => {
       }
 
       // Always set to zone Centro
-      Zone.findOne({ name: zone, company: company._id }).exec((error, zone) => {
-        if (error) {
-          winston.error(error)
-          return res.status(500).json({ error })
-        }
-
-        if (!zone) return res
-            .status(404)
-            .json({ success: false, message: 'Specified zone was not found' })
-        // Create site using the information in the request body
-        new Site({
-          key,
-          name,
-          position,
-          company: company._id,
-          sensors,
-          cameras,
-          smartboxes: smartbox,
-          country,
-          zone: zone._id
-        }).save(error => {
+      return Zone.findOne({ name: zone, company: company._id }).exec(
+        (error, zone) => {
           if (error) {
             winston.error(error)
+            return res.status(500).json({ error })
           }
-          // Site already registred but smartbox does not. Update the site
-          Site.findOneAndUpdate(
-            { key, company: company._id },
-            { $push: { smartboxes: smartbox._id } }
-          ).exec((error, site) => {
+
+          if (!zone) return res
+              .status(404)
+              .json({ success: false, message: 'Specified zone was not found' })
+          // Create site using the information in the request body
+          return new Site({
+            key,
+            name,
+            position,
+            company: company._id,
+            sensors,
+            cameras,
+            smartboxes: smartbox,
+            country,
+            zone: zone._id
+          }).save(error => {
             if (error) {
               winston.error(error)
               return res.status(500).json({
                 success: false,
-                message:
-                  'Could not add the smartbox to the already created site',
+                message: 'Could not create site',
                 error
               })
             }
+            // Site already registred but smartbox does not. Update the site
+            return Site.findOneAndUpdate(
+              { key, company: company._id },
+              { $push: { smartboxes: smartbox._id } }
+            ).exec((error, site) => {
+              if (error) {
+                winston.error(error)
+                return res.status(500).json({
+                  success: false,
+                  message:
+                    'Could not add the smartbox to the already created site',
+                  error
+                })
+              }
 
-            if (cameras.length > 0) {
-              // Add cameras of the SmartBox
-              cameras.map(camera => {
-                const filename = base64Img.imgSync(
-                  camera.photo,
-                  'static/uploads',
-                  shortid.generate() + Date.now()
-                )
-                new Stream({
-                  id: camera.id,
-                  name: camera.name,
-                  company,
-                  site: site._id,
-                  photo: '/' + filename
-                }).save()
-              })
-            }
+              if (cameras.length > 0) {
+                // Add cameras of the SmartBox
+                cameras.map(camera => {
+                  base64Img.img(
+                    camera.photo,
+                    'static/uploads',
+                    shortid.generate() + Date.now(),
+                    (error, photo) => {
+                      new Stream({
+                        id: camera.id,
+                        name: camera.name,
+                        company,
+                        site: site._id,
+                        photo: '/' + photo
+                      }).save()
+                    }
+                  )
+                })
+              }
 
-            // Add the new site to the specified subzone
-            return res.status(200).json({ site })
+              // Add the new site to the specified subzone
+              return res.status(200).json({ site })
+            })
           })
-        })
-      })
+        }
+      )
     })
   })
 })
@@ -399,7 +407,7 @@ router.route('/sites/initialize').post((req, res) => {
 router.route('/smartbox/exception').post((req, res) => {
   const { id, description } = req.body
   if (!id || !description) return res.status(400).json({})
-  SmartBox.findOneAndUpdate(
+  return SmartBox.findOneAndUpdate(
     { id },
     { $push: { exceptions: { description } } }
   ).exec(error => {
@@ -478,7 +486,7 @@ router.route('/smartbox/debug').post(upload, (req, res) => {
     photos.push(photo.filename)
   })
 
-  SmartBox.findOneAndUpdate(
+  return SmartBox.findOneAndUpdate(
     { id },
     { $push: { debugs: { photos } } },
     { $set: { debugs: { logFile: req.files.log[0] } } }
@@ -497,6 +505,7 @@ router.route('/smartbox/debug').post(upload, (req, res) => {
   })
 })
 
+// TODO: REFEACTOR THIS ENDPOINT
 router.route('/sites/sensors').put((req, res) => {
   let { sensors } = req.body
   const { key, company } = req.body
@@ -508,7 +517,7 @@ router.route('/sites/sensors').put((req, res) => {
   if (typeof sensors === 'string') sensors = JSON.parse(sensors)
 
   // Since it's not human to check which company ObjectId wants to be used, a search based on the name is done
-  Company.findOne({ name: company }).exec((error, company) => {
+  return Company.findOne({ name: company }).exec((error, company) => {
     if (error) {
       winston.error(error)
       return res.status(500).json({ error })
@@ -518,7 +527,7 @@ router.route('/sites/sensors').put((req, res) => {
         .json({ success: false, message: 'Specified company was not found' })
 
     // Find and update site with new information
-    Site.findOne({ company, key }).exec((error, site) => {
+    return Site.findOne({ company, key }).exec((error, site) => {
       if (error) {
         winston.error({ error })
         return res.status(500).json({ error })
@@ -544,7 +553,7 @@ router.route('/sites/sensors').put((req, res) => {
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
-              // Emit alert socket
+              // Emit popup alert socket and add alert to REDUX
               global.io.to('connus').emit('alert', alarm)
             }
             break
@@ -561,7 +570,7 @@ router.route('/sites/sensors').put((req, res) => {
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
-              // Emit alert socket
+              // Emit popup alert socket and add alert to REDUX
               global.io.to('connus').emit('alert', alarm)
             }
             break
@@ -578,7 +587,7 @@ router.route('/sites/sensors').put((req, res) => {
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
-              // Emit alert socket
+              // Emit popup alert socket and add alert to REDUX
               global.io.to('connus').emit('alert', alarm)
             }
             if (sensor.value > 40) {
@@ -593,7 +602,7 @@ router.route('/sites/sensors').put((req, res) => {
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
-              // Emit alert socket
+              // Emit popup alert socket and add alert to REDUX
               global.io.to('connus').emit('alert', alarm)
             }
             break
@@ -610,7 +619,7 @@ router.route('/sites/sensors').put((req, res) => {
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
-              // Emit alert socket
+              // Emit popup alert socket and add alert to REDUX
               global.io.to('connus').emit('alert', alarm)
             }
             break
@@ -627,7 +636,7 @@ router.route('/sites/sensors').put((req, res) => {
               site.alarms.push(alarm)
               // Send socket asking for media files
               global.io.to(key).emit('alarm', alarm)
-              // Emit alert socket
+              // Emit popup alert socket and add alert to REDUX
               global.io.to('connus').emit('alert', alarm)
             }
             break
@@ -638,7 +647,7 @@ router.route('/sites/sensors').put((req, res) => {
       // Update sensors
       site.sensors = sensors
 
-      site.save(error => {
+      return site.save(error => {
         if (error) {
           winston.error({ error })
           return res.status(500).json({ error })
@@ -666,7 +675,7 @@ router.route('/sites/alarms').put(upload, (req, res) => {
       .json({ success: false, message: 'Malformed request' })
 
   // Since it's not human to check which company ObjectId wants to be used, a search based on the name is done
-  Company.findOne({ name: company }).exec((error, company) => {
+  return Company.findOne({ name: company }).exec((error, company) => {
     if (error) {
       winston.error(error)
       return res.status(500).json({ error })
@@ -680,7 +689,7 @@ router.route('/sites/alarms').put(upload, (req, res) => {
       photos.push(photo.filename)
     })
 
-    Site.findOne({ company, key }).exec((error, site) => {
+    return Site.findOne({ company, key }).exec((error, site) => {
       if (error) {
         winston.error({ error })
         return res.status(500).json({ error })
@@ -693,7 +702,7 @@ router.route('/sites/alarms').put(upload, (req, res) => {
       // Push photo files to specified alarm
       site.alarms[alarmIndex].photos.push(photos)
 
-      site.save(error => {
+      return site.save(error => {
         if (error) {
           winston.error({ error })
           return res.status(500).json({ error })
@@ -741,7 +750,6 @@ router.route('/sites/sensors/dismiss/:key').post((req, res) => {
 // Get sensors of specific type for all company sites
 router.route('/sites/sensors/:type').get((req, res) => {
   const company = req._user.cmp
-  const { type } = req.params
 
   Site.find({ company })
     .select('key sensors')
@@ -780,7 +788,6 @@ router.route('/sites/alarms/').get((req, res) => {
 })
 
 router.route('/video/token').post((req, res) => {
-  const company = req._user.cmp
   const { key, id } = req.body
 
   Site.findOne({ key }).exec((error, site) => {
@@ -794,24 +801,22 @@ router.route('/video/token').post((req, res) => {
         .status(404)
         .json({ success: false, message: 'Site was not found' })
     // Generate room unique token
-    crypto.pseudoRandomBytes(16, (error, raw) => {
+    return crypto.pseudoRandomBytes(16, (error, raw) => {
       const room = raw.toString('hex') + Date.now()
-      Stream.findOneAndUpdate({ id }, { $set: { room } }).exec(
-        (error, stream) => {
-          if (error) {
-            winston.error({ error })
-            return res.status(500).json({
-              success: false,
-              message: 'Could not create streaming',
-              error
-            })
-          }
-          const data = { id, room }
-          global.io.to(key).emit('streaming', data)
-
-          return res.status(200).json({ room })
+      Stream.findOneAndUpdate({ id }, { $set: { room } }).exec(error => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({
+            success: false,
+            message: 'Could not create streaming',
+            error
+          })
         }
-      )
+        const data = { id, room }
+        global.io.to(key).emit('streaming', data)
+
+        return res.status(200).json({ room })
+      })
     })
   })
 })
@@ -849,12 +854,12 @@ router.route('/visualcounter/count').post((req, res) => {
   exits = exits.slice(start, end)
 
   // Clean arrays from shitty coding
-  entries.map((i, index) => {
-    if (i === 65535) entries[index] = 0
+  entries.map(($0, index) => {
+    if ($0 === 65535) entries[index] = 0
   })
 
-  exits.map((i, index) => {
-    if (i === 65535) exits[index] = 0
+  exits.map(($0, index) => {
+    if ($0 === 65535) exits[index] = 0
   })
 
   // Sum values for every 12 entries. Will be 1 hour
@@ -896,13 +901,10 @@ router.route('/visualcounter/count').post((req, res) => {
       message: 'Saved counter information',
       counter
     })
-    console.log(res)
   })
 })
 
 router.route('/visualcounter/count').get((req, res) => {
-  const company = req._user.cmp
-
   // TODO Counter must be part of a Site
   Counter.find({})
     .sort({ timestamp: -1 })
