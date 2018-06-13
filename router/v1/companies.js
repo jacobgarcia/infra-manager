@@ -45,6 +45,7 @@ const upload = multer({ storage: storage }).fields([
   { name: 'log', maxCount: 1 }
 ])
 
+/* GET A LIST OF USERS FROM THE SAME COMPANY AS THE USER LOGGED IN */
 router.route('/users').get(hasAccess(4), (req, res) => {
   const company = req._user.cmp
   // TODO add monitoring zones or subzones
@@ -60,33 +61,7 @@ router.route('/users').get(hasAccess(4), (req, res) => {
     })
 })
 
-// Save sites and stream change
-router.route('/zones/:zone/sites').post((req, res) => {
-  const { name, position } = req.body
-  let key = req.body.key
-  const { zone } = req.params
-  const company = req._user.cmp
-
-  if (key === null || key === 'null') key = String(Date.now())
-
-  // Create site using the information in the request body
-  new Site({
-    key,
-    name,
-    position,
-    zone,
-    company
-  }).save((error, site) => {
-    if (error) {
-      winston.error({ error })
-      return res.status(500).json({ error })
-    }
-    // Add the new site to the specified subzone
-    return res.status(200).json({ site })
-  })
-})
-
-//  Save zone and stream change
+/* CREATE NEW ZONE USING AN ARRAY OF POSITIONS */
 router.route('/zones').post((req, res) => {
   const { name, positions } = req.body
   const company = req._user.cmp
@@ -106,101 +81,7 @@ router.route('/zones').post((req, res) => {
   })
 })
 
-// Save sensors and alarms, add to history and stream change
-router.route('/:siteKey/reports').put((req, res) => {
-  const { sensors, alarms } = req.body
-  const { siteKey } = req.params
-  const company = req._user.cmp
-
-  winston.info({ key: siteKey, company })
-  Site.findOne({ key: siteKey, company }).exec((error, site) => {
-    if (!site) return res.status(404).json({ message: 'No site found' })
-
-    // TODO just update the returned site
-    return Site.findByIdAndUpdate(
-      site,
-      { $push: { history: { sensors: site.sensors, alarms: site.alarms } } },
-      { new: true }
-    )
-      .populate('zone', 'name')
-      .populate('subzone', 'name')
-      .exec((error, populatedSite) => {
-        if (sensors) site.sensors = sensors
-        site.alarms = alarms
-
-        site.save((error, updatedSite) => {
-          if (error) {
-            winston.error({ error })
-            return res.status(500).json({ error })
-          }
-
-          const report = {
-            site: {
-              _id: updatedSite._id,
-              key: updatedSite.key
-            },
-            zone: populatedSite.zone,
-            subzone: populatedSite.subzone,
-            timestamp: updatedSite.timestamp,
-            sensors: updatedSite.sensors,
-            alarms: updatedSite.alarms
-          }
-
-          // global.io.emit('report', report)
-          global.io.to(`${company}-${siteKey}`).emit('report', report)
-          return res.status(200).json(report)
-        })
-      })
-  })
-})
-
-// Get zones. TODO: Retrieve only company zones
-router.route('/zones').get((req, res) => {
-  const company = req._user.cmp
-
-  Zone.find({ company }).exec((error, zones) => {
-    if (error) {
-      winston.error({ error })
-      return res.status(500).json({ error })
-    }
-
-    if (!zones) return res.status(404).json({ message: 'No zones found' })
-
-    return res.status(200).json({ zones })
-  })
-})
-
-router.route('/sites').get((req, res) => {
-  const company = req._user.cmp
-
-  Site.find({ company }).exec((error, sites) => {
-    if (error) {
-      winston.error({ error })
-      return res.status(500).json({ error })
-    }
-
-    if (!sites) return res.status(404).json({ message: 'No sites found' })
-
-    return res.status(200).json({ sites })
-  })
-})
-
-router.route('/site/:siteKey').get((req, res) => {
-  const { siteKey } = req.params
-
-  Site.findOne({ key: siteKey }).exec((error, site) => {
-    if (error) {
-      winston.error({ error })
-      return res.status(500).json({ error })
-    }
-
-    if (!site) return res.status(404).json({ message: 'No sites found' })
-
-    return res.status(200).json({ site })
-  })
-})
-
-// Get all report for all sites from a specified company
+/* GET A LIST OF ALL REPORTS FROM SPECIFIED COMPANY */
 router.route('/reports').get((req, res) => {
   const company = req._user.cmp
   Site.find({ company })
@@ -227,7 +108,7 @@ router.route('/reports').get((req, res) => {
     })
 })
 
-// Get zones, subzones and sites
+/* GET ZONES, SUBZONES AND SITES */
 router.route('/exhaustive').get((req, res) => {
   const company = req._user.cmp
 
@@ -245,41 +126,7 @@ router.route('/exhaustive').get((req, res) => {
     })
 })
 
-// Get all face recognition registers
-router.route('/inventory/:_id').put((req, res) => {
-  const { _id } = req.params
-  const {
-    lastMantainanceFrom,
-    lastMantainanceTo,
-    maintainer,
-    supervisor,
-    place,
-    maintainanceType
-  } = req.body
-
-  Inventory.findOneAndUpdate(
-    { _id },
-    {
-      $set: {
-        lastMantainanceFrom,
-        lastMantainanceTo,
-        maintainer,
-        supervisor,
-        place,
-        maintainanceType
-      }
-    }
-  ).exec((error, inventory) => {
-    if (error) {
-      winston.error({ error })
-      return res.status(500).json({ error })
-    }
-
-    return res.status(200).json({ inventory })
-  })
-})
-
-// Create site based on a central equipment (This endpoint must be called when a new smartbox connects to the server)
+/* CREATE SITE BASED ON A CENTRAL EQUIPMENT (THIS ENDPOINT MUST BE CALLED WHEN A NEW SMARTBOX CONNECTS TO THE SERVER */
 router.route('/sites/initialize').post((req, res) => {
   // Since is not human to check which company ObjectId wants to be used, a search based on the name is done
   const { id, version, company, key, name, country, zone } = req.body
@@ -404,6 +251,7 @@ router.route('/sites/initialize').post((req, res) => {
   })
 })
 
+/* INSERT SMARTBOX EXCEPTION INTO SMARTBOX INFORMATION */
 router.route('/smartbox/exception').post((req, res) => {
   const { id, description } = req.body
   if (!id || !description) return res.status(400).json({})
@@ -423,6 +271,7 @@ router.route('/smartbox/exception').post((req, res) => {
   })
 })
 
+/* UPGRADE SMARTBOX. TODO: POST THIS REQUEST */
 router.route('/smartbox/upgrade/:key').get((req, res) => {
   const { key } = req.params
 
@@ -447,6 +296,7 @@ router.route('/smartbox/upgrade/:key').get((req, res) => {
   })
 })
 
+/* ASK FOR DEBUG TO SMARTBOX */
 router.route('/smartbox/debug/:key').get((req, res) => {
   const { key } = req.params
 
@@ -471,7 +321,7 @@ router.route('/smartbox/debug/:key').get((req, res) => {
   })
 })
 
-// post Smartbox debug
+/* ENDPOINT FOR SMARTBOX TO POST INFORMATION WHEN DEBUGGING */
 router.route('/smartbox/debug').post(upload, (req, res) => {
   const { id } = req.body
   const photoFiles = req.files.photos
@@ -505,7 +355,7 @@ router.route('/smartbox/debug').post(upload, (req, res) => {
   })
 })
 
-// TODO: REFEACTOR THIS ENDPOINT
+/* UPDATE SENSORS AND GENERATE ALARMS IF ITS THE CASE. TODO: REFEACTOR THIS ENDPOINT */
 router.route('/sites/sensors').put((req, res) => {
   let { sensors } = req.body
   const { key, company } = req.body
@@ -662,7 +512,7 @@ router.route('/sites/sensors').put((req, res) => {
   })
 })
 
-// Get sensors of specific type for all company sites
+/* ADD PHOTO MEDIA FILES TO THE SPECIFIED ALARM THAT SERVERS AS EVIDENCE */
 router.route('/sites/alarms').put(upload, (req, res) => {
   const { key, company, alarm } = req.body
   const photoFiles = req.files.photos
@@ -717,7 +567,7 @@ router.route('/sites/alarms').put(upload, (req, res) => {
   })
 })
 
-// Get all sensors for all company sites
+/* GET A LIST OF ALL SENSORS FOR ALL SITES FROM A SPECIFIED COMPANY */
 router.route('/sites/sensors').get((req, res) => {
   const company = req._user.cmp
 
@@ -735,58 +585,7 @@ router.route('/sites/sensors').get((req, res) => {
     })
 })
 
-// Get all sensors for all company hsitory
-router.route('/sites/sensors/dismiss/:key').post((req, res) => {
-  const company = req._user.cmp
-  const { key } = req.params
-  Site.findOneAndUpdate({ company, key }, { $set: { alarms: [] } }).exec(
-    (error, sites) => {
-      if (error) return res.status(404).json({ message: 'No sites found' })
-      return res.status(200).json({ sites })
-    }
-  )
-})
-
-// Get sensors of specific type for all company sites
-router.route('/sites/sensors/:type').get((req, res) => {
-  const company = req._user.cmp
-
-  Site.find({ company })
-    .select('key sensors')
-    .exec((error, sites) => {
-      if (error) {
-        winston.error({ error })
-        return res.status(500).json({ error })
-      }
-
-      if (!sites) return res.status(404).json({ message: 'No sites found' })
-      const sensors = []
-      sites.map(site => {
-        site.sensors.map(sensor => {
-          sensors.push(sensor)
-        })
-      })
-      return res.status(200).json({ sensors })
-    })
-})
-// deprecated method
-// Get sensors of specific type for all company sites
-router.route('/sites/alarms/').get((req, res) => {
-  const company = req._user.cmp
-
-  Site.find({ company })
-    .populate('zone', 'name')
-    .select('key zone alarms')
-    .exec((error, sites) => {
-      if (error) {
-        winston.error({ error })
-        return res.status(500).json({ error })
-      }
-
-      return res.status(200).json({ sites })
-    })
-})
-
+/* GENERATE A TOKEN FOR POSTING TO A STREAMING ROOM */
 router.route('/video/token').post((req, res) => {
   const { key, id } = req.body
 
@@ -821,6 +620,7 @@ router.route('/video/token').post((req, res) => {
   })
 })
 
+/* GET ALL CAMERAS OF A SPECIFIED COMPANY */
 router.route('/video/cameras').get((req, res) => {
   const company = req._user.cmp
 
@@ -841,6 +641,7 @@ router.route('/video/cameras').get((req, res) => {
     })
 })
 
+/* VISUAL COUNTER DEVICE POSTS HERE ITS INFORMATION */
 router.route('/visualcounter/count').post((req, res) => {
   let { entries, exits } = req.body
   const start = 83
@@ -904,6 +705,7 @@ router.route('/visualcounter/count').post((req, res) => {
   })
 })
 
+/* GET COUNTER INFORMATION */
 router.route('/visualcounter/count').get((req, res) => {
   // TODO Counter must be part of a Site
   Counter.find({})

@@ -40,10 +40,6 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/polygons/${entityId}`)
   }
 
-  static getUsers() {
-    return axios.get(`${baseUrl}/users`)
-  }
-
   static setZone(name, positions) {
     return axios.post(`${baseUrl}/zones`, { name, positions })
   }
@@ -82,10 +78,6 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/facerecognition`)
   }
 
-  static getSiteId(siteKey) {
-    return axios.get(`${baseUrl}/site/${siteKey}`)
-  }
-
   static getInventory() {
     return axios.get(`${baseUrl}/sites/sensors`)
   }
@@ -96,24 +88,6 @@ class NetworkOperation {
 
   static getVehicularReports() {
     return axios.get(`${baseUrl}/vehicular-flow/reports`)
-  }
-  static updateInventoryElement(
-    id,
-    lastMantainanceFrom,
-    lastMantainanceTo,
-    maintainer,
-    supervisor,
-    place,
-    maintainanceType
-  ) {
-    return axios.put(`${baseUrl}/inventory/${id}`, {
-      lastMantainanceFrom,
-      lastMantainanceTo,
-      maintainer,
-      supervisor,
-      place,
-      maintainanceType
-    })
   }
 
   // Video Surveillance
@@ -142,10 +116,6 @@ class NetworkOperation {
 
   static getAccess() {
     return axios.get(`${baseUrl}/access/logs`)
-  }
-
-  static getAlarms() {
-    return axios.get(`${baseUrl}/sites/alarms`)
   }
 
   static getCounter() {
