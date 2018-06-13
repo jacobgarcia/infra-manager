@@ -24,6 +24,10 @@ const Access = require(path.resolve('models/Access'))
 
 const Admin = require(path.resolve('models/Admin'))
 
+const { hasAccess } = require(path.resolve(
+  'router/v1/lib/middleware-functions'
+))
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, 'static/uploads/profile-pictures/')
@@ -653,6 +657,22 @@ router.route('/users/').delete((req, res) => {
       })
     })
   })
+})
+
+/* GET A LIST OF USERS FROM THE SAME COMPANY AS THE USER LOGGED IN */
+router.route('/users').get(hasAccess(4), (req, res) => {
+  const company = req._user.cmp
+  // TODO add monitoring zones or subzones
+  User.find({ company })
+    .select('email name surname access zones')
+    .populate('zones', 'name')
+    .then(users => {
+      return res.status(200).json({ users })
+    })
+    .catch(error => {
+      winston.error({ error })
+      return res.status(500).json({ error })
+    })
 })
 
 module.exports = router

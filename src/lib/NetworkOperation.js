@@ -25,11 +25,11 @@ class NetworkOperation {
   }
 
   static getExhaustive() {
-    return axios.get(`${baseUrl}/exhaustive`)
+    return axios.get(`${baseUrl}/zones/exhaustive`)
   }
 
   static getReports() {
-    return axios.get(`${baseUrl}/reports`)
+    return axios.get(`${baseUrl}/sites/reports`)
   }
 
   static getAvailableStates() {
