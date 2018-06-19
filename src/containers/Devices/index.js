@@ -199,9 +199,9 @@ class Devices extends Component {
                   <div className="border button">{device.ip}</div>
                   <div className="center">
                     {device.output.map((out, key) => (
-                      <h3 key={key}>
-                        {out.key} : {out.value}
-                      </h3>
+                      <p key={key}>
+                        {out.key} {out.value}
+                      </p>
                     ))}
                   </div>
                 </Card>
