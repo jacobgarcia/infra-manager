@@ -638,7 +638,7 @@ router.route('/sites/devices').put((req, res) => {
       .json({ success: false, message: 'Malformed request' })
 
   // Parse JSON format from Python
-  if (typeof sensors === 'string') devices = JSON.parse(devices)
+  if (typeof devices === 'string') devices = JSON.parse(devices)
 
   // Since it's not human to check which company ObjectId wants to be used, a search based on the name is done
   return Company.findOne({ name: company }).exec((error, company) => {

@@ -29,7 +29,8 @@ class Devices extends Component {
     alerts: [],
     latestAlerts: [],
     from: new Date(),
-    to: new Date()
+    to: new Date(),
+    devices: []
   }
 
   onSites = () => {
@@ -39,7 +40,9 @@ class Devices extends Component {
   componentDidMount() {
     NetworkOperation.getDevices().then(({ data }) => {
       console.log(data)
-      this.setState({})
+      this.setState({
+        devices: data.devices
+      })
     })
     // Init socket with userId and token
     this.initSocket()
@@ -53,52 +56,17 @@ class Devices extends Component {
     })
 
     this.socket.on('refresh', () => {
-      NetworkOperation.getSensors().then(({ data }) => {
+      NetworkOperation.getDevices().then(({ data }) => {
+        console.log(data)
         this.setState({
-          aperture: parseInt(itemAverage('contact', data.sensors), 10),
-          vibration: parseInt(itemAverage('vibration', data.sensors), 10),
-          temperature: parseInt(itemAverage('cpu', data.sensors), 10),
-          energy: parseInt(itemAverage('battery', data.sensors), 10),
-          apertureStatus: itemStatus(
-            'contact',
-            data.sensors,
-            'upscale',
-            80,
-            20
-          ),
-          vibrationStatus: itemStatus(
-            'vibration',
-            data.sensors,
-            'upscale',
-            80,
-            20
-          ),
-          temperatureStatus: itemStatus('cpu', data.sensors, 'between', 50, 0),
-          ambienceStatus: itemStatus(
-            'temperature',
-            data.sensors,
-            'between',
-            40,
-            0
-          ),
-          energyStatus: itemStatus(
-            'battery',
-            data.sensors,
-            'between',
-            130,
-            100
-          ),
-          battery: parseInt(itemAverage('battery', data.sensors), 10),
-          fuel: parseInt(itemAverage('fuel', data.sensors), 10)
+          data
         })
       })
     })
   }
 
   render() {
-    const {
-      state: { temperatureStatus, vibrationStatus, apertureStatus }
-    } = this
+    const { state: { temperatureStatus, vibrationStatus } } = this
 
     return (
       <div className="users app-content small-padding sensors">
@@ -106,7 +74,7 @@ class Devices extends Component {
           <title>Connus | Sensores</title>
         </Helmet>
         <div className="content">
-          <h2>Estatus</h2>
+          <h2>Equipos IZZI</h2>
           <div className="overall-container">
             <div className="horizontal-container">
               {this.state.temperature &&
@@ -189,39 +157,42 @@ class Devices extends Component {
                   </div>
                 </Card>
               ) : null}
+              {this.state.devices.map((device, key) => (
+                <Card title="Vibración" className={`graph-container`} key={key}>
+                  <div className="graph">
+                    <PieChart width={160} height={160}>
+                      <Pie
+                        animationBegin={0}
+                        dataKey="value"
+                        data={vibrationStatus}
+                        cx={75}
+                        cy={75}
+                        innerRadius={55}
+                        outerRadius={75}
+                        strokeWidth={0}
+                        label>
+                        {data.map(({ name }, index) => (
+                          <Cell key={index} fill={getColor(name)} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip
+                        isAnimationActive={false}
+                        content={Tooltip}
+                      />
+                    </PieChart>
+                    <h1>{this.state.vibration && this.state.vibration}</h1>
+                  </div>
+                  <div className="center">
+                    {vibrationStatus &&
+                      (!vibrationStatus[2].value && 'Alertas')}
 
-              <Card title="Vibración" className={`graph-container`}>
-                <div className="graph">
-                  <PieChart width={160} height={160}>
-                    <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={vibrationStatus}
-                      cx={75}
-                      cy={75}
-                      innerRadius={55}
-                      outerRadius={75}
-                      strokeWidth={0}
-                      label>
-                      {data.map(({ name }, index) => (
-                        <Cell key={index} fill={getColor(name)} />
-                      ))}
-                    </Pie>
-                    <RechartsTooltip
-                      isAnimationActive={false}
-                      content={Tooltip}
-                    />
-                  </PieChart>
-                  <h1>{this.state.vibration && this.state.vibration}</h1>
-                </div>
-                <div className="center">
-                  {vibrationStatus && (!vibrationStatus[2].value && 'Alertas')}
+                    <p className="border button" onClick={this.onSites}>
+                      {vibrationStatus && vibrationStatus.length} sitios
+                    </p>
+                  </div>
+                </Card>
+              ))}
 
-                  <p className="border button" onClick={this.onSites}>
-                    {vibrationStatus && vibrationStatus.length} sitios
-                  </p>
-                </div>
-              </Card>
               {this.state.fuel ||
               (this.state.fuel === 0 &&
                 !this.props.credentials.company.name === 'AT&T') ? (
