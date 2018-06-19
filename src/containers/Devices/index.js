@@ -37,32 +37,9 @@ class Devices extends Component {
   }
 
   componentDidMount() {
-    NetworkOperation.getSensors().then(({ data }) => {
-      this.setState({
-        aperture: parseInt(itemAverage('contact', data.sensors), 10),
-        vibration: parseInt(itemAverage('vibration', data.sensors), 10),
-        temperature: parseInt(itemAverage('cpu', data.sensors), 10),
-        energy: parseInt(itemAverage('battery', data.sensors), 10),
-        apertureStatus: itemStatus('contact', data.sensors, 'upscale', 80, 20),
-        vibrationStatus: itemStatus(
-          'vibration',
-          data.sensors,
-          'upscale',
-          80,
-          20
-        ),
-        temperatureStatus: itemStatus('cpu', data.sensors, 'between', 50, 0),
-        ambienceStatus: itemStatus(
-          'temperature',
-          data.sensors,
-          'between',
-          40,
-          0
-        ),
-        energyStatus: itemStatus('battery', data.sensors, 'between', 130, 100),
-        battery: parseInt(itemAverage('battery', data.sensors), 10),
-        fuel: parseInt(itemAverage('fuel', data.sensors), 10)
-      })
+    NetworkOperation.getDevices().then(({ data }) => {
+      console.log(data)
+      this.setState({})
     })
     // Init socket with userId and token
     this.initSocket()
@@ -245,75 +222,6 @@ class Devices extends Component {
                   </p>
                 </div>
               </Card>
-              <Card title="Apertura" className={`graph-container`}>
-                <div className="graph">
-                  <PieChart width={160} height={160}>
-                    <Pie
-                      animationBegin={0}
-                      dataKey="value"
-                      data={apertureStatus}
-                      cx={75}
-                      cy={75}
-                      innerRadius={55}
-                      outerRadius={75}
-                      strokeWidth={0}
-                      label>
-                      {data.map(({ name }, index) => (
-                        <Cell key={index} fill={getColor(name)} />
-                      ))}
-                    </Pie>
-                    <RechartsTooltip
-                      isAnimationActive={false}
-                      content={Tooltip}
-                    />
-                  </PieChart>
-                  <h1>{this.state.aperture && this.state.aperture}</h1>
-                </div>
-                <div className="center">
-                  {vibrationStatus && (!vibrationStatus[2].value && 'Alertas')}
-
-                  <p className="border button" onClick={this.onSites}>
-                    {apertureStatus && apertureStatus.length} sitios
-                  </p>
-                </div>
-              </Card>
-
-              {this.state.energy ? (
-                <Card title="Corriente" className={`graph-container`}>
-                  <div className="graph">
-                    <PieChart width={160} height={160}>
-                      <Pie
-                        animationBegin={0}
-                        dataKey="value"
-                        data={this.state.energyStatus}
-                        cx={75}
-                        cy={75}
-                        innerRadius={55}
-                        outerRadius={75}
-                        strokeWidth={0}
-                        label>
-                        {data.map(({ name }, index) => (
-                          <Cell key={index} fill={getColor(name)} />
-                        ))}
-                      </Pie>
-                      <RechartsTooltip
-                        isAnimationActive={false}
-                        content={Tooltip}
-                      />
-                    </PieChart>
-                    <h1>{this.state.energy && this.state.energy}</h1>
-                  </div>
-                  <div className="center">
-                    {this.state.energy &&
-                      (!this.state.energy && 'Ningún sitio dañado')}
-
-                    <p className="border button" onClick={this.onSites}>
-                      {/* this.state.energy && (this.state.energy) */}
-                      sitios
-                    </p>
-                  </div>
-                </Card>
-              ) : null}
               {this.state.fuel ||
               (this.state.fuel === 0 &&
                 !this.props.credentials.company.name === 'AT&T') ? (

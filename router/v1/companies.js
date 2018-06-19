@@ -679,6 +679,29 @@ router.route('/sites/devices').put((req, res) => {
   })
 })
 
+// Get sensors of specific type for all company sites
+router.route('/sites/devices/:type').get((req, res) => {
+  const company = req._user.cmp
+
+  Site.find({ company })
+    .select('key devices')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      if (!sites) return res.status(404).json({ message: 'No sites found' })
+      const devices = []
+      sites.map(site => {
+        site.devices.map(device => {
+          devices.push(device)
+        })
+      })
+      return res.status(200).json({ devices })
+    })
+})
+
 /* GENERATE A TOKEN FOR POSTING TO A STREAMING ROOM */
 router.route('/video/token').post((req, res) => {
   const { key, id } = req.body
