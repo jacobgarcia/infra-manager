@@ -632,7 +632,7 @@ router.route('/sites/sensors/:type').get((req, res) => {
 
 router.route('/sites/devices').put((req, res) => {
   let { devices } = req.body
-  const { key, company } = req.body
+  const { key, company, llave } = req.body
   console.log(devices)
   if (!key || !company || !devices) return res
       .status(400)
@@ -663,7 +663,9 @@ router.route('/sites/devices').put((req, res) => {
           .json({ success: false, message: 'No site found' })
 
       // Update sensors
-      site.devices = devices
+      if (llave === 1) site.devices = devices
+      if (llave === 2) site.devices2 = devices
+      if (llave === 3) site.devices3 = devices
 
       return site.save(error => {
         if (error) {
@@ -685,7 +687,7 @@ router.route('/sites/devices/:type').get((req, res) => {
   const company = req._user.cmp
 
   Site.find({ company })
-    .select('key devices')
+    .select('key devices devices2 devices3')
     .exec((error, sites) => {
       if (error) {
         winston.error({ error })
@@ -694,12 +696,23 @@ router.route('/sites/devices/:type').get((req, res) => {
 
       if (!sites) return res.status(404).json({ message: 'No sites found' })
       const devices = []
+      const devices2 = []
+      const devices3 = []
+
       sites.map(site => {
         site.devices.map(device => {
           devices.push(device)
         })
+
+        site.devices2.map(device => {
+          devices2.push(device)
+        })
+
+        site.devices3.map(device => {
+          devices3.push(device)
+        })
       })
-      return res.status(200).json({ devices })
+      return res.status(200).json({ devices, devices2, devices3 })
     })
 })
 

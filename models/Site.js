@@ -71,6 +71,36 @@ const schema = new Schema({
       ]
     },
     { _id: false }
+  ],
+  devices2: [
+    {
+      device: String,
+      ip: String,
+      last_update: Number,
+      status: Number,
+      output: [
+        {
+          key: String,
+          value: String
+        }
+      ]
+    },
+    { _id: false }
+  ],
+  devices3: [
+    {
+      device: String,
+      ip: String,
+      last_update: Number,
+      status: Number,
+      output: [
+        {
+          key: String,
+          value: String
+        }
+      ]
+    },
+    { _id: false }
   ]
 })
 

@@ -31,6 +31,8 @@ class Devices extends Component {
     from: new Date(),
     to: new Date(),
     devices: [],
+    devices2: [],
+    devices3: [],
     deviceStatus: [
       {
         name: 'workings',
@@ -172,6 +174,114 @@ class Devices extends Component {
                 </Card>
               ) : null}
               {this.state.devices.map((device, key) => (
+                <Card
+                  title={device.device}
+                  className={`graph-container`}
+                  key={key}>
+                  <div className="graph">
+                    <PieChart width={160} height={160}>
+                      <Pie
+                        animationBegin={0}
+                        dataKey="value"
+                        data={deviceStatus}
+                        cx={75}
+                        cy={75}
+                        innerRadius={55}
+                        outerRadius={75}
+                        strokeWidth={0}
+                        label>
+                        {data.map(({ name }, index) => (
+                          <Cell key={index} fill={getColor(name)} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+
+                    <h1>{device.status}</h1>
+                  </div>
+                  <div className="border button">{device.ip}</div>
+                  <div className="center">
+                    {device.output.map((out, key) => (
+                      <p key={key}>
+                        {out.key} {out.value}
+                      </p>
+                    ))}
+                  </div>
+                </Card>
+              ))}
+
+              {this.state.devices.map((device, key) => (
+                <Card
+                  title={device.device}
+                  className={`graph-container`}
+                  key={key}>
+                  <div className="graph">
+                    <PieChart width={160} height={160}>
+                      <Pie
+                        animationBegin={0}
+                        dataKey="value"
+                        data={deviceStatus}
+                        cx={75}
+                        cy={75}
+                        innerRadius={55}
+                        outerRadius={75}
+                        strokeWidth={0}
+                        label>
+                        {data.map(({ name }, index) => (
+                          <Cell key={index} fill={getColor(name)} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+
+                    <h1>{device.status}</h1>
+                  </div>
+                  <div className="border button">{device.ip}</div>
+                  <div className="center">
+                    {device.output.map((out, key) => (
+                      <p key={key}>
+                        {out.key} {out.value}
+                      </p>
+                    ))}
+                  </div>
+                </Card>
+              ))}
+
+              {this.state.devices2.map((device, key) => (
+                <Card
+                  title={device.device}
+                  className={`graph-container`}
+                  key={key}>
+                  <div className="graph">
+                    <PieChart width={160} height={160}>
+                      <Pie
+                        animationBegin={0}
+                        dataKey="value"
+                        data={deviceStatus}
+                        cx={75}
+                        cy={75}
+                        innerRadius={55}
+                        outerRadius={75}
+                        strokeWidth={0}
+                        label>
+                        {data.map(({ name }, index) => (
+                          <Cell key={index} fill={getColor(name)} />
+                        ))}
+                      </Pie>
+                    </PieChart>
+
+                    <h1>{device.status}</h1>
+                  </div>
+                  <div className="border button">{device.ip}</div>
+                  <div className="center">
+                    {device.output.map((out, key) => (
+                      <p key={key}>
+                        {out.key} {out.value}
+                      </p>
+                    ))}
+                  </div>
+                </Card>
+              ))}
+
+              {this.state.devices3.map((device, key) => (
                 <Card
                   title={device.device}
                   className={`graph-container`}
