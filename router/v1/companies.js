@@ -584,6 +584,29 @@ router.route('/sites/sensors').get((req, res) => {
     })
 })
 
+// Get sensors of specific type for all company sites
+router.route('/sites/sensors/:type').get((req, res) => {
+  const company = req._user.cmp
+
+  Site.find({ company })
+    .select('key sensors')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      if (!sites) return res.status(404).json({ message: 'No sites found' })
+      const sensors = []
+      sites.map(site => {
+        site.sensors.map(sensor => {
+          sensors.push(sensor)
+        })
+      })
+      return res.status(200).json({ sensors })
+    })
+})
+
 /* GENERATE A TOKEN FOR POSTING TO A STREAMING ROOM */
 router.route('/video/token').post((req, res) => {
   const { key, id } = req.body

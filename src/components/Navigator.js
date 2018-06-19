@@ -155,6 +155,11 @@ Navigator.defaultProps = {
       title: 'Contador de Personas ',
       name: 'visual-counter',
       _id: '05'
+    },
+    {
+      title: 'Dispositivos IZZI',
+      name: 'devices',
+      _id: '06'
     }
   ]
 }

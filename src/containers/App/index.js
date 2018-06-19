@@ -31,6 +31,7 @@ import VideoSurveillance from 'containers/VideoSurveillance/Loadable'
 import VisualCounter from 'containers/VisualCounter/Loadable'
 import Reports from 'containers/Reports/Loadable'
 import Sensors from 'containers/Sensors/Loadable'
+import Devices from 'containers/Devices/Loadable'
 import Inventory from 'containers/Inventory/Loadable'
 import Alarms from 'containers/Alarms/Loadable'
 
@@ -280,6 +281,7 @@ class App extends Component {
           <Route path="/reports" component={Reports} />
           <Route path="/settings" component={Settings} />
           <Route path="/sensors" component={Sensors} />
+          <Route path="/devices" component={Devices} />
           <Route path="/alarms" component={Alarms} />
         </Switch>
       </div>
