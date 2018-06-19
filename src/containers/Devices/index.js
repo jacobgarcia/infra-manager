@@ -57,7 +57,9 @@ class Devices extends Component {
     NetworkOperation.getDevices().then(({ data }) => {
       console.log(data)
       this.setState({
-        devices: data.devices
+        devices: data.devices,
+        devices2: data.devices2,
+        devices3: data.devices3
       })
     })
     // Init socket with userId and token
