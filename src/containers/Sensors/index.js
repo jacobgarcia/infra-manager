@@ -39,6 +39,7 @@ class Users extends Component {
   componentDidMount() {
     console.log(this)
     NetworkOperation.getSensors().then(({ data }) => {
+      console.log(itemStatus('contact', data.sensors, 'upscale', 80, 20))
       this.setState({
         aperture: parseInt(itemAverage('contact', data.sensors), 10),
         vibration: parseInt(itemAverage('vibration', data.sensors), 10),

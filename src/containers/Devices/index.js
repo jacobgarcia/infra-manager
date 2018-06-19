@@ -30,7 +30,21 @@ class Devices extends Component {
     latestAlerts: [],
     from: new Date(),
     to: new Date(),
-    devices: []
+    devices: [],
+    deviceStatus: [
+      {
+        name: 'workings',
+        value: 100
+      },
+      {
+        name: 'alerts',
+        value: 0
+      },
+      {
+        name: 'damaged',
+        value: 0
+      }
+    ]
   }
 
   onSites = () => {
@@ -66,7 +80,7 @@ class Devices extends Component {
   }
 
   render() {
-    const { state: { temperatureStatus, vibrationStatus } } = this
+    const { state: { deviceStatus, vibrationStatus } } = this
 
     return (
       <div className="users app-content small-padding sensors">
@@ -158,13 +172,16 @@ class Devices extends Component {
                 </Card>
               ) : null}
               {this.state.devices.map((device, key) => (
-                <Card title="Vibración" className={`graph-container`} key={key}>
+                <Card
+                  title={device.device}
+                  className={`graph-container`}
+                  key={key}>
                   <div className="graph">
                     <PieChart width={160} height={160}>
                       <Pie
                         animationBegin={0}
                         dataKey="value"
-                        data={vibrationStatus}
+                        data={deviceStatus}
                         cx={75}
                         cy={75}
                         innerRadius={55}
@@ -175,20 +192,17 @@ class Devices extends Component {
                           <Cell key={index} fill={getColor(name)} />
                         ))}
                       </Pie>
-                      <RechartsTooltip
-                        isAnimationActive={false}
-                        content={Tooltip}
-                      />
                     </PieChart>
-                    <h1>{this.state.vibration && this.state.vibration}</h1>
-                  </div>
-                  <div className="center">
-                    {vibrationStatus &&
-                      (!vibrationStatus[2].value && 'Alertas')}
 
-                    <p className="border button" onClick={this.onSites}>
-                      {vibrationStatus && vibrationStatus.length} sitios
-                    </p>
+                    <h1>{device.status}</h1>
+                  </div>
+                  <div className="border button">{device.ip}</div>
+                  <div className="center">
+                    {device.output.map((out, key) => (
+                      <h3 key={key}>
+                        {out.key} : {out.value}
+                      </h3>
+                    ))}
                   </div>
                 </Card>
               ))}
