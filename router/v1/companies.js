@@ -663,9 +663,9 @@ router.route('/sites/devices').put((req, res) => {
           .json({ success: false, message: 'No site found' })
 
       // Update sensors
-      if (llave === 1) site.devices = devices
       if (llave === 2) site.devices2 = devices
-      if (llave === 3) site.devices3 = devices
+      else if (llave === 3) site.devices3 = devices
+      else if (llave === 1) site.devices = devices
 
       return site.save(error => {
         if (error) {
