@@ -633,6 +633,7 @@ router.route('/sites/sensors/:type').get((req, res) => {
 router.route('/sites/devices').put((req, res) => {
   let { devices } = req.body
   const { key, company } = req.body
+  console.log(devices)
   if (!key || !company || !devices) return res
       .status(400)
       .json({ success: false, message: 'Malformed request' })
