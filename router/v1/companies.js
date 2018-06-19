@@ -632,7 +632,7 @@ router.route('/sites/sensors/:type').get((req, res) => {
 
 router.route('/sites/devices').put((req, res) => {
   let { devices } = req.body
-  const { key, company, llave } = req.body
+  const { key, company } = req.body
   console.log(devices)
   if (!key || !company || !devices) return res
       .status(400)
@@ -663,9 +663,9 @@ router.route('/sites/devices').put((req, res) => {
           .json({ success: false, message: 'No site found' })
 
       // Update sensors
-      if (llave === 2) site.devices2 = devices
-      else if (llave === 3) site.devices3 = devices
-      else if (llave === 1) site.devices = devices
+      if (devices.llave === 2) site.devices2 = devices
+      else if (devices.llave === 3) site.devices3 = devices
+      else if (devices.llave === 1) site.devices = devices
 
       return site.save(error => {
         if (error) {
