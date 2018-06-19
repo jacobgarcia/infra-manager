@@ -56,7 +56,22 @@ const schema = new Schema({
       videos: [String]
     }
   ],
-  counter: { type: [Counter], default: [] }
+  counter: { type: [Counter], default: [] },
+  devices: [
+    {
+      device: String,
+      ip: String,
+      last_update: Number,
+      status: Number,
+      output: [
+        {
+          key: String,
+          value: String
+        }
+      ]
+    },
+    { _id: false }
+  ]
 })
 
 // Set company-key unique
