@@ -105,7 +105,6 @@ router.route('/smartbox/debug/:key').get((req, res) => {
 router.route('/smartbox/debug').post(upload, (req, res) => {
   const { id } = req.body
   const photoFiles = req.files.photos
-  console.log(req.files)
   const photos = []
 
   if (!photoFiles) return res

@@ -45,8 +45,6 @@ router.route('/sites/alarms').put(upload, (req, res) => {
   const photoFiles = req.files.photos
   const photos = []
 
-  console.log(req.files)
-
   if (!key || !company || !photoFiles) return res
       .status(400)
       .json({ success: false, message: 'Malformed request' })
@@ -473,7 +471,6 @@ router.route('/sites/sensors/:type').get((req, res) => {
 router.route('/sites/devices').put((req, res) => {
   let { devices } = req.body
   const { key, company } = req.body
-  console.log(devices)
   if (!key || !company || !devices) return res
       .status(400)
       .json({ success: false, message: 'Malformed request' })
