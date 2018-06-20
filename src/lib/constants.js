@@ -1,5 +1,5 @@
 export default {
-  hostUrl: 'https://api.connus.mx',
+  hostUrl: 'http://localhost:8080',
   colors: value => {
     if (value > 75) {
       return '#00adee'

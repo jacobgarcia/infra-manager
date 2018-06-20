@@ -447,4 +447,113 @@ router
       })
   })
 
+// Get sensors of specific type for all company sites
+router.route('/sites/sensors/:type').get((req, res) => {
+  const company = req._user.cmp
+
+  Site.find({ company })
+    .select('key sensors')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      if (!sites) return res.status(404).json({ message: 'No sites found' })
+      const sensors = []
+      sites.map(site => {
+        site.sensors.map(sensor => {
+          sensors.push(sensor)
+        })
+      })
+      return res.status(200).json({ sensors })
+    })
+})
+
+router.route('/sites/devices').put((req, res) => {
+  let { devices } = req.body
+  const { key, company } = req.body
+  console.log(devices)
+  if (!key || !company || !devices) return res
+      .status(400)
+      .json({ success: false, message: 'Malformed request' })
+
+  // Parse JSON format from Python
+  if (typeof devices === 'string') devices = JSON.parse(devices)
+
+  // Since it's not human to check which company ObjectId wants to be used, a search based on the name is done
+  return Company.findOne({ name: company }).exec((error, company) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({ error })
+    }
+    if (!company) return res
+        .status(404)
+        .json({ success: false, message: 'Specified company was not found' })
+
+    // Find and update site with new information
+    return Site.findOne({ company, key }).exec((error, site) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      if (!site) return res
+          .status(404)
+          .json({ success: false, message: 'No site found' })
+
+      // Update sensors
+      if (devices.llave === 2) site.devices2 = devices
+      else if (devices.llave === 3) site.devices3 = devices
+      else if (devices.llave === 1) site.devices = devices
+
+      return site.save(error => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({ error })
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: 'Updated devices information sucessfully'
+        })
+      })
+    })
+  })
+})
+
+// Get sensors of specific type for all company sites
+router.route('/sites/devices/:type').get((req, res) => {
+  const company = req._user.cmp
+
+  Site.find({ company })
+    .select('key devices devices2 devices3')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      if (!sites) return res.status(404).json({ message: 'No sites found' })
+      const devices = []
+      const devices2 = []
+      const devices3 = []
+
+      sites.map(site => {
+        site.devices.map(device => {
+          devices.push(device)
+        })
+
+        site.devices2.map(device => {
+          devices2.push(device)
+        })
+
+        site.devices3.map(device => {
+          devices3.push(device)
+        })
+      })
+      return res.status(200).json({ devices, devices2, devices3 })
+    })
+})
+
 module.exports = router
