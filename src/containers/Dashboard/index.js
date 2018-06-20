@@ -307,7 +307,10 @@ class Dashboard extends Component {
                   <div>
                     <h3>Equipos funcionando correctamente</h3>
                     <p>
-                      {this.state.sensors && this.state.sensors[0].value} sitios
+                      {this.state.sensors &&
+                        this.state.sensors[0].value +
+                          this.state.sensors[1].value}{' '}
+                      sitios
                     </p>
                     <div className="stats">
                       <p>
