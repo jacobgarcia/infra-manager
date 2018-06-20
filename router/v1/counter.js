@@ -101,17 +101,6 @@ router
     Site.find({ company })
       .select('counter')
       .exec((error, sites) => {
-        sites.map(site => {
-          // Sort counters by timestamp
-          site.counter.sort(($0, $1) => {
-            return $0.timestamp - $1.timestamp
-          })
-          const counter = site.counter[0] // Get the lastest entries
-          // Sum inputs and outputs
-          counter.inputs.map((count, index) => {
-            sum[index] = count + counter.outputs[index]
-          })
-        })
         if (error) {
           winston.error({ error })
           return res.status(500).json({
@@ -119,6 +108,19 @@ router
             message: 'Could not retrieve counter information'
           })
         }
+        sites.map(site => {
+          // Sort counters by timestamp
+          site.counter.sort(($0, $1) => {
+            return $0.timestamp - $1.timestamp
+          })
+          const counter = site.counter[0] // Get the lastest entries
+          // Sum inputs and outputs
+          if (counter) {
+            counter.inputs.map((count, index) => {
+              sum[index] = count + counter.outputs[index]
+            })
+          }
+        })
         return res.status(200).json({
           success: true,
           message: 'Retrieved streaming cameras',
