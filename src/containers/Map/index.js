@@ -469,6 +469,7 @@ class MapContainer extends Component {
             ? state.elements.map(element => (
                 <Marker
                   key={element._id}
+                  isOnline={element.isOnline}
                   position={element.position || []}
                   site={element}
                   title={element.name}

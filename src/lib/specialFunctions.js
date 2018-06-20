@@ -4,18 +4,21 @@ import { yellow, red, blue } from '../lib/colors'
 
 export function arrayDifference(arrayOne, arrayTwo) {
   const ret = []
-  arrayOne.sort()
-  arrayTwo.sort()
+  arrayOne.sort() // Online Sites
+  arrayTwo.sort() // All Sites
 
   // Compare only with keys
   const arrayTwoKeys = arrayTwo.map($0 => $0.key)
+
   for (let $i = 0; $i < arrayOne.length; $i += 1) {
     if (arrayTwoKeys.indexOf(arrayOne[$i]) > -1) {
       ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[$i])])
+      // Add attribute online to site
+      arrayTwo[arrayTwoKeys.indexOf(arrayOne[$i])].isOnline = true
     }
   }
 
-  return ret
+  return arrayTwo
 }
 export function getColor(name) {
   switch (name) {
