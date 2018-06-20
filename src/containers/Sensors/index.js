@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { PieChart, Pie, Cell, Tooltip as RechartsTooltip } from 'recharts'
 import io from 'socket.io-client'
 
-import { Card, Tooltip, BatteryChart, FuelChart } from 'components'
+import { Card, Tooltip, FuelChart } from 'components'
 import { NetworkOperation } from 'lib'
 import { getColor, itemAverage, itemStatus } from 'lib/specialFunctions'
 
@@ -37,9 +37,7 @@ class Users extends Component {
   }
 
   componentDidMount() {
-    console.log(this)
     NetworkOperation.getSensors().then(({ data }) => {
-      console.log(itemStatus('contact', data.sensors, 'upscale', 80, 20))
       this.setState({
         aperture: parseInt(itemAverage('contact', data.sensors), 10),
         vibration: parseInt(itemAverage('vibration', data.sensors), 10),
@@ -122,9 +120,13 @@ class Users extends Component {
 
   render() {
     const {
-      state: { temperatureStatus, vibrationStatus, apertureStatus }
+      state: {
+        temperatureStatus,
+        vibrationStatus,
+        apertureStatus,
+        ambienceStatus
+      }
     } = this
-
     return (
       <div className="users app-content small-padding sensors">
         <Helmet>
@@ -240,9 +242,9 @@ class Users extends Component {
                   <h1>{this.state.vibration && this.state.vibration}</h1>
                 </div>
                 <div className="center">
-                  {vibrationStatus && (!vibrationStatus[2].value && 'Alertas')}
+                  {vibrationStatus && vibrationStatus.length > 0 && 'Alertas'}
 
-                  <p className="border button" onClick={this.onSites}>
+                  <p className="border button warning" onClick={this.onSites}>
                     {vibrationStatus && vibrationStatus.length} sitios
                   </p>
                 </div>
@@ -272,9 +274,9 @@ class Users extends Component {
                   <h1>{this.state.aperture && this.state.aperture}</h1>
                 </div>
                 <div className="center">
-                  {vibrationStatus && (!vibrationStatus[2].value && 'Alertas')}
+                  {apertureStatus && apertureStatus.length > 0 && 'Alertas'}
 
-                  <p className="border button" onClick={this.onSites}>
+                  <p className="border button warning" onClick={this.onSites}>
                     {apertureStatus && apertureStatus.length} sitios
                   </p>
                 </div>
@@ -306,11 +308,13 @@ class Users extends Component {
                     <h1>{this.state.energy && this.state.energy}</h1>
                   </div>
                   <div className="center">
-                    {this.state.energy &&
-                      (!this.state.energy && 'Ningún sitio dañado')}
+                    {this.state.energyStatus &&
+                      this.state.energyStatus[2].value > 0 &&
+                      'Alertas'}
 
-                    <p className="border button" onClick={this.onSites}>
-                      {/* this.state.energy && (this.state.energy) */}
+                    <p className="border button warning" onClick={this.onSites}>
+                      {this.state.energyStatus &&
+                        this.state.energyStatus[2].value}{' '}
                       sitios
                     </p>
                   </div>
