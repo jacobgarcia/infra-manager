@@ -16,15 +16,8 @@ import Marker from 'components/Marker'
 import Search from 'components/Search'
 import CreateElementBar from 'components/CreateElementBar'
 import { NetworkOperation } from 'lib'
-import {
-  setLoading,
-  setComplete,
-  setReport,
-  setSubzone,
-  setZone,
-  setSite
-} from 'actions'
-import { getAreaCenter } from 'lib/specialFunctions'
+import { setLoading, setComplete, setSubzone, setZone, setSite } from 'actions'
+import { getAreaCenter, arrayDifference } from 'lib/specialFunctions'
 
 class MapContainer extends Component {
   constructor(props) {
@@ -61,23 +54,6 @@ class MapContainer extends Component {
     this.onElementNameChange = this.onElementNameChange.bind(this)
     this.onElementPositionsChange = this.onElementPositionsChange.bind(this)
     this.onCreateElement = this.onCreateElement.bind(this)
-    this.arrayDifference = this.arrayDifference.bind(this)
-  }
-
-  arrayDifference(arrayOne, arrayTwo) {
-    var ret = []
-    arrayOne.sort()
-    arrayTwo.sort()
-
-    // Compare only with keys
-    const arrayTwoKeys = arrayTwo.map(a => a.key)
-    for (let i = 0; i < arrayOne.length; i += 1) {
-      if (arrayTwoKeys.indexOf(arrayOne[i]) > -1) {
-        ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[i])])
-      }
-    }
-
-    return ret
   }
 
   onViewportChanged = ({ zoom }) => {
@@ -99,15 +75,8 @@ class MapContainer extends Component {
       })
     })
 
-    NetworkOperation.getReports().then(({ data }) => {
-      data.reports.forEach(report => {
-        this.props.setReport(report)
-      })
-    })
-
     NetworkOperation.getAvailableSites()
       .then(({ data }) => {
-        //console.log(data);
         this.setState({
           availableSites: data.connected_sites
         })
@@ -118,35 +87,9 @@ class MapContainer extends Component {
         })
       })
       .catch(console.error)
-
-    setInterval(() => {
-      NetworkOperation.getAvailableStates().then(({ data }) => {
-        this.setState({
-          states: data.states
-        })
-      })
-
-      NetworkOperation.getReports().then(({ data }) => {
-        data.reports.forEach(report => {
-          this.props.setReport(report)
-        })
-      })
-
-      NetworkOperation.getAvailableSites()
-        .then(({ data }) => {
-          this.setState({
-            availableSites: data.connected_sites
-          })
-          const { elements = [] } = this.getElementsToRender(this.props)
-          this.setState({
-            elements
-          })
-        })
-        .catch(console.error)
-    }, 30000)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     const { zoneId = null, siteId = null } = nextProps.match.params
     if (this.props.match.params === nextProps.match.params) return
 
@@ -178,16 +121,34 @@ class MapContainer extends Component {
           shadow = null
         } = this.getElementsToRender(nextProps)
 
+        // Get currentPosition in map
+        let currentPosition = 0
+        if (siteId) {
+          currentPosition = element.position
+        } else if (shadow) {
+          currentPosition = getAreaCenter(shadow)
+        } else {
+          currentPosition = this.state.currentPosition
+        }
+
+        // Get currentZoom in map
+        let currentZoom = 0
+        if (siteId) {
+          currentZoom = 13
+        } else if (zoneId) {
+          currentZoom = 7
+        } else {
+          currentZoom = 5
+        }
+
         // Update state
-        this.setState(prev => ({
-          currentPosition: siteId
-            ? element.position
-            : shadow ? getAreaCenter(shadow) : prev.currentPosition,
-          currentZoom: siteId ? 13 : zoneId ? 7 : 5,
+        this.setState({
+          currentPosition,
+          currentZoom,
           element,
           shadow,
           elements
-        }))
+        })
       }
     )
   }
@@ -195,28 +156,34 @@ class MapContainer extends Component {
   toggleCreate = () => {
     const { zoneId = null } = this.props.match.params
 
-    this.setState(prev => ({
+    // Check which element is being created
+    let isCreating = null
+    if (this.state.isCreating) {
+      isCreating = null
+    } else if (zoneId) {
+      isCreating = 'SITE'
+    } else {
+      isCreating = 'ZONE'
+    }
+
+    this.setState({
       newPositions: [],
-      isCreating: prev.isCreating ? null : zoneId ? 'SITE' : 'ZONE',
+      isCreating,
       showing: null
-    }))
+    })
   }
 
   getElementsToRender = props => {
     const { zoneId = null, siteId = null } = props.match.params
 
-    if (!this.props.zones || this.props.zones.length === 0)
-      return { elements: [], shadow: null }
+    if (!this.props.zones || this.props.zones.length === 0) return { elements: [], shadow: null }
 
     if (siteId) {
       const { sites = [], positions } = this.props.zones.find(
         ({ _id }) => _id === zoneId
       )
       const element = sites.find(({ _id }) => _id === siteId)
-      const availableSites = this.arrayDifference(
-        this.state.availableSites,
-        sites
-      )
+      const availableSites = arrayDifference(this.state.availableSites, sites)
 
       return {
         elements: availableSites,
@@ -226,10 +193,7 @@ class MapContainer extends Component {
     } else if (zoneId) {
       const zone = this.props.zones.find(({ _id }) => _id === zoneId)
       const { sites = [], positions: shadow } = zone
-      const availableSites = this.arrayDifference(
-        this.state.availableSites,
-        sites
-      )
+      const availableSites = arrayDifference(this.state.availableSites, sites)
 
       return {
         elements: availableSites.map(site => ({ ...site, type: 'SITE' })),
@@ -278,13 +242,15 @@ class MapContainer extends Component {
     const positions =
       this.state.newPositions.length > 0 ? this.state.newPositions : [[]]
 
-    name === 'lat'
-      ? positions[positions.length - 1][0]
+    if (name === 'lat') {
+      positions[positions.length - 1][0]
         ? (positions[positions.length - 1][0] = value)
         : (positions[positions.length - 1] = [value, 0])
-      : positions[positions.length - 1][1]
+    } else {
+      positions[positions.length - 1][1]
         ? (positions[positions.length - 1][1] = value)
         : (positions[positions.length - 1] = [0, value])
+    }
 
     this.setState({
       newPositions: positions,
@@ -377,7 +343,7 @@ class MapContainer extends Component {
   }
 
   render() {
-    //console.log(this.state.availableSites);
+    // console.log(this.state.availableSites);
     const { state, props } = this
     if (!props.credentials.user) {
       return null
@@ -387,6 +353,16 @@ class MapContainer extends Component {
       zoneId: selectedZone = null,
       siteId: selectedSite = null
     } = props.match.params
+
+    // selectedType
+    let selectedType = null
+    if (selectedSite) {
+      selectedType = 'SITE'
+    } else if (selectedZone) {
+      selectedType = 'ZONE'
+    } else {
+      selectedType = 'GENERAL'
+    }
 
     return (
       <div
@@ -400,9 +376,7 @@ class MapContainer extends Component {
           alerts={null}
           onHover={this.onElementOver}
           elements={state.elements}
-          selectedType={
-            selectedSite ? 'SITE' : selectedZone ? 'ZONE' : 'GENERAL'
-          }
+          selectedType={selectedType}
           onVisibleToggle={() => this.toggleVisible('OVERALL')}
           reports={this.getElementReports()}
           element={state.element}
@@ -442,8 +416,7 @@ class MapContainer extends Component {
                     className="button back"
                     onClick={() => {
                       if (state.isCreating) this.toggleCreate()
-                      if (selectedSite)
-                        props.history.push(`/sites/${selectedZone}`)
+                      if (selectedSite) props.history.push(`/sites/${selectedZone}`)
                       else if (selectedZone) props.history.push('/sites')
                     }}>
                     Regresar <span>{selectedSite ? 'zona' : 'general'}</span>
@@ -486,8 +459,7 @@ class MapContainer extends Component {
               weight={0}
               onClick={() => {
                 if (state.isCreating) return null
-                if (selectedSite)
-                  return props.history.push(`/sites/${selectedZone}`)
+                if (selectedSite) return props.history.push(`/sites/${selectedZone}`)
                 if (selectedZone) return props.history.push(`/sites`)
                 return null
               }}
@@ -497,6 +469,7 @@ class MapContainer extends Component {
             ? state.elements.map(element => (
                 <Marker
                   key={element._id}
+                  isOnline={element.isOnline}
                   position={element.position || []}
                   site={element}
                   title={element.name}
@@ -594,7 +567,6 @@ MapContainer.propTypes = {
   zones: PropTypes.array,
   match: PropTypes.object,
   reports: PropTypes.array,
-  setReport: PropTypes.func,
   setSite: PropTypes.func,
   setZone: PropTypes.func,
   setSubzone: PropTypes.func,
@@ -631,9 +603,6 @@ function mapDispatchToProps(dispatch) {
     },
     setComplete: () => {
       dispatch(setComplete())
-    },
-    setReport: report => {
-      dispatch(setReport(report))
     }
   }
 }

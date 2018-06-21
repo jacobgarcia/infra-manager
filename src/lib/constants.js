@@ -1,6 +1,5 @@
 export default {
-  hostUrl: window.location.origin,
-  //hostUrl: 'https://att.connus.mx',
+  hostUrl: 'https://api.connus.mx',
   colors: value => {
     if (value > 75) {
       return '#00adee'
@@ -8,8 +7,7 @@ export default {
       return '#ed2a20'
     }
     return '#FFC511'
-  },
-  frmUrl: 'https://att.connus.mx'
+  }
 }
 
 export const months = [

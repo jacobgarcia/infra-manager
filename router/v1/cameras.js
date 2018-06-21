@@ -237,21 +237,75 @@ router.route('/cameras/log/battery').post((req, res) => {
   })
 })
 
-// Delete already registered users
+// PATCH: This method is still used in old AT&T cameras. It's marked as UNSAFE and needs to be DEPRECATED
 router.route('/cameras/alarm/photos').post((req, res) => {
-  const data = ({ camera, photo, pc1, pc2 } = req.body)
+  const { camera, photo, pc1, pc2 } = req.body
+  const photos = []
 
-  // Emit alert socket
-  // global.io.to('ATT').emit('photo-alarm', data)
-  base64Img.imgSync(
-    photo,
-    'static/alerts',
-    shortid.generate() + Date.now()
-  )
+  Site.findOne({ key: camera }).exec((error, site) => {
+    if (error) {
+      winston.error(error)
+      return res
+        .status(500)
+        .json({ success: false, message: 'Could not find site' })
+    }
+    if (!site) return res
+        .status(404)
+        .json({ success: false, message: 'The specified site was not found' })
 
-  return res
-    .status(200)
-    .json({ success: true, message: 'Bacan' /* ,'data':data*/ })
+    // Sort alarms by timestamp
+    site.alarms.sort(($0, $1) => {
+      return $1.timestamp - $0.timestamp
+    })
+
+    // Generate images in folder
+    // Front photo
+    base64Img.img(
+      photo,
+      'static/alerts',
+      shortid.generate() + Date.now(),
+      (error, photo1) => {
+        const photo = '/' + photo1
+        photos.push(photo)
+        // Left photo
+        base64Img.img(
+          pc1,
+          'static/alerts',
+          shortid.generate() + Date.now(),
+          (error, photo2) => {
+            const photo = '/' + photo2
+            photos.push(photo)
+            // Right photo
+            base64Img.img(
+              pc2,
+              'static/alerts',
+              shortid.generate() + Date.now(),
+              (error, photo3) => {
+                const photo = '/' + photo3
+                photos.push(photo)
+                // Push photos to latest alarm created
+                site.alarms[0].photos = photos
+
+                // Save site with new urls
+                site.save((error, updatedSite) => {
+                  if (error) {
+                    winston.error(error)
+                    return res
+                      .status(500)
+                      .json({ success: false, message: 'Could not find site' })
+                  }
+
+                  return res
+                    .status(200)
+                    .json({ success: true, message: updatedSite })
+                })
+              }
+            )
+          }
+        )
+      }
+    )
+  })
 })
 
 /** *** CAMERA LOGS ENDPOINTS ****/

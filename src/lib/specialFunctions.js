@@ -2,6 +2,24 @@
 
 import { yellow, red, blue } from '../lib/colors'
 
+export function arrayDifference(arrayOne, arrayTwo) {
+  const ret = []
+  arrayOne.sort() // Online Sites
+  arrayTwo.sort() // All Sites
+
+  // Compare only with keys
+  const arrayTwoKeys = arrayTwo.map($0 => $0.key)
+
+  for (let $i = 0; $i < arrayOne.length; $i += 1) {
+    if (arrayTwoKeys.indexOf(arrayOne[$i]) > -1) {
+      ret.push(arrayTwo[arrayTwoKeys.indexOf(arrayOne[$i])])
+      // Add attribute online to site
+      arrayTwo[arrayTwoKeys.indexOf(arrayOne[$i])].isOnline = true
+    }
+  }
+
+  return arrayTwo
+}
 export function getColor(name) {
   switch (name) {
     case 'working':
@@ -18,14 +36,14 @@ export function getColor(name) {
 export function hashCode(str = '') {
   // java String#hashCode
   var hash = 0
-  for (let index = 0; index < str.length; index++) {
-    hash = str.charCodeAt(index) + ((hash << 5) - hash)
+  for (let index = 0; index < str.length; index += 1) {
+    hash = str.charCodeAt(index) + ((hash < 5) - hash)
   }
   return hash
 }
 
 export function intToRGB(int) {
-  var color = (int & 0x00ffffff).toString(16).toUpperCase()
+  var color = (int && 0x00ffffff).toString(16).toUpperCase()
 
   return '00000'.substring(0, 6 - color.length) + color
 }
@@ -39,7 +57,7 @@ export function substractReportValues(reports = []) {
   const alarms = []
   const sensors = []
   reports.map(report => {
-    alarms.push(...report.alarms[0].values)
+    alarms.push(...report.alarms)
     sensors.push(...report.sensors[0].values)
   })
 
@@ -59,14 +77,6 @@ function getZoneData(zone) {
         { alarms: [], sensors: [] }
       )
     : { alarms: [], sensors: [] }
-}
-
-function getZoneData(zone) {
-  const { alarms = [], sensors = [] } = getZoneData(zone) || {
-    alarms: [],
-    sensors: []
-  }
-  return { alarms: [...alarms], sensors: [...sensors] }
 }
 
 // Filter reports that belong to zone, subzone or site
@@ -105,7 +115,6 @@ export function getData(zone) {
     return getZoneData(zone)
   } else if (zone.sites) {
     // Subzone
-    return getSubzoneData(zone)
   } else if (zone.sensors) {
     // Site
     return { alarms: zone.alarms || [], sensors: zone.sensors || [] }
@@ -222,34 +231,34 @@ export function getStatus(data) {
   return { status: [], percentage: 0 }
 }
 
-export function pvAtTime(history, now = new Date()) {
-  let counter = 0
-  history.map(log => {
-    log < now && log > now.setHours(now.getHours() - 1, 0, 0, 0) && counter++
+export function pvAtTime(history, backHours) {
+  const now = new Date()
+  const lowwerLimit = new Date(
+    now.setHours(now.getHours() - backHours, 0, 0, 0)
+  )
+  const upperLimit = new Date(now.setHours(lowwerLimit.getHours() + 1, 0, 0, 0))
+  let pv = history.length
+  history.map(current => {
+    if (current < upperLimit && current > lowwerLimit) pv -= 1
   })
-  return parseInt(100 - counter * 100 / history.length)
+  return parseInt(pv / history.length, 10) * 100
 }
 
+// last kikin commit
 export function dataChart(chart) {
   const data = []
   const now = new Date()
-  for (const i in Array.from({ length: 11 })) {
+  const range = [...Array(11).keys()]
+  range.map(hoursBack => {
     const current = {
       name:
-        now.getHours() - i > 11
-          ? now.getHours() - i + 'PM'
-          : now.getHours() - i + 'AM',
-      pv: chart
-        ? Math.ceil(
-            pvAtTime(
-              chart,
-              new Date(new Date().setHours(new Date().getHours() - i, 0, 0, 0))
-            )
-          )
-        : 100
+        now.getHours() - hoursBack > 11
+          ? now.getHours() - hoursBack + 'PM'
+          : now.getHours() - hoursBack + 'AM',
+      pv: chart ? Math.ceil(pvAtTime(chart, hoursBack)) : 100
     }
     data.unshift(current)
-  }
+  })
   return data
 }
 

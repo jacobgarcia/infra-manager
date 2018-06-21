@@ -97,6 +97,11 @@ class Navigator extends Component {
           <li className="hr" />
           <li className="hr" />
           <li onClick={() => this.closeNavigator()}>
+            <NavLink to="/alarms" className="alarms">
+              <span className="fade">Alertas</span>
+            </NavLink>
+          </li>
+          <li onClick={() => this.closeNavigator()}>
             <NavLink to="/users" className="users">
               <span className="fade">Usuarios</span>
             </NavLink>
@@ -147,14 +152,14 @@ Navigator.defaultProps = {
       _id: '04'
     },
     {
-	title: 'Contador de Personas ',
-	name: 'visual-counter',
-	_id: '05'
+      title: 'Contador de Personas ',
+      name: 'visual-counter',
+      _id: '05'
     },
     {
-	title: 'DVR',
-	name: 'dvr',
-	_id: '06'
+      title: 'Dispositivos IZZI',
+      name: 'devices',
+      _id: '06'
     }
   ]
 }

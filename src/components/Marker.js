@@ -21,11 +21,11 @@ function SiteMarker(props) {
 
   let sensors = []
   if (props.isSite) {
-    props.sensors ? sensors = props.sensors.sensors : sensors = []
+    props.sensors ? (sensors = props.sensors.sensors) : (sensors = [])
   }
-  const icon = props.isHighlighted
-    ? '/static/img/icons/red-marker.svg'
-    : '/static/img/icons/marker.svg'
+  const icon = props.isOnline
+    ? '/static/img/icons/marker.svg'
+    : '/static/img/icons/red-marker.svg'
   const position = [
     parseFloat(props.position[0], 10),
     parseFloat(props.position[1], 10)
@@ -35,7 +35,6 @@ function SiteMarker(props) {
     <Marker
       position={position}
       onMouseOver={() => props.onMouseHover(props.site ? props.site._id : null)}
-      // onMouseOut={() => props.onMouseHover(null)}
       onClick={props.onClick}
       className="site-marker"
       icon={leafletIcon({
@@ -85,7 +84,6 @@ function SiteMarker(props) {
                             animationBegin={0}
                             stroke={false}>
                             <Cell fill={constants.colors(percentage)} />
-                            <Cell fill="#ed2a20" />
                           </Pie>
                         </PieChart>
                         <p>{sensor.key}</p>
@@ -112,7 +110,9 @@ SiteMarker.propTypes = {
   onClick: PropTypes.func,
   reports: PropTypes.array,
   sensors: PropTypes.object,
-  title: PropTypes.string
+  title: PropTypes.string,
+  isTooltipVisible: PropTypes.bool,
+  isOnline: PropTypes.bool
 }
 
 SiteMarker.defaultProps = {

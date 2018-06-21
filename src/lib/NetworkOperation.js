@@ -2,10 +2,7 @@ import axios from 'axios'
 
 import constants from './constants'
 
-// TODO check if we're in production, if it's change hostUrl to s3
-// const baseUrl = `${constants.hostUrl}/v1`
-const baseUrl = `https://att.connus.mx/v1`
-// const baseUrl = `http://localhost:8080/v1`
+const baseUrl = `${constants.hostUrl}/v1`
 
 // Request interceptors
 axios.interceptors.request.use(
@@ -28,11 +25,11 @@ class NetworkOperation {
   }
 
   static getExhaustive() {
-    return axios.get(`${baseUrl}/exhaustive`)
+    return axios.get(`${baseUrl}/zones/exhaustive`)
   }
 
   static getReports() {
-    return axios.get(`${baseUrl}/reports`)
+    return axios.get(`${baseUrl}/sites/reports`)
   }
 
   static getAvailableStates() {
@@ -41,10 +38,6 @@ class NetworkOperation {
 
   static getEntityPolygon(entityId) {
     return axios.get(`${baseUrl}/polygons/${entityId}`)
-  }
-
-  static getUsers() {
-    return axios.get(`${baseUrl}/users`)
   }
 
   static setZone(name, positions) {
@@ -72,50 +65,33 @@ class NetworkOperation {
     formData.append('photo', photoFile)
     return axios.post(`${baseUrl}/users/self/photo`, formData)
   }
+
   static getGeneralAlarms(from, to) {
     return axios.get(`${baseUrl}/alarms?from=${from}&to=${to}`)
   }
+
   static getCompanyUsers() {
     return axios.get(`${baseUrl}/users`)
   }
+
   static getFaceRecognition() {
     return axios.get(`${baseUrl}/facerecognition`)
   }
-  static getSiteId(siteKey) {
-    return axios.get(`${baseUrl}/site/${siteKey}`)
-  }
+
   static getInventory() {
     return axios.get(`${baseUrl}/sites/sensors`)
   }
-  static getSensors() {
-    return axios.get(`${baseUrl}/sites/sensors/all/`)
-  }
-  static getHistory() {
-    return axios.get(`${baseUrl}/sites/sensors/history/`)
-  }
+
   static getSensors(type) {
     return axios.get(`${baseUrl}/sites/sensors/${type}`)
   }
+
+  static getDevices(type) {
+    return axios.get(`${baseUrl}/sites/devices/${type}`)
+  }
+
   static getVehicularReports() {
     return axios.get(`${baseUrl}/vehicular-flow/reports`)
-  }
-  static updateInventoryElement(
-    id,
-    lastMantainanceFrom,
-    lastMantainanceTo,
-    maintainer,
-    supervisor,
-    place,
-    maintainanceType
-  ) {
-    return axios.put(`${baseUrl}/inventory/${id}`, {
-      lastMantainanceFrom,
-      lastMantainanceTo,
-      maintainer,
-      supervisor,
-      place,
-      maintainanceType
-    })
   }
 
   // Video Surveillance
@@ -146,12 +122,8 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/access/logs`)
   }
 
-  static getAlarms() {
-    return axios.get(`${baseUrl}/sites/alarms`)
-  }
-
   static getCounter() {
-    return axios.get(`${baseUrl}/visualcounter/count`)
+    return axios.get(`${baseUrl}/counter/count`)
   }
 }
 

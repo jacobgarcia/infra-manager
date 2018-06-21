@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+    - '8080:8080'
+    volumes:
+      - './src:/usr/src/app/src'
+      - './router:/usr/src/app/router'
+      - './server.js:/usr/src/app/server.js'
+    links:
+    - node
+    - mongo
+  node:
+    image: node:8
+  mongo:
+    image: mongo:3.6

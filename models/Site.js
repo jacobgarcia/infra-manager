@@ -2,14 +2,18 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-class SiteClass {}
-
 const History = new Schema({
-  _id: false,
-  timestamp: { type: Date, default: Date.now },
+  timestamp: { type: Number, default: Date.now() },
   event: String,
   status: String,
-  risk: 0
+  risk: { type: Number, default: 0 },
+  photos: [String]
+})
+
+const Counter = new Schema({
+  inputs: [Number],
+  outputs: [Number],
+  timestamp: { type: Number, default: Date.now }
 })
 
 const schema = new Schema({
@@ -20,18 +24,22 @@ const schema = new Schema({
     {
       key: Number,
       value: Number,
-      class: String
+      class: String,
+      fully_charged: Boolean,
+      charging: Boolean,
+      ac_present: Boolean,
+      needs_replacement: Boolean
     },
     { _id: false }
   ],
   alarms: [
     {
-      timestamp: { type: Date, default: Date.now },
+      timestamp: { type: Number, default: Date.now() },
       event: String,
       status: String,
-      risk: 0
-    },
-    { _id: false }
+      risk: { type: Number, default: 0 },
+      photos: [String]
+    }
   ],
   timestamp: { type: Date, default: new Date() }, // Last updated
   history: { type: [History], default: [] },
@@ -47,13 +55,58 @@ const schema = new Schema({
       room: String,
       videos: [String]
     }
+  ],
+  counter: { type: [Counter], default: [] },
+  devices: [
+    {
+      device: String,
+      ip: String,
+      last_update: Number,
+      status: Number,
+      output: [
+        {
+          key: String,
+          value: String
+        }
+      ]
+    },
+    { _id: false }
+  ],
+  devices2: [
+    {
+      device: String,
+      ip: String,
+      last_update: Number,
+      status: Number,
+      output: [
+        {
+          key: String,
+          value: String
+        }
+      ]
+    },
+    { _id: false }
+  ],
+  devices3: [
+    {
+      device: String,
+      ip: String,
+      last_update: Number,
+      status: Number,
+      output: [
+        {
+          key: String,
+          value: String
+        }
+      ]
+    },
+    { _id: false }
   ]
 })
 
 // Set company-key unique
 schema.index({ key: 1, company: 1 }, { unique: true })
 
-schema.loadClass(SiteClass)
-
 module.exports = mongoose.model('Site', schema)
 module.exports.History = mongoose.model('History', History)
+module.exports.Counter = mongoose.model('Counter', Counter)

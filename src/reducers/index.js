@@ -48,21 +48,14 @@ function reports(state = [], action) {
         ({ site }) => site.key === action.report.site.key
       )
       const newState = [...state] // BUG: It only creates a shallow copy
-      // console.log({report: action.report, foundIndex})
 
       foundIndex > -1
         ? (newState[foundIndex] = {
             site: newState[foundIndex].site,
             zone: action.report.zone,
             _id: action.report._id,
-            alarms: [
-              {
-                timestamp: action.report.timestamp,
-                values: [...(action.report.alarms || [])],
-                attended: false
-              },
-              ...(newState[foundIndex].alarms || [])
-            ],
+            alarms: [...(newState[foundIndex].alarms || [])],
+            history: [...(newState[foundIndex].history || [])],
             sensors: [
               {
                 timestamp: action.report.timestamp,
@@ -75,13 +68,8 @@ function reports(state = [], action) {
             site: action.report.site,
             zone: action.report.zone,
             _id: action.report._id,
-            alarms: [
-              {
-                timestamp: action.report.timestamp,
-                values: [...(action.report.alarms || [])],
-                attended: false
-              }
-            ],
+            alarms: action.report.alarms,
+            history: action.report.history,
             sensors: [
               {
                 timestamp: action.report.timestamp,
@@ -106,6 +94,26 @@ function reports(state = [], action) {
               }
             : report
       )
+    }
+    default:
+      return state
+  }
+}
+
+function history(state = [], action) {
+  switch (action.type) {
+    case 'SET_HISTORY': {
+      return [action.history, ...state]
+    }
+    default:
+      return state
+  }
+}
+
+function alarms(state = [], action) {
+  switch (action.type) {
+    case 'SET_ALARM': {
+      return [action.alarm, ...state]
     }
     default:
       return state
@@ -198,5 +206,7 @@ export default combineReducers({
   inventoryReports: inventoryLogs,
   administrators,
   appAlert,
-  reports
+  reports,
+  history,
+  alarms
 })

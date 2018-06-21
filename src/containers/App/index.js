@@ -10,13 +10,15 @@ import {
   setComplete,
   setLoading,
   setExhaustive,
-  setReport,
   setFacialReport,
   setVehicleReport,
-  setCamera
+  setCamera,
+  setReport,
+  setHistory,
+  setAlarm
 } from 'actions'
 
-import Dashboard from 'containers/Dashboard/Loadable'
+import Dashboard from 'containers/Dashboard'
 import Users from 'containers/Users/Loadable'
 import Statistics from 'containers/Statistics/Loadable'
 import Settings from 'containers/Settings/Loadable'
@@ -29,26 +31,13 @@ import VideoSurveillance from 'containers/VideoSurveillance/Loadable'
 import VisualCounter from 'containers/VisualCounter/Loadable'
 import Reports from 'containers/Reports/Loadable'
 import Sensors from 'containers/Sensors/Loadable'
+import Devices from 'containers/Devices/Loadable'
 import Inventory from 'containers/Inventory/Loadable'
+import Alarms from 'containers/Alarms/Loadable'
 
 import Navigator from 'components/Navigator'
-import VideoPlayer from 'components/VideoPlayer'
 
 import { NetworkOperation } from 'lib'
-
-const videoJsOptions = {
-  controls: true,
-  autoplay: true,
-  sources: [
-    {
-      src: 'rtmp://91.230.211.87:1935/720p&hd',
-      type: 'rtmp/mp4'
-    }
-  ],
-  preload: 'auto',
-  techorder: ['flash']
-}
-
 class App extends Component {
   state = {
     error: false,
@@ -71,9 +60,10 @@ class App extends Component {
 
   componentDidMount() {
     const token = localStorage.getItem('token')
-    let path = ''
+    let returnPath = ''
+
     if (this.props.location.pathname !== '/') {
-      path = `?return=${this.props.location.pathname}${
+      returnPath = `?return=${this.props.location.pathname}${
         this.props.location.search
       }`
     }
@@ -82,25 +72,46 @@ class App extends Component {
 
     if (!token) {
       localStorage.removeItem('token')
-      this.props.history.replace(`/login${path}`)
+      this.props.history.replace(`/login${returnPath}`)
     }
 
     this.props.setLoading()
 
-    // Set Vehicular Reports
+    // Get all vehicular reports
     NetworkOperation.getVehicularReports().then(({ data }) => {
       data.reports.map(report => {
         this.props.setVehicleReport(report)
       })
     })
 
-    // Set Cameras
+    // Get the cameras of all sites
     NetworkOperation.getStreams().then(({ data }) => {
       data.cameras.map(camera => {
         this.props.setCamera(camera)
       })
     })
 
+    // Get all alarms and history of all sites. But set all sites with this information
+    // Reports have all site information
+    NetworkOperation.getReports().then(({ data }) => {
+      data.reports.map(report => {
+        this.props.setReport(report)
+        // Populate history array
+        report.history.map(currentHistory => {
+          currentHistory.site = report.site.key
+          currentHistory.zone = report.zone
+          this.props.setHistory(currentHistory)
+        })
+        // Populate alarms array
+        report.alarms.map(currentAlarm => {
+          currentAlarm.site = report.site.key
+          currentAlarm.zone = report.zone
+          this.props.setAlarm(currentAlarm)
+        })
+      })
+    })
+
+    // Get User Credentials
     NetworkOperation.getSelf()
       .then(({ data }) => {
         this.setState({
@@ -155,11 +166,10 @@ class App extends Component {
           response.status === 400 ||
           response.status === 404
         ) {
-          this.props.history.replace(`/login${path}`)
+          this.props.history.replace(`/login${returnPath}`)
         }
       })
       .then(() => {
-        console.log('END LOADING LOADING')
         this.props.setComplete()
         this.setState({
           isLoading: false
@@ -180,16 +190,9 @@ class App extends Component {
     ) {
       this.socket.on('alert', alert => {
         // Get site id based on key
-        NetworkOperation.getSiteId(alert.site).then(({ data }) => {
-          const theAlert = {
-            site: alert.site,
-            alert: alert.alert,
-            id: data.site._id
-          }
-          this.setState(prev => ({
-            alerts: prev.alerts.concat([{ ...theAlert, timestamp: Date.now() }])
-          }))
-        })
+        this.setState(prev => ({
+          alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now() }])
+        }))
       })
     }
   }
@@ -254,19 +257,17 @@ class App extends Component {
               }`}>
               <div className="alert__image" />
               <div className="alert__body">
-                <Link to={`/sites/59d84e3a2b12461001e6dc5a/${alert.id}`}>
+                <Link to={`/alarms`}>
                   <p>{alert.site}</p>
                 </Link>
-                <p>{alert.alert}</p>
+                <p>{alert.event}</p>
               </div>
             </div>
           ))}
         </div>
         <Navigator credentials={this.props.credentials} />
         <Switch>
-          {/* MAYBE TODO lazy load this component  */}
           <Route exact path="/" component={Dashboard} />
-          {/* TODO lazy load this component  */}
           <Route path="/sites/:zoneId?/:siteId?" component={Map} />
           <Route path="/users" component={Users} />
           <Route path="/accesses" component={Accesses} />
@@ -280,10 +281,8 @@ class App extends Component {
           <Route path="/reports" component={Reports} />
           <Route path="/settings" component={Settings} />
           <Route path="/sensors" component={Sensors} />
-          <Route
-            path="/streaming"
-            render={() => <VideoPlayer {...videoJsOptions} />}
-          />
+          <Route path="/devices" component={Devices} />
+          <Route path="/alarms" component={Alarms} />
         </Switch>
       </div>
     )
@@ -292,7 +291,7 @@ class App extends Component {
 
 App.propTypes = {
   setCredentials: PropTypes.func,
-  history: PropTypes.object,
+  history: PropTypes.array,
   user: PropTypes.object,
   credentials: PropTypes.object,
   zones: PropTypes.array,
@@ -302,13 +301,23 @@ App.propTypes = {
   setComplete: PropTypes.func,
   setFacialReport: PropTypes.func,
   setVehicleReport: PropTypes.func,
-  setCamera: PropTypes.func
+  setCamera: PropTypes.func,
+  setReport: PropTypes.func,
+  setHistory: PropTypes.func,
+  setAlarm: PropTypes.func,
+  alarms: PropTypes.array
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     setReport: report => {
       dispatch(setReport(report))
+    },
+    setHistory: history => {
+      dispatch(setHistory(history))
+    },
+    setAlarm: alarm => {
+      dispatch(setAlarm(alarm))
     },
     setCredentials: user => {
       dispatch(setCredentials(user))
@@ -360,11 +369,12 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-function mapStateToProps({ zones, loading, credentials }) {
+function mapStateToProps({ zones, loading, credentials, alarms }) {
   return {
     loading,
     credentials,
-    zones
+    zones,
+    alarms
   }
 }
 

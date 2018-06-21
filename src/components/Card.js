@@ -18,8 +18,14 @@ function Card(props) {
 
 Card.propTypes = {
   className: PropTypes.string,
-  full: PropTypes.boolean,
-  title: PropTypes.string
+  full: PropTypes.bool,
+  title: PropTypes.string,
+  detailActions: PropTypes.object,
+  detailView: PropTypes.object,
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
 }
 
 export default Card

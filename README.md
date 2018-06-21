@@ -10,10 +10,10 @@ Ensure MongoDB instance is running and run **development mode**
 > yarn start
 ```
 
-With _Docker_ (hot reloading app, but no server.js nor router)
+_With Docker_, builds up with **node** and **mongo**
 
 ```
-> docker run -v ~/${PATH}/connus/src:/usr/src/app/src -p 8080:8080 connus:v1.0
+> docker-compose up --build # IMPORTANT Omit the --build if not the first build
 ```
 
 ### Production
@@ -22,12 +22,6 @@ For production run
 
 ```
 > yarn start:prod
-```
-
-With _Docker_
-
-```
-> # Comming soon
 ```
 
 ## Codes
