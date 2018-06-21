@@ -4,7 +4,7 @@ import constants from './constants'
 
 // TODO check if we're in production, if it's change hostUrl to s3
 // const baseUrl = `${constants.hostUrl}/v1`
-const vmsUrl = `http://25463c71.ngrok.io/fusion`
+const vmsUrl = `http://f7b73757.ngrok.io/fusion`
 const axiosVMS = axios.create({
   timeout: 1000
 })

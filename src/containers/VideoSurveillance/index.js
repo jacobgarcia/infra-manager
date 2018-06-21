@@ -14,19 +14,19 @@ class VideoSurveillance extends Component {
   componentDidMount() {
     let frame1 = document.createElement('iframe')
     frame1.setAttribute('onload', this.init(frame1))
-    frame1.src = "http://25463c71.ngrok.io/?single-player=1"
+    frame1.src = "http://f7b73757.ngrok.io/?single-player=1"
     frame1.orchidId = "fdfacc2f-4c42-4484-bbb1-9ba7dd4372fc"
     console.log("src defining")
     container = document.getElementById('players')
     console.log("apending C")
+    container.appendChild(frame1)
   }
 
   init(frame) {
     this.getFusionToken(token => {
-        container.appendChild(frame)
-        this.renewJWT(frame)
+        this.renewJWT(frame, token)
         window.setInterval(() => {
-          this.renewJWT(frame)
+          this.renewJWT(frame, token)
         }, 30000)
       }
     )
@@ -38,11 +38,11 @@ class VideoSurveillance extends Component {
     console.log("puse el jwt")
   }
 
-  renewJWT(frame) {
+  renewJWT(frame, token) {
     NetworkOperationVMS.getJWT()
       .then(({data}) => {
         console.log("JWT obtained")
-        this.setJWT(frame, data[frame.orchidId])
+        this.setJWT(frame, token)
       })
       .catch(({response = {} }) => {
         const { status = 500 } = response
@@ -59,6 +59,7 @@ class VideoSurveillance extends Component {
       .then(({data}) => {
         localStorage.setItem('vmstoken', data.token)
         console.log("Token obtaind")
+        console.log(data.token)
         callback(data.token)
       })
       .catch(({response = {} }) => {
