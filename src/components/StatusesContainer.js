@@ -47,7 +47,6 @@ class StatusesContainer extends PureComponent {
       this.setState({
         photo2: 'https://demo.connus.mx' + data.image2,
         photo3: 'https://demo.connus.mx' + data.image3
-        // camera: data.camera
       })
       // }
     })
@@ -92,11 +91,6 @@ class StatusesContainer extends PureComponent {
     const { props, state } = this
 
     const isSensor = props.type !== 'SITE' ? 'SENSORS' : null
-
-    /*
-    console.log(isSensor)
-    console.log(state.show)
-    */
 
     switch (isSensor || state.show) {
       case 'SENSORS':
@@ -179,6 +173,7 @@ class StatusesContainer extends PureComponent {
                   elements={element.elements} // Subzones or sites
                   onHover={props.onHover}
                   nonPercentage={props.type === 'SITE'}
+                  isOnline={element.isOnline}
                 />
               </Link>
             )
