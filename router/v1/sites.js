@@ -74,7 +74,7 @@ router.route('/sites/alarms').put(upload, (req, res) => {
       const alarmIndex = site.alarms.findIndex($0 => {
         $0._id === alarm
       })
-
+      console.log('ALARM INDEX', alarmIndex)
       // Push photo files to specified alarm
       site.alarms[alarmIndex].photos.push(photos)
 
@@ -126,7 +126,7 @@ router.route('/sites/online').get((req, res) => {
 })
 
 // UPDATE STATUS OF CONNECTED SITES
-router.route('/sites/online').get((req, res) => {
+router.route('/sites/online').put((req, res) => {
   // Get all sites of the specified company
   const company = req._user.cmp
   const online = []
@@ -147,7 +147,9 @@ router.route('/sites/online').get((req, res) => {
       return sites.forEach((room, index) => {
         global.io.in(room.key).clients((error, clients) => {
           // Just add the rooms who have at least one client
-          if (clients !== '') online.push(room.key)
+          if (clients !== '') {
+            online.push(room.key)
+          }
 
           // Return endpoint until all sites have been checked for online status
           if (index === sites.length - 1) return res.status(200).json({ success: true, online })
