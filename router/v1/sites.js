@@ -42,10 +42,11 @@ const upload = multer({ storage: storage }).fields([
 
 /* ADD PHOTO MEDIA FILES TO THE SPECIFIED ALARM THAT SERVERS AS EVIDENCE */
 router.route('/sites/alarms').put(upload, (req, res) => {
-  console.log(key, company, alarm)
   const { key, company, alarm } = req.body
   const photoFiles = req.files && req.files.photos
   const photos = []
+
+  console.log(key, company, alarm)
 
   if (!key || !company || !photoFiles) return res
       .status(400)
