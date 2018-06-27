@@ -64,7 +64,7 @@ class Dashboard extends Component {
     const chart = []
 
     props.reports.map(site => {
-      site.history.map(currentHistory => {
+      site.alarms.map(currentHistory => {
         // Populate chart dates
         chart.push(new Date(currentHistory.timestamp))
       })
@@ -437,7 +437,7 @@ class Dashboard extends Component {
                   full={false}>
                   <ResponsiveContainer width="100%" height={160}>
                     <AreaChart
-                      data={dataChart(this.state.chart)}
+                      data={dataChart(state.chart)}
                       syncId="dashboard"
                       margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                       <XAxis

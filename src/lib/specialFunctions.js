@@ -233,22 +233,22 @@ export function getStatus(data) {
 
 export function pvAtTime(history, backHours) {
   const now = new Date()
-  const lowwerLimit = new Date(
-    now.setHours(now.getHours() - backHours, 0, 0, 0)
-  )
-  const upperLimit = new Date(now.setHours(lowwerLimit.getHours() + 1, 0, 0, 0))
+  const lowerLimit = new Date(now.setHours(now.getHours() - backHours, 0, 0, 0))
+  console.log('LOWER LIMIT', lowerLimit)
+  const upperLimit = new Date(now.setHours(lowerLimit.getHours() + 1, 0, 0, 0))
+  console.log('UPPER LIMIT', upperLimit)
+
   let pv = history.length
   history.map(current => {
-    if (current < upperLimit && current > lowwerLimit) pv -= 1
+    if (current < upperLimit && current > lowerLimit) pv -= 1
   })
   return parseInt(pv / history.length, 10) * 100
 }
 
-// last kikin commit
 export function dataChart(chart) {
   const data = []
   const now = new Date()
-  const range = [...Array(11).keys()]
+  const range = [...Array(12).keys()] // Array 12 hours
   range.map(hoursBack => {
     const current = {
       name:
