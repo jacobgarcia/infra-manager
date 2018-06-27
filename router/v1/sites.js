@@ -42,8 +42,9 @@ const upload = multer({ storage: storage }).fields([
 
 /* ADD PHOTO MEDIA FILES TO THE SPECIFIED ALARM THAT SERVERS AS EVIDENCE */
 router.route('/sites/alarms').put(upload, (req, res) => {
+  console.log(key, company, alarm)
   const { key, company, alarm } = req.body
-  const photoFiles = req.files.photos
+  const photoFiles = req.files && req.files.photos
   const photos = []
 
   if (!key || !company || !photoFiles) return res
@@ -149,6 +150,10 @@ router.route('/sites/online').put((req, res) => {
           // Just add the rooms who have at least one client
           if (clients !== '') {
             online.push(room.key)
+            // Remove the oldest online status
+            room.onlineStatuses.shift()
+            // Insert the online true status
+            room.onlineStatuses.push(true)
           }
 
           // Return endpoint until all sites have been checked for online status
