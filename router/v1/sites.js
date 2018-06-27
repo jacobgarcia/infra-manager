@@ -73,21 +73,25 @@ router.route('/sites/alarms').put(upload, (req, res) => {
       if (!site) return res.status(404).json({ message: 'No sites found' })
       const alarmIndex = site.alarms.findIndex($0 => $0._id === alarm)
       // Push photo files to specified alarm
+      console.log(alarmIndex)
       if (alarmIndex !== -1) {
         console.log(alarmIndex, site.alarms[alarmIndex], photos)
         site.alarms[alarmIndex].photos.push(photos)
-      }
+        return site.save(error => {
+          if (error) {
+            winston.error({ error })
+            return res.status(500).json({ error })
+          }
 
-      return site.save(error => {
-        if (error) {
-          winston.error({ error })
-          return res.status(500).json({ error })
-        }
-
-        return res.status(200).json({
-          success: true,
-          message: 'Sucessfully pushed photos to the specified alarm'
+          return res.status(200).json({
+            success: true,
+            message: 'Sucessfully pushed photos to the specified alarm'
+          })
         })
+      }
+      return res.status(400).json({
+        success: false,
+        message: 'Alarm does not exist'
       })
     })
   })
