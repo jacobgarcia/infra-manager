@@ -69,6 +69,8 @@ class Dashboard extends Component {
         chart.push(new Date(currentHistory.timestamp))
       })
 
+      // If site has alarms, mark it as damaged
+
       // Most alerted zone
       const zone = alertedZones.find($0 => $0.name === site.zone.name)
       if (zone) {

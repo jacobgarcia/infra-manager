@@ -6,6 +6,7 @@ const router = new express.Router()
 const multer = require('multer')
 const mime = require('mime')
 const mongo = require('mongodb')
+const crypto = require('crypto')
 const ObjectID = mongo.ObjectID
 
 // const Site = require(path.resolve('models/Site'))
@@ -90,6 +91,70 @@ router.route('/sites/alarms').put(upload, (req, res) => {
       })
     })
   })
+})
+
+// RETRIEVE ALL ONLINE SITES
+router.route('/sites/online').get((req, res) => {
+  // Get all sites of the specified company
+  const company = req._user.cmp
+  const online = []
+
+  Site.find({ company })
+    .sort({ key: 1 }) // sort them by key
+    .exec((error, sites) => {
+      // if there are any errors, return the error
+      if (error) {
+        winston.error(error)
+        return res
+          .status(500)
+          .json({ success: false, message: 'Error at finding sites' })
+      } else if (sites.length === 0) return res
+          .status(404)
+          .json({ success: false, message: 'Sites not found' })
+
+      return sites.forEach((room, index) => {
+        global.io.in(room.key).clients((error, clients) => {
+          // Just add the rooms who have at least one client
+          if (clients !== '') online.push(room.key)
+
+          // Return endpoint until all sites have been checked for online status
+          if (index === sites.length - 1) return res.status(200).json({ success: true, online })
+          return null
+        })
+      })
+    })
+})
+
+// UPDATE STATUS OF CONNECTED SITES
+router.route('/sites/online').get((req, res) => {
+  // Get all sites of the specified company
+  const company = req._user.cmp
+  const online = []
+
+  Site.find({ company })
+    .sort({ key: 1 }) // sort them by key
+    .exec((error, sites) => {
+      // if there are any errors, return the error
+      if (error) {
+        winston.error(error)
+        return res
+          .status(500)
+          .json({ success: false, message: 'Error at finding sites' })
+      } else if (sites.length === 0) return res
+          .status(404)
+          .json({ success: false, message: 'Sites not found' })
+
+      return sites.forEach((room, index) => {
+        global.io.in(room.key).clients((error, clients) => {
+          // Just add the rooms who have at least one client
+          if (clients !== '') online.push(room.key)
+
+          // Return endpoint until all sites have been checked for online status
+          if (index === sites.length - 1) return res.status(200).json({ success: true, online })
+          return null
+        })
+      })
+    })
 })
 
 /* CREATE SITE BASED ON A CENTRAL EQUIPMENT (THIS ENDPOINT MUST BE CALLED WHEN A NEW SMARTBOX CONNECTS TO THE SERVER */
