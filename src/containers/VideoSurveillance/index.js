@@ -2,87 +2,74 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-import { DateUtils } from 'react-day-picker'
+import { NetworkOperationVMS } from 'lib'
 
-import { NetworkOperation } from 'lib'
+let container = null
 
 class VideoSurveillance extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      selectedLog:
-        this.props.cameraReports.length > 0
-          ? this.props.cameraReports[0]
-          : null,
-      selectedElementIndex:
-        this.props.cameraReports.length > 0 ? [0, 0] : [null, null],
-      from: new Date(),
-      showLogDetail: true,
-      to: new Date(),
-      playingVideo: true,
-      isPlaying: false,
-      iframe: {
-        __html:
-          '<iframe src="https://demo.connus.mx:8081" width="540" height="450"></iframe>'
-      }
-    }
-
-    this.onDayClick = this.onDayClick.bind(this)
-    this.onLogSelect = this.onLogSelect.bind(this)
-    this.onVideoDemand = this.onVideoDemand.bind(this)
   }
 
-  onLogSelect(item, index, sectionIndex) {
-    console.log('https://stream.connus.mx/hls/' + this.state.room + '.m3u8')
-    this.setState(
-      {
-        showLogDetail: true,
-        selectedLog: item,
-        selectedElementIndex: [index, sectionIndex],
-        playingVideo: false,
-        index
-      },
-      () => {
-        this.setState({
-          playingVideo: true,
-          selectedElementIndex: [index, sectionIndex]
-        })
+  componentDidMount() {
+    let frame1 = document.createElement('iframe')
+    frame1.setAttribute('onload', this.init(frame1))
+    frame1.src = "http://f7b73757.ngrok.io/?single-player=1"
+    frame1.orchidId = "fdfacc2f-4c42-4484-bbb1-9ba7dd4372fc"
+    console.log("src defining")
+    container = document.getElementById('players')
+    console.log("apending C")
+    container.appendChild(frame1)
+  }
+
+  init(frame) {
+    this.getFusionToken(token => {
+        this.renewJWT(frame, token)
+        window.setInterval(() => {
+          this.renewJWT(frame, token)
+        }, 30000)
       }
     )
-
-    this.forceUpdate()
   }
 
-  onVideoDemand() {
-    const { state } = this
-    NetworkOperation.createVideoToken(
-      state.selectedLog.site.key,
-      state.selectedLog.id
-    ).then(({ data }) => {
-      this.setState({
-        isLoading: true,
-        isPlaying: true
+  setJWT(frame, jwt) {
+    console.log(jwt)
+    frame.contentWindow.postMessage({'jwt': jwt}, '*')
+    console.log("puse el jwt")
+  }
+
+  renewJWT(frame, token) {
+    NetworkOperationVMS.getJWT()
+      .then(({data}) => {
+        console.log("JWT obtained")
+        this.setJWT(frame, token)
       })
-      setInterval(
-        () => this.setState({ room: data.room, isLoading: false }),
-        20000
-      )
+      .catch(({response = {} }) => {
+        const { status = 500 } = response
+        console.log(status)
+      })
+  }
+
+  getFusionToken(callback) {
+    let data = JSON.stringify({
+      "username": "admin",
+      "password": "admin"
     })
-  }
-
-  onDayClick(day) {
-    // TODO Network operation for selected period
-    const range = DateUtils.addDayToRange(day, this.state)
-    this.setState(range)
-  }
-
-  componentDidCatch(error, info) {
-    console.warn('Component had error', error)
+    NetworkOperationVMS.login(data)
+      .then(({data}) => {
+        localStorage.setItem('vmstoken', data.token)
+        console.log("Token obtaind")
+        console.log(data.token)
+        callback(data.token)
+      })
+      .catch(({response = {} }) => {
+        const { status = 500 } = response
+        console.log(status)
+      })
   }
 
   render() {
-    const { state, props } = this
+    const {state} = this
     return (
       <div className="app-content small-padding">
         <Helmet>
@@ -90,7 +77,7 @@ class VideoSurveillance extends Component {
         </Helmet>
         <div className="content vertical">
           <h2>Video Vigilancia</h2>
-          <div dangerouslySetInnerHTML={state.iframe} />
+          <div id="players" />
         </div>
       </div>
     )
