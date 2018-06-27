@@ -73,7 +73,10 @@ router.route('/sites/alarms').put(upload, (req, res) => {
       if (!site) return res.status(404).json({ message: 'No sites found' })
       const alarmIndex = site.alarms.findIndex($0 => $0._id === alarm)
       // Push photo files to specified alarm
-      if (alarmIndex !== -1) site.alarms[alarmIndex].photos.push(photos)
+      if (alarmIndex !== -1) {
+        console.log(alarmIndex, site.alarms[alarmIndex], photos)
+        site.alarms[alarmIndex].photos.push(photos)
+      }
 
       return site.save(error => {
         if (error) {
