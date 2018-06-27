@@ -121,7 +121,6 @@ router.route('/sites/online').get((req, res) => {
 
           // Return endpoint until all sites have been checked for online status
           if (index === sites.length - 1) return res.status(200).json({ success: true, online })
-          return null
         })
       })
     })
