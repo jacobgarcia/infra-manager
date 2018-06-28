@@ -18,19 +18,19 @@ class VideoSurveillance extends Component {
     let frame4 = document.createElement('iframe')
 
     frame1.setAttribute('onload', this.init(frame1))
-    frame1.src = "http://db1bea4d.ngrok.io/?single-player=1"
+    frame1.src = "https://db1bea4d.ngrok.io/?single-player=1"
     frame1.orchidId = "fdfacc2f-4c42-4484-bbb1-9ba7dd4372fc"
 
     frame2.setAttribute('onload', this.init(frame2))
-    frame2.src = "http://db1bea4d.ngrok.io/?single-player=13"
+    frame2.src = "https://db1bea4d.ngrok.io/?single-player=13"
     frame2.orchidId = "fdfacc2f-4c42-4484-bbb1-9ba7dd4372fc"
 
     frame3.setAttribute('onload', this.init(frame3))
-    frame3.src = "http://db1bea4d.ngrok.io/?single-player=15"
+    frame3.src = "https://db1bea4d.ngrok.io/?single-player=15"
     frame3.orchidId = "fdfacc2f-4c42-4484-bbb1-9ba7dd4372fc"
 
     frame4.setAttribute('onload', this.init(frame4))
-    frame4.src = "http://db1bea4d.ngrok.io/?single-player=17"
+    frame4.src = "https://db1bea4d.ngrok.io/?single-player=17"
     frame4.orchidId = "fdfacc2f-4c42-4484-bbb1-9ba7dd4372fc"
 
     container = document.getElementById('player1')
