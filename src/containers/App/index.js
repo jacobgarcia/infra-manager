@@ -189,7 +189,8 @@ class App extends Component {
       this.props.credentials.company.name === 'Connus'
     ) {
       this.socket.on('alert', alert => {
-        // Get site id based on key
+        this.props.setAlarm(alert)
+        // Add alert popup to GUI
         this.setState(prev => ({
           alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now() }])
         }))
