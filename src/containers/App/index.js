@@ -257,7 +257,7 @@ class App extends Component {
               }`}>
               <div className="alert__image" />
               <div className="alert__body">
-                <Link to={`/alarms?id=${alert._id}`}>
+                <Link to={`/alarms/${alert._id}`}>
                   <p>{alert.site}</p>
                 </Link>
                 <p>{alert.event}</p>
