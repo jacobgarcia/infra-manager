@@ -15,6 +15,37 @@ const Access = require(path.resolve('models/Access'))
 const Face = require(path.resolve('models/Face'))
 const Admin = require(path.resolve('models/Admin'))
 
+router.route('/cameras/report/clients').get((req, res) => {
+  // Get all sites to use as rooms
+  const company = req._user.cmp
+
+  Site.find({ company })
+    .sort({ key: 1 })
+    .exec((error, sites) => {
+      // if there are any errors, return the error
+      if (error) {
+        winston.error(error)
+        return res
+          .status(500)
+          .json({ success: 'false', message: 'Error at finding sites' }) // return shit if a server error occurs
+      } else if (sites.length === 0) return res
+          .status(404)
+          .json({ success: 'false', message: 'Sites not found' })
+
+      const connected_sites = []
+      let counter = 0
+      return sites.forEach(room => {
+        global.io.in(room.key).clients((error, clients) => {
+          counter += 1
+          // Just add the rooms who have at least one client
+          if (clients !== '') connected_sites.push(room.key)
+          if (counter === sites.length) return res.status(200).json({ success: true, connected_sites })
+          return null
+        })
+      })
+    })
+})
+
 // Return all logs from specific site
 router.route('/cameras/logs/:camera').get((req, res) => {
   const camera = req.params.camera

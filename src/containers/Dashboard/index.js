@@ -127,18 +127,18 @@ class Dashboard extends Component {
         // CIRCULAR Chart
         const workings = allSites.data.sites.filter(
           site =>
-            currentSites.data.online.includes(site.key) &&
+            currentSites.data.connected_sites.includes(site.key) &&
             site.alarms.length === 0
         )
 
         const damaged = allSites.data.sites.filter(
-          site => !currentSites.data.online.includes(site.key)
+          site => !currentSites.data.connected_sites.includes(site.key)
         )
 
         const alerted = allSites.data.sites.filter(
           site =>
             site.alarms.length > 0 &&
-            currentSites.data.online.includes(site.key)
+            currentSites.data.connected_sites.includes(site.key)
         )
 
         const tempData = [
