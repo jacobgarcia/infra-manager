@@ -178,7 +178,7 @@ class App extends Component {
   }
 
   initSockets() {
-    this.socket = io()
+    this.socket = io('https://att.connus.mx')
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
@@ -251,19 +251,18 @@ class App extends Component {
         </Helmet>
         <div className="alerts__container">
           {this.state.alerts.map(alert => (
-            <div
-              key={alert.timestamp}
-              className={`alert ${
-                alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
-              }`}>
-              <div className="alert__image" />
-              <div className="alert__body">
-                <Link to={`/alarms/${alert._id}`}>
+            <Link to={`/alarms/${alert._id}`} key={alert.timestamp}>
+              <div
+                className={`alert ${
+                  alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
+                }`}>
+                <div className="alert__image" />
+                <div className="alert__body">
                   <p>{alert.site}</p>
-                </Link>
-                <p>{alert.event}</p>
+                  <p>{alert.event}</p>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
         <Navigator credentials={this.props.credentials} />
