@@ -34,13 +34,12 @@ router.route('/cameras/report/clients').get((req, res) => {
 
       const connected_sites = []
       let counter = 0
-      return sites.forEach(room => {
+      sites.forEach(room => {
         global.io.in(room.key).clients((error, clients) => {
           counter += 1
           // Just add the rooms who have at least one client
-          if (clients !== '') connected_sites.push(room.key)
+          if (clients != '') connected_sites.push(room.key)
           if (counter === sites.length) return res.status(200).json({ success: true, connected_sites })
-          return null
         })
       })
     })
