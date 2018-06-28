@@ -4,46 +4,13 @@ const path = require('path')
 const winston = require('winston')
 const router = new express.Router()
 
-// const Site = require(path.resolve('models/Site'))
-// const Zone = require(path.resolve('models/Zone'))
 const base64Img = require('base64-img')
 const shortid = require('shortid')
 const Battery = require(path.resolve('models/Battery'))
 const Site = require(path.resolve('models/Site'))
 const Report = require(path.resolve('models/Report'))
 const Access = require(path.resolve('models/Access'))
-const Face = require(path.resolve('models/Face'))
 const Admin = require(path.resolve('models/Admin'))
-
-router.route('/cameras/report/clients').get((req, res) => {
-  // Get all sites to use as rooms
-  const company = req._user.cmp
-
-  Site.find({ company })
-    .sort({ key: 1 })
-    .exec((error, sites) => {
-      // if there are any errors, return the error
-      if (error) {
-        winston.error(error)
-        return res
-          .status(500)
-          .json({ success: 'false', message: 'Error at finding sites' }) // return shit if a server error occurs
-      } else if (sites.length === 0) return res
-          .status(404)
-          .json({ success: 'false', message: 'Sites not found' })
-
-      const connected_sites = []
-      let counter = 0
-      sites.forEach(room => {
-        global.io.in(room.key).clients((error, clients) => {
-          counter += 1
-          // Just add the rooms who have at least one client
-          if (clients != '') connected_sites.push(room.key)
-          if (counter === sites.length) return res.status(200).json({ success: true, connected_sites })
-        })
-      })
-    })
-})
 
 // Return all logs from specific site
 router.route('/cameras/logs/:camera').get((req, res) => {
@@ -110,23 +77,6 @@ router.route('/cameras/report/shit/:site').get((req, res) => {
     return res.status(200).json({ success: true, report: reportLogs[0] })
     // return res.status(200).json( { 'success': true } ,reportLogs[0] )
   })
-})
-
-// Upgrade all cameras
-router.route('/cameras/multi/upgrade').post(() => {
-  // Admin.findOne({ '_id': req.U_ID })
-  // .exec((error, admin) => {
-  //   if (error) {
-  //     winston.error(error)
-  //     return res.status(400).json({'success': "false", 'message': "The specified admin does not exist"})
-  //   }
-  //   else if (admin.role != 'root') return res.status(401).json({'success': false, 'message': "Get outta here you fucking hacker!"})
-  //   else {
-  // Notify to cameras
-  global.io.emit('upgrade')
-  //   return res.status(200).json({ 'succes': true, 'message': "Initiated upgrading process to all cameras" })
-  // }
-  // })
 })
 
 // Get a debug report for all cameras
