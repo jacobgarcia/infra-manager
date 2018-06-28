@@ -22,6 +22,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "base64-img": "^1.0.4",
+    "base64url": "^3.0.0",
     "bcrypt-nodejs": "^0.0.3",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.4",
