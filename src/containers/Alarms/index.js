@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
 import Slider from 'react-slick'
-import { parse } from 'qs'
 
 import { Table, RiskBar } from 'components'
 
@@ -14,7 +13,7 @@ class Alarms extends Component {
   constructor(props) {
     super(props)
 
-    const { '?id': alarmId } = parse(props.location.search)
+    const { alarmId } = props.match.params
     this.props.alarms
       .sort(($0, $1) => {
         return $0.timestamp - $1.timestamp
@@ -240,7 +239,8 @@ class Alarms extends Component {
 Alarms.propTypes = {
   history: PropTypes.array,
   alarms: PropTypes.array,
-  location: PropTypes.object
+  location: PropTypes.object,
+  match: PropTypes.string
 }
 
 function mapStateToProps({ zones, history, alarms }) {

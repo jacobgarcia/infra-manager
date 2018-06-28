@@ -257,7 +257,7 @@ class App extends Component {
               }`}>
               <div className="alert__image" />
               <div className="alert__body">
-                <Link to={`/alarms`}>
+                <Link to={`/alarms/${alert._id}`}>
                   <p>{alert.site}</p>
                 </Link>
                 <p>{alert.event}</p>
@@ -282,7 +282,7 @@ class App extends Component {
           <Route path="/settings" component={Settings} />
           <Route path="/sensors" component={Sensors} />
           <Route path="/devices" component={Devices} />
-          <Route path="/alarms" component={Alarms} />
+          <Route path="/alarms/:alarmId" component={Alarms} />
         </Switch>
       </div>
     )

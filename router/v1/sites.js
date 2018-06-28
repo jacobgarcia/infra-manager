@@ -119,10 +119,10 @@ router.route('/sites/online').get((req, res) => {
       return sites.forEach((room, index) => {
         global.io.in(room.key).clients((error, clients) => {
           // Just add the rooms who have at least one client
-          if (clients !== '') online.push(room.key)
-
+          if (clients.length > 0) online.push(room.key)
           // Return endpoint until all sites have been checked for online status
           if (index === sites.length - 1) return res.status(200).json({ success: true, online })
+          return null
         })
       })
     })
