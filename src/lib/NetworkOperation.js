@@ -104,7 +104,7 @@ class NetworkOperation {
   }
 
   static getAvailableSites() {
-    return axios.get(`${baseUrl}/cameras/report/clients`)
+    return axios.get(`${baseUrl}/sites/online`)
   }
 
   static getSites() {
