@@ -22,6 +22,7 @@ router.use(require(path.resolve('router/v1/users')))
 router.use(require(path.resolve('router/v1/vehicular-flow')))
 router.use(require(path.resolve('router/v1/video')))
 router.use(require(path.resolve('router/v1/zones')))
+router.use(require(path.resolve('router/v1/vms')))
 
 // TODO: Send user invitee (mail)
 // TODO: Accept user invitee
