@@ -56,14 +56,12 @@ const io = require('socket.io').listen(server)
 io.on('connection', socket => {
   winston.info('New client connection')
   socket.on('join', companyId => {
-    winston.info('New join on room: ' + companyId)
     socket.join(companyId)
     // Emit a refresh to web platform when new camera is connected
     io.to('web-platform').emit('refresh')
   })
 
   socket.on('disconnect', () => {
-    winston.info('Disconnected client')
     // TODO Emit a refresh to web platform
     io.to('web-platform').emit('refresh')
   })
