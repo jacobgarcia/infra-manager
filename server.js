@@ -54,7 +54,6 @@ const server = app.listen(PORT, HOST, () =>
 const io = require('socket.io').listen(server)
 
 io.on('connection', socket => {
-  winston.info('New client connection')
   socket.on('join', companyId => {
     socket.join(companyId)
     // Emit a refresh to web platform when new camera is connected
