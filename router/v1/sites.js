@@ -74,7 +74,7 @@ router.route('/sites/alarms').put(upload, (req, res) => {
       const alarmIndex = site.alarms.findIndex($0 => $0._id == alarm)
       // Push photo files to specified alarm
       if (alarmIndex !== -1) {
-        site.alarms[alarmIndex].photos.push(photos)
+        site.alarms[alarmIndex].photos = photos
         return site.save(error => {
           if (error) {
             winston.error({ error })
