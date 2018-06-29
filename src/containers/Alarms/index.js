@@ -23,9 +23,9 @@ class Alarms extends Component {
       selectedLog:
         this.props.alarms.length > 0 && alarmId
           ? this.props.alarms.find($0 => $0._id === alarmId)
-          : {},
+          : this.props.alarms[0],
       selectedElementIndex:
-        this.props.alarms.length > 0
+        this.props.alarms.length > 0 && alarmId
           ? [this.props.alarms.findIndex($0 => $0._id === alarmId), 1]
           : [0, 1],
       showLogDetail: true

@@ -282,6 +282,7 @@ class App extends Component {
           <Route path="/settings" component={Settings} />
           <Route path="/sensors" component={Sensors} />
           <Route path="/devices" component={Devices} />
+          <Route path="/alarms" component={Alarms} />
           <Route path="/alarms/:alarmId" component={Alarms} />
         </Switch>
       </div>
