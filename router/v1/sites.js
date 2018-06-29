@@ -62,6 +62,7 @@ router.route('/sites/alarms').put(upload, (req, res) => {
 
     // Find and update site with new information
     photoFiles.map(photo => {
+      console.log(photo.filename)
       photos.push('/' + photo.filename)
     })
 
