@@ -31,10 +31,10 @@ class Dashboard extends Component {
     super(props)
 
     this.state = {
-      selectedElementIndex: [null, null],
-      detail: null,
-      worstZone: null,
+      detail: null, // View to general performance (detail)
+      worstZone: null, // Worst Zone
       chartCounter: [
+        // Array structure for Visual Counter chart
         { name: '7:00 AM', uv: 9, pv: 1042, tv: 92 },
         { name: '8:00 AM', uv: 31, pv: 1042, tv: 34 },
         { name: '9:00 AM', uv: 26, pv: 1043, tv: 93 },
@@ -50,6 +50,7 @@ class Dashboard extends Component {
         { name: '7:00 PM', uv: 0, pv: 1042, tv: 51 }
       ],
       data: [
+        // Array structure for Pie Chart
         { name: 'workings', value: 75 },
         { name: 'alerts', value: 15 },
         { name: 'damaged', value: 10 }
@@ -68,8 +69,6 @@ class Dashboard extends Component {
         // Populate chart dates
         chart.push(new Date(currentHistory.timestamp))
       })
-
-      // If site has alarms, mark it as damaged
 
       // Most alerted zone
       const zone = alertedZones.find($0 => $0.name === site.zone.name)
@@ -124,7 +123,7 @@ class Dashboard extends Component {
 
     NetworkOperation.getAvailableSites().then(currentSites => {
       NetworkOperation.getSites().then(allSites => {
-        // CIRCULAR Chart
+        // PIE Chart
         const workings = allSites.data.sites.filter(
           site =>
             currentSites.data.online.includes(site.key) &&
@@ -177,6 +176,7 @@ class Dashboard extends Component {
       })
     })
   }
+
   render() {
     const { state, props } = this
     return (
@@ -216,15 +216,9 @@ class Dashboard extends Component {
                             <p className="button action disabled">Filtrar</p>
                           </div>
                         }
-                        selectedElementIndex={state.selectedElementIndex}
                         element={(item, index, sectionIndex) => (
                           <div
-                            className={`table-item ${
-                              state.selectedElementIndex[0] === index &&
-                              state.selectedElementIndex[1] === sectionIndex
-                                ? 'selected'
-                                : ''
-                            }`}
+                            className={'table-item'}
                             key={index}
                             onClick={() =>
                               this.onLogSelect(item, index, sectionIndex)
@@ -563,15 +557,9 @@ class Dashboard extends Component {
                     <p className="button action disabled">Filtrar</p>
                   </div>
                 }
-                selectedElementIndex={state.selectedElementIndex}
                 element={(item, index, sectionIndex) => (
                   <div
-                    className={`table-item ${
-                      state.selectedElementIndex[0] === index &&
-                      state.selectedElementIndex[1] === sectionIndex
-                        ? 'selected'
-                        : ''
-                    }`}
+                    className={`table-item`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                     {item.timestamp && (

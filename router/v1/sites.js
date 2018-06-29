@@ -454,8 +454,6 @@ router
                   site: key
                 }
                 site.alarms.push(alarm)
-                // Send socket asking for media files
-                global.io.to(key).emit('alarm', alarm)
                 // Emit popup alert socket and add alert to REDUX
                 global.io.to('connus').emit('alert', alarm)
               }
