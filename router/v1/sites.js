@@ -45,7 +45,7 @@ router.route('/sites/alarms').put(upload, (req, res) => {
   const { key, company, alarm } = req.body
   const photoFiles = req.files && req.files.photos
   const photos = []
-
+  console.log(key, company, alarm, photoFiles)
   if (!key || !company || !photoFiles) return res
       .status(400)
       .json({ success: false, message: 'Malformed request' })
