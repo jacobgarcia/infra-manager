@@ -45,7 +45,7 @@ router.route('/sites/alarms').put(upload, (req, res) => {
   const { key, company, alarm } = req.body
   const photoFiles = req.files && req.files.photos
   const photos = []
-  console.log(key, company, alarm, photoFiles)
+  console.log(key, company, alarm)
   if (!key || !company || !photoFiles) return res
       .status(400)
       .json({ success: false, message: 'Malformed request' })
@@ -75,6 +75,8 @@ router.route('/sites/alarms').put(upload, (req, res) => {
       // Push photo files to specified alarm
       if (alarmIndex !== -1) {
         site.alarms[alarmIndex].photos = photos
+        console.log('PHOTOS', photos)
+        console.log('ASSIGNED PHOTOS', site.alarms[alarmIndex].photos)
         return site.save(error => {
           if (error) {
             winston.error({ error })
