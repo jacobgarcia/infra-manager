@@ -21,7 +21,7 @@ const shortid = require('shortid')
 
 // Storage object specs
 const storage = multer.diskStorage({
-  destination: (req, file, callback) => callback(null, 'static/vehicular-flow'),
+  destination: (req, file, callback) => callback(null, 'static/alarms'),
   filename: (req, file, callback) => {
     crypto.pseudoRandomBytes(16, (error, raw) => {
       callback(
