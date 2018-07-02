@@ -58,20 +58,7 @@ const schema = new Schema({
   ],
   counter: { type: [Counter], default: [] },
   onlineStatuses: [Boolean],
-  default: [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false
-  ],
+  isAlerted: Boolean,
   devices: [
     {
       device: String,
