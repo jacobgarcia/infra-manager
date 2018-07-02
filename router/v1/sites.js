@@ -380,7 +380,7 @@ router
         sensors.map(sensor => {
           switch (sensor.class) {
             case 'contact':
-              if (sensor.value === 0 && !site.isAlerted) {
+              if (sensor.value === 0 && !sensor.isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -395,11 +395,11 @@ router
                 // Emit popup alert socket and add alert to REDUX
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
-                site.isAlerted = true
-              } else site.isAlerted = false
+                sensor.isAlerted = true
+              } else sensor.isAlerted = false
               break
             case 'vibration':
-              if (sensor.value === 0 && !site.isAlerted) {
+              if (sensor.value === 0 && !sensor.isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -414,11 +414,11 @@ router
                 // Emit popup alert socket and add alert to REDUX
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
-                site.isAlerted = true
-              } else site.isAlerted = false
+                sensor.isAlerted = true
+              } else sensor.isAlerted = false
               break
             case 'temperature':
-              if (sensor.value < 5 && !site.isAlerted) {
+              if (sensor.value < 5 && !sensor.isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -433,8 +433,8 @@ router
                 // Emit popup alert socket and add alert to REDUX
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
-                site.isAlerted = true
-              } else if (sensor.value > 40 && !site.isAlerted) {
+                sensor.isAlerted = true
+              } else if (sensor.value > 40 && !sensor.isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -449,11 +449,11 @@ router
                 // Emit popup alert socket and add alert to REDUX
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
-                site.isAlerted = true
-              } else site.isAlerted = false
+                sensor.isAlerted = true
+              } else sensor.isAlerted = false
               break
             case 'cpu':
-              if (sensor.value > 68 && !site.isAlerted) {
+              if (sensor.value > 68 && !sensor.isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -466,11 +466,11 @@ router
                 // Emit popup alert socket and add alert to REDUX
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
-                site.isAlerted = true
-              } else site.isAlerted = false
+                sensor.isAlerted = true
+              } else sensor.isAlerted = false
               break
             case 'battery':
-              if (sensor.value <= 15 && !site.isAlerted) {
+              if (sensor.value <= 15 && !sensor.isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -485,8 +485,8 @@ router
                 // Emit popup alert socket and add alert to REDUX
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
-                site.isAlerted = true
-              } else site.isAlerted = false
+                sensor.isAlerted = true
+              } else sensor.isAlerted = false
               break
             default:
           }

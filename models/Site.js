@@ -28,7 +28,8 @@ const schema = new Schema({
       fully_charged: Boolean,
       charging: Boolean,
       ac_present: Boolean,
-      needs_replacement: Boolean
+      needs_replacement: Boolean,
+      isAlerted: Boolean
     },
     { _id: false }
   ],
@@ -58,7 +59,6 @@ const schema = new Schema({
   ],
   counter: { type: [Counter], default: [] },
   onlineStatuses: [Boolean],
-  isAlerted: Boolean,
   devices: [
     {
       device: String,
