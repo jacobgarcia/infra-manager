@@ -377,7 +377,7 @@ router
             .json({ success: false, message: 'No site found' })
 
         // Generate alarms based on sensors values, always checking if is already alerted or not
-        sensors.map(sensor => {
+        site.sensors.map(sensor => {
           switch (sensor.class) {
             case 'contact':
               if (sensor.value === 0 && !sensor.isAlerted) {
