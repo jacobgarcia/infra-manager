@@ -446,7 +446,7 @@ router
               }
               break
             case 'cpu':
-              if (sensor.value > 60) {
+              if (sensor.value > 68) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
