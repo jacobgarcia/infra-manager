@@ -231,9 +231,10 @@ export function getStatus(data) {
   return { status: [], percentage: 0 }
 }
 
-export function pvAtTime(history, backHours) {
-  const now = new Date()
-  const lowerLimit = new Date(now.setHours(now.getHours() - backHours, 0, 0, 0))
+export function pvAtTime(history, hoursBack) {
+  const now = new Date() // Actual time
+  // Upper and lower limit of dates based on browser time
+  const lowerLimit = new Date(now.setHours(now.getHours() - hoursBack, 0, 0, 0))
   const upperLimit = new Date(now.setHours(lowerLimit.getHours() + 1, 0, 0, 0))
   let pv = history.length
   history.map(current => {
@@ -243,9 +244,10 @@ export function pvAtTime(history, backHours) {
 }
 
 export function dataChart(chart) {
-  const data = []
-  const now = new Date()
-  const range = [...Array(12).keys()] // Array 12 hours
+  console.log(chart)
+  const data = [] // Array returning information to chart component
+  const now = new Date() // Actual time
+  const range = [...Array(12).keys()] // 12 hours array
   range.map(hoursBack => {
     const current = {
       name:

@@ -340,7 +340,8 @@ router.route('/sites/reports').get((req, res) => {
         timestamp: site.timestamp,
         sensors: site.sensors,
         alarms: site.alarms,
-        history: site.history
+        history: site.history,
+        onlineStatuses: site.onlineStatuses
       }))
 
       return res.status(200).json({ reports })

@@ -65,10 +65,8 @@ class Dashboard extends Component {
     const chart = []
 
     props.reports.map(site => {
-      site.alarms.map(currentHistory => {
-        // Populate chart dates
-        chart.push(new Date(currentHistory.timestamp))
-      })
+      // Add site onlineStatuses
+      chart.push(site.onlineStatuses)
 
       // Most alerted zone
       const zone = alertedZones.find($0 => $0.name === site.zone.name)
