@@ -153,14 +153,14 @@ router.route('/sites/online').put((req, res) => {
           if (clients.length > 0) {
             online.push(room.key)
             // Remove the oldest online status
-            room.onlineStatuses.shift()
+            room.onlineStatuses.pop()
             // Insert the online true status
-            room.onlineStatuses.push(true)
+            room.onlineStatuses.unshift(true)
           } else {
             // Remove the oldest online status
-            room.onlineStatuses.shift()
+            room.onlineStatuses.pop()
             // Insert the online true status
-            room.onlineStatuses.push(false)
+            room.onlineStatuses.unshift(false)
           }
 
           room.save(error => {
