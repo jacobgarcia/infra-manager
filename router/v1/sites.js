@@ -150,12 +150,17 @@ router.route('/sites/online').put((req, res) => {
       return sites.forEach((room, index) => {
         global.io.in(room.key).clients((error, clients) => {
           // Just add the rooms who have at least one client
-          if (clients !== '') {
+          if (clients.length > 0) {
             online.push(room.key)
             // Remove the oldest online status
             room.onlineStatuses.shift()
             // Insert the online true status
             room.onlineStatuses.push(true)
+          } else {
+            // Remove the oldest online status
+            room.onlineStatuses.shift()
+            // Insert the online true status
+            room.onlineStatuses.push(false)
           }
 
           // Return endpoint until all sites have been checked for online status
@@ -377,8 +382,7 @@ router
             .json({ success: false, message: 'No site found' })
 
         // Generate alarms based on sensors values, always checking if is already alerted or not
-        site.sensors.map(sensor => {
-          console.log(sensor)
+        sensors.map(sensor => {
           switch (sensor.class) {
             case 'contact':
               if (sensor.value === 0 && !sensor.isAlerted) {
