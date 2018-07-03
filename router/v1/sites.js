@@ -147,7 +147,7 @@ router.route('/sites/online').put((req, res) => {
           .status(404)
           .json({ success: false, message: 'Sites not found' })
 
-      return sites.forEach((room, index) => {
+      return sites.map((room, index) => {
         global.io.in(room.key).clients((error, clients) => {
           // Just add the rooms who have at least one client
           if (clients.length > 0) {
@@ -162,6 +162,16 @@ router.route('/sites/online').put((req, res) => {
             // Insert the online true status
             room.onlineStatuses.push(false)
           }
+
+          room.save(error => {
+            if (error) {
+              winston.error(error)
+              return res
+                .status(500)
+                .json({ success: false, message: 'Error at finding sites' })
+            }
+            return null
+          })
 
           // Return endpoint until all sites have been checked for online status
           if (index === sites.length - 1) return res.status(200).json({ success: true, online })
