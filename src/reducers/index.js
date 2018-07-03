@@ -56,6 +56,7 @@ function reports(state = [], action) {
             _id: action.report._id,
             alarms: [...(newState[foundIndex].alarms || [])],
             history: [...(newState[foundIndex].history || [])],
+            onlineStatuses: [...(newState[foundIndex].onlineStatuses || [])],
             sensors: [
               {
                 timestamp: action.report.timestamp,
@@ -70,6 +71,7 @@ function reports(state = [], action) {
             _id: action.report._id,
             alarms: action.report.alarms,
             history: action.report.history,
+            onlineStatuses: action.report.onlineStatuses,
             sensors: [
               {
                 timestamp: action.report.timestamp,

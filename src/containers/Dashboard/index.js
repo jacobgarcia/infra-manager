@@ -65,7 +65,7 @@ class Dashboard extends Component {
     const chart = []
 
     props.reports.map(site => {
-      // Add site onlineStatuses
+      // Add site onlineStatuses to average service chart
       chart.push(site.onlineStatuses)
 
       // Most alerted zone

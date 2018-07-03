@@ -231,30 +231,29 @@ export function getStatus(data) {
   return { status: [], percentage: 0 }
 }
 
-export function pvAtTime(history, hoursBack) {
+export function pvAtTime(sites, index) {
   const now = new Date() // Actual time
   // Upper and lower limit of dates based on browser time
-  const lowerLimit = new Date(now.setHours(now.getHours() - hoursBack, 0, 0, 0))
+  const lowerLimit = new Date(now.setHours(now.getHours() - index, 0, 0, 0))
   const upperLimit = new Date(now.setHours(lowerLimit.getHours() + 1, 0, 0, 0))
-  let pv = history.length
-  history.map(current => {
-    if (current < upperLimit && current > lowerLimit) pv -= 1
+  let pv = sites.length
+  sites.map(site => {
+    if (!site[index]) pv -= 1
   })
-  return parseInt(pv / history.length, 10) * 100
+  return parseInt(pv / sites.length * 100, 10)
 }
 
 export function dataChart(chart) {
-  console.log(chart)
   const data = [] // Array returning information to chart component
   const now = new Date() // Actual time
   const range = [...Array(12).keys()] // 12 hours array
-  range.map(hoursBack => {
+  range.map((hoursBack, index) => {
     const current = {
       name:
         now.getHours() - hoursBack > 11
           ? now.getHours() - hoursBack + 'PM'
           : now.getHours() - hoursBack + 'AM',
-      pv: chart ? Math.ceil(pvAtTime(chart, hoursBack)) : 100
+      pv: chart ? pvAtTime(chart, index) : 100
     }
     data.unshift(current)
   })
