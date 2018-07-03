@@ -378,6 +378,7 @@ router
 
         // Generate alarms based on sensors values, always checking if is already alerted or not
         site.sensors.map(sensor => {
+          console.log(sensor)
           switch (sensor.class) {
             case 'contact':
               if (sensor.value === 0 && !sensor.isAlerted) {
