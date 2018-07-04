@@ -510,7 +510,7 @@ router
           const updatedSensor = sensors.find(
             $0 => $0.key === sensor.key && $0.class === sensor.class
           )
-          sensor.value = updatedSensor.value
+          site.sensors[index].value = updatedSensor.value
         })
 
         return site.save(error => {
