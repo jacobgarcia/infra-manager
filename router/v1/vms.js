@@ -5,7 +5,6 @@ const router = new express.Router()
 const request = require('request')
 const jwt = require('jsonwebtoken')
 const base64url = require('base64url')
-const ObjectID = mongo.ObjectID
 const crypto = require('crypto')
 const uuid = require('uuid/v1')
 const Zone = require(path.resolve('models/Zone'))
@@ -14,17 +13,15 @@ const Company = require(path.resolve('models/Company'))
 const Stream = require(path.resolve('models/Stream'))
 
 router.route('/stream').post((req,res) => {
-  let { core, user, pass, streamid} = req.body
-  const { version, company, key, name, country, zone } = req.body
-
+  const { core, user, pass, streamid } = req.body
+  const { company, site, name, country, zone } = req.body
   if (
     !core ||
     !user ||
     !pass ||
     !streamid ||
-    !version ||
     !company ||
-    !key ||
+    !site ||
     !name ||
     !country ||
     !zone
@@ -48,8 +45,10 @@ router.route('/stream').post((req,res) => {
         if (!zone) return res
             .status(404)
             .json({ success: false, message: 'Specified zone was not found' })
-        return Site.findOne({ key, company: company._id }).exec(
+        return Site.findOne({ site, company: company._id }).exec(
           (error, site) => {
+            let issuerkey = null
+            let id = null
             if (error) {
               winston.error(error)
               return res.status(500).json({
@@ -59,143 +58,151 @@ router.route('/stream').post((req,res) => {
                 error
               })
             }
-            request.get("http://192.168.1.48/service/trusted/issuer?version=2", {
-              'auth': {
-                'user': 'admin',
-                'pass': 'admin'
-              }
-            }, (err, res, body) => {
-                if (res.statusCode == 200) {
-                  return Stream.findOne({ body.id , company: company._id}).exec(
-                    (error, stream) => {
-                      !stream ? {
-                        let issuerkey = { issuerkey: stream.issuerkey }
-                        let id = { id: stream.id }
-                        return res.status(200).json({ site })
-                      } : {
+            return request.get("http://192.168.1.48/service/trusted/issuer?version=2", {
+                'auth': {
+                  'user': 'admin',
+                  'pass': 'admin'
+                }
+              },
+              (err, resp, body) => {
+                if (err) {
+                  return res.status(500).json({
+                    success: false,
+                    message:
+                      'Endpoint error',
+                    error
+                  })
+                }
+                switch (resp.statusCode) {
+                  case 200:
+                    return Stream.findOne({ id: body.id , company: company._id}).exec(
+                      (error, stream) => {
+                        if (error) {
+                          return res.status(500).json({
+                            success: false,
+                            message:
+                              'Stream base data error',
+                            error
+                            })
+                        }
+                        if (stream) {
+                          issuerkey = { issuerkey: stream.issuerkey }
+                          id = { id: stream.id }
+                          new Stream({
+                            id,
+                            core,
+                            user,
+                            streamid,
+                            company,
+                            site,
+                            name,
+                            country,
+                            issuerkey,
+                            zone
+                          }).save()
+                          return res.status(200).json({success: true,
+                          message:
+                            'Stream Added'})
+                          }
                         return res.status(500).json({
                           success: false,
                           message:
                             'Issuer ocupated, delete first',
                           error
-                          })
-                      }
+                        })
                     })
-                } else {
-                  let id = { id: uuid() }
-                  let issuerkey = { issuerkey: base64url(crypto.randomBytes(32)) }
-                  request({
-                    url: `http://192.168.1.48/service/trusted/issuer?version=2`,
-                    method: "POST",
-                    headers: {
-                        "content-type": "application/json",
+                  case 404:
+                    id = { id: uuid() }
+                    issuerkey = { issuerkey: base64url(crypto.randomBytes(32)) }
+                    return request({
+                        url: `http://192.168.1.48/service/trusted/issuer?version=2`,
+                        method: "POST",
+                        headers: {
+                            "content-type": "application/json",
+                            },
+                        json: {
+                        "id": id.id,
+                        "access_token": "",
+                        "key": {
+                          "kty": "oct",
+                          "k": issuerkey.issuerkey
                         },
-                    json: {
-                    "id": id.id,
-                    "access_token": "",
-                    "key": {
-                      "kty": "oct",
-                      "k": issuerkey.issuerkey
-                    },
-                    "description": "",
-                    "uri": ""
-                    }
-                  },
-                  {
-                  'auth': {
-                    'user': 'admin',
-                    'pass': 'admin'
-                    }
-                  },
-                  (err, res, body) => {
-                  })
-                  return res.status(200).json({ site })
-                }            })
-            new Stream({
-              id,
-              core,
-              user,
-              pass,
-              streamid,
-              version,
-              company,
-              site,
-              name,
-              country,
-              issuerkey,
-              zone
-            }).save()
-            return res.status(200).json({ site })
+                        "description": "",
+                        "uri": ""
+                        }
+                      },
+                      {
+                      'auth': {
+                        'user': 'admin',
+                        'pass': 'admin'
+                        }
+                      },
+                    (err, response, body) => {
+                      if (!err && response.status === 200) {
+                        new Stream({
+                          id,
+                          core,
+                          user,
+                          streamid,
+                          company,
+                          site,
+                          name,
+                          country,
+                          issuerkey,
+                          zone
+                        }).save()
+                        return res.status(200).json(body)
+                      }
+                      return res.status(404).json(err)
+                    })
+                  default:
+                    return res.status(400).json(body)
+                }
+              })
           })
       })
   })
 })
 .get((req,res) => {
-  let { core, user, pass, streamid} = req.body
-  const { version, company, key, name, country, zone } = req.body
+  const { company } = req.body
+  if (
+    !company
+  ) return res
+    .status(400)
+    .json({ success: false, message: 'Malformed request' })
+  return Stream.find({ company: company}).exec((error, streams) => {
+    if (error) {
+      winston.error(error)
+      return res.status(500).json({ error })
+    }
+    return res.status(200).json(streams)
+    })
+})
 
+router.route('/stream/token').get((req,res) => {
+  const { core } = req.body
+  const { company, site, country, zone } = req.body
   if (
     !core ||
-    !user ||
-    !pass ||
-    !streamid ||
-    !version ||
     !company ||
-    !key ||
+    !site ||
     !name ||
     !country ||
     !zone
   ) return res
     .status(400)
     .json({ success: false, message: 'Malformed request' })
-  return Company.findOne({ name: company }).exec((error, company) => {
+  return Stream.findOne({ company: company, site: site, country: country, zone: zone, core }).exec((error, stream) => {
     if (error) {
       winston.error(error)
       return res.status(500).json({ error })
     }
-    if (!company) return res
-        .status(404)
-        .json({ success: false, message: 'Specified company was not found' })
-    return Zone.findOne({ name: zone, company: company._id }).exec(
-      (error, zone) => {
-        if (error) {
-          winston.error(error)
-          return res.status(500).json({ error })
-        }
-        if (!zone) return res
-            .status(404)
-            .json({ success: false, message: 'Specified zone was not found' })
-        return Site.findOne({ key, company: company._id }).exec(
-          (error, site) => {
-            if (error) {
-              winston.error(error)
-              return res.status(500).json({
-                success: false,
-                message:
-                  'Could not add the smartbox to the already created site',
-                error
-              })
-            }
-            new Stream({
-              core,
-              user,
-              pass,
-              streamid,
-              version,
-              company,
-              key,
-              name,
-              country,
-              zone
-            }).save()
-            const token = jwt.sign({
-              "exp": Math.floor(Date.now() / 1000) + (60 * 60),
-              "iat": Date.now()
-            },base64url('mefcwbUTxYZHLa_EalRisajyFZD8dCLHYkcBQ1mWuiA'))
-            return res.status(200).json({ site })
-          })
-      })
-  })
+    const token = jwt.sign({
+      "exp": Math.floor(Date.now() / 1000) + (60 * 60),
+      "iat": Date.now()
+      },base64url(stream.issuerkey))
+    return res.status(200).json(token)
+    })
 })
 
 module.exports = router

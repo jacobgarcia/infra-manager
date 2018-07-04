@@ -457,6 +457,81 @@ p span {
   }
 }
 
+.vms-content {
+  padding-left: 68px;
+  background-color: $dark-gray;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  &.small-padding > .content {
+    padding-top: 30px;
+    padding-left: 20px;
+  }
+  > .content {
+    display: block;
+    background-color: $dark-gray;
+    padding: 20px;
+    padding-top: 70px;
+    height: 950px;
+    h2 {
+      background-image: url('assets/icons/connus.svg');
+      background-position: right center;
+      background-repeat: no-repeat;
+      padding: 0;
+      background-size: 20px;
+      display: flex;
+      height: 30px;
+      justify-content: space-between;
+      z-index: 1000;
+      align-items: center;
+      margin-bottom: 20px;
+      > div {
+        margin-right: 40px;
+        z-index: 1000;
+        > div {
+          margin-left: 10px;
+          &:last-child {
+            margin-left: none;
+          }
+        }
+      }
+    }
+    &.vertical {
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .Grid {
+      display: flex;
+      flex-wrap: wrap;
+      height: 100%;
+      &-item {
+        width: 100%;
+        background: gray;
+        margin-top: 2%;
+        @media (min-width: 48rem) {
+          width: 48%;
+          &:nth-child(odd) {
+            background: grey;
+            margin-right: 2%;
+          }
+        }
+        @media (min-width: 62rem) {
+          width: 48%;
+          &:not(:nth-child(4n)) {
+            background: grey;
+            margin-right: 2%;
+          }
+        }
+        &:before {
+          content: "";
+          float: left;
+          padding-top: 100%;
+        }
+      }
+    }
+  }
+}
+
 .risk-bar-container {
   display: flex;
   align-items: flex-end;
@@ -947,340 +1022,10 @@ img {
 
 /*
 
-     VMS CONTAINER
-
-*/
-#vms-container {
-  width: 100%;
-  height: 100%;
-  max-height: 100%;
-  overflow-y: hidden;
-  display: flex;
-  padding-left: 50px;
-  position: relative;
-  overflow-x: hidden;
-  background-color: $darker-gray;
-  &.creating-element .leaflet-container {
-    cursor: crosshair !important;
-  }
-  .create-bar {
-    position: absolute;
-    bottom: 0;
-    left: 70px;
-    z-index: 1000;
-    color: $white;
-    display: flex;
-    align-items: stretch;
-    margin-bottom: 20px;
-    margin-left: 20px;
-    transition: transform ease 0.5s;
-    border-right: 3px;
-    > div {
-      padding: 4px 10px;
-      border-right: 2px solid $darker-gray;
-      display: flex;
-      align-items: center;
-      background-color: $dark-gray;
-      &:first-child {
-        color: $lighter-gray;
-        text-transform: uppercase;
-        font-weight: 600;
-        font-size: 0.9rem;
-        border-radius: 3px 0 0 3px;
-      }
-    }
-    &.hidden {
-      transform: translateY(100px);
-    }
-    input[type='text'] {
-      border: 0;
-      padding: 3px 6px;
-      max-width: 180px;
-      height: 100%;
-    }
-    input[type='button'] {
-      border: 0;
-      padding: 7px 20px;
-      border-radius: 0 3px 3px 0;
-      color: $white;
-      font-weight: 700;
-    }
-    .add-entities {
-      padding: 7px 20px;
-      font-weight: 500;
-      position: relative;
-      cursor: pointer;
-      > p {
-        text-transform: uppercase;
-        font-weight: 700;
-        font-size: 0.9rem;
-      }
-      > ul {
-        position: absolute;
-        bottom: 35px;
-        background-color: $dark-gray;
-        border-radius: 3px 3px 0 0;
-        left: 0;
-        margin-bottom: none;
-        max-height: 200px;
-        width: 200px;
-        overflow-y: scroll;
-        transition: max-height ease 0.5s;
-        -webkit-overflow-scrolling: touch;
-        -ms-overflow-style: none;
-        ul {
-          display: flex;
-          flex-direction: column;
-          flex-shrink: 0;
-        }
-        span {
-          font-weight: 700;
-          background-color: $gray;
-          color: $dark-gray;
-          padding: 3px 10px;
-          position: -webkit-sticky;
-          position: sticky;
-          top: 0;
-        }
-        &::-webkit-scrollbar {
-          width: 0 !important;
-        }
-        &.hidden {
-          overflow: hidden;
-          max-height: 0;
-          border: 0;
-        }
-        li {
-          flex-shrink: 0;
-          display: flex;
-          align-items: center;
-          padding: 6px 10px;
-          color: $white;
-          border-bottom: 1px solid $gray;
-          label {
-            cursor: pointer;
-          }
-          input {
-            margin-right: 7px;
-          }
-          &:last-child {
-            border-bottom: 0;
-          }
-        }
-      }
-    }
-    .coordinates {
-      padding: 0;
-      input {
-        padding: 6px 10px;
-      }
-      input:first-child {
-        border-right: 1px solid $gray;
-      }
-    }
-    .description {
-      font-size: 1rem;
-      padding: 7px 20px;
-      font-weight: 500;
-      color: $gray;
-    }
-    .error {
-      position: absolute;
-      background-color: $red;
-      padding: 5px 12px;
-      margin: 10px 20px 0;
-      font-size: 0.9rem;
-      color: #fff;
-      font-weight: 600;
-      bottom: 100px;
-      left: 350px;
-      transform: translateY(18px);
-      text-align: center;
-      border-radius: 5px;
-      p {
-        position: relative;
-        &:before {
-          position: absolute;
-          content: '';
-          display: block;
-          width: 0;
-          height: 0;
-          border-left: 16px solid transparent;
-          border-right: 16px solid transparent;
-          border-bottom: 16px solid $red;
-          left: 50%;
-          transform: translateX(-16px) translateY(34px);
-          top: 0;
-        }
-      }
-    }
-  }
-  .bar-actions {
-    position: absolute;
-    z-index: 999;
-    top: 30px;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .button {
-      font-size: 0.9rem;
-      height: 35px;
-      padding: 5px 18px;
-      border: 0;
-      border-radius: 3px;
-      background-color: $dark-gray;
-    }
-    > div {
-      display: flex;
-      align-content: flex-end;
-      justify-content: flex-end;
-      height: 35px;
-      flex-basis: 200px;
-    }
-    > div:first-child {
-      justify-content: flex-start;
-      padding-left: 60px;
-    }
-    .cancel {
-      margin-right: 60px;
-    }
-    .back {
-      margin-bottom: 0;
-      left: 0;
-      flex-shrink: 0;
-    }
-    ul.links {
-      height: 35px;
-      .button {
-        border-radius: 0 3px 3px 0;
-      }
-      .button:first-child {
-        border-radius: 3px 0 0 3px;
-        border-right: 2px solid $darker-gray;
-      }
-    }
-  }
-  .search-container {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background: rgba(#000, 0.7);
-    -webkit-backdrop-filter: blur(3px);
-    z-index: 2000;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    cursor: pointer;
-    &.hidden {
-      display: none;
-    }
-    .search {
-      cursor: default;
-      max-height: 80%;
-      border-radius: 3px;
-      border: 1px solid $gray;
-      background-color: $dark-gray;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      .header {
-        background: url('assets/icons/search.svg') no-repeat 20px center;
-        background-color: $darker-gray;
-        background-size: 20px;
-        border-bottom: 1px solid $gray;
-        display: flex;
-        flex-shrink: 0;
-        padding: 20px;
-        padding-left: 20px;
-        position: sticky;
-        top: 0;
-        z-index: 2001;
-        input {
-          border: 0;
-          flex: 1;
-          font-size: 1.6rem;
-          margin: 0 20px;
-          padding-left: 20px;
-        }
-      }
-      .results {
-        -ms-overflow-style: none;
-        -webkit-overflow-scrolling: touch;
-        overflow-y: scroll;
-        &::-webkit-scrollbar {
-          width: 0 !important;
-        }
-        .sites-container {
-          padding: 20px;
-          border-bottom: 1px solid $gray;
-        }
-        p {
-          color: $white;
-          font-weight: 700;
-          margin-bottom: 10px;
-          font-size: 0.9rem;
-          text-transform: uppercase;
-        }
-        .subzones-container {
-          padding: 20px;
-          border-bottom: 1px solid $gray;
-        }
-        .zones-container {
-          padding: 20px;
-        }
-      }
-    }
-  }
-  .leaflet-container {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #191919;
-  }
-  .alerts {
-    top: 0;
-    right: 0;
-    border-left: 1px solid $gray;
-    &.hidden {
-      transform: translateX(500px);
-      .tooltip {
-        background-image: url('assets/icons/alert.svg');
-      }
-    }
-    .tooltip {
-      transform: rotateX(180deg);
-      background-size: 30px;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-image: url('assets/icons/large-back.png');
-      transition: transform ease 0.5s;
-      &.hidden {
-        transform: translateX(0px) !important;
-      }
-    }
-    .content .tooltip {
-      left: 0;
-      transform: translateX(-45px) rotateY(180deg);
-      border-left: 0;
-    }
-  }
-}
-
-/*
-
      M A P   C O N T A I N E R
 
 */
+
 #map-container {
   width: 100%;
   height: 100%;
@@ -1413,36 +1158,6 @@ img {
       padding: 7px 20px;
       font-weight: 500;
       color: $gray;
-    }
-    .error {
-      position: absolute;
-      background-color: $red;
-      padding: 5px 12px;
-      margin: 10px 20px 0;
-      font-size: 0.9rem;
-      color: #fff;
-      font-weight: 600;
-      bottom: 100px;
-      left: 350px;
-      transform: translateY(18px);
-      text-align: center;
-      border-radius: 5px;
-      p {
-        position: relative;
-        &:before {
-          position: absolute;
-          content: '';
-          display: block;
-          width: 0;
-          height: 0;
-          border-left: 16px solid transparent;
-          border-right: 16px solid transparent;
-          border-bottom: 16px solid $red;
-          left: 50%;
-          transform: translateX(-16px) translateY(34px);
-          top: 0;
-        }
-      }
     }
   }
   .bar-actions {
@@ -2046,7 +1761,7 @@ $dark: #1d212d;
     background-position: -58px;
   }
   .vehicular-flow::before {
-    background-position: -125px;
+    background-position: -117px;
   }
   .alarms::before {
     background-position: -301px;
@@ -2055,13 +1770,13 @@ $dark: #1d212d;
     background-position: -75px;
   }
   .video-surveillance::before {
-    background-position: -150px;
+    background-position: -140px;
   }
   .facial-recognition::before {
     background-position: -93px;
   }
   .inventory::before {
-    background-position: -200px;
+    background-position: -183px;
   }
   .settings::before {
     background-position: -205px;

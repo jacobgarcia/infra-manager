@@ -2,13 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
-import { NetworkOperationVMS } from 'lib'
+import { NetworkOperation } from 'lib'
 
 import Search from 'components/Search'
 import CreateElementBarVMS from 'components/CreateElementBarVMS'
 import { setLoading, setComplete, setSubzone, setZone, setSite } from 'actions'
-
-let container = null
 
 class VideoSurveillance extends Component {
   constructor(props) {
@@ -67,7 +65,7 @@ class VideoSurveillance extends Component {
   }
 
   renewJWT(frame, token) {
-    NetworkOperationVMS.getJWT()
+    NetworkOperation.getJWT()
       .then(({data}) => {
         this.setJWT(frame, token)
       })
@@ -101,7 +99,7 @@ class VideoSurveillance extends Component {
         username: this.state.user,
         password: this.state.pass
     }
-    NetworkOperationVMS.getIssuer(credentials)
+    NetworkOperation.postStream(credentials)
       .then(({data}) => {
         this.setState({
           wokingVMSEndpoint: this.state.workingVMSEndpoint.push(data.href),

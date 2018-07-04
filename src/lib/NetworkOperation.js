@@ -94,15 +94,6 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/vehicular-flow/reports`)
   }
 
-  // Video Surveillance
-  static createVideoToken(key, id) {
-    return axios.post(`${baseUrl}/video/token`, { key, id })
-  }
-
-  static getStreams() {
-    return axios.get(`${baseUrl}/video/cameras`)
-  }
-
   static getAvailableSites() {
     return axios.get(`${baseUrl}/cameras/report/clients`)
   }
@@ -124,6 +115,35 @@ class NetworkOperation {
 
   static getCounter() {
     return axios.get(`${baseUrl}/counter/count`)
+  }
+
+  static postStream(core, user, pass, streamid, company, site, name, country, zone) {
+    return axios.post(`${baseUrl}/stream`, {
+      core,
+      user,
+      pass,
+      streamid,
+      company,
+      site,
+      name,
+      country,
+      zone
+    })
+  }
+
+  static getStream(company) {
+    return axios.get(`${baseUrl}/stream`, {company})
+  }
+
+  static getStreamToken(core, company, site, name, country, zone) {
+    return axios.get(`${baseUrl}/stream/token`, {
+      core,
+      company,
+      site,
+      name,
+      country,
+      zone
+    })
   }
 }
 
