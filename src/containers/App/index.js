@@ -84,13 +84,6 @@ class App extends Component {
       })
     })
 
-    // Get the cameras of all sites
-    NetworkOperation.getStreams().then(({ data }) => {
-      data.cameras.map(camera => {
-        this.props.setCamera(camera)
-      })
-    })
-
     // Get all alarms and history of all sites. But set all sites with this information
     // Reports have all site information
     NetworkOperation.getReports().then(({ data }) => {
@@ -301,7 +294,6 @@ App.propTypes = {
   setComplete: PropTypes.func,
   setFacialReport: PropTypes.func,
   setVehicleReport: PropTypes.func,
-  setCamera: PropTypes.func,
   setReport: PropTypes.func,
   setHistory: PropTypes.func,
   setAlarm: PropTypes.func,
@@ -362,9 +354,6 @@ function mapDispatchToProps(dispatch) {
     },
     setVehicleReport: report => {
       dispatch(setVehicleReport(report))
-    },
-    setCamera: camera => {
-      dispatch(setCamera(camera))
     }
   }
 }

@@ -35,7 +35,7 @@ router.route('/stream').post((req,res) => {
     }
     if (!company) return res
         .status(404)
-        .json({ success: false, message: 'Specified company was not found' })
+        .json({ success: false, message: 'Specified company was not found or is not in DB' })
     return Zone.findOne({ name: zone, company: company._id }).exec(
       (error, zone) => {
         if (error) {
@@ -44,20 +44,18 @@ router.route('/stream').post((req,res) => {
         }
         if (!zone) return res
             .status(404)
-            .json({ success: false, message: 'Specified zone was not found' })
-        return Site.findOne({ site, company: company._id }).exec(
+            .json({ success: false, message: 'Specified zone was not found or is not in DB' })
+        return Site.findOne({ name: site, company: company._id, zone: zone._id}).exec(
           (error, site) => {
             let issuerkey = null
             let id = null
             if (error) {
               winston.error(error)
-              return res.status(500).json({
-                success: false,
-                message:
-                  'Could not find site',
-                error
-              })
+              return res.status(500).json({ error })
             }
+            if (!site) return res
+              .status(404)
+              .json({ success: false, message: 'Could not find site or is not in DB' })
             return request.get("http://192.168.1.48/service/trusted/issuer?version=2", {
                 'auth': {
                   'user': 'admin',
@@ -93,12 +91,12 @@ router.route('/stream').post((req,res) => {
                             core,
                             user,
                             streamid,
-                            company,
-                            site,
+                            company: company._id,
+                            site: site._id,
                             name,
                             country,
                             issuerkey,
-                            zone
+                            zone: zone._id
                           }).save()
                           return res.status(200).json({success: true,
                           message:
@@ -144,12 +142,12 @@ router.route('/stream').post((req,res) => {
                           core,
                           user,
                           streamid,
-                          company,
-                          site,
+                          company: company._id,
+                          site: site._id,
                           name,
                           country,
                           issuerkey,
-                          zone
+                          zone: zone._id
                         }).save()
                         return res.status(200).json(body)
                       }

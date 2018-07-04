@@ -38,7 +38,7 @@ class VideoSurveillance extends Component {
   }
 
   componentDidMount() {
-    const frame1 = document.createElement('iframe')
+    //const frame1 = document.createElement('iframe')
     //frame1.setAttribute('onload', this.init(frame1))
     //frame1.src = "http://f7b73757.ngrok.io/?single-player=1"
     //frame1.orchidId = "fdfacc2f-4c42-4484-bbb1-9ba7dd4372fc"
@@ -95,51 +95,6 @@ class VideoSurveillance extends Component {
   }
 
   onCreateElement = () => {
-    const credentials = {
-        username: this.state.user,
-        password: this.state.pass
-    }
-    NetworkOperation.postStream(credentials)
-      .then(({data}) => {
-        this.setState({
-          wokingVMSEndpoint: this.state.workingVMSEndpoint.push(data.href),
-          streamID: this.state.streamID.push(this.state.streamid)
-        })
-      })
-      .catch(({response = {} }) => {
-        const { status = 500 } = response
-        console.log(status)
-        if (status === 404) {
-        const key = "mefcwbUTxYZHLa_EalRisajyFZD8dCLHYkcBQ1mWuiA"
-        const data = JSON.stringify({
-          "id": "0ab98ec0-753a-4596-b8d1-74d68787b2f7",
-          "access_token": "",
-          "key": {
-            "kty": "oct",
-            "k": key
-          },
-          "description": "",
-          "uri": ""
-        })
-        NetworkOperationVMS.postIssuer(data, credentials)
-          .then(({data}) => {
-            this.setState({
-              wokingVMSEndpoint: this.state.workingVMSEndpoint.push(data.issuer.href),
-              streamID: this.state.streamid.push(this.state.streamid)
-            })
-          })
-          .catch(({response = {} }) => {
-            const { status = 500 } = response
-            console.log(status)
-          })
-        } else if (status === 401) {
-          console.log("contraseña incorrecta")
-          this.setState({
-            error: 'Contraseña incorrecta'
-          })
-        }
-      })
-
   }
 
   onElementNameChange = event => {

@@ -93,6 +93,14 @@ class NetworkOperation {
   static getVehicularReports() {
     return axios.get(`${baseUrl}/vehicular-flow/reports`)
   }
+  // Video Surveillance
+   static createVideoToken(key, id) {
+     return axios.post(`${baseUrl}/video/token`, { key, id })
+   }
+
+   static getStreams() {
+     return axios.get(`${baseUrl}/video/cameras`)
+   }
 
   static getAvailableSites() {
     return axios.get(`${baseUrl}/cameras/report/clients`)

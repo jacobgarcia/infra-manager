@@ -9,9 +9,9 @@ const schema = new Schema({
   streamid: String,
   name: String,
   country: String,
-  zone: String,
+  zone: { type: Schema.Types.ObjectId, ref: 'Zone' },
   company: { type: Schema.Types.ObjectId, ref: 'Company', required: true },
-  site: { type: Schema.Types.ObjectId, ref: 'Site' },
+  site: { type: Schema.Types.ObjectId, ref: 'Site', required: true },
   photo: String,
   issuerkey: String,
 })

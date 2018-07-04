@@ -15,6 +15,10 @@ class CreateElementBarVMS extends Component {
   }
 
   componentDidMount() {
+    NetworkOperation.getSites()
+      .then(({data}) => {
+        console.log(data)
+      })
   }
 
   render() {
