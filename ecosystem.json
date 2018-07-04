@@ -1,0 +1,14 @@
+{
+  "apps" : [{
+    // Application #1
+    "name"        : "server",
+    "script"      : "server.js",
+    "merge_logs"  : true,
+  },{
+    // Application #2
+    "name"       : "cron",
+    "script"     : "cron.js",
+    "merge_logs"  : true,
+    "cron_restart" : "0 * * * *"
+  }]
+}
