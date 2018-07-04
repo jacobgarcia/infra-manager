@@ -393,10 +393,10 @@ router
             .json({ success: false, message: 'No site found' })
 
         // Generate alarms based on sensors values, always checking if is already alerted or not
-        site.sensors.map(sensor => {
+        sensors.map((sensor, index) => {
           switch (sensor.class) {
             case 'contact':
-              if (sensor.value === 0 && !sensor.isAlerted) {
+              if (sensor.value === 0 && !site.sensors[index].isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -415,7 +415,7 @@ router
               } else sensor.isAlerted = false
               break
             case 'vibration':
-              if (sensor.value === 0 && !sensor.isAlerted) {
+              if (sensor.value === 0 && !site.sensors[index].isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -434,7 +434,7 @@ router
               } else sensor.isAlerted = false
               break
             case 'temperature':
-              if (sensor.value < 5 && !sensor.isAlerted) {
+              if (sensor.value < 5 && !site.sensors[index].isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -450,7 +450,7 @@ router
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
                 sensor.isAlerted = true
-              } else if (sensor.value > 40 && !sensor.isAlerted) {
+              } else if (sensor.value > 40 && !site.sensors[index].isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -469,7 +469,7 @@ router
               } else sensor.isAlerted = false
               break
             case 'cpu':
-              if (sensor.value > 68 && !sensor.isAlerted) {
+              if (sensor.value > 68 && !site.sensors[index].isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
@@ -486,7 +486,7 @@ router
               } else sensor.isAlerted = false
               break
             case 'battery':
-              if (sensor.value <= 15 && !sensor.isAlerted) {
+              if (sensor.value <= 15 && !site.sensors[index].isAlerted) {
                 const alarm = {
                   _id: new ObjectID(),
                   timestamp: Date.now(),
