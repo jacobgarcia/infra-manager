@@ -412,7 +412,7 @@ router
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
-              } else site.sensors[index].isAlerted = false
+              } else if (sensor.value === 100) site.sensors[index].isAlerted = false
               break
             case 'vibration':
               if (sensor.value === 0 && !site.sensors[index].isAlerted) {
@@ -431,7 +431,7 @@ router
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
-              } else site.sensors[index].isAlerted = false
+              } else if (sensor.value === 100) site.sensors[index].isAlerted = false
               break
             case 'temperature':
               if (sensor.value < 5 && !site.sensors[index].isAlerted) {
@@ -466,7 +466,7 @@ router
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
-              } else site.sensors[index].isAlerted = false
+              } else if (sensor.value > 5 && sensor.value < 50) site.sensors[index].isAlerted = false
               break
             case 'cpu':
               if (sensor.value > 68 && !site.sensors[index].isAlerted) {
@@ -483,7 +483,7 @@ router
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
-              } else site.sensors[index].isAlerted = false
+              } else if (sensor.value <= 68) site.sensors[index].isAlerted = false
               break
             case 'battery':
               if (sensor.value <= 15 && !site.sensors[index].isAlerted) {
@@ -502,7 +502,7 @@ router
                 global.io.to('connus').emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
-              } else site.sensors[index].isAlerted = false
+              } else if (sensor.value > 15) site.sensors[index].isAlerted = false
               break
             default:
           }
