@@ -174,11 +174,12 @@ export function itemStatus(item = '', thisArray, option, max, min) {
   switch (option) {
     case 'upscale':
       thisArray.map(sensor => {
+        console.log(sensor)
         if (sensor.class === item) {
           if (sensor.value >= max) {
             ok += 1
-          } else if (sensor.value <= min) bad += 1
-          else warn += 1
+          } else if (sensor.value <= min) warn += 1
+          else bad += 1
         }
       })
       break
@@ -186,7 +187,7 @@ export function itemStatus(item = '', thisArray, option, max, min) {
       thisArray.map(sensor => {
         if (sensor.class === item) {
           if (sensor.value <= max && sensor.value >= min) ok += 1
-          else bad += 1
+          else warn += 1
         }
       })
       break
