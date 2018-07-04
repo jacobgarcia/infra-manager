@@ -238,7 +238,7 @@ class Sensors extends Component {
                   <h1>{this.state.vibration && this.state.vibration}</h1>
                 </div>
                 <div className="center">
-                  {vibrationStatus && vibrationStatus.length > 0 && 'Alertas'}
+                  {vibrationStatus && vibrationStatus.length > 0 && 'Alertados'}
 
                   <p className="border button warning" onClick={this.onSites}>
                     {vibrationStatus && vibrationStatus[1].value} sitios
@@ -270,7 +270,7 @@ class Sensors extends Component {
                   <h1>{this.state.aperture && this.state.aperture}</h1>
                 </div>
                 <div className="center">
-                  {apertureStatus && apertureStatus.length > 0 && 'Alertas'}
+                  {apertureStatus && apertureStatus.length > 0 && 'Alertados'}
 
                   <p className="border button warning" onClick={this.onSites}>
                     {apertureStatus && apertureStatus[1].value} sitios
@@ -304,7 +304,7 @@ class Sensors extends Component {
                     <h1>{this.state.energy && this.state.energy}</h1>
                   </div>
                   <div className="center">
-                    {energyStatus && energyStatus.length > 0 && 'Alertas'}
+                    {energyStatus && energyStatus.length > 0 && 'Alertados'}
 
                     <p className="border button warning" onClick={this.onSites}>
                       {energyStatus && energyStatus[1].value} sitios

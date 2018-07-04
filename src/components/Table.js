@@ -4,9 +4,9 @@ import PropTypes from 'prop-types'
 class Table extends PureComponent {
   constructor(props) {
     super(props)
-
+    console.log(props)
     this.state = {
-      selected: 0
+      selected: props.selected ? props.selected : 0
     }
   }
 
@@ -22,7 +22,12 @@ class Table extends PureComponent {
                 <li
                   key={index}
                   className={state.selected === index ? 'active' : ''}
-                  onClick={() => this.setState({ selected: index })}>
+                  onClick={() => {
+                    if (props.setState) {
+                      props.setState(index)
+                      this.setState({ selected: index })
+                    } else this.setState({ selected: index })
+                  }}>
                   {title}
                 </li>
               ))
@@ -77,6 +82,9 @@ class Table extends PureComponent {
   }
 }
 
-Table.propTypes = {}
+Table.propTypes = {
+  selected: PropTypes.number,
+  setState: PropTypes.func
+}
 
 export default Table

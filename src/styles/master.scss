@@ -523,7 +523,7 @@ p span {
           }
         }
         &:before {
-          content: "";
+          content: '';
           float: left;
           padding-top: 100%;
         }
@@ -2171,6 +2171,9 @@ ul.mini-nav {
           color: $white;
           span {
             color: $yellow;
+          }
+          strong {
+            color: $red;
           }
         }
       }
