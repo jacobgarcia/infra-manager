@@ -17,7 +17,7 @@ class VideoSurveillance extends Component {
       element: null,
       elements: [],
       hoverElement: null,
-      isCreating: null,
+      isCreating: false,
       showing: null,
       states: [],
       isSearching: false,
@@ -80,17 +80,17 @@ class VideoSurveillance extends Component {
   toggleCreate = () => {
 
     // Check which element is being created
-    let isCreating = null
     if (this.state.isCreating) {
-      isCreating = null
+      this.setState({ isCreating: false})
     } else {
-      isCreating = true
+      this.setState({ isCreating: true})
     }
+    console.log(this.state.url)
     this.setState({
       newPositions: [],
-      isCreating,
       error: '',
-      showing: null
+      showing: null,
+      url: ''
     })
   }
 
@@ -151,18 +151,18 @@ class VideoSurveillance extends Component {
             )}
           </div>
         </div>
-        <CreateElementBarVMS
+        {
+          <CreateElementBarVMS
           onEntitySelect={this.onEntitySelect}
           onCreate={this.onCreateElement}
           onMouseOver={() => this.setState({ hoverPosition: null })}
           className={state.isCreating ? '' : 'hidden'}
           isNewElementValid={state.isNewElementValid}
           onNameChange={this.onElementNameChange}
-          onPositionsChange={this.onElementPositionsChange}
-          positions={state.newPositions}
-          error={state.error}
           clean={state.isCreating}
+          url={state.url}
         />
+        }
       </div>
     )
   }

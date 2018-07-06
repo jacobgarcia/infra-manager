@@ -556,6 +556,7 @@ class MapContainer extends Component {
           onNameChange={this.onElementNameChange}
           onPositionsChange={this.onElementPositionsChange}
           positions={state.newPositions}
+          url={state.url}
         />
       </div>
     )

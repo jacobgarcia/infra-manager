@@ -1,23 +1,22 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 import { NetworkOperation } from '../lib'
 
 class CreateElementBarVMS extends Component {
   constructor(props) {
     super(props)
-
     this.state = {
       showEntities: false,
       states: [],
-      selected: null,
+      selected: null
     }
   }
 
   componentDidMount() {
     NetworkOperation.getSites()
       .then(({data}) => {
-        console.log(data)
       })
   }
 
@@ -34,7 +33,7 @@ class CreateElementBarVMS extends Component {
           <input
             type="text"
             placeholder="http://vmsurl..."
-            value={props.clean ? props.value : ''}
+            value={props.url}
             onChange={props.onNameChange}
             name="url"
           />
@@ -43,21 +42,21 @@ class CreateElementBarVMS extends Component {
           <input
             type="text"
             placeholder="User"
-            value={props.clean ? props.value : ''}
+            value={this.state.user}
             onChange={props.onNameChange}
             name="user"
           />
           <input
             type="text"
             placeholder="Password"
-            value={props.clean ? props.value : ''}
+            value={this.state.pass }
             onChange={props.onNameChange}
             name="pass"
           />
           <input
             type="text"
             placeholder="StreamID"
-            value={props.clean ? props.value : ''}
+            value={this.state.streamid}
             onChange={props.onNameChange}
             name="streamid"
           />
@@ -82,8 +81,14 @@ class CreateElementBarVMS extends Component {
   }
 }
 
+
 CreateElementBarVMS.propTypes = {
-  onEntitySelect: PropTypes.func
+  onEntitySelect: PropTypes.func,
+  clean: PropTypes.bool
 }
 
-export default CreateElementBarVMS
+CreateElementBarVMS.defaultProps = {
+  clean: false
+}
+
+export default (CreateElementBarVMS)
