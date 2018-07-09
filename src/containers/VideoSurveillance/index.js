@@ -85,16 +85,27 @@ class VideoSurveillance extends Component {
     } else {
       this.setState({ isCreating: true})
     }
-    console.log(this.state.url)
     this.setState({
       newPositions: [],
       error: '',
       showing: null,
-      url: ''
+      url: '',
+      user: '',
+      pass: '',
+      streamid: '',
+      site: ''
     })
   }
 
   onCreateElement = () => {
+    console.log(this.state.site)
+    this.toggleCreate()
+  }
+
+  onEntitySelect = data => {
+    this.setState({
+      site: data
+    })
   }
 
   onElementNameChange = event => {
@@ -159,8 +170,11 @@ class VideoSurveillance extends Component {
           className={state.isCreating ? '' : 'hidden'}
           isNewElementValid={state.isNewElementValid}
           onNameChange={this.onElementNameChange}
-          clean={state.isCreating}
-          url={state.url}
+          url={this.state.url}
+          user={this.state.user}
+          pass={this.state.pass}
+          streamid={this.state.streamid}
+          isCreating={state.isCreating}
         />
         }
       </div>

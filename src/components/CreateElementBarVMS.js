@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
 
 import { NetworkOperation } from '../lib'
 
@@ -9,7 +8,7 @@ class CreateElementBarVMS extends Component {
     super(props)
     this.state = {
       showEntities: false,
-      states: [],
+      sites: [],
       selected: null
     }
   }
@@ -17,7 +16,27 @@ class CreateElementBarVMS extends Component {
   componentDidMount() {
     NetworkOperation.getSites()
       .then(({data}) => {
+        this.setState({
+          sites: data.sites
+        })
       })
+      .catch(console.error)
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (!nextProps.isCreating) {
+      this.setState({
+        showEntities: false,
+        selected: null
+      })
+    }
+  }
+
+  onSelectEntity(entityId) {
+    this.setState({
+      selected: entityId
+    })
+    this.props.onEntitySelect(this.state.sites.find(state => state._id === entityId))
   }
 
   render() {
@@ -31,35 +50,56 @@ class CreateElementBarVMS extends Component {
         </div>
         <div>
           <input
+            onChange={props.onNameChange}
             type="text"
             placeholder="http://vmsurl..."
             value={props.url}
-            onChange={props.onNameChange}
             name="url"
           />
         </div>
         <div className="coordinates">
           <input
+            onChange={props.onNameChange}
             type="text"
             placeholder="User"
-            value={this.state.user}
-            onChange={props.onNameChange}
+            value={props.user}
             name="user"
           />
           <input
+            onChange={props.onNameChange}
             type="text"
             placeholder="Password"
-            value={this.state.pass }
-            onChange={props.onNameChange}
+            value={props.pass}
             name="pass"
           />
           <input
+            onChange={props.onNameChange}
             type="text"
             placeholder="StreamID"
-            value={this.state.streamid}
-            onChange={props.onNameChange}
+            value={props.streamid}
             name="streamid"
           />
+        </div>
+        <div className="add-entities">
+          <p
+            onClick={() =>
+              this.setState(prev => ({ showEntities: !prev.showEntities }))
+            }>
+            Añadir a sitio
+          </p>
+          <ul className={state.showEntities ? '' : 'hidden'}>
+            {state.sites.map(({ _id, name }) => (
+                  <li key={_id}>
+                    <input
+                      type="checkbox"
+                      id={_id}
+                      onChange={() => this.onSelectEntity(_id)}
+                      checked={_id === state.selected}
+                    />
+                    <label htmlFor={_id}>{name}</label>
+                  </li>
+                ))}
+          </ul>
         </div>
         <input
           type="button"

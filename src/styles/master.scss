@@ -1029,6 +1029,7 @@ img {
         -webkit-overflow-scrolling: touch;
         -ms-overflow-style: none;
         ul {
+          overflow-y: scroll;
           display: flex;
           flex-direction: column;
           flex-shrink: 0;
