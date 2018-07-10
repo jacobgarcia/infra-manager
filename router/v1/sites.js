@@ -131,7 +131,8 @@ router
           event,
           status,
           risk: 2,
-          site: key
+          site: key,
+          class: 'camera'
         }
         site.alarms.push(alarm)
         return site.save(error => {
@@ -455,7 +456,8 @@ router
                   event: 'Alerta de apertura',
                   status: 'Sensor abierto',
                   risk: 3,
-                  site: key
+                  site: key,
+                  class: sensor.class
                 }
                 site.alarms.push(alarm)
                 // Send socket asking for media files
@@ -474,7 +476,8 @@ router
                   event: 'Alerta de vibración',
                   status: 'Sensor activado',
                   risk: 2,
-                  site: key
+                  site: key,
+                  class: sensor.class
                 }
                 site.alarms.push(alarm)
                 // Send socket asking for media files
@@ -493,7 +496,8 @@ router
                   event: 'Alerta de temperatura',
                   status: 'Temperatura baja',
                   risk: 2,
-                  site: key
+                  site: key,
+                  class: sensor.class
                 }
                 site.alarms.push(alarm)
                 // Send socket asking for media files
@@ -509,7 +513,8 @@ router
                   event: 'Alerta de temperatura',
                   status: 'Temperatura alta',
                   risk: 1,
-                  site: key
+                  site: key,
+                  class: sensor.class
                 }
                 site.alarms.push(alarm)
                 // Send socket asking for media files
@@ -528,7 +533,8 @@ router
                   event: 'Alerta de temperatura del CPU',
                   status: 'Temperatura alta',
                   risk: 2,
-                  site: key
+                  site: key,
+                  class: sensor.class
                 }
                 site.alarms.push(alarm)
                 // Emit popup alert socket and add alert to REDUX
@@ -545,7 +551,8 @@ router
                   event: 'Alerta de batería',
                   status: 'Bateria baja',
                   risk: 2,
-                  site: key
+                  site: key,
+                  class: sensor.class
                 }
                 site.alarms.push(alarm)
                 // Send socket asking for media files

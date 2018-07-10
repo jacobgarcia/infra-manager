@@ -7,7 +7,12 @@ import io from 'socket.io-client'
 
 import { Card, Tooltip, FuelChart } from 'components'
 import { NetworkOperation } from 'lib'
-import { getColor, itemAverage, itemStatus } from 'lib/specialFunctions'
+import {
+  getColor,
+  itemAverage,
+  itemStatus,
+  chartStatus
+} from 'lib/specialFunctions'
 
 class Sensors extends Component {
   constructor(props) {
@@ -60,7 +65,8 @@ class Sensors extends Component {
         ),
         energyStatus: itemStatus('battery', data.sensors, 'between', 130, 100),
         battery: parseInt(itemAverage('battery', data.sensors), 10),
-        fuel: parseInt(itemAverage('fuel', data.sensors), 10)
+        fuel: parseInt(itemAverage('fuel', data.sensors), 10),
+        status: chartStatus(this.props.reports)
       })
     })
     // Init socket with userId and token
@@ -120,7 +126,8 @@ class Sensors extends Component {
         vibrationStatus,
         apertureStatus,
         ambienceStatus,
-        energyStatus
+        energyStatus,
+        status
       }
     } = this
     return (
@@ -164,9 +171,7 @@ class Sensors extends Component {
                     {temperatureStatus &&
                       (!temperatureStatus[2].value && 'Alertados')}
                     <p className="border button" onClick={this.onSites}>
-                      {temperatureStatus &&
-                        (temperatureStatus[2].value &&
-                          temperatureStatus[2].value)}{' '}
+                      {}
                       sitios
                     </p>
                   </div>
@@ -241,7 +246,7 @@ class Sensors extends Component {
                   {vibrationStatus && vibrationStatus.length > 0 && 'Alertados'}
 
                   <p className="border button warning" onClick={this.onSites}>
-                    {vibrationStatus && vibrationStatus[1].value} sitios
+                    {status && status.vibration} sitios
                   </p>
                 </div>
               </Card>
@@ -267,13 +272,13 @@ class Sensors extends Component {
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>{this.state.aperture && this.state.aperture}</h1>
+                  <h1>{this.state.aperture}</h1>
                 </div>
                 <div className="center">
                   {apertureStatus && apertureStatus.length > 0 && 'Alertados'}
 
                   <p className="border button warning" onClick={this.onSites}>
-                    {apertureStatus && apertureStatus[1].value} sitios
+                    {status && status.contact} sitios
                   </p>
                 </div>
               </Card>
@@ -344,13 +349,17 @@ class Sensors extends Component {
 
 Sensors.propTypes = {
   credentials: PropTypes.object,
-  history: PropTypes.object
+  history: PropTypes.object,
+  alarms: PropTypes.array,
+  reports: PropTypes.array
 }
 
-function mapStateToProps({ zones, credentials }) {
+function mapStateToProps({ zones, credentials, alarms, reports }) {
   return {
     zones,
-    credentials
+    credentials,
+    alarms,
+    reports
   }
 }
 

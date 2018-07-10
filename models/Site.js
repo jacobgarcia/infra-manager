@@ -39,7 +39,8 @@ const schema = new Schema({
       event: String,
       status: String,
       risk: { type: Number, default: 0 },
-      photos: [String]
+      photos: [String],
+      class: String
     }
   ],
   timestamp: { type: Date, default: new Date() }, // Last updated

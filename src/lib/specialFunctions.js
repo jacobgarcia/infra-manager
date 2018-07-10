@@ -166,6 +166,29 @@ export function itemAverage(item, thisArray) {
   return 0
 }
 
+// export function chartStatus(alarms) {
+//   const status = { contact: 0, vibration: 0 }
+//   alarms.map(alarm => {
+//     status[alarm.class] += 1
+//   })
+// }
+
+export function chartStatus(sites) {
+  const status = {
+    contact: 0,
+    vibration: 0,
+    temperature: 0,
+    ambience: 0,
+    energy: 0
+  }
+  sites.map(site => {
+    site.alarms.map(alarm => {
+      status[alarm.class] += 1
+    })
+  })
+  return status
+}
+
 export function itemStatus(item = '', thisArray, option, max, min) {
   let ok = 0
   let warn = 0
@@ -174,7 +197,6 @@ export function itemStatus(item = '', thisArray, option, max, min) {
   switch (option) {
     case 'upscale':
       thisArray.map(sensor => {
-        console.log(sensor)
         if (sensor.class === item) {
           if (sensor.value >= max) {
             ok += 1
