@@ -41,42 +41,99 @@ const upload = multer({ storage: storage }).fields([
 ])
 
 /* ADD PHOTO MEDIA FILES TO THE SPECIFIED ALARM THAT SERVERS AS EVIDENCE */
-router.route('/sites/alarms').put(upload, (req, res) => {
-  const { key, company, alarm } = req.body
-  const photoFiles = req.files && req.files.photos
-  const photos = []
-  console.log(key, company, alarm)
-  if (!key || !company || !photoFiles) return res
-      .status(400)
-      .json({ success: false, message: 'Malformed request' })
+router
+  .route('/sites/alarms')
+  .put(upload, (req, res) => {
+    const { key, company, alarm } = req.body
+    const photoFiles = req.files && req.files.photos
+    const photos = []
+    if (!key || !company || !photoFiles) return res
+        .status(400)
+        .json({ success: false, message: 'Malformed request' })
 
-  // Since it's not human to check which company ObjectId wants to be used, a search based on the name is done
-  return Company.findOne({ name: company }).exec((error, company) => {
-    if (error) {
-      winston.error(error)
-      return res.status(500).json({ error })
-    }
-    if (!company) return res
-        .status(404)
-        .json({ success: false, message: 'Specified company was not found' })
-
-    // Find and update site with new information
-    photoFiles.map(photo => {
-      photos.push('/static/alarms/' + photo.filename)
-    })
-
-    return Site.findOne({ company, key }).exec((error, site) => {
+    // Since it's not human to check which company ObjectId wants to be used, a search based on the name is done
+    return Company.findOne({ name: company }).exec((error, company) => {
       if (error) {
-        winston.error({ error })
+        winston.error(error)
         return res.status(500).json({ error })
       }
-      if (!site) return res.status(404).json({ message: 'No sites found' })
-      const alarmIndex = site.alarms.findIndex($0 => $0._id == alarm)
-      // Push photo files to specified alarm
-      if (alarmIndex !== -1) {
-        site.alarms[alarmIndex].photos = photos
-        console.log('PHOTOS', photos)
-        console.log('ASSIGNED PHOTOS', site.alarms[alarmIndex].photos)
+      if (!company) return res
+          .status(404)
+          .json({ success: false, message: 'Specified company was not found' })
+
+      // Find and update site with new information
+      photoFiles.map(photo => {
+        photos.push('/static/alarms/' + photo.filename)
+      })
+
+      return Site.findOne({ company, key }).exec((error, site) => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({ error })
+        }
+        if (!site) return res.status(404).json({ message: 'No sites found' })
+        const alarmIndex = site.alarms.findIndex($0 => $0._id == alarm)
+        // Push photo files to specified alarm
+        if (alarmIndex !== -1) {
+          site.alarms[alarmIndex].photos = photos
+          return site.save(error => {
+            if (error) {
+              winston.error({ error })
+              return res.status(500).json({ error })
+            }
+
+            return res.status(200).json({
+              success: true,
+              message: 'Sucessfully pushed photos to the specified alarm'
+            })
+          })
+        }
+        return res.status(400).json({
+          success: false,
+          message: 'Alarm does not exist'
+        })
+      })
+    })
+  })
+
+  /* CREATE ALARM (FOR CAMERA USAGE) */
+  .post(upload, (req, res) => {
+    const { key, company, event, status } = req.body
+    const photoFiles = req.files && req.files.photos
+    const photos = []
+    if (!key || !company || !photoFiles) return res
+        .status(400)
+        .json({ success: false, message: 'Malformed request' })
+
+    // Since it's not human to check which company ObjectId wants to be used, a search based on the name is done
+    return Company.findOne({ name: company }).exec((error, company) => {
+      if (error) {
+        winston.error(error)
+        return res.status(500).json({ error })
+      }
+      if (!company) return res
+          .status(404)
+          .json({ success: false, message: 'Specified company was not found' })
+
+      // Find and update site with new information
+      photoFiles.map(photo => {
+        photos.push('/static/alarms/' + photo.filename)
+      })
+
+      return Site.findOne({ company, key }).exec((error, site) => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({ error })
+        }
+        if (!site) return res.status(404).json({ message: 'No sites found' })
+        const alarm = {
+          timestamp: Date.now(),
+          event,
+          status,
+          risk: 2,
+          site: key
+        }
+        site.alarms.push(alarm)
         return site.save(error => {
           if (error) {
             winston.error({ error })
@@ -85,17 +142,12 @@ router.route('/sites/alarms').put(upload, (req, res) => {
 
           return res.status(200).json({
             success: true,
-            message: 'Sucessfully pushed photos to the specified alarm'
+            message: 'Successfully created alarm'
           })
         })
-      }
-      return res.status(400).json({
-        success: false,
-        message: 'Alarm does not exist'
       })
     })
   })
-})
 
 // RETRIEVE ALL ONLINE SITES
 router.route('/sites/online').get((req, res) => {
