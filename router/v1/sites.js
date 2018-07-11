@@ -100,6 +100,9 @@ router
   .post(upload, (req, res) => {
     const { key, company, event, status } = req.body
     const photoFiles = req.files && req.files.photos
+
+    console.log(key, company, event, status)
+    console.log(photoFiles)
     const photos = []
     if (!key || !company || !photoFiles) return res
         .status(400)
