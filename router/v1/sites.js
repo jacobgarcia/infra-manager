@@ -135,7 +135,8 @@ router
           status,
           risk: 2,
           site: key,
-          class: 'camera'
+          class: 'camera',
+          photos
         }
         site.alarms.push(alarm)
         return site.save(error => {
@@ -143,6 +144,8 @@ router
             winston.error({ error })
             return res.status(500).json({ error })
           }
+
+          global.io.to('connus').emit('alarm', alarm)
 
           return res.status(200).json({
             success: true,
