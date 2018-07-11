@@ -47,7 +47,12 @@ router.route('/reports/alarms').get((req, res) => {
     .populate('zone')
     .select('alarms')
     .exec((error, sites) => {
-      sites.map(site => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      return sites.map(site => {
         site.alarms.map(alarm => {
           alarm.site = site.name
           alarm.zone = site.zone.name
@@ -57,9 +62,8 @@ router.route('/reports/alarms').get((req, res) => {
     })
     .then(docs => {
       Site.csvReadStream(docs).pipe(fs.createWriteStream('alarms.csv'))
+      return res.status(200).json({ success: true, docs })
     })
-
-  return res.status(200).json({ success: true })
 })
 
 module.exports = router
