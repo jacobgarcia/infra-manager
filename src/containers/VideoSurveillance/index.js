@@ -35,37 +35,40 @@ class VideoSurveillance extends Component {
       streamID: [],
       error: '',
       streams: [],
-      jwt: ''
+      jwts: [],
+      frames: []
     }
   }
 
   componentDidMount() {
-    const frame1 = document.createElement('iframe')
-    frame1.setAttribute('onload', this.init(frame1))
     NetworkOperation.getStream()
     .then(({data}) => {
-      data.map(stream => {
-        frame1.src = `${stream.core}/?single-player=${stream.streamid}`
-        const container = document.getElementById('players')
-        container.appendChild(frame1)
-        NetworkOperation.getStreamToken(stream.id)
-        .then(({data}) => {
+      this.setState({
+        streams: data
+      },() => {
+        data.map(stream => {
+          const frame = document.createElement('iframe')
+          frame.src = `${stream.core}/?single-player=${stream.streamid}`
+          frame.setAttribute('onload', this.init(frame))
+          const container = document.getElementById(stream._id)
+          container.appendChild(frame)
+          NetworkOperation.getStreamToken(stream.id)
+          .then(({data}) => {
+            this.setState({
+              jwts: [...this.state.jwts, data]
+            })
+          })
           this.setState({
-            jwt: data
+            frames: [...this.state.frames, frame]
           })
         })
       })
-      this.setState({
-        streams: data
-      })
     })
-        //frame1.orchidId = "fdfacc2f-4c42-4484-bbb1-9ba7dd4372fc"
-    //console.log("apending C")
   }
 
   init(frame) {
     window.setInterval(() => {
-      this.setJWT(frame, this.state.jwt)
+      this.setJWT(frame, this.state.jwts[0])
     }, 3000)
   }
 
@@ -140,7 +143,11 @@ class VideoSurveillance extends Component {
         <Helmet>
           <title>Connus | VideoSurveillance</title>
         </Helmet>
-        <div id="players"/>
+        {
+          state.streams && state.streams.map(stream => (
+            <div key={stream._id} id={stream._id}>Helloooooooo</div>
+          ))
+        }
         <div
           className="bar-actions"
           onMouseMove={() =>
