@@ -13,7 +13,7 @@ router.route('/reports/alarms').get((req, res) => {
   const alarms = []
 
   Site.find({ company })
-    .populate('zone')
+    .populate('zone', 'name')
     .select('alarms')
     .exec((error, sites) => {
       if (error) {
@@ -28,10 +28,9 @@ router.route('/reports/alarms').get((req, res) => {
           alarms.push(alarm)
         })
       })
-    })
-    .then(docs => {
-      Site.csvReadStream(docs).pipe(fs.createWriteStream('alarms.csv'))
-      return res.status(200).json({ success: true, docs })
+
+      Site.csvReadStream(alarms).pipe(fs.createWriteStream('alarms.csv'))
+      return res.status(200).json({ success: true, alarms })
     })
 })
 
