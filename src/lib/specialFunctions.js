@@ -166,6 +166,29 @@ export function itemAverage(item, thisArray) {
   return 0
 }
 
+// export function chartStatus(alarms) {
+//   const status = { contact: 0, vibration: 0 }
+//   alarms.map(alarm => {
+//     status[alarm.class] += 1
+//   })
+// }
+
+export function chartStatus(sites) {
+  const status = {
+    contact: 0,
+    vibration: 0,
+    temperature: 0,
+    ambience: 0,
+    energy: 0
+  }
+  sites.map(site => {
+    site.alarms.map(alarm => {
+      status[alarm.class] += 1
+    })
+  })
+  return status
+}
+
 export function itemStatus(item = '', thisArray, option, max, min) {
   let ok = 0
   let warn = 0
@@ -177,8 +200,8 @@ export function itemStatus(item = '', thisArray, option, max, min) {
         if (sensor.class === item) {
           if (sensor.value >= max) {
             ok += 1
-          } else if (sensor.value <= min) bad += 1
-          else warn += 1
+          } else if (sensor.value <= min) warn += 1
+          else bad += 1
         }
       })
       break
@@ -186,7 +209,7 @@ export function itemStatus(item = '', thisArray, option, max, min) {
       thisArray.map(sensor => {
         if (sensor.class === item) {
           if (sensor.value <= max && sensor.value >= min) ok += 1
-          else bad += 1
+          else warn += 1
         }
       })
       break
@@ -231,31 +254,29 @@ export function getStatus(data) {
   return { status: [], percentage: 0 }
 }
 
-export function pvAtTime(history, backHours) {
-  const now = new Date()
-  const lowwerLimit = new Date(
-    now.setHours(now.getHours() - backHours, 0, 0, 0)
-  )
-  const upperLimit = new Date(now.setHours(lowwerLimit.getHours() + 1, 0, 0, 0))
-  let pv = history.length
-  history.map(current => {
-    if (current < upperLimit && current > lowwerLimit) pv -= 1
+export function pvAtTime(sites, index) {
+  const now = new Date() // Actual time
+  // Upper and lower limit of dates based on browser time
+  const lowerLimit = new Date(now.setHours(now.getHours() - index, 0, 0, 0))
+  const upperLimit = new Date(now.setHours(lowerLimit.getHours() + 1, 0, 0, 0))
+  let pv = sites.length
+  sites.map(site => {
+    if (!site[index]) pv -= 1
   })
-  return parseInt(pv / history.length, 10) * 100
+  return parseInt(pv / sites.length * 100, 10)
 }
 
-// last kikin commit
 export function dataChart(chart) {
-  const data = []
-  const now = new Date()
-  const range = [...Array(11).keys()]
-  range.map(hoursBack => {
+  const data = [] // Array returning information to chart component
+  const now = new Date() // Actual time
+  const range = [...Array(12).keys()] // 12 hours array
+  range.map((hoursBack, index) => {
     const current = {
       name:
         now.getHours() - hoursBack > 11
           ? now.getHours() - hoursBack + 'PM'
           : now.getHours() - hoursBack + 'AM',
-      pv: chart ? Math.ceil(pvAtTime(chart, hoursBack)) : 100
+      pv: chart ? pvAtTime(chart, index) : 100
     }
     data.unshift(current)
   })

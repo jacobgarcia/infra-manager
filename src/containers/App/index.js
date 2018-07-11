@@ -30,7 +30,7 @@ import FacialRecognition from 'containers/FacialRecognition/Loadable'
 import VideoSurveillance from 'containers/VideoSurveillance/Loadable'
 import VisualCounter from 'containers/VisualCounter/Loadable'
 import Reports from 'containers/Reports/Loadable'
-import Sensors from 'containers/Sensors/Loadable'
+import Sensors from 'containers/Sensors'
 import Devices from 'containers/Devices/Loadable'
 import Inventory from 'containers/Inventory/Loadable'
 import Alarms from 'containers/Alarms/Loadable'
@@ -171,7 +171,7 @@ class App extends Component {
   }
 
   initSockets() {
-    this.socket = io()
+    this.socket = io('https://att.connus.mx')
 
     this.socket.on('connect', () => {
       this.socket.emit('join', 'connus')
@@ -182,7 +182,8 @@ class App extends Component {
       this.props.credentials.company.name === 'Connus'
     ) {
       this.socket.on('alert', alert => {
-        // Get site id based on key
+        this.props.setAlarm(alert)
+        // Add alert popup to GUI
         this.setState(prev => ({
           alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now() }])
         }))
@@ -243,19 +244,18 @@ class App extends Component {
         </Helmet>
         <div className="alerts__container">
           {this.state.alerts.map(alert => (
-            <div
-              key={alert.timestamp}
-              className={`alert ${
-                alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
-              }`}>
-              <div className="alert__image" />
-              <div className="alert__body">
-                <Link to={`/alarms`}>
+            <Link to={`/alarms/${alert._id}`} key={alert.timestamp}>
+              <div
+                className={`alert ${
+                  alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
+                }`}>
+                <div className="alert__image" />
+                <div className="alert__body">
                   <p>{alert.site}</p>
-                </Link>
-                <p>{alert.event}</p>
+                  <p>{alert.event}</p>
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
         <Navigator credentials={this.props.credentials} />
@@ -276,6 +276,7 @@ class App extends Component {
           <Route path="/sensors" component={Sensors} />
           <Route path="/devices" component={Devices} />
           <Route path="/alarms" component={Alarms} />
+          <Route path="/alarms/:alarmId" component={Alarms} />
         </Switch>
       </div>
     )

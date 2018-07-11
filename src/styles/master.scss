@@ -457,6 +457,81 @@ p span {
   }
 }
 
+.vms-content {
+  padding-left: 68px;
+  background-color: $dark-gray;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  &.small-padding > .content {
+    padding-top: 30px;
+    padding-left: 20px;
+  }
+  > .content {
+    display: block;
+    background-color: $dark-gray;
+    padding: 20px;
+    padding-top: 70px;
+    height: 950px;
+    h2 {
+      background-image: url('assets/icons/connus.svg');
+      background-position: right center;
+      background-repeat: no-repeat;
+      padding: 0;
+      background-size: 20px;
+      display: flex;
+      height: 30px;
+      justify-content: space-between;
+      z-index: 1000;
+      align-items: center;
+      margin-bottom: 20px;
+      > div {
+        margin-right: 40px;
+        z-index: 1000;
+        > div {
+          margin-left: 10px;
+          &:last-child {
+            margin-left: none;
+          }
+        }
+      }
+    }
+    &.vertical {
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .Grid {
+      display: flex;
+      flex-wrap: wrap;
+      height: 100%;
+      &-item {
+        width: 100%;
+        background: gray;
+        margin-top: 2%;
+        @media (min-width: 48rem) {
+          width: 48%;
+          &:nth-child(odd) {
+            background: grey;
+            margin-right: 2%;
+          }
+        }
+        @media (min-width: 62rem) {
+          width: 48%;
+          &:not(:nth-child(4n)) {
+            background: grey;
+            margin-right: 2%;
+          }
+        }
+        &:before {
+          content: '';
+          float: left;
+          padding-top: 100%;
+        }
+      }
+    }
+  }
+}
+
 .risk-bar-container {
   display: flex;
   align-items: flex-end;
@@ -2062,7 +2137,7 @@ $dark: #1d212d;
     background-position: -58px;
   }
   .vehicular-flow::before {
-    background-position: -125px;
+    background-position: -117px;
   }
   .alarms::before {
     background-position: -301px;
@@ -2071,13 +2146,13 @@ $dark: #1d212d;
     background-position: -75px;
   }
   .video-surveillance::before {
-    background-position: -150px;
+    background-position: -140px;
   }
   .facial-recognition::before {
     background-position: -93px;
   }
   .inventory::before {
-    background-position: -200px;
+    background-position: -183px;
   }
   .settings::before {
     background-position: -205px;
@@ -2472,6 +2547,9 @@ ul.mini-nav {
           color: $white;
           span {
             color: $yellow;
+          }
+          strong {
+            color: $red;
           }
         }
       }

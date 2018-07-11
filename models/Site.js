@@ -1,5 +1,6 @@
 /* eslint-env node */
 const mongoose = require('mongoose')
+const mongooseToCsv = require('mongoose-to-csv')
 const Schema = mongoose.Schema
 
 const History = new Schema({
@@ -28,7 +29,8 @@ const schema = new Schema({
       fully_charged: Boolean,
       charging: Boolean,
       ac_present: Boolean,
-      needs_replacement: Boolean
+      needs_replacement: Boolean,
+      isAlerted: Boolean
     },
     { _id: false }
   ],
@@ -38,7 +40,8 @@ const schema = new Schema({
       event: String,
       status: String,
       risk: { type: Number, default: 0 },
-      photos: [String]
+      photos: [String],
+      class: String
     }
   ],
   timestamp: { type: Date, default: new Date() }, // Last updated
@@ -57,6 +60,25 @@ const schema = new Schema({
     }
   ],
   counter: { type: [Counter], default: [] },
+  onlineStatuses: [
+    {
+      type: Boolean,
+      default: [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ]
+    }
+  ],
   devices: [
     {
       device: String,
@@ -102,6 +124,36 @@ const schema = new Schema({
     },
     { _id: false }
   ]
+})
+
+schema.plugin(mongooseToCsv, {
+  headers: 'ID Suceso Fecha Hora Sitio Zona Riesgo Estatus',
+  virtuals: {
+    ID: doc => {
+      return doc._id
+    },
+    Suceso: doc => {
+      return doc.event
+    },
+    Fecha: doc => {
+      return doc.timestamp
+    },
+    Hora: doc => {
+      return doc.timestamp
+    },
+    Sitio: doc => {
+      return doc.site
+    },
+    Zona: doc => {
+      return doc.zone
+    },
+    Riesgo: doc => {
+      return doc.risk
+    },
+    Estatus: doc => {
+      return doc.status
+    }
+  }
 })
 
 // Set company-key unique

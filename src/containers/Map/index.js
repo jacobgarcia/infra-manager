@@ -78,7 +78,7 @@ class MapContainer extends Component {
     NetworkOperation.getAvailableSites()
       .then(({ data }) => {
         this.setState({
-          availableSites: data.connected_sites
+          availableSites: data.online
         })
 
         const { elements = [] } = this.getElementsToRender(this.props)

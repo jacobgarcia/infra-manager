@@ -145,6 +145,7 @@ class VideoSurveillance extends Component {
       <div
         id="vms-container"
         className={state.isCreating ? 'creating-element' : ''}>
+
         <Helmet>
           <title>Connus | VideoSurveillance</title>
         </Helmet>

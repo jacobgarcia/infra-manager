@@ -19,7 +19,7 @@ class Overall extends PureComponent {
     }
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (!this.props.reports) return
 
     if (nextProps.reports.length !== this.props.reports.length) {
@@ -61,9 +61,11 @@ class Overall extends PureComponent {
 
   render() {
     const { state, props } = this
-    /*console.log(props.selectedType === 'SITE'
-      ? props.element ? props.element.sensors : []
-      : props.elements)*/
+    let elements = []
+
+    if (props.selectedType === 'SITE') {
+      if (props.element) elements = props.element.sensors
+    } else elements = props.elements
 
     return (
       <div
@@ -105,11 +107,7 @@ class Overall extends PureComponent {
           <StatusesContainer
             params={props.params}
             type={props.selectedType}
-            elements={
-              props.selectedType === 'SITE'
-                ? props.element ? props.element.sensors : []
-                : props.elements
-            }
+            elements={elements}
             reports={props.reports}
             onHover={props.onHover}
             element={props.element}
@@ -126,7 +124,6 @@ Overall.propTypes = {
   selectedType: PropTypes.string.isRequired,
   element: PropTypes.object,
   reports: PropTypes.array
-
 }
 
 Overall.defaultProps = {

@@ -21,6 +21,12 @@ class ElementStatus extends Component {
 
   render() {
     const { props } = this
+    let percentage = ''
+    if (props.type === 'ZONE') {
+      if (props.isOnline) percentage = props.percentage
+      else percentage = 'OFF'
+    } else percentage = props.percentage
+
     return (
       <div
         className="status list"
@@ -36,8 +42,8 @@ class ElementStatus extends Component {
         </div>
         <div className="chart-container">
           <p>
-            {props.percentage}
-            {!props.nonPercentage && '%'}
+            {percentage}
+            {!props.nonPercentage && percentage !== 'OFF' && '%'}
           </p>
           <PieChart width={70} height={70}>
             <Pie
@@ -52,7 +58,9 @@ class ElementStatus extends Component {
               animationDuration={500}
               animationBegin={0}
               strokeWidth={0}>
-              <Cell fill={colors(props.percentage)} />
+              <Cell
+                fill={props.isOnline ? colors(props.percentage) : colors(0)}
+              />
               <Cell fill="#303640" />
             </Pie>
           </PieChart>

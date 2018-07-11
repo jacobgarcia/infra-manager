@@ -66,7 +66,6 @@ class Settings extends Component {
           <ul className="mini-nav vertical">
             <li className="active">Perfil</li>
             {/* <li>Personalizar</li> */}
-            <li>Lista negra</li>
           </ul>
           <form onSubmit={this.onSave}>
             <div className="field">
@@ -90,16 +89,28 @@ class Settings extends Component {
             </div>
             <div className="field">
               <label htmlFor="name">Nombre</label>
-              <input type="text" placeholder="Nombre" value={state.name} />
+              <input
+                type="text"
+                placeholder="Nombre"
+                value={props.credentials.user.name}
+              />
             </div>
             <div className="field">
               <label htmlFor="email">Correo</label>
-              <input type="text" placeholder="Correo" value={state.email} />
+              <input
+                type="text"
+                placeholder="Correo"
+                value={props.credentials.user.email}
+              />
             </div>
             <span className="rule">Cambiar contraseña</span>
             <div className="field">
               <label htmlFor="name">Contraseña actual</label>
-              <input type="text" placeholder="" />
+              <input
+                type="password"
+                placeholder=""
+                value={props.credentials.user.name}
+              />
             </div>
             <div className="field">
               <label htmlFor="name">Nueva contraseña</label>

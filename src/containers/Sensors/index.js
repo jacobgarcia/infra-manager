@@ -7,29 +7,32 @@ import io from 'socket.io-client'
 
 import { Card, Tooltip, FuelChart } from 'components'
 import { NetworkOperation } from 'lib'
-import { getColor, itemAverage, itemStatus } from 'lib/specialFunctions'
+import {
+  getColor,
+  itemAverage,
+  itemStatus,
+  chartStatus
+} from 'lib/specialFunctions'
 
-const data = [
-  { name: 'workings', value: 100 },
-  { name: 'alerts', value: 0 },
-  { name: 'damaged', value: 0 }
-]
+class Sensors extends Component {
+  constructor(props) {
+    super(props)
 
-class Users extends Component {
-  static propTypes = {
-    credentials: PropTypes.object,
-    history: PropTypes.object
-  }
-
-  state = {
-    users: [],
-    isAddingUser: false,
-    query: '',
-    filteredUsers: [],
-    alerts: [],
-    latestAlerts: [],
-    from: new Date(),
-    to: new Date()
+    this.state = {
+      users: [],
+      isAddingUser: false,
+      query: '',
+      filteredUsers: [],
+      alerts: [],
+      latestAlerts: [],
+      from: new Date(),
+      to: new Date(),
+      data: [
+        { name: 'workings', value: 100 },
+        { name: 'alerts', value: 0 },
+        { name: 'damaged', value: 0 }
+      ]
+    }
   }
 
   onSites = () => {
@@ -39,6 +42,7 @@ class Users extends Component {
   componentDidMount() {
     NetworkOperation.getSensors().then(({ data }) => {
       this.setState({
+        // Average values for sensor readings
         aperture: parseInt(itemAverage('contact', data.sensors), 10),
         vibration: parseInt(itemAverage('vibration', data.sensors), 10),
         temperature: parseInt(itemAverage('cpu', data.sensors), 10),
@@ -61,7 +65,8 @@ class Users extends Component {
         ),
         energyStatus: itemStatus('battery', data.sensors, 'between', 130, 100),
         battery: parseInt(itemAverage('battery', data.sensors), 10),
-        fuel: parseInt(itemAverage('fuel', data.sensors), 10)
+        fuel: parseInt(itemAverage('fuel', data.sensors), 10),
+        status: chartStatus(this.props.reports)
       })
     })
     // Init socket with userId and token
@@ -78,23 +83,27 @@ class Users extends Component {
     this.socket.on('refresh', () => {
       NetworkOperation.getSensors().then(({ data }) => {
         this.setState({
+          // Average value for status
           aperture: parseInt(itemAverage('contact', data.sensors), 10),
           vibration: parseInt(itemAverage('vibration', data.sensors), 10),
           temperature: parseInt(itemAverage('cpu', data.sensors), 10),
+          ambience: parseInt(itemAverage('temperature', data.sensors), 10),
           energy: parseInt(itemAverage('battery', data.sensors), 10),
+          fuel: parseInt(itemAverage('fuel', data.sensors), 10),
+          // Pie charts for every sensor class
           apertureStatus: itemStatus(
             'contact',
             data.sensors,
             'upscale',
-            80,
-            20
+            100,
+            0
           ),
           vibrationStatus: itemStatus(
             'vibration',
             data.sensors,
             'upscale',
-            80,
-            20
+            100,
+            0
           ),
           temperatureStatus: itemStatus('cpu', data.sensors, 'between', 50, 0),
           ambienceStatus: itemStatus(
@@ -104,15 +113,7 @@ class Users extends Component {
             40,
             0
           ),
-          energyStatus: itemStatus(
-            'battery',
-            data.sensors,
-            'between',
-            130,
-            100
-          ),
-          battery: parseInt(itemAverage('battery', data.sensors), 10),
-          fuel: parseInt(itemAverage('fuel', data.sensors), 10)
+          energyStatus: itemStatus('battery', data.sensors, 'between', 130, 100)
         })
       })
     })
@@ -124,7 +125,9 @@ class Users extends Component {
         temperatureStatus,
         vibrationStatus,
         apertureStatus,
-        ambienceStatus
+        ambienceStatus,
+        energyStatus,
+        status
       }
     } = this
     return (
@@ -133,7 +136,7 @@ class Users extends Component {
           <title>Connus | Sensores</title>
         </Helmet>
         <div className="content">
-          <h2>Estatus</h2>
+          <h2>Sensorización</h2>
           <div className="overall-container">
             <div className="horizontal-container">
               {this.state.temperature &&
@@ -153,7 +156,7 @@ class Users extends Component {
                         outerRadius={75}
                         strokeWidth={0}
                         label>
-                        {data.map(({ name }, index) => (
+                        {this.state.data.map(({ name }, index) => (
                           <Cell key={index} fill={getColor(name)} />
                         ))}
                       </Pie>
@@ -168,9 +171,7 @@ class Users extends Component {
                     {temperatureStatus &&
                       (!temperatureStatus[2].value && 'Alertados')}
                     <p className="border button" onClick={this.onSites}>
-                      {temperatureStatus &&
-                        (temperatureStatus[2].value &&
-                          temperatureStatus[2].value)}{' '}
+                      {}
                       sitios
                     </p>
                   </div>
@@ -193,7 +194,7 @@ class Users extends Component {
                         outerRadius={75}
                         strokeWidth={0}
                         label>
-                        {data.map(({ name }, index) => (
+                        {this.state.data.map(({ name }, index) => (
                           <Cell key={index} fill={getColor(name)} />
                         ))}
                       </Pie>
@@ -230,7 +231,7 @@ class Users extends Component {
                       outerRadius={75}
                       strokeWidth={0}
                       label>
-                      {data.map(({ name }, index) => (
+                      {this.state.data.map(({ name }, index) => (
                         <Cell key={index} fill={getColor(name)} />
                       ))}
                     </Pie>
@@ -242,10 +243,10 @@ class Users extends Component {
                   <h1>{this.state.vibration && this.state.vibration}</h1>
                 </div>
                 <div className="center">
-                  {vibrationStatus && vibrationStatus.length > 0 && 'Alertas'}
+                  {vibrationStatus && vibrationStatus.length > 0 && 'Alertados'}
 
                   <p className="border button warning" onClick={this.onSites}>
-                    {vibrationStatus && vibrationStatus.length} sitios
+                    {status && status.vibration} sitios
                   </p>
                 </div>
               </Card>
@@ -262,7 +263,7 @@ class Users extends Component {
                       outerRadius={75}
                       strokeWidth={0}
                       label>
-                      {data.map(({ name }, index) => (
+                      {this.state.data.map(({ name }, index) => (
                         <Cell key={index} fill={getColor(name)} />
                       ))}
                     </Pie>
@@ -271,13 +272,13 @@ class Users extends Component {
                       content={Tooltip}
                     />
                   </PieChart>
-                  <h1>{this.state.aperture && this.state.aperture}</h1>
+                  <h1>{this.state.aperture}</h1>
                 </div>
                 <div className="center">
-                  {apertureStatus && apertureStatus.length > 0 && 'Alertas'}
+                  {apertureStatus && apertureStatus.length > 0 && 'Alertados'}
 
                   <p className="border button warning" onClick={this.onSites}>
-                    {apertureStatus && apertureStatus.length} sitios
+                    {status && status.contact} sitios
                   </p>
                 </div>
               </Card>
@@ -296,7 +297,7 @@ class Users extends Component {
                         outerRadius={75}
                         strokeWidth={0}
                         label>
-                        {data.map(({ name }, index) => (
+                        {this.state.data.map(({ name }, index) => (
                           <Cell key={index} fill={getColor(name)} />
                         ))}
                       </Pie>
@@ -308,14 +309,10 @@ class Users extends Component {
                     <h1>{this.state.energy && this.state.energy}</h1>
                   </div>
                   <div className="center">
-                    {this.state.energyStatus &&
-                      this.state.energyStatus[2].value > 0 &&
-                      'Alertas'}
+                    {energyStatus && energyStatus.length > 0 && 'Alertados'}
 
                     <p className="border button warning" onClick={this.onSites}>
-                      {this.state.energyStatus &&
-                        this.state.energyStatus[2].value}{' '}
-                      sitios
+                      {energyStatus && energyStatus[1].value} sitios
                     </p>
                   </div>
                 </Card>
@@ -350,11 +347,20 @@ class Users extends Component {
   }
 }
 
-function mapStateToProps({ zones, credentials }) {
+Sensors.propTypes = {
+  credentials: PropTypes.object,
+  history: PropTypes.object,
+  alarms: PropTypes.array,
+  reports: PropTypes.array
+}
+
+function mapStateToProps({ zones, credentials, alarms, reports }) {
   return {
     zones,
-    credentials
+    credentials,
+    alarms,
+    reports
   }
 }
 
-export default connect(mapStateToProps)(Users)
+export default connect(mapStateToProps)(Sensors)

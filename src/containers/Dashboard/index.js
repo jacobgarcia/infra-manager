@@ -31,10 +31,10 @@ class Dashboard extends Component {
     super(props)
 
     this.state = {
-      selectedElementIndex: [null, null],
-      detail: null,
-      worstZone: null,
+      detail: null, // View to general performance (detail)
+      worstZone: null, // Worst Zone
       chartCounter: [
+        // Array structure for Visual Counter chart
         { name: '7:00 AM', uv: 9, pv: 1042, tv: 92 },
         { name: '8:00 AM', uv: 31, pv: 1042, tv: 34 },
         { name: '9:00 AM', uv: 26, pv: 1043, tv: 93 },
@@ -50,11 +50,15 @@ class Dashboard extends Component {
         { name: '7:00 PM', uv: 0, pv: 1042, tv: 51 }
       ],
       data: [
+        // Array structure for Pie Chart
         { name: 'workings', value: 75 },
         { name: 'alerts', value: 15 },
         { name: 'damaged', value: 10 }
-      ]
+      ],
+      selected: 1 // Table selected element
     }
+
+    this.setParentState = this.setParentState.bind(this)
   }
 
   componentDidMount() {
@@ -64,10 +68,8 @@ class Dashboard extends Component {
     const chart = []
 
     props.reports.map(site => {
-      site.history.map(currentHistory => {
-        // Populate chart dates
-        chart.push(new Date(currentHistory.timestamp))
-      })
+      // Add site onlineStatuses to average service chart
+      chart.push(site.onlineStatuses)
 
       // Most alerted zone
       const zone = alertedZones.find($0 => $0.name === site.zone.name)
@@ -122,21 +124,21 @@ class Dashboard extends Component {
 
     NetworkOperation.getAvailableSites().then(currentSites => {
       NetworkOperation.getSites().then(allSites => {
-        // CIRCULAR Chart
+        // PIE Chart
         const workings = allSites.data.sites.filter(
           site =>
-            currentSites.data.connected_sites.includes(site.key) &&
+            currentSites.data.online.includes(site.key) &&
             site.alarms.length === 0
         )
 
         const damaged = allSites.data.sites.filter(
-          site => !currentSites.data.connected_sites.includes(site.key)
+          site => !currentSites.data.online.includes(site.key)
         )
 
         const alerted = allSites.data.sites.filter(
           site =>
             site.alarms.length > 0 &&
-            currentSites.data.connected_sites.includes(site.key)
+            currentSites.data.online.includes(site.key)
         )
 
         const tempData = [
@@ -153,15 +155,72 @@ class Dashboard extends Component {
             value: damaged.length
           }
         ]
-
         this.setState({
           ok: parseInt(workings.length / allSites.data.sites.length * 100, 10),
           bad: parseInt(damaged.length / allSites.data.sites.length * 100, 10),
           war: parseInt(alerted.length / allSites.data.sites.length * 100, 10),
-          sensors: tempData
+          sensors: tempData,
+          damaged,
+          alerted
         })
       })
     })
+
+    setInterval(
+      () =>
+        NetworkOperation.getAvailableSites().then(currentSites => {
+          NetworkOperation.getSites().then(allSites => {
+            // PIE Chart
+            const workings = allSites.data.sites.filter(
+              site =>
+                currentSites.data.online.includes(site.key) &&
+                site.alarms.length === 0
+            )
+
+            const damaged = allSites.data.sites.filter(
+              site => !currentSites.data.online.includes(site.key)
+            )
+
+            const alerted = allSites.data.sites.filter(
+              site =>
+                site.alarms.length > 0 &&
+                currentSites.data.online.includes(site.key)
+            )
+
+            const tempData = [
+              {
+                name: 'workings',
+                value: workings.length
+              },
+              {
+                name: 'alerts',
+                value: alerted.length
+              },
+              {
+                name: 'damaged',
+                value: damaged.length
+              }
+            ]
+
+            this.setState({
+              ok: parseInt(
+                workings.length / allSites.data.sites.length * 100,
+                10
+              ),
+              bad: parseInt(
+                damaged.length / allSites.data.sites.length * 100,
+                10
+              ),
+              war: parseInt(
+                alerted.length / allSites.data.sites.length * 100,
+                10
+              ),
+              sensors: tempData
+            })
+          })
+        }),
+      10000
+    )
 
     // Get Visual Counter information
     NetworkOperation.getCounter().then(({ data }) => {
@@ -175,6 +234,14 @@ class Dashboard extends Component {
       })
     })
   }
+
+  setParentState(index) {
+    console.log(index)
+    this.setState({
+      selected: index
+    })
+  }
+
   render() {
     const { state, props } = this
     return (
@@ -197,81 +264,60 @@ class Dashboard extends Component {
                   }
                   detailView={
                     <div className="detail-view">
-                      <h1>
-                        {this.state.sensors && this.state.sensors[2].value}
-                        <p>
-                          /{this.state.sensors &&
-                            this.state.sensors[0].value +
-                              this.state.sensors[1].value +
-                              this.state.sensors[2].value}{' '}
-                          equipos offline (<span>{this.state.bad}%</span>)
-                        </p>
-                      </h1>
+                      {state.selected === 0 ? (
+                        <h1>
+                          {this.state.sensors && this.state.sensors[2].value}
+                          <p>
+                            /{this.state.sensors &&
+                              this.state.sensors[0].value +
+                                this.state.sensors[1].value +
+                                this.state.sensors[2].value}{' '}
+                            equipos offline (<strong>{this.state.bad}%</strong>)
+                          </p>
+                        </h1>
+                      ) : (
+                        <h1>
+                          {this.state.sensors && this.state.sensors[1].value}
+                          <p>
+                            /{this.state.sensors &&
+                              this.state.sensors[0].value +
+                                this.state.sensors[1].value +
+                                this.state.sensors[2].value}{' '}
+                            equipos alertados (<span>{this.state.war}%</span>)
+                          </p>
+                        </h1>
+                      )}
+
                       <Table
                         multipleTable
-                        actionsContainer={
-                          <div>
-                            <p className="button action disabled">Filtrar</p>
-                          </div>
-                        }
-                        selectedElementIndex={state.selectedElementIndex}
+                        selected={state.selected}
+                        setState={this.setParentState}
                         element={(item, index, sectionIndex) => (
                           <div
-                            className={`table-item ${
-                              state.selectedElementIndex[0] === index &&
-                              state.selectedElementIndex[1] === sectionIndex
-                                ? 'selected'
-                                : ''
-                            }`}
+                            className={'table-item'}
                             key={index}
                             onClick={() =>
                               this.onLogSelect(item, index, sectionIndex)
                             }>
-                            {item.timestamp && (
-                              <div>
-                                {
-                                  item.timestamp /* .toLocaleDateString('es-MX') ? item.timestamp.toLocaleDateString('es-MX'): item.timestamp*/
-                                }{' '}
-                              </div>
-                            )}
-                            <div className="medium bold">{item.event}</div>
-                            <div className="medium">{item.status}</div>
-                            <div>
-                              <RiskBar risk={item.risk} />
-                            </div>
-                            <div>{item.site}</div>
-                            <div>{item.risk}</div>
+                            <div className="medium bold">Centro</div>
+                            <div className="medium">{item.key}</div>
+                            <div className="medium">{item.name}</div>
                           </div>
                         )}
                         elements={[
                           {
                             title: 'Offline',
-                            elements:
-                              this.state.history &&
-                              this.state.history.length > 0
-                                ? this.state.history.filter(
-                                    history => history.risk > 2
-                                  )
-                                : null
+                            elements: this.state.damaged
                           },
                           {
                             title: 'Alertados',
-                            elements:
-                              this.state.history &&
-                              this.state.history.length > 0
-                                ? this.state.history.filter(
-                                    history => history.risk < 3
-                                  )
-                                : null
+                            elements: this.state.alerted
                           }
                         ]}
                         titles={[
-                          { title: 'Tiempo' },
-                          { title: 'Sitio', className: 'medium' },
-                          { title: 'Estatus' },
                           { title: 'Zona', className: 'medium' },
-                          { title: 'Riesgo' },
-                          { title: 'Suceso' }
+                          { title: 'Clave', className: 'medium' },
+                          { title: 'Sitio', className: 'medium' }
                         ]}
                       />
                     </div>
@@ -318,12 +364,16 @@ class Dashboard extends Component {
                       </p>
                       <p
                         className="border button warning"
-                        onClick={() => this.setState({ detail: 'warning' })}>
+                        onClick={() =>
+                          this.setState({ detail: 'warning', selected: 1 })
+                        }>
                         <span>{this.state.war}%</span> alertado
                       </p>
                       <p
                         className="border button error"
-                        onClick={() => this.setState({ detail: 'damaged' })}>
+                        onClick={() =>
+                          this.setState({ detail: 'damaged', selected: 0 })
+                        }>
                         <span>{this.state.bad}%</span> offline
                       </p>
                     </div>
@@ -430,128 +480,133 @@ class Dashboard extends Component {
                     )
                 )}
               </div>
-              <div className="vertical-container">
-                <Card
-                  className="historical"
-                  title="Media de servicio"
-                  full={false}>
-                  <ResponsiveContainer width="100%" height={160}>
-                    <AreaChart
-                      data={dataChart(this.state.chart)}
-                      syncId="dashboard"
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                      <XAxis
-                        dataKey="name"
-                        height={20}
-                        mirror
-                        axisLine={false}
-                        padding={{ right: 50 }}
-                      />
-                      <CartesianGrid
-                        stroke="#424953"
-                        horizontal={false}
-                        strokeWidth={0.5}
-                      />
-                      <defs>
-                        <linearGradient
-                          id="colorUv"
-                          x1="1"
-                          y1="0"
-                          x2="0"
-                          y2="0">
-                          <stop
-                            offset="0%"
-                            stopColor={blue}
-                            stopOpacity={0.8}
-                          />
-                          <stop
-                            offset="100%"
-                            stopColor={blue}
-                            stopOpacity={0.1}
-                          />
-                        </linearGradient>
-                      </defs>
-                      <RechartsTooltip
-                        isAnimationActive={false}
-                        content={Tooltip}
-                      />
-                      <Area
-                        dataKey="pv"
-                        fill="url(#colorUv)"
-                        animationBegin={0}
-                        type="natural"
-                        stroke={blue}
-                        strokeWidth={2}
-                        activeDot={{
-                          stroke: blue,
-                          strokeWidth: 2,
-                          fill: darkGray
-                        }}
-                      />
-                      <ReferenceLine
-                        y={40}
-                        stroke="red"
-                        strokeDasharray="5 5"
-                      />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                </Card>
-                <div className="horizontal-container">
+              {state.detail === null && (
+                <div className="vertical-container">
                   <Card
-                    title="Zona de mas alertas"
-                    className="horizontal"
+                    className="historical"
+                    title="Media de servicio"
                     full={false}>
-                    <h1>
-                      {this.state.worstZone
-                        ? this.state.worstZone.name
-                        : 'Ninguna'}
-                    </h1>
+                    <ResponsiveContainer width="100%" height={160}>
+                      <AreaChart
+                        data={dataChart(state.chart)}
+                        syncId="dashboard"
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                        <XAxis
+                          dataKey="name"
+                          height={20}
+                          mirror
+                          axisLine={false}
+                          padding={{ right: 50 }}
+                        />
+                        <CartesianGrid
+                          stroke="#424953"
+                          horizontal={false}
+                          strokeWidth={0.5}
+                        />
+                        <defs>
+                          <linearGradient
+                            id="colorUv"
+                            x1="1"
+                            y1="0"
+                            x2="0"
+                            y2="0">
+                            <stop
+                              offset="0%"
+                              stopColor={blue}
+                              stopOpacity={0.8}
+                            />
+                            <stop
+                              offset="100%"
+                              stopColor={blue}
+                              stopOpacity={0.1}
+                            />
+                          </linearGradient>
+                        </defs>
+                        <RechartsTooltip
+                          isAnimationActive={false}
+                          content={Tooltip}
+                        />
+                        <Area
+                          dataKey="pv"
+                          fill="url(#colorUv)"
+                          animationBegin={0}
+                          type="natural"
+                          stroke={blue}
+                          strokeWidth={2}
+                          activeDot={{
+                            stroke: blue,
+                            strokeWidth: 2,
+                            fill: darkGray
+                          }}
+                        />
+                        <ReferenceLine
+                          y={40}
+                          stroke="red"
+                          strokeDasharray="5 5"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </Card>
+                  <div className="horizontal-container">
+                    <Card
+                      title="Zona de mas alertas"
+                      className="horizontal"
+                      full={false}>
+                      <h1>
+                        {this.state.worstZone
+                          ? this.state.worstZone.name
+                          : 'Ninguna'}
+                      </h1>
 
-                    <div className="card-footer">
-                      <p className="red">
-                        {this.state.worstZone && this.state.worstZone.value}{' '}
-                        alertas{' '}
-                      </p>
-                    </div>
-                  </Card>
-                  <Card
-                    title="Sitio de mas alertas"
-                    className="horizontal"
-                    full={false}>
-                    <h1>
-                      {this.state.worstSite
-                        ? this.state.worstSite.name
-                        : 'Ninguno'}
-                    </h1>
-                    <p>Zona Centro</p>
-                    <div className="card-footer">
-                      <p className="red">
+                      <div className="card-footer">
+                        <p className="red">
+                          {this.state.worstZone && this.state.worstZone.value}{' '}
+                          alertas{' '}
+                        </p>
+                      </div>
+                    </Card>
+                    <Card
+                      title="Sitio de mas alertas"
+                      className="horizontal"
+                      full={false}>
+                      <h1>
                         {this.state.worstSite
-                          ? this.state.worstSite.alarms.length
-                          : 0}{' '}
-                        alertas{' '}
-                      </p>
-                    </div>
-                  </Card>
-                  <Card title="Top semanal" className="horizontal" full={false}>
-                    <h1>
-                      {this.state.weeklyAlerts &&
-                      this.state.weeklyAlerts.alarms.length > 0
-                        ? this.state.weeklyAlerts.key
-                        : 'Ninguno'}
-                    </h1>
-                    <p>Zona Centro</p>
-                    <div className="card-footer">
-                      <p className="red">
-                        {this.state.weeklyAlerts
-                          ? this.state.weeklyAlerts.alarms.length
-                          : 0}{' '}
-                        alertas{' '}
-                      </p>
-                    </div>
-                  </Card>
+                          ? this.state.worstSite.name
+                          : 'Ninguno'}
+                      </h1>
+                      <p>Zona Centro</p>
+                      <div className="card-footer">
+                        <p className="red">
+                          {this.state.worstSite
+                            ? this.state.worstSite.alarms.length
+                            : 0}{' '}
+                          alertas{' '}
+                        </p>
+                      </div>
+                    </Card>
+                    <Card
+                      title="Top semanal"
+                      className="horizontal"
+                      full={false}>
+                      <h1>
+                        {this.state.weeklyAlerts &&
+                        this.state.weeklyAlerts.alarms.length > 0
+                          ? this.state.weeklyAlerts.key
+                          : 'Ninguno'}
+                      </h1>
+                      <p>Zona Centro</p>
+                      <div className="card-footer">
+                        <p className="red">
+                          {this.state.weeklyAlerts
+                            ? this.state.weeklyAlerts.alarms.length
+                            : 0}{' '}
+                          alertas{' '}
+                        </p>
+                      </div>
+                    </Card>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="events-container">
               <Table
@@ -561,15 +616,9 @@ class Dashboard extends Component {
                     <p className="button action disabled">Filtrar</p>
                   </div>
                 }
-                selectedElementIndex={state.selectedElementIndex}
                 element={(item, index, sectionIndex) => (
                   <div
-                    className={`table-item ${
-                      state.selectedElementIndex[0] === index &&
-                      state.selectedElementIndex[1] === sectionIndex
-                        ? 'selected'
-                        : ''
-                    }`}
+                    className={`table-item`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}>
                     {item.timestamp && (
