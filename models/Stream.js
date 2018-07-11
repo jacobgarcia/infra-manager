@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 
 const schema = new Schema({
   id: String,
-  core: { type: String, unique: true },
+  core: String,
   user: String,
   streamid: String,
   name: String,

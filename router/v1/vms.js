@@ -11,6 +11,7 @@ const Zone = require(path.resolve('models/Zone'))
 const Site = require(path.resolve('models/Site'))
 const Company = require(path.resolve('models/Company'))
 const Stream = require(path.resolve('models/Stream'))
+const Buffer = require('buffer').Buffer
 
 router.route('/stream').post((req,res) => {
   const { core, user, pass, streamid } = req.body
@@ -28,7 +29,7 @@ router.route('/stream').post((req,res) => {
   ) return res
     .status(400)
     .json({ success: false, message: 'Malformed request' })
-  return Company.findOne({ name: company }).exec((error, company) => {
+  return Company.findOne({ _id: company }).exec((error, company) => {
     if (error) {
       winston.error(error)
       return res.status(500).json({ error })
@@ -36,7 +37,7 @@ router.route('/stream').post((req,res) => {
     if (!company) return res
         .status(404)
         .json({ success: false, message: 'Specified company was not found or is not in DB' })
-    return Zone.findOne({ name: zone, company: company._id }).exec(
+    return Zone.findOne({ _id: zone, company: company._id }).exec(
       (error, zone) => {
         if (error) {
           winston.error(error)
@@ -45,7 +46,7 @@ router.route('/stream').post((req,res) => {
         if (!zone) return res
             .status(404)
             .json({ success: false, message: 'Specified zone was not found or is not in DB' })
-        return Site.findOne({ name: site, company: company._id, zone: zone._id}).exec(
+        return Site.findOne({ key: site, company: company._id, zone: zone._id}).exec(
           (error, site) => {
             let issuerkey = null
             let id = null
@@ -56,10 +57,10 @@ router.route('/stream').post((req,res) => {
             if (!site) return res
               .status(404)
               .json({ success: false, message: 'Could not find site or is not in DB' })
-            return request.get("http://192.168.1.48/service/trusted/issuer?version=2", {
+            return request.get(`${core}/service/trusted/issuer?version=2`, {
                 'auth': {
-                  'user': 'admin',
-                  'pass': 'admin'
+                  'user': user,
+                  'pass': pass
                 }
               },
               (err, resp, body) => {
@@ -73,7 +74,7 @@ router.route('/stream').post((req,res) => {
                 }
                 switch (resp.statusCode) {
                   case 200:
-                    return Stream.findOne({ id: body.id , company: company._id}).exec(
+                    return Stream.findOne({ id: JSON.parse(body).id , company: company._id}).exec(
                       (error, stream) => {
                         if (error) {
                           return res.status(500).json({
@@ -87,7 +88,7 @@ router.route('/stream').post((req,res) => {
                           issuerkey = { issuerkey: stream.issuerkey }
                           id = { id: stream.id }
                           new Stream({
-                            id,
+                            id: id.id,
                             core,
                             user,
                             streamid,
@@ -95,7 +96,7 @@ router.route('/stream').post((req,res) => {
                             site: site._id,
                             name,
                             country,
-                            issuerkey,
+                            issuerkey: issuerkey.issuerkey,
                             zone: zone._id
                           }).save()
                           return res.status(200).json({success: true,
@@ -112,33 +113,37 @@ router.route('/stream').post((req,res) => {
                   case 404:
                     id = { id: uuid() }
                     issuerkey = { issuerkey: base64url(crypto.randomBytes(32)) }
-                    return request({
-                        url: `http://192.168.1.48/service/trusted/issuer?version=2`,
-                        method: "POST",
-                        headers: {
-                            "content-type": "application/json",
-                            },
-                        json: {
-                        "id": id.id,
-                        "access_token": "",
-                        "key": {
-                          "kty": "oct",
-                          "k": issuerkey.issuerkey
-                        },
-                        "description": "",
-                        "uri": ""
-                        }
-                      },
-                      {
+                    return request
+                        .post(`${core}/service/trusted/issuer?version=2`, {
                       'auth': {
                         'user': 'admin',
                         'pass': 'admin'
-                        }
                       },
-                    (err, response, body) => {
-                      if (!err && response.status === 200) {
+                      'headers': {
+                        "content-type": "application/json"
+                      },
+                      'json': {
+                        "id": id.id,
+                      "access_token": "",
+                      "key": {
+                        "kty": "oct",
+                        "k": issuerkey.issuerkey
+                      },
+                      "description": "",
+                      "uri": ""
+                      }
+                    }, (err, response, body) => {
+                      if (err) {
+                        return res.status(500).json({
+                            success: false,
+                            message:
+                              'core endpoint error',
+                            error
+                        })
+                      }
+                      if (response.statusCode === 201) {
                         new Stream({
-                          id,
+                          id: id.id,
                           core,
                           user,
                           streamid,
@@ -146,13 +151,16 @@ router.route('/stream').post((req,res) => {
                           site: site._id,
                           name,
                           country,
-                          issuerkey,
+                          issuerkey: issuerkey.issuerkey,
                           zone: zone._id
                         }).save()
                         return res.status(200).json(body)
                       }
+                      console.log(response)
                       return res.status(404).json(err)
                     })
+                  case 401:
+                    return res.status(401).json("usuario o contraseña incorrecta")
                   default:
                     return res.status(400).json(body)
                 }
@@ -162,13 +170,7 @@ router.route('/stream').post((req,res) => {
   })
 })
 .get((req,res) => {
-  const { company } = req.body
-  if (
-    !company
-  ) return res
-    .status(400)
-    .json({ success: false, message: 'Malformed request' })
-  return Stream.find({ company: company}).exec((error, streams) => {
+  return Stream.find({ company: req._user.cmp}).exec((error, streams) => {
     if (error) {
       winston.error(error)
       return res.status(500).json({ error })
@@ -177,28 +179,22 @@ router.route('/stream').post((req,res) => {
     })
 })
 
-router.route('/stream/token').get((req,res) => {
-  const { core } = req.body
-  const { company, site, country, zone } = req.body
+router.route('/stream/token/:id').get((req,res) => {
+  const { id } = req.params
   if (
-    !core ||
-    !company ||
-    !site ||
-    !name ||
-    !country ||
-    !zone
+    !id
   ) return res
     .status(400)
     .json({ success: false, message: 'Malformed request' })
-  return Stream.findOne({ company: company, site: site, country: country, zone: zone, core }).exec((error, stream) => {
+  return Stream.findOne({ id: id }).exec((error, stream) => {
     if (error) {
       winston.error(error)
       return res.status(500).json({ error })
     }
     const token = jwt.sign({
       "exp": Math.floor(Date.now() / 1000) + (60 * 60),
-      "iat": Date.now()
-      },base64url(stream.issuerkey))
+      "iat": Math.floor(Date.now() / 1000)
+    }, Buffer.from(stream.issuerkey, 'base64'))
     return res.status(200).json(token)
     })
 })

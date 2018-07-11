@@ -139,19 +139,12 @@ class NetworkOperation {
     })
   }
 
-  static getStream(company) {
-    return axios.get(`${baseUrl}/stream`, {company})
+  static getStream() {
+    return axios.get(`${baseUrl}/stream`)
   }
 
-  static getStreamToken(core, company, site, name, country, zone) {
-    return axios.get(`${baseUrl}/stream/token`, {
-      core,
-      company,
-      site,
-      name,
-      country,
-      zone
-    })
+  static getStreamToken(id) {
+    return axios.get(`${baseUrl}/stream/token/${id}`)
   }
 }
 

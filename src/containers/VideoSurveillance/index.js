@@ -33,29 +33,40 @@ class VideoSurveillance extends Component {
       availableSites: [], // Current available sites
       workingVMSEndpoint: [],
       streamID: [],
-      error: ''
+      error: '',
+      streams: [],
+      jwt: ''
     }
   }
 
   componentDidMount() {
-    //const frame1 = document.createElement('iframe')
-    //frame1.setAttribute('onload', this.init(frame1))
-    //frame1.src = "http://f7b73757.ngrok.io/?single-player=1"
-    //frame1.orchidId = "fdfacc2f-4c42-4484-bbb1-9ba7dd4372fc"
-    //console.log("src defining")
-    //container = document.getElementById('players')
+    const frame1 = document.createElement('iframe')
+    frame1.setAttribute('onload', this.init(frame1))
+    NetworkOperation.getStream()
+    .then(({data}) => {
+      data.map(stream => {
+        frame1.src = `${stream.core}/?single-player=${stream.streamid}`
+        const container = document.getElementById('players')
+        container.appendChild(frame1)
+        NetworkOperation.getStreamToken(stream.id)
+        .then(({data}) => {
+          this.setState({
+            jwt: data
+          })
+        })
+      })
+      this.setState({
+        streams: data
+      })
+    })
+        //frame1.orchidId = "fdfacc2f-4c42-4484-bbb1-9ba7dd4372fc"
     //console.log("apending C")
-    //container.appendChild(frame1)
   }
 
   init(frame) {
-    this.getFusionToken(token => {
-        this.renewJWT(frame, token)
-        window.setInterval(() => {
-          this.renewJWT(frame, token)
-        }, 30000)
-      }
-    )
+    window.setInterval(() => {
+      this.setJWT(frame, this.state.jwt)
+    }, 3000)
   }
 
   setJWT(frame, jwt) {
@@ -63,19 +74,6 @@ class VideoSurveillance extends Component {
     frame.contentWindow.postMessage({'jwt': jwt}, '*')
     console.log("puse el jwt")
   }
-
-  renewJWT(frame, token) {
-    NetworkOperation.getJWT()
-      .then(({data}) => {
-        this.setJWT(frame, token)
-      })
-      console.log("JWT obtained")
-      .catch(({response = {} }) => {
-        const { status = 500 } = response
-        console.log(status)
-      })
-  }
-
 
   toggleCreate = () => {
 
@@ -98,8 +96,25 @@ class VideoSurveillance extends Component {
   }
 
   onCreateElement = () => {
-    console.log(this.state.site)
-    this.toggleCreate()
+    NetworkOperation.postStream(
+      this.state.url,
+      this.state.user,
+      this.state.pass,
+      this.state.streamid,
+      this.state.site.company,
+      this.state.site.key,
+      this.state.site.name,
+      this.state.site._id,
+      this.state.site.zone
+    )
+    .then(({data}) => {
+      console.log("well done")
+      this.toggleCreate()
+    })
+    .catch(({ response = {} }) => {
+      const { status = 500 } = response
+      status === 401 ? this.setState({ error: response.data }) : console.log(response)
+    })
   }
 
   onEntitySelect = data => {
@@ -112,7 +127,7 @@ class VideoSurveillance extends Component {
       const { value, name } = event.target
       this.setState({
        [name]: value,
-       isNewElementValid: this.state.url.length > 5 && this.state.user.length > 0 && this.state.pass.length > 0 && this.state.streamid.length > 0
+       isNewElementValid: this.state.url.length > 5 && this.state.user.length > 0 && this.state.pass.length > 0 && this.state.streamid.length >= 0
       })
   }
 
@@ -125,6 +140,7 @@ class VideoSurveillance extends Component {
         <Helmet>
           <title>Connus | VideoSurveillance</title>
         </Helmet>
+        <div id="players"/>
         <div
           className="bar-actions"
           onMouseMove={() =>
@@ -175,6 +191,7 @@ class VideoSurveillance extends Component {
           pass={this.state.pass}
           streamid={this.state.streamid}
           isCreating={state.isCreating}
+          error={state.error}
         />
         }
       </div>

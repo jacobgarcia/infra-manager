@@ -80,6 +80,11 @@ class CreateElementBarVMS extends Component {
             name="streamid"
           />
         </div>
+        {this.state.error && (
+          <div className="error">
+            <p>{this.state.error}</p>
+          </div>
+        )}
         <div className="add-entities">
           <p
             onClick={() =>
