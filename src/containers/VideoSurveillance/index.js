@@ -61,6 +61,12 @@ class VideoSurveillance extends Component {
   }
 
   init(frame, id) {
+    NetworkOperation.getStreamToken(id)
+    .then(({data}) => {
+      this.setState({
+        jwts: [...this.state.jwts, data]
+      }, () => this.setJWT(frame, this.state.jwts[0]))
+    })
     window.setInterval(() => {
       NetworkOperation.getStreamToken(id)
       .then(({data}) => {
@@ -68,7 +74,7 @@ class VideoSurveillance extends Component {
           jwts: [...this.state.jwts, data]
         }, () => this.setJWT(frame, this.state.jwts[0]))
       })
-    }, 3000)
+    }, 30000)
   }
 
   setJWT(frame, jwt) {
