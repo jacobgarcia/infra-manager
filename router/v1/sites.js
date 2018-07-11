@@ -145,7 +145,8 @@ router
             return res.status(500).json({ error })
           }
 
-          global.io.to('connus').emit('alarm', alarm)
+          // Emit popup alert socket and add alert to REDUX
+          global.io.to('connus').emit('alert', alarm)
 
           return res.status(200).json({
             success: true,
