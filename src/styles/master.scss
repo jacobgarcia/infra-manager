@@ -963,6 +963,21 @@ img {
   &.creating-element .leaflet-container {
     cursor: crosshair !important;
   }
+  .grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin: 10px;
+    height: auto;
+    .item{
+      width: 500px;
+      height: 500px;
+      margin: 4px;
+      iframe {
+        height: inherit;
+      }
+    }
+  }
   .create-bar {
     position: absolute;
     bottom: 0;

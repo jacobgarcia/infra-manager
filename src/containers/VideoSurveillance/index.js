@@ -49,15 +49,9 @@ class VideoSurveillance extends Component {
         data.map(stream => {
           const frame = document.createElement('iframe')
           frame.src = `${stream.core}/?single-player=${stream.streamid}`
-          frame.setAttribute('onload', this.init(frame))
+          frame.setAttribute('onload', this.init(frame, stream.id))
           const container = document.getElementById(stream._id)
           container.appendChild(frame)
-          NetworkOperation.getStreamToken(stream.id)
-          .then(({data}) => {
-            this.setState({
-              jwts: [...this.state.jwts, data]
-            })
-          })
           this.setState({
             frames: [...this.state.frames, frame]
           })
@@ -66,9 +60,14 @@ class VideoSurveillance extends Component {
     })
   }
 
-  init(frame) {
+  init(frame, id) {
     window.setInterval(() => {
-      this.setJWT(frame, this.state.jwts[0])
+      NetworkOperation.getStreamToken(id)
+      .then(({data}) => {
+        this.setState({
+          jwts: [...this.state.jwts, data]
+        }, () => this.setJWT(frame, this.state.jwts[0]))
+      })
     }, 3000)
   }
 
@@ -143,11 +142,13 @@ class VideoSurveillance extends Component {
         <Helmet>
           <title>Connus | VideoSurveillance</title>
         </Helmet>
+        <div className="grid">
         {
           state.streams && state.streams.map(stream => (
-            <div key={stream._id} id={stream._id}>Helloooooooo</div>
+            <div className="item" key={stream._id} id={stream._id}></div>
           ))
         }
+        </div>
         <div
           className="bar-actions"
           onMouseMove={() =>
