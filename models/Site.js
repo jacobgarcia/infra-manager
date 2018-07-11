@@ -1,5 +1,6 @@
 /* eslint-env node */
 const mongoose = require('mongoose')
+const mongooseToCsv = require('mongoose-to-csv')
 const Schema = mongoose.Schema
 
 const History = new Schema({
@@ -123,6 +124,36 @@ const schema = new Schema({
     },
     { _id: false }
   ]
+})
+
+schema.plugin(mongooseToCsv, {
+  headers: 'ID Suceso Fecha Hora Sitio Zona Riesgo Estatus',
+  virtuals: {
+    ID: doc => {
+      return doc._id
+    },
+    Suceso: doc => {
+      return doc.event
+    },
+    Fecha: doc => {
+      return doc.timestamp
+    },
+    Hora: doc => {
+      return doc.timestamp
+    },
+    Sitio: doc => {
+      return doc.site
+    },
+    Zona: doc => {
+      return doc.zone
+    },
+    Riesgo: doc => {
+      return doc.risk
+    },
+    Estatus: doc => {
+      return doc.status
+    }
+  }
 })
 
 // Set company-key unique
