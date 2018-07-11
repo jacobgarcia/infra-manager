@@ -21,7 +21,7 @@ router.route('/reports/alarms').get((req, res) => {
         return res.status(500).json({ error })
       }
 
-      return sites.map(site => {
+      sites.map(site => {
         site.alarms.map(alarm => {
           alarm.site = site.name
           alarm.zone = site.zone.name
