@@ -10,7 +10,6 @@ import {
 } from '../lib/specialFunctions'
 import { ElementStatus } from './'
 import { NetworkOperation } from '../lib'
-import
 import io from 'socket.io-client'
 
 // IMPORTANT TODO if we change the site key, re-set the socket or ask to join there
