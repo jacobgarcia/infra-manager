@@ -4,8 +4,9 @@ import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
 import Slider from 'react-slick'
-
+import domtoimage from 'dom-to-image'
 import { Table, RiskBar } from 'components'
+import * as FileSaver from 'file-saver'
 
 import io from 'socket.io-client'
 
@@ -66,6 +67,14 @@ class Alarms extends Component {
     })
   }
 
+  onDownload = () => {
+    const image = document.getElementById('image')
+    domtoimage.toBlob(image)
+      .then(photo => {
+        FileSaver.saveAs(photo,'photo.png')
+      })
+  }
+
   onDayClick = day => {
     // TODO Network operation for selected period
     const range = DateUtils.addDayToRange(day, this.state)
@@ -111,6 +120,7 @@ class Alarms extends Component {
                         return (
                           <div
                             key={index}
+                            id="image"
                             className="image-slider"
                             style={{
                               backgroundImage:
@@ -121,11 +131,13 @@ class Alarms extends Component {
                       })
                     ) : (
                       <div
+                        id="image"
                         className="image-slider"
                         style={{
                           backgroundImage: `url(https://demo.connus.mx/static/img/icons/not-available.png)`
                         }}
-                      />
+                      >
+                      </div>
                     )}
                   </Slider>
                 </div>
@@ -151,8 +163,8 @@ class Alarms extends Component {
                     <p>{state.selectedLog.status}</p>
                   </div>
                   <div className="detail">
-                    <span>Código único de identificación</span>
                     <p>{state.selectedLog._id}</p>
+                    <span>Código único de identificación</span>
                   </div>
                 </div>
                 {state.selectedLog.risk > 0 && (
@@ -160,6 +172,12 @@ class Alarms extends Component {
                     <p>Contactar seguridad</p>
                   </div>
                 )}
+                <div className="action destructive">
+                  <p className="detail"
+                    onClick={this.onDownload}>
+                    Descargar Foto
+                  </p>
+                </div>
               </div>
             </div>
             <div className="tables-container">
