@@ -21,6 +21,7 @@ const Site = require(path.resolve('models/Site'))
 const User = require(path.resolve('models/User'))
 const FrmUser = require(path.resolve('models/FrmUser'))
 const Access = require(path.resolve('models/Access'))
+const Company = require(path.resolve('models/Company'))
 
 const Admin = require(path.resolve('models/Admin'))
 
@@ -70,109 +71,120 @@ router.route('/users/invite').post((req, res) => {
 // Recognize user based on photo
 router.route('/users/recognize').post((req, res) => {
   const { pin, photo, event } = req.body
+  const company = req._user.cmp
 
-  FrmUser.findOne({ pin }).exec((error, user) => {
-    // if there are any errors, return the error
+  Company.findOne({ company }).exec((error, company) => {
     if (error) {
       winston.error(error)
       return res
         .status(500)
-        .json({ success: 'false', message: 'Error at finding users' }) // return shit if a server error occurs
-    } else if (!user) return res
-        .status(401)
-        .json({ success: 'false', message: 'That user is not registered' })
-    else if (!photo) return res
-        .status(400)
-        .json({ success: 'false', message: 'Image not specified' })
+        .json({ success: false, message: 'Error at finding users' })
+    }
 
-    // decode base64 image
-    return base64Img.img(
-      photo,
-      'static/uploads',
-      shortid.generate() + Date.now(),
-      (error, filename) => {
-        // call code for AWS facial recognition. Now using stub
-        // use PythonShell to call python instance
-        const faceRecognition = new PythonShell('lib/python/rekognition.py', {
-          pythonOptions: ['-u'],
-          args: ['get', pin, process.env.PWD + '/' + filename]
-        })
+    return FrmUser.findOne({ pin }).exec((error, user) => {
+      // if there are any errors, return the error
+      if (error) {
+        winston.error(error)
+        return res
+          .status(500)
+          .json({ success: 'false', message: 'Error at finding users' }) // return shit if a server error occurs
+      } else if (!user) return res
+          .status(401)
+          .json({ success: 'false', message: 'That user is not registered' })
+      else if (!photo) return res
+          .status(400)
+          .json({ success: 'false', message: 'Image not specified' })
 
-        /* Wait for the AWS response from Python to proceed */
-        faceRecognition.on('message', message => {
-          // end the input stream and allow the process to exit
-          faceRecognition.end(error => {
-            if (error) {
-              winston.error(error)
-              return res
-                .status(500)
-                .json({ success: 'false', message: 'Face Recognition Failed' })
-            }
+      // decode base64 image
+      return base64Img.img(
+        photo,
+        'static/uploads',
+        shortid.generate() + Date.now(),
+        (error, filename) => {
+          // call code for AWS facial recognition. Now using stub
+          // use PythonShell to call python instance
+          const faceRecognition = new PythonShell('lib/python/rekognition.py', {
+            pythonOptions: ['-u'],
+            args: ['get', pin, process.env.PWD + '/' + filename]
+          })
 
-            const response = JSON.parse(message)
-
-            // if response was successful, change user logged state
-            if (response.validation === 'true') {
-              if (event === 'login') user.isLogged = true
-              if (event === 'outlog') user.isLogged = false
-              user.save()
-            }
-            const data = {
-              success: response.validation !== 'false',
-              message:
-                response.validation === 'false'
-                  ? 'No se pudo registrar acceso'
-                  : 'Acceso registrado correctamente',
-              pin,
-              photo
-            }
-            global.io.to('ATT').emit(event, data)
-            global.io.to(req._user.cmp).emit(event, data)
-
-            let currentEvent = ''
-            if (data.success) {
-              if (event === 'login') currentEvent = 'Inicio de sesión exitoso'
-              else currentEvent = 'Cierre de sesión exitoso'
-            } else if (event === 'login') currentEvent = 'Intento de inicio de sesión'
-            else currentEvent = 'Intento de Cierre de sesión'
-
-            let status = ''
-            if (data.success) {
-              if (event === 'login') status = 'Acceso autorizado. Sensorización desactivada'
-              else status = 'Acceso autorizado. Sensorización reactivada'
-            } else status = 'Acceso denegado. Rostro desconocido almacenando'
-            // Insert access
-            return new Access({
-              timestamp: new Date(),
-              event: currentEvent,
-              success: data.success,
-              risk: data.success ? 0 : 2,
-              zone: {
-                name: 'Centro'
-              },
-              status,
-              site: user.site,
-              access:
-                event === 'login' ? 'Inicio de sesión' : 'Cierre de sesión',
-              pin: data.pin,
-              photo: '/' + filename
-            }).save(error => {
+          /* Wait for the AWS response from Python to proceed */
+          faceRecognition.on('message', message => {
+            // end the input stream and allow the process to exit
+            faceRecognition.end(error => {
               if (error) {
                 winston.error(error)
-                return res
-                  .status(500)
-                  .json({ success: 'false', message: 'Could not save log.' })
+                return res.status(500).json({
+                  success: 'false',
+                  message: 'Face Recognition Failed'
+                })
               }
-              return res.status(response.status).json({
-                facial_validation: response.validation,
-                message: response.description,
-                user
+
+              const response = JSON.parse(message)
+
+              // if response was successful, change user logged state
+              if (response.validation === 'true') {
+                if (event === 'login') user.isLogged = true
+                if (event === 'outlog') user.isLogged = false
+                user.save()
+              }
+              const data = {
+                success: response.validation !== 'false',
+                message:
+                  response.validation === 'false'
+                    ? 'No se pudo registrar acceso'
+                    : 'Acceso registrado correctamente',
+                pin,
+                photo
+              }
+              global.io.to('ATT').emit(event, data)
+              global.io.to(company.name).emit(event, data)
+
+              let currentEvent = ''
+              if (data.success) {
+                if (event === 'login') currentEvent = 'Inicio de sesión exitoso'
+                else currentEvent = 'Cierre de sesión exitoso'
+              } else if (event === 'login') currentEvent = 'Intento de inicio de sesión'
+              else currentEvent = 'Intento de Cierre de sesión'
+
+              let status = ''
+              if (data.success) {
+                if (event === 'login') status = 'Acceso autorizado. Sensorización desactivada'
+                else status = 'Acceso autorizado. Sensorización reactivada'
+              } else status = 'Acceso denegado. Rostro desconocido almacenando'
+              // Insert access
+              return new Access({
+                timestamp: new Date(),
+                event: currentEvent,
+                success: data.success,
+                risk: data.success ? 0 : 2,
+                zone: {
+                  name: 'Centro'
+                },
+                status,
+                site: user.site,
+                access:
+                  event === 'login' ? 'Inicio de sesión' : 'Cierre de sesión',
+                pin: data.pin,
+                photo: '/' + filename
+              }).save(error => {
+                if (error) {
+                  winston.error(error)
+                  return res
+                    .status(500)
+                    .json({ success: 'false', message: 'Could not save log.' })
+                }
+                return res.status(response.status).json({
+                  facial_validation: response.validation,
+                  message: response.description,
+                  user
+                })
               })
             })
           })
-        })
-      }
-    )
+        }
+      )
+    })
   })
 })
 
@@ -426,103 +438,106 @@ router.route('/users/update').put((req, res) => {
 })
 
 router.route('/users/photo').put((req, res) => {
-  // console.log(req.headers)
   const { pin, photo } = req.body
+  const company = req._user.cmp
+
   if (!photo) return res
       .status(400)
       .json({ success: 'false', message: 'Image not found' })
 
-  // no image found
-  return base64Img.img(
-    photo,
-    'static/uploads',
-    shortid.generate() + Date.now(),
-    (error, filename) => {
-      // Set photo file to new user registered
-      FrmUser.findOneAndUpdate(
-        { pin },
-        { $set: { photo: '/' + filename } },
-        { new: true }
-      ).exec((error, user) => {
-        if (error) {
-          winston.error(error)
-          return res.status(400).json({
-            success: 'false',
-            message: 'The specified frmuser does not exist',
-            error: error
+  return Company.findOne({ company }).exec((error, company) => {
+    // no image found
+    return base64Img.img(
+      photo,
+      'static/uploads',
+      shortid.generate() + Date.now(),
+      (error, filename) => {
+        // Set photo file to new user registered
+        FrmUser.findOneAndUpdate(
+          { pin },
+          { $set: { photo: '/' + filename } },
+          { new: true }
+        ).exec((error, user) => {
+          if (error) {
+            winston.error(error)
+            return res.status(400).json({
+              success: 'false',
+              message: 'The specified frmuser does not exist',
+              error: error
+            })
+          } else if (!user) return res.status(404).json({
+              success: false,
+              message: 'The specified user does not exist'
+            })
+
+          // call code for AWS facial recognition. Now using stub
+          // use PythonShell to call python instance
+
+          const faceRecognition = new PythonShell('lib/python/rekognition.py', {
+            pythonOptions: ['-u'],
+            args: ['post', user.pin, process.env.PWD + user.photo]
           })
-        } else if (!user) return res.status(404).json({
-            success: false,
-            message: 'The specified user does not exist'
-          })
 
-        // call code for AWS facial recognition. Now using stub
-        // use PythonShell to call python instance
-
-        const faceRecognition = new PythonShell('lib/python/rekognition.py', {
-          pythonOptions: ['-u'],
-          args: ['post', user.pin, process.env.PWD + user.photo]
-        })
-
-        /* Wait for the AWS response from Python to proceed */
-        return faceRecognition.on('message', message => {
-          // end the input stream and allow the process to exit
-          faceRecognition.end(error => {
-            if (error) {
-              winston.error(error)
-              return res.status(500).json({
-                success: 'false',
-                message: 'Face Recognition Module Failed'
-              })
-            }
-            const response = JSON.parse(message)
-
-            const data = {
-              success: response.validation !== 'false',
-              photo,
-              pin,
-              site: user.site
-            }
-            // Send photo to ATT and Connus
-            global.io.to('ATT').emit('photo', data)
-            global.io.to(req._user.cmp).emit('photo', data)
-
-            // Insert access
-            return new Access({
-              timestamp: new Date(),
-              event: data.success
-                ? 'Registro de personal exitoso'
-                : 'Intento de registro de personal',
-              success: data.success,
-              risk: data.success ? 0 : 1,
-              zone: {
-                name: 'Centro'
-              },
-              status: data.success
-                ? 'Registro satisfactorio'
-                : 'Regsitro denegado. Fallo en la detección de rostro',
-              site: user.site,
-              access: 'Registro',
-              pin: data.pin,
-              photo: user.photo
-            }).save(error => {
+          /* Wait for the AWS response from Python to proceed */
+          return faceRecognition.on('message', message => {
+            // end the input stream and allow the process to exit
+            faceRecognition.end(error => {
               if (error) {
                 winston.error(error)
-                return res
-                  .status(500)
-                  .json({ success: 'false', message: 'Could not save log.' })
+                return res.status(500).json({
+                  success: 'false',
+                  message: 'Face Recognition Module Failed'
+                })
               }
-              return res.status(response.status).json({
-                success: response.validation,
-                message: response.description,
-                user
+              const response = JSON.parse(message)
+
+              const data = {
+                success: response.validation !== 'false',
+                photo,
+                pin,
+                site: user.site
+              }
+              // Send photo to ATT and Connus
+              global.io.to('ATT').emit('photo', data)
+              global.io.to(company.name).emit('photo', data)
+
+              // Insert access
+              return new Access({
+                timestamp: new Date(),
+                event: data.success
+                  ? 'Registro de personal exitoso'
+                  : 'Intento de registro de personal',
+                success: data.success,
+                risk: data.success ? 0 : 1,
+                zone: {
+                  name: 'Centro'
+                },
+                status: data.success
+                  ? 'Registro satisfactorio'
+                  : 'Regsitro denegado. Fallo en la detección de rostro',
+                site: user.site,
+                access: 'Registro',
+                pin: data.pin,
+                photo: user.photo
+              }).save(error => {
+                if (error) {
+                  winston.error(error)
+                  return res
+                    .status(500)
+                    .json({ success: 'false', message: 'Could not save log.' })
+                }
+                return res.status(response.status).json({
+                  success: response.validation,
+                  message: response.description,
+                  user
+                })
               })
             })
           })
         })
-      })
-    }
-  )
+      }
+    )
+  })
 })
 
 // update user register photo

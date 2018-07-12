@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
-import { PieChart, Pie, Cell, Tooltip as RechartsTooltip } from 'recharts'
+import { PieChart, Pie, Cell } from 'recharts'
 import io from 'socket.io-client'
 
-import { Card, Tooltip, FuelChart } from 'components'
+import { Card, FuelChart } from 'components'
 import { NetworkOperation } from 'lib'
-import { getColor, itemAverage, itemStatus } from 'lib/specialFunctions'
+import { getColor } from 'lib/specialFunctions'
 
 const data = [
   { name: 'workings', value: 100 },
@@ -55,7 +55,6 @@ class Devices extends Component {
 
   componentDidMount() {
     NetworkOperation.getDevices().then(({ data }) => {
-      console.log(data)
       this.setState({
         devices: data.devices,
         devices2: data.devices2,
@@ -70,13 +69,11 @@ class Devices extends Component {
     this.socket = io()
 
     this.socket.on('connect', () => {
-      // TODO: Change to company variable
-      this.socket.emit('join', 'connus')
+      this.socket.emit('join', this.props.credentials.company.name)
     })
 
     this.socket.on('refresh', () => {
       NetworkOperation.getDevices().then(({ data }) => {
-        console.log(data)
         this.setState({
           data
         })
@@ -85,7 +82,7 @@ class Devices extends Component {
   }
 
   render() {
-    const { state: { deviceStatus, vibrationStatus } } = this
+    const { state: { deviceStatus } } = this
 
     return (
       <div className="users app-content small-padding sensors">
@@ -96,86 +93,6 @@ class Devices extends Component {
           <h2>Equipos IZZI</h2>
           <div className="overall-container">
             <div className="horizontal-container">
-              {this.state.temperature &&
-              !this.props.credentials.company.name === 'AT&T' ? (
-                <Card
-                  title="Temperatura del procesador"
-                  className={`graph-container`}>
-                  <div className="graph">
-                    <PieChart width={160} height={160}>
-                      <Pie
-                        animationBegin={0}
-                        dataKey="value"
-                        data={temperatureStatus}
-                        cx={75}
-                        cy={75}
-                        innerRadius={55}
-                        outerRadius={75}
-                        strokeWidth={0}
-                        label>
-                        {data.map(({ name }, index) => (
-                          <Cell key={index} fill={getColor(name)} />
-                        ))}
-                      </Pie>
-                      <RechartsTooltip
-                        isAnimationActive={false}
-                        content={Tooltip}
-                      />
-                    </PieChart>
-                    <h1>{this.state.temperature && this.state.temperature}</h1>
-                  </div>
-                  <div className="center">
-                    {temperatureStatus &&
-                      (!temperatureStatus[2].value && 'Alertados')}
-                    <p className="border button" onClick={this.onSites}>
-                      {temperatureStatus &&
-                        (temperatureStatus[2].value &&
-                          temperatureStatus[2].value)}{' '}
-                      sitios
-                    </p>
-                  </div>
-                </Card>
-              ) : null}
-
-              {this.state.ambience ? (
-                <Card
-                  title="Temperatura Ambiente"
-                  className={`graph-container`}>
-                  <div className="graph">
-                    <PieChart width={160} height={160}>
-                      <Pie
-                        animationBegin={0}
-                        dataKey="value"
-                        data={ambienceStatus}
-                        cx={75}
-                        cy={75}
-                        innerRadius={55}
-                        outerRadius={75}
-                        strokeWidth={0}
-                        label>
-                        {data.map(({ name }, index) => (
-                          <Cell key={index} fill={getColor(name)} />
-                        ))}
-                      </Pie>
-                      <RechartsTooltip
-                        isAnimationActive={false}
-                        content={Tooltip}
-                      />
-                    </PieChart>
-                    <h1>{this.state.ambience && this.state.ambience}</h1>
-                  </div>
-                  <div className="center">
-                    {ambienceStatus &&
-                      (!ambienceStatus[2].value && 'Alertados')}
-                    <p className="border button" onClick={this.onSites}>
-                      {ambienceStatus &&
-                        (ambienceStatus[2].value &&
-                          ambienceStatus[2].value)}{' '}
-                      sitios
-                    </p>
-                  </div>
-                </Card>
-              ) : null}
               {this.state.devices.map((device, key) => (
                 <Card
                   title={device.device}

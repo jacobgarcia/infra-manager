@@ -12,7 +12,6 @@ import {
   setExhaustive,
   setFacialReport,
   setVehicleReport,
-  setCamera,
   setReport,
   setHistory,
   setAlarm
@@ -174,7 +173,7 @@ class App extends Component {
     this.socket = io()
 
     this.socket.on('connect', () => {
-      this.socket.emit('join', this.props.credentials.name)
+      this.socket.emit('join', this.props.credentials.company.name)
     })
 
     this.socket.on('alert', alert => {

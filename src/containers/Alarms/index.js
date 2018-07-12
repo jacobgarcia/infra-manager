@@ -54,7 +54,7 @@ class Alarms extends Component {
     this.socket = io()
 
     this.socket.on('connect', () => {
-      this.socket.emit('join', this.props.credentials.name)
+      this.socket.emit('join', this.props.credentials.company.name)
     })
   }
 

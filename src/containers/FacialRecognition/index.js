@@ -12,7 +12,8 @@ import io from 'socket.io-client'
 class FacialRecognition extends Component {
   static propTypes = {
     setFacialReport: PropTypes.func,
-    facialReports: PropTypes.array
+    facialReports: PropTypes.array,
+    credentials: PropTypes.object
   }
 
   state = {
@@ -26,7 +27,7 @@ class FacialRecognition extends Component {
     to: new Date()
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     if (!this.props.facialReports || this.props.facialReports.length === 0) {
       if (nextProps.facialReports && nextProps.facialReports.length > 0) {
         this.setState({
@@ -49,11 +50,10 @@ class FacialRecognition extends Component {
 
   // TODO: Clean this mess and do it at App (using redux)
   initSockets() {
-    this.socket = io('http://localhost')
+    this.socket = io()
 
     this.socket.on('connect', () => {
-      // TODO: Change to conpany variable
-      this.socket.emit('join', 'connus')
+      this.socket.emit('join', this.props.credentials.company.name)
     })
 
     this.socket.on('photo', data => {
@@ -124,8 +124,6 @@ class FacialRecognition extends Component {
     })
 
     this.socket.on('outlog', data => {
-      console.log('Register element recieved from external server', { data })
-
       // Build object from recieved data
       const report = {
         timestamp: new Date(),
@@ -335,10 +333,15 @@ class FacialRecognition extends Component {
   }
 }
 
-function mapStateToProps({ zones, facialReports }) {
+FacialRecognition.PropTypes = {
+  credentials: PropTypes.object
+}
+
+function mapStateToProps({ zones, facialReports, credentials }) {
   return {
     zones,
-    facialReports
+    facialReports,
+    credentials
   }
 }
 
