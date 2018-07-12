@@ -52,6 +52,7 @@ class FacialRecognition extends Component {
     this.socket = io('http://localhost')
 
     this.socket.on('connect', () => {
+      // TODO: Change to conpany variable
       this.socket.emit('join', 'connus')
     })
 

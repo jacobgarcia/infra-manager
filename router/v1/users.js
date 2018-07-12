@@ -127,7 +127,7 @@ router.route('/users/recognize').post((req, res) => {
               photo
             }
             global.io.to('ATT').emit(event, data)
-            global.io.to('connus').emit(event, data)
+            global.io.to(req._user.cmp).emit(event, data)
 
             let currentEvent = ''
             if (data.success) {
@@ -485,7 +485,7 @@ router.route('/users/photo').put((req, res) => {
             }
             // Send photo to ATT and Connus
             global.io.to('ATT').emit('photo', data)
-            global.io.to('connus').emit('photo', data)
+            global.io.to(req._user.cmp).emit('photo', data)
 
             // Insert access
             return new Access({

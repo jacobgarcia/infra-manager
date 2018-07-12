@@ -174,7 +174,7 @@ class App extends Component {
     this.socket = io()
 
     this.socket.on('connect', () => {
-      this.socket.emit('join', 'connus')
+      this.socket.emit('join', this.props.credentials.name)
     })
 
     this.socket.on('alert', alert => {

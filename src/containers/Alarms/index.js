@@ -54,7 +54,7 @@ class Alarms extends Component {
     this.socket = io()
 
     this.socket.on('connect', () => {
-      this.socket.emit('join', 'connus')
+      this.socket.emit('join', this.props.credentials.name)
     })
   }
 
@@ -240,14 +240,16 @@ Alarms.propTypes = {
   history: PropTypes.array,
   alarms: PropTypes.array,
   location: PropTypes.object,
-  match: PropTypes.string
+  match: PropTypes.string,
+  credentials: PropTypes.object
 }
 
-function mapStateToProps({ zones, history, alarms }) {
+function mapStateToProps({ zones, history, alarms, credentials }) {
   return {
     zones,
     history,
-    alarms
+    alarms,
+    credentials
   }
 }
 
