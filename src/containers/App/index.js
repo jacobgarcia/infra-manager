@@ -177,18 +177,13 @@ class App extends Component {
       this.socket.emit('join', 'connus')
     })
 
-    if (
-      this.props.credentials.company.name === 'AT&T' ||
-      this.props.credentials.company.name === 'Connus'
-    ) {
-      this.socket.on('alert', alert => {
-        this.props.setAlarm(alert)
-        // Add alert popup to GUI
-        this.setState(prev => ({
-          alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now() }])
-        }))
-      })
-    }
+    this.socket.on('alert', alert => {
+      this.props.setAlarm(alert)
+      // Add alert popup to GUI
+      this.setState(prev => ({
+        alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now() }])
+      }))
+    })
   }
 
   // Add manual alert
