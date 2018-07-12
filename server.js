@@ -55,7 +55,6 @@ const io = require('socket.io').listen(server)
 
 io.on('connection', socket => {
   socket.on('join', companyId => {
-    console.log('New join on ' + companyId)
     socket.join(companyId)
     // Emit a refresh to web platform when new camera is connected
     io.to('web-platform').emit('refresh')

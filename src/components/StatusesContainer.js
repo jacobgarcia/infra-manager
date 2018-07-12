@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import {
   substractReportValues,
@@ -36,14 +37,11 @@ class StatusesContainer extends PureComponent {
     this.socket = io()
 
     this.socket.on('connect', () => {
-      this.socket.emit('join', 'connus')
+      this.socket.emit('join', this.props.credentials.company.name)
     })
 
     this.socket.on('debugRequest', data => {
       this.setState({ animate: false })
-      // if (this.props.element.key == data.camera){
-      // console.log(this.props.element.key)
-      // console.log(data.camera)
       this.setState({
         photo2: 'https://demo.connus.mx' + data.image2,
         photo3: 'https://demo.connus.mx' + data.image3
@@ -298,7 +296,14 @@ class StatusesContainer extends PureComponent {
 StatusesContainer.propTypes = {
   params: PropTypes.object,
   photo1: PropTypes.object,
-  photo2: PropTypes.object
+  photo2: PropTypes.object,
+  credentials: PropTypes.object
 }
 
-export default StatusesContainer
+function mapStateToProps({ credentials }) {
+  return {
+    credentials
+  }
+}
+
+export default connect(mapStateToProps)(StatusesContainer)
