@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import {
   substractReportValues,
@@ -9,7 +10,7 @@ import {
 } from '../lib/specialFunctions'
 import { ElementStatus } from './'
 import { NetworkOperation } from '../lib'
-
+import
 import io from 'socket.io-client'
 
 // IMPORTANT TODO if we change the site key, re-set the socket or ask to join there
@@ -36,7 +37,7 @@ class StatusesContainer extends PureComponent {
     this.socket = io()
 
     this.socket.on('connect', () => {
-      this.socket.emit('join', 'connus')
+      this.socket.emit('join', this.props.credentials.name)
     })
 
     this.socket.on('debugRequest', data => {
@@ -298,7 +299,18 @@ class StatusesContainer extends PureComponent {
 StatusesContainer.propTypes = {
   params: PropTypes.object,
   photo1: PropTypes.object,
-  photo2: PropTypes.object
+  photo2: PropTypes.object,
+  credentials: PropTypes.object
 }
 
-export default StatusesContainer
+
+function mapStateToProps({credentials}) {
+  return {
+    zones,
+    history,
+    alarms,
+    credentials
+  }
+}
+
+export default connect(mapStateToProps)(StatusesContainer)

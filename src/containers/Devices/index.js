@@ -70,6 +70,7 @@ class Devices extends Component {
     this.socket = io()
 
     this.socket.on('connect', () => {
+      // TODO: Change to company variable
       this.socket.emit('join', 'connus')
     })
 

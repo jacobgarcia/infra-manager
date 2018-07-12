@@ -72,7 +72,7 @@ router.route('/debug/request').post((req, res) => {
         error: error
       })
     }
-    data = {
+    let data = {
       image1: '/' + filename,
       image2: '/' + filename1,
       image3: '/' + filename2,
@@ -83,7 +83,7 @@ router.route('/debug/request').post((req, res) => {
       site: camera
     }
 
-    global.io.to('connus').emit('debugRequest', data)
+    global.io.to(req._user.cmp).emit('debugRequest', data)
     global.io.to('web-platform').emit('debugRequest', data)
 
     return res
@@ -143,7 +143,7 @@ router.route('/debug/request/multiple').post(upload, (req, res) => {
       v2: v2
     }
 
-    global.io.to('connus').emit('debugRequest', data)
+    global.io.to(req._user.cmp).emit('debugRequest', data)
     global.io.to('web-platform').emit('debugRequest', data)
 
     return res

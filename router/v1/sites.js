@@ -146,7 +146,7 @@ router
           }
 
           // Emit popup alert socket and add alert to REDUX
-          global.io.to('connus').emit('alert', alarm)
+          global.io.to(company.name).emit('alert', alarm)
 
           return res.status(200).json({
             success: true,
@@ -470,7 +470,7 @@ router
                 // Send socket asking for media files
                 global.io.to(key).emit('alarm', alarm)
                 // Emit popup alert socket and add alert to REDUX
-                global.io.to('connus').emit('alert', alarm)
+                global.io.to(company.name).emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
               } else if (sensor.value === 100) site.sensors[index].isAlerted = false
@@ -490,7 +490,7 @@ router
                 // Send socket asking for media files
                 global.io.to(key).emit('alarm', alarm)
                 // Emit popup alert socket and add alert to REDUX
-                global.io.to('connus').emit('alert', alarm)
+                global.io.to(company.name).emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
               } else if (sensor.value === 100) site.sensors[index].isAlerted = false
@@ -510,7 +510,7 @@ router
                 // Send socket asking for media files
                 global.io.to(key).emit('alarm', alarm)
                 // Emit popup alert socket and add alert to REDUX
-                global.io.to('connus').emit('alert', alarm)
+                global.io.to(company.name).emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
               } else if (sensor.value > 40 && !site.sensors[index].isAlerted) {
@@ -527,7 +527,7 @@ router
                 // Send socket asking for media files
                 global.io.to(key).emit('alarm', alarm)
                 // Emit popup alert socket and add alert to REDUX
-                global.io.to('connus').emit('alert', alarm)
+                global.io.to(company.name).emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
               } else if (sensor.value > 5 && sensor.value < 50) site.sensors[index].isAlerted = false
@@ -545,7 +545,7 @@ router
                 }
                 site.alarms.push(alarm)
                 // Emit popup alert socket and add alert to REDUX
-                global.io.to('connus').emit('alert', alarm)
+                global.io.to(company.name).emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
               } else if (sensor.value <= 68) site.sensors[index].isAlerted = false
@@ -565,7 +565,7 @@ router
                 // Send socket asking for media files
                 global.io.to(key).emit('alarm', alarm)
                 // Emit popup alert socket and add alert to REDUX
-                global.io.to('connus').emit('alert', alarm)
+                global.io.to(company.name).emit('alert', alarm)
                 // Check site as alerted
                 site.sensors[index].isAlerted = true
               } else if (sensor.value > 15) site.sensors[index].isAlerted = false
