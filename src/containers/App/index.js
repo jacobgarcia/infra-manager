@@ -32,7 +32,7 @@ import Reports from 'containers/Reports/Loadable'
 import Sensors from 'containers/Sensors'
 import Devices from 'containers/Devices/Loadable'
 import Inventory from 'containers/Inventory/Loadable'
-import Alarms from 'containers/Alarms/Loadable'
+import Alarms from 'containers/Alarms'
 
 import Navigator from 'components/Navigator'
 

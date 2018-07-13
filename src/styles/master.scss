@@ -798,6 +798,19 @@ p span {
         }
       }
     }
+    &.download {
+      color: $white;
+      cursor: pointer;
+      p {
+        border-radius: 3px;
+        color: $lightest-gray;
+        font-weight: 700;
+        padding: 10px;
+        &:hover {
+          // background-color: darken($red, 10)
+        }
+      }
+    }
     p {
       font-size: 0.9rem;
       font-weight: 700;
@@ -1044,7 +1057,7 @@ img {
     flex-wrap: wrap;
     margin: 10px;
     height: auto;
-    .item{
+    .item {
       width: 500px;
       height: 500px;
       margin: 4px;

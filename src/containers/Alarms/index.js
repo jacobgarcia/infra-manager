@@ -69,10 +69,9 @@ class Alarms extends Component {
 
   onDownload = () => {
     const image = document.getElementById('image')
-    domtoimage.toBlob(image)
-      .then(photo => {
-        FileSaver.saveAs(photo,'photo.png')
-      })
+    domtoimage.toBlob(image).then(photo => {
+      FileSaver.saveAs(photo, 'photo.png')
+    })
   }
 
   onDayClick = day => {
@@ -136,8 +135,7 @@ class Alarms extends Component {
                         style={{
                           backgroundImage: `url(https://demo.connus.mx/static/img/icons/not-available.png)`
                         }}
-                      >
-                      </div>
+                      />
                     )}
                   </Slider>
                 </div>
@@ -167,14 +165,8 @@ class Alarms extends Component {
                     <span>Código único de identificación</span>
                   </div>
                 </div>
-                {state.selectedLog.risk > 0 && (
-                  <div className="action destructive">
-                    <p>Contactar seguridad</p>
-                  </div>
-                )}
-                <div className="action destructive">
-                  <p className="detail"
-                    onClick={this.onDownload}>
+                <div className="action download">
+                  <p className="detail" onClick={this.onDownload}>
                     Descargar Foto
                   </p>
                 </div>
