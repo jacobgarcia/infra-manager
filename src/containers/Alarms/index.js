@@ -188,9 +188,7 @@ class Alarms extends Component {
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
                 selectedElementIndex={state.selectedElementIndex}
                 actionsContainer={
-                  <p
-                    className="button action"
-                    onClick={() => this.downloadReport}>
+                  <p className="button action" onClick={this.downloadReport}>
                     Descargar Reporte
                   </p>
                 }

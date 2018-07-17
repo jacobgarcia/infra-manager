@@ -30,8 +30,7 @@ router.route('/reports/alarms').get((req, res) => {
       })
 
       Site.csvReadStream(alarms).pipe(fs.createWriteStream('static/alarms.csv'))
-      res.sendFile('/static/alarms.csv')
-      return res.status(200).json({ success: true, alarms })
+      return res.status(200).sendFile('/static/alarms.csv')
     })
 })
 
