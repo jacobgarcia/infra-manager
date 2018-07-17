@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 class Table extends PureComponent {
   constructor(props) {
     super(props)
-    console.log(props)
     this.state = {
       selected: props.selected ? props.selected : 0
     }

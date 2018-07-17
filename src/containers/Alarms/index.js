@@ -7,6 +7,9 @@ import Slider from 'react-slick'
 import domtoimage from 'dom-to-image'
 import { Table, RiskBar } from 'components'
 import * as FileSaver from 'file-saver'
+import { Link } from 'react-router-dom'
+
+import { NetworkOperation } from 'lib'
 
 import io from 'socket.io-client'
 
@@ -78,6 +81,14 @@ class Alarms extends Component {
     // TODO Network operation for selected period
     const range = DateUtils.addDayToRange(day, this.state)
     this.setState(range)
+  }
+
+  downloadReport = () => {
+    NetworkOperation.getAlarmReports()
+      .then(({ data }) => {
+        console.log(data)
+      })
+      .catch(console.error)
   }
 
   render() {
@@ -176,6 +187,13 @@ class Alarms extends Component {
               <Table
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
                 selectedElementIndex={state.selectedElementIndex}
+                actionsContainer={
+                  <p
+                    className="button action"
+                    onClick={() => this.downloadReport}>
+                    Descargar Reporte
+                  </p>
+                }
                 element={(item, index) => (
                   <div
                     className={`table-item ${
