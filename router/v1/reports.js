@@ -33,11 +33,7 @@ router.route('/reports/alarms').get((req, res) => {
       return res.sendFile(`${process.env.PWD}/static/alarms.csv`, error => {
         if (error) {
           winston.error({ error })
-          return res.status(500).json({ error })
         }
-        return res
-          .status(200)
-          .json({ success: true, message: 'Sent file to client' })
       })
     })
 })
