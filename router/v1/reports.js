@@ -30,9 +30,9 @@ router.route('/reports/alarms').get((req, res) => {
       })
 
       Site.csvReadStream(alarms).pipe(fs.createWriteStream('static/alarms.csv'))
-      return res.download(
-        path.join(process.env.PWD.toString(), '/static/alarms.csv')
-      )
+      return res.sendFile('alarms.csv', {
+        root: path.join(process.env.PWD.toString(), '/static')
+      })
     })
 })
 
