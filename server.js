@@ -57,11 +57,13 @@ io.on('connection', socket => {
   socket.on('join', companyId => {
     socket.join(companyId)
     // Emit a refresh to web platform when new camera is connected
+    winston.info(companyId + ' has joined')
     io.to('web-platform').emit('refresh')
   })
 
   socket.on('disconnect', () => {
     // TODO Emit a refresh to web platform
+    winston.info('Client disconnected')
     io.to('web-platform').emit('refresh')
   })
 })
