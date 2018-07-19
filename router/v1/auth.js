@@ -145,6 +145,7 @@ router.route('/authenticate').post((req, res) => {
   User.findOne({ email })
     .lean()
     .then(user => {
+      console.log(user)
       if (user === null) {
         winston.info('Failed to authenticate user email')
         return res
@@ -222,7 +223,6 @@ router.use((req, res, next) => {
     }
 
     req._user = decoded
-    console.log(req._user)
     req._token = token
     return next()
   })
