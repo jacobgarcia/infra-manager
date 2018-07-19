@@ -84,11 +84,10 @@ class Alarms extends Component {
   }
 
   downloadReport = () => {
-    NetworkOperation.getAlarmReports()
-      .then(({ data }) => {
-        console.log(data)
-      })
-      .catch(console.error)
+    NetworkOperation.getAlarmReports.then(() => {
+      // Download file
+      window.open(`${window.location.origin}/static/alarms.csv`)
+    })
   }
 
   render() {
