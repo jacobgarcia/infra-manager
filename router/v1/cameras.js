@@ -181,19 +181,11 @@ router.route('/cameras/alarm/photos/activate').post((req, res) => {
 })
 
 router.route('/cameras/alarm/fine').post((req, res) => {
-  const { site } = req.body
-
-  // Update site sensors value
-  Site.findOneAndUpdate({ _id: site }, { $set: { fine: true } }).exec(error => {
-    if (error) {
-      winston.error(error)
-      return res.status(400).json({
-        success: 'false',
-        message: 'The specified site does not exist'
-      })
-    }
-    return res.status(200).json({ success: true, message: 'Alarm is fine' })
+  return res.status(404).json({
+    success: 'false',
+    message: 'Endpoint Deprecated'
   })
+  // Update site sensors value
 })
 
 /** *** CAMERA LOGS ENDPOINTS ****/
