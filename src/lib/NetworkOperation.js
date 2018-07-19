@@ -158,7 +158,7 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/stream/token/${id}`)
   }
 
-  static getAlarmReports() {
+  static getAlarmsReports() {
     return axios.get(`${baseUrl}/reports/alarms`)
   }
 }

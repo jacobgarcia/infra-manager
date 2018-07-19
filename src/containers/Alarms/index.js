@@ -7,7 +7,6 @@ import Slider from 'react-slick'
 import domtoimage from 'dom-to-image'
 import { Table, RiskBar } from 'components'
 import * as FileSaver from 'file-saver'
-import { Link } from 'react-router-dom'
 
 import { NetworkOperation } from 'lib'
 
@@ -84,7 +83,7 @@ class Alarms extends Component {
   }
 
   downloadReport = () => {
-    NetworkOperation.getAlarmReports.then(() => {
+    NetworkOperation.getAlarmsReports().then(() => {
       // Download file
       window.open(`${window.location.origin}/static/alarms.csv`)
     })
