@@ -446,6 +446,8 @@ router
           return res.status(500).json({ error })
         }
 
+        console.log('Site sensors: ' + site.sensors)
+
         if (!site) return res
             .status(404)
             .json({ success: false, message: 'No site found' })
