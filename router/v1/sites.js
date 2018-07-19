@@ -450,7 +450,7 @@ router
             .status(404)
             .json({ success: false, message: 'No site found' })
 
-        console.log('Site sensors: ' + site.sensors)
+        console.log('Site sensors: ', site.key, site.sensors)
 
         // Generate alarms based on sensors values, always checking if is already alerted or not
         sensors.map((sensor, index) => {
