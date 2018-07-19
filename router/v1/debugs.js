@@ -131,10 +131,12 @@ router.route('/debug/request/multiple').post(upload, (req, res) => {
   const photos = req.files
   const company = req._user.cmp
 
-  console.log(req)
+  console.log(req._user.cmp)
 
   // Get company name to stream to room
   Company.findOne({ company }).exec((error, company) => {
+    console.log(company)
+    console.log(this.company)
     new Debug({
       camera,
       c1,
