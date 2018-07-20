@@ -23,24 +23,22 @@ router.route('/reports/alarms').get((req, res) => {
       }
 
       sites.map(site => {
-        site.alarms.map(alarm => {
-          const currentAlarm = {
-            _id: alarm._id,
-            event: alarm.event,
-            timestamp: alarm.timestamp,
-            risk: alarm.risk,
-            status: alarm.status,
-            class: alarm.class,
-            photos: alarm.photos
+        site.alarms.map(alarmita => {
+          const alarm = {
+            timestamp: alarmita.timestamp,
+            risk: alarmita.risk,
+            photos: alarmita.photos,
+            _id: alarmita._id,
+            event: alarmita.event,
+            status: alarmita.status,
+            class: alarmita.class
           }
-          alarms.push(currentAlarm)
-          moreAlarms.push(alarm)
+          alarms.push(alarm)
+          moreAlarms.push(alarmita)
         })
       })
 
-      Site.csvReadStream(moreAlarms).pipe(
-        fs.createWriteStream('static/alarms.csv')
-      )
+      Site.csvReadStream(alarms).pipe(fs.createWriteStream('static/alarms.csv'))
       return res.status(200).json({
         success: true,
         message: 'Successfully generated report',
