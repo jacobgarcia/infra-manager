@@ -30,13 +30,11 @@ router.route('/reports/alarms').get((req, res) => {
       })
 
       Site.csvReadStream(alarms).pipe(fs.createWriteStream('static/alarms.csv'))
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: 'Successfully generated report',
-          alarms
-        })
+      return res.status(200).json({
+        success: true,
+        message: 'Successfully generated report',
+        sites
+      })
     })
 })
 
