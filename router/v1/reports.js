@@ -27,8 +27,6 @@ router.route('/reports/alarms').get((req, res) => {
             _id: alarm._id,
             event: alarm.event,
             timestamp: alarm.timestamp,
-            site: site.name,
-            zone: site.zone.name,
             risk: alarm.risk,
             status: alarm.status
           }
