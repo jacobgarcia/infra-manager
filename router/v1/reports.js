@@ -11,6 +11,7 @@ const Site = require(path.resolve('models/Site'))
 router.route('/reports/alarms').get((req, res) => {
   const company = req._user.cmp
   const alarms = []
+  const moreAlarms = []
 
   Site.find({ company })
     .populate('zone', 'name')
@@ -31,15 +32,16 @@ router.route('/reports/alarms').get((req, res) => {
             status: alarm.status
           }
           alarms.push(currentAlarm)
+          moreAlarms.push(alarm)
         })
       })
-      console.log('BEFORE', alarms)
+
       Site.csvReadStream(alarms).pipe(fs.createWriteStream('static/alarms.csv'))
-      console.log('AFTER', alarms)
       return res.status(200).json({
         success: true,
         message: 'Successfully generated report',
-        alarms
+        alarms,
+        moreAlarms
       })
     })
 })
