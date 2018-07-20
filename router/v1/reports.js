@@ -35,7 +35,9 @@ router.route('/reports/alarms').get((req, res) => {
           alarms.push(currentAlarm)
         })
       })
+      console.log('BEFORE', alarms)
       Site.csvReadStream(alarms).pipe(fs.createWriteStream('static/alarms.csv'))
+      console.log('AFTER', alarms)
       return res.status(200).json({
         success: true,
         message: 'Successfully generated report',
