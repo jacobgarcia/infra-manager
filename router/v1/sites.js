@@ -280,7 +280,6 @@ router.route('/sites/initialize').post((req, res) => {
       version
     }).save((error, smartbox) => {
       if (error) {
-        winston.error(error)
         return res.status(403).json({
           success: false,
           message: 'Smartbox already registered',
@@ -333,27 +332,6 @@ router.route('/sites/initialize').post((req, res) => {
                   error
                 })
               }
-
-              if (cameras.length > 0) {
-                // Add cameras of the SmartBox
-                cameras.map(camera => {
-                  base64Img.img(
-                    camera.photo,
-                    'static/uploads',
-                    shortid.generate() + Date.now(),
-                    (error, photo) => {
-                      new Stream({
-                        id: camera.id,
-                        name: camera.name,
-                        company,
-                        site: site._id,
-                        photo: '/' + photo
-                      }).save()
-                    }
-                  )
-                })
-              }
-
               // Add the new site to the specified subzone
               return res.status(200).json({ site })
             })
@@ -449,8 +427,6 @@ router
         if (!site) return res
             .status(404)
             .json({ success: false, message: 'No site found' })
-
-        console.log('Site sensors: ', site.key, site.sensors)
 
         // Generate alarms based on sensors values, always checking if is already alerted or not
         sensors.map((sensor, index) => {
