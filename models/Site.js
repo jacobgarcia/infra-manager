@@ -136,10 +136,10 @@ schema.plugin(mongooseToCsv, {
       return doc.event
     },
     Fecha: doc => {
-      return doc.timestamp
+      return new Date(doc.timestamp).toLocaleDateString()
     },
     Hora: doc => {
-      return doc.timestamp
+      return new Date(doc.timestamp).toLocaleTimeString()
     },
     Sitio: doc => {
       return doc.site

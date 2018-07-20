@@ -14,7 +14,7 @@ router.route('/reports/alarms').get((req, res) => {
 
   Site.find({ company })
     .populate('zone', 'name')
-    .select('alarms')
+    .select('alarms name zone')
     .exec((error, sites) => {
       if (error) {
         winston.error({ error })
