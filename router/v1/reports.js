@@ -4,14 +4,49 @@ const path = require('path')
 const winston = require('winston')
 const router = new express.Router()
 const fs = require('fs')
+const Json2csvParser = require('json2csv').Parser
 
 const Site = require(path.resolve('models/Site'))
+
+const fields = [
+  {
+    label: 'ID',
+    value: '_id'
+  },
+  {
+    label: 'Suceso',
+    value: 'event'
+  },
+  {
+    label: 'Fecha',
+    value: 'date'
+  },
+  {
+    label: 'Hora',
+    value: 'hour'
+  },
+  {
+    label: 'Sitio',
+    value: 'site'
+  },
+  {
+    label: 'Zona',
+    value: 'zone'
+  },
+  {
+    label: 'Riesgo',
+    value: 'risk'
+  },
+  {
+    label: 'Status',
+    value: 'status'
+  }
+]
 
 /* ADD PHOTO MEDIA FILES TO THE SPECIFIED ALARM THAT SERVERS AS EVIDENCE */
 router.route('/reports/alarms').get((req, res) => {
   const company = req._user.cmp
   const alarms = []
-  const moreAlarms = []
 
   Site.find({ company })
     .populate('zone', 'name')
@@ -23,27 +58,33 @@ router.route('/reports/alarms').get((req, res) => {
       }
 
       sites.map(site => {
-        site.alarms.map(alarmita => {
-          const alarm = {
-            timestamp: alarmita.timestamp,
-            risk: alarmita.risk,
-            photos: alarmita.photos,
-            _id: alarmita._id,
-            event: alarmita.event,
-            status: alarmita.status,
-            class: alarmita.class
+        site.alarms.map(alarm => {
+          const currentAlarm = {
+            _id: alarm._id,
+            event: alarm.event,
+            date: new Date(alarm.timestamp).toLocaleDateString(),
+            hour: new Date(alarm.timestamp).toLocaleTimeString(),
+            site: site.name,
+            zone: site.zone.name,
+            risk: alarm.risk,
+            status: alarm.status
           }
-          alarms.push(alarm)
-          moreAlarms.push(alarmita)
+          alarms.push(currentAlarm)
         })
       })
+      const json2csvParser = new Json2csvParser({ fields })
+      const csv = json2csvParser.parse(alarms)
 
-      Site.csvReadStream(alarms).pipe(fs.createWriteStream('static/alarms.csv'))
-      return res.status(200).json({
-        success: true,
-        message: 'Successfully generated report',
-        alarms,
-        moreAlarms
+      return fs.writeFile('static/alarms.csv', csv, error => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({ error })
+        }
+        return res.status(200).json({
+          success: true,
+          message: 'Successfully generated report',
+          alarms
+        })
       })
     })
 })
