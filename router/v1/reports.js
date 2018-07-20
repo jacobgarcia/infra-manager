@@ -25,6 +25,7 @@ router.route('/reports/alarms').get((req, res) => {
         site.alarms.map(alarm => {
           alarm.site = site.name
           alarm.zone = site.zone.name
+          console.log(alarm)
           alarms.push(alarm)
         })
       })
@@ -33,7 +34,7 @@ router.route('/reports/alarms').get((req, res) => {
       return res.status(200).json({
         success: true,
         message: 'Successfully generated report',
-        sites
+        alarms
       })
     })
 })
