@@ -29,7 +29,9 @@ router.route('/reports/alarms').get((req, res) => {
             event: alarm.event,
             timestamp: alarm.timestamp,
             risk: alarm.risk,
-            status: alarm.status
+            status: alarm.status,
+            class: alarm.class,
+            photos: alarm.photos
           }
           alarms.push(currentAlarm)
           moreAlarms.push(alarm)
