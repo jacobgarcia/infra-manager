@@ -6,9 +6,16 @@
     "merge_logs"  : true,
   },{
     // Application #2
-    "name"       : "cron",
-    "script"     : "cron.js",
+    "name"       : "hourly_cron",
+    "script"     : "hourly_cron.js",
     "merge_logs"  : true,
     "cron_restart" : "0 * * * *"
+  },
+  {
+    // Application #3
+    "name"       : "daily_cron",
+    "script"     : "daily_cron.js",
+    "merge_logs"  : true,
+    "cron_restart" : "* 0 * * *"
   }]
 }
