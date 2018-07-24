@@ -4,6 +4,8 @@ const path = require('path')
 const winston = require('winston')
 const router = new express.Router()
 const fs = require('fs')
+const nodemailer = require('nodemailer')
+
 const Json2csvParser = require('json2csv').Parser
 
 const Site = require(path.resolve('models/Site'))
@@ -46,13 +48,21 @@ const fields = [
 const alarmFields = [
   {
     label: 'Puerta',
-    value: 'key'
+    value: '_id.key'
   },
   {
     label: '# de veces abierta',
     value: 'count'
   }
 ]
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'ingenieria@connus.mx',
+    pass: 'kawlantcloud'
+  }
+})
 
 /* ADD PHOTO MEDIA FILES TO THE SPECIFIED ALARM THAT SERVERS AS EVIDENCE */
 router.route('/reports/alarms').get((req, res) => {
@@ -137,6 +147,26 @@ router.route('/reports/alarms/count/:key').get((req, res) => {
               winston.error({ error })
               return res.status(500).json({ error })
             }
+            // Mail options
+            const mailOptions = {
+              from: 'ingenieria@connus.mx',
+              to: 'soporte@connus.mx',
+              subject: 'PUMA - Daily Report',
+              text:
+                'This reports contains an attachment in CSV detailing the sensors activations',
+              attachments: [
+                {
+                  // filename and content type is derived from path
+                  path: 'static/report.csv'
+                }
+              ]
+            }
+
+            transporter.sendMail(mailOptions, (error, info) => {
+              if (error) winston.error(error)
+              else winston.info('First email sent: ' + info.response)
+            })
+
             return res.status(200).json({
               success: true,
               message: 'Successfully generated report',
