@@ -440,7 +440,8 @@ router
                   status: 'Sensor abierto',
                   risk: 3,
                   site: key,
-                  class: sensor.class
+                  class: sensor.class,
+                  key: sensor.key
                 }
                 site.alarms.push(alarm)
                 // Send socket asking for media files
@@ -460,7 +461,8 @@ router
                   status: 'Sensor activado',
                   risk: 2,
                   site: key,
-                  class: sensor.class
+                  class: sensor.class,
+                  key: sensor.key
                 }
                 site.alarms.push(alarm)
                 // Send socket asking for media files
@@ -480,7 +482,8 @@ router
                   status: 'Temperatura baja',
                   risk: 2,
                   site: key,
-                  class: sensor.class
+                  class: sensor.class,
+                  key: sensor.key
                 }
                 site.alarms.push(alarm)
                 // Send socket asking for media files
@@ -497,7 +500,8 @@ router
                   status: 'Temperatura alta',
                   risk: 1,
                   site: key,
-                  class: sensor.class
+                  class: sensor.class,
+                  key: sensor.key
                 }
                 site.alarms.push(alarm)
                 // Send socket asking for media files
@@ -517,7 +521,8 @@ router
                   status: 'Temperatura alta',
                   risk: 2,
                   site: key,
-                  class: sensor.class
+                  class: sensor.class,
+                  key: sensor.key
                 }
                 site.alarms.push(alarm)
                 // Emit popup alert socket and add alert to REDUX
@@ -535,7 +540,8 @@ router
                   status: 'Bateria baja',
                   risk: 2,
                   site: key,
-                  class: sensor.class
+                  class: sensor.class,
+                  key: sensor.key
                 }
                 site.alarms.push(alarm)
                 // Send socket asking for media files
