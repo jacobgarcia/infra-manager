@@ -89,4 +89,69 @@ router.route('/reports/alarms').get((req, res) => {
     })
 })
 
+/* GET REPORT FILE OF HOW MANY ALARMS PER SENSOR ACTIVATED */
+router.route('/reports/alarms/count/:key').get((req, res) => {
+  const company = req._user.cmp
+  const { key } = req.params
+  const alarms = []
+
+  Site.aggregate(
+    [
+      { $match: { company, key } },
+      { $project: { alarms: 1 } },
+      { $unwind: '$alarms' },
+      {
+        $group: {
+          _id: { alarm: '$alarms' },
+          count: { $sum: 1 }
+        }
+      }
+    ],
+    (error, topAlarms) => {
+      console.log(topAlarms)
+      return res.status(200).json({
+        success: true,
+        message: 'Successfully generated report',
+        topAlarms
+      })
+    }
+  )
+  // Site.findOne({ company, key })
+  //   .select('alarms')
+  //   .exec((error, site) => {
+  //     if (error) {
+  //       winston.error({ error })
+  //       return res.status(500).json({ error })
+  //     }
+  //
+  //     site.alarms.map(alarm => {
+  //       const currentAlarm = {
+  //         _id: alarm._id,
+  //         event: alarm.event,
+  //         date: new Date(alarm.timestamp).toLocaleDateString(),
+  //         hour: new Date(alarm.timestamp).toLocaleTimeString(),
+  //         site: site.name,
+  //         zone: site.zone.name,
+  //         risk: alarm.risk,
+  //         status: alarm.status
+  //       }
+  //       alarms.push(currentAlarm)
+  //     })
+  //     const json2csvParser = new Json2csvParser({ fields })
+  //     const csv = json2csvParser.parse(alarms)
+  //
+  //     return fs.writeFile('static/alarms.csv', csv, error => {
+  //       if (error) {
+  //         winston.error({ error })
+  //         return res.status(500).json({ error })
+  //       }
+  //       return res.status(200).json({
+  //         success: true,
+  //         message: 'Successfully generated report',
+  //         alarms
+  //       })
+  //     })
+  //   })
+})
+
 module.exports = router
