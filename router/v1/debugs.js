@@ -133,7 +133,6 @@ router.route('/debug/request/multiple').post(upload, (req, res) => {
 
   // Get company name to stream to room
   Company.findOne({ _id }).exec((error, company) => {
-    console.log(company)
     new Debug({
       camera,
       c1,
