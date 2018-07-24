@@ -43,6 +43,17 @@ const fields = [
   }
 ]
 
+const alarmFields = [
+  {
+    label: 'Puerta',
+    value: 'key'
+  },
+  {
+    label: '# de veces abierta',
+    value: 'count'
+  }
+]
+
 /* ADD PHOTO MEDIA FILES TO THE SPECIFIED ALARM THAT SERVERS AS EVIDENCE */
 router.route('/reports/alarms').get((req, res) => {
   const company = req._user.cmp
@@ -117,10 +128,20 @@ router.route('/reports/alarms/count/:key').get((req, res) => {
             winston.error({ error })
             return res.status(500).json({ error })
           }
-          return res.status(200).json({
-            success: true,
-            message: 'Successfully generated report',
-            alarms
+
+          const json2csvParser = new Json2csvParser({ fields: alarmFields })
+          const csv = json2csvParser.parse(alarms)
+
+          return fs.writeFile('static/report.csv', csv, error => {
+            if (error) {
+              winston.error({ error })
+              return res.status(500).json({ error })
+            }
+            return res.status(200).json({
+              success: true,
+              message: 'Successfully generated report',
+              alarms
+            })
           })
         }
       )
