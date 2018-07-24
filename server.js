@@ -51,10 +51,10 @@ const server = app.listen(PORT, HOST, () =>
   )
 )
 
-const io = require('socket.io').listen(server,{
+const io = require('socket.io').listen(server, {
   pingInterval: 10000,
   pingTimeout: 80000,
-  transports : ['polling', 'websocket']
+  transports: ['polling', 'websocket']
 })
 
 io.on('connection', socket => {
