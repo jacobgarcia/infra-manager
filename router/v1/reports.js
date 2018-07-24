@@ -89,4 +89,43 @@ router.route('/reports/alarms').get((req, res) => {
     })
 })
 
+/* GET REPORT FILE OF HOW MANY ALARMS PER SENSOR ACTIVATED */
+router.route('/reports/alarms/count/:key').get((req, res) => {
+  const { key } = req.params
+
+  Site.aggregate(
+    [
+      { $match: { key } },
+      { $project: { alarms: 1 } },
+      { $unwind: '$alarms' },
+      {
+        $group: {
+          _id: { class: '$alarms.class', key: '$alarms.key' },
+          count: { $sum: 1 }
+        }
+      }
+    ],
+    (error, alarms) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+      // Dismiss all alarms of the specified site
+      return Site.findOneAndUpdate({ key }, { $set: { alarms: [] } }).exec(
+        error => {
+          if (error) {
+            winston.error({ error })
+            return res.status(500).json({ error })
+          }
+          return res.status(200).json({
+            success: true,
+            message: 'Successfully generated report',
+            alarms
+          })
+        }
+      )
+    }
+  )
+})
+
 module.exports = router
