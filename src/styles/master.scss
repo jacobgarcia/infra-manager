@@ -2627,6 +2627,7 @@ ul.mini-nav {
       .graph {
         margin-right: 40px;
         position: relative;
+        z-index: -1;
         h1 {
           position: absolute;
           width: 100%;
