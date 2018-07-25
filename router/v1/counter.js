@@ -16,6 +16,9 @@ router
     console.log(entries, exits)
     const start = 83 // 7:00AM
     const end = 238 // 7:00PM
+    // Parse since code comes as plain text
+    entries = JSON.parse(entries)
+    exits = JSON.parse(exits)
 
     // Slice arrays since we only care for values between 7AM and 7PM
     entries = entries.slice(start, end)
