@@ -328,13 +328,13 @@ class Dashboard extends Component {
                     </p>
                   }>
                   <div className="graph">
-                    <PieChart width={200} height={200}>
+                    <PieChart width={250} height={250}>
                       <Pie
                         animationBegin={0}
                         dataKey="value"
                         data={this.state.sensors}
-                        cx={95}
-                        cy={95}
+                        cx={125}
+                        cy={125}
                         innerRadius={60}
                         outerRadius={95}
                         strokeWidth={0}
