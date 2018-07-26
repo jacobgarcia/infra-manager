@@ -328,15 +328,15 @@ class Dashboard extends Component {
                     </p>
                   }>
                   <div className="graph">
-                    <PieChart width={250} height={250}>
+                    <PieChart width={260} height={250}>
                       <Pie
                         animationBegin={0}
                         dataKey="value"
                         data={this.state.sensors}
-                        cx={125}
+                        cx={130}
                         cy={125}
                         innerRadius={60}
-                        outerRadius={92}
+                        outerRadius={95}
                         strokeWidth={0}
                         label>
                         {this.state.data.map(({ name }, index) => (
