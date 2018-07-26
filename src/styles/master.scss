@@ -2573,7 +2573,7 @@ ul.mini-nav {
           font-weight: 600;
           font-size: 0.9rem;
           text-transform: uppercase;
-          margin-bottom: 20px;
+          margin-bottom: 10px;
           color: $lighter-gray;
         }
         .actions p {
@@ -2588,7 +2588,7 @@ ul.mini-nav {
         height: 100%;
         width: 100%;
         flex-wrap: wrap;
-        align-items: center;
+        align-items: start;
       }
       &.historical {
         padding-bottom: 0;

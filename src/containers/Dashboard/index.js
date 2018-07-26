@@ -336,7 +336,7 @@ class Dashboard extends Component {
                         cx={125}
                         cy={125}
                         innerRadius={60}
-                        outerRadius={95}
+                        outerRadius={92}
                         strokeWidth={0}
                         label>
                         {this.state.data.map(({ name }, index) => (
