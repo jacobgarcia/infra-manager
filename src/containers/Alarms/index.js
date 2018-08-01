@@ -51,6 +51,7 @@ class Alarms extends Component {
   componentDidMount() {
     // Start socket connection
     this.initSockets(this.props)
+    console.log(this.props.alarms)
   }
 
   initSockets() {

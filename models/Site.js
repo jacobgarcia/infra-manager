@@ -41,7 +41,8 @@ const schema = new Schema({
       status: String,
       risk: { type: Number, default: 0 },
       photos: [String],
-      class: String
+      class: String,
+      key: String
     }
   ],
   timestamp: { type: Date, default: new Date() }, // Last updated
