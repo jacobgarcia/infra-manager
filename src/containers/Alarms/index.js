@@ -51,7 +51,6 @@ class Alarms extends Component {
   componentDidMount() {
     // Start socket connection
     this.initSockets(this.props)
-    console.log(this.props.alarms)
   }
 
   initSockets() {
@@ -211,6 +210,7 @@ class Alarms extends Component {
                       <RiskBar risk={item.risk} />
                     </div>
                     <div className="large hiddable">{item.status}</div>
+                    <div className="medium">{item.key}</div>
                   </div>
                 )}
                 title="Alertas"
@@ -220,7 +220,8 @@ class Alarms extends Component {
                   { title: 'Suceso', className: 'large' },
                   { title: 'Sitio', className: 'hiddable' },
                   { title: 'Riesgo' },
-                  { title: 'Estatus o acción', className: 'large hiddable' }
+                  { title: 'Estatus o acción', className: 'large hiddable' },
+                  { title: 'ID', className: 'medium' }
                 ]}
               />
               <Table
@@ -242,6 +243,7 @@ class Alarms extends Component {
                     <div className="large">{item.event}</div>
                     <div className="hiddable">{item.site}</div>
                     <div className="large hiddable">{item.status}</div>
+                    <div className="medium">{item.key}</div>
                   </div>
                 )}
                 title="Historial"
@@ -250,7 +252,8 @@ class Alarms extends Component {
                   { title: 'Tiempo', className: 'medium' },
                   { title: 'Suceso', className: 'large' },
                   { title: 'Sitio', className: 'hiddable' },
-                  { title: 'Estatus o acción', className: 'large hiddable' }
+                  { title: 'Estatus o acción', className: 'large hiddable' },
+                  { title: 'ID', className: 'medium' }
                 ]}
               />
             </div>
