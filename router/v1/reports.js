@@ -42,6 +42,10 @@ const fields = [
   {
     label: 'Status',
     value: 'status'
+  },
+  {
+    label: 'Key',
+    value: 'key'
   }
 ]
 
@@ -88,7 +92,8 @@ router.route('/reports/alarms').get((req, res) => {
             site: site.name,
             zone: site.zone.name,
             risk: alarm.risk,
-            status: alarm.status
+            status: alarm.status,
+            key: alarm.key
           }
           alarms.push(currentAlarm)
         })

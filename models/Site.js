@@ -153,6 +153,9 @@ schema.plugin(mongooseToCsv, {
     },
     Estatus: doc => {
       return doc.status
+    },
+    Key: doc => {
+      return doc.key
     }
   }
 })
