@@ -98,9 +98,9 @@ router.route('/reports/alarms').get((req, res) => {
           alarms.push(currentAlarm)
         })
       })
+      console.log(alarms)
       const json2csvParser = new Json2csvParser({ fields })
       const csv = json2csvParser.parse(alarms)
-      console.log(alarms)
       return fs.writeFile('static/alarms.csv', csv, error => {
         if (error) {
           winston.error({ error })
