@@ -3,10 +3,11 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 import { DateUtils } from 'react-day-picker'
+import {} from 'actions'
 
 import { NetworkOperation } from 'lib'
 
-class VisualCounter extends Component {
+class VideoSurveillance extends Component {
   constructor(props) {
     super(props)
 
@@ -21,7 +22,11 @@ class VisualCounter extends Component {
       showLogDetail: true,
       to: new Date(),
       playingVideo: true,
-      isPlaying: false
+      isPlaying: false,
+      iframe: {
+        __html:
+          '<iframe src="http://82.223.16.78/vc_dashboard_connus/cms.php" width="540" height="450"></iframe>'
+      }
     }
 
     this.onDayClick = this.onDayClick.bind(this)
@@ -30,7 +35,6 @@ class VisualCounter extends Component {
   }
 
   onLogSelect(item, index, sectionIndex) {
-    console.log('https://stream.connus.mx/hls/' + this.state.room + '.m3u8')
     this.setState(
       {
         showLogDetail: true,
@@ -93,7 +97,7 @@ class VisualCounter extends Component {
   }
 }
 
-VisualCounter.propTypes = {
+VideoSurveillance.propTypes = {
   cameraReports: PropTypes.array
 }
 
@@ -103,4 +107,8 @@ function mapStateToProps({ cameraReports }) {
   }
 }
 
-export default connect(mapStateToProps)(VisualCounter)
+function mapDispatchToProps() {
+  return {}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VideoSurveillance)
