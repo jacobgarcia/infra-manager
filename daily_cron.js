@@ -14,7 +14,7 @@ request.get(
       winston.error(err)
     }
     if (resp.statusCode === 200) {
-      winston.log('Daily Update')
+      winston.info('Daily Update')
     }
   }
 )

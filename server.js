@@ -13,7 +13,11 @@ const { databaseUri, project: { name } } = require(path.resolve('config'))
 const webhook = require(path.resolve('lib/webhook'))
 const v1 = require(path.resolve('router/v1'))
 
-const { PORT = 8080, HOST = '0.0.0.0', NODE_ENV: MODE } = process.env
+const {
+  PORT = 8080,
+  HOST = '0.0.0.0',
+  NODE_ENV: MODE = 'development'
+} = process.env
 
 mongoose
   .connect(databaseUri)

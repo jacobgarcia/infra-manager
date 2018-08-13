@@ -1,5 +1,7 @@
+const { NODE_ENV: MODE = 'development' } = process.env
 export default {
-  hostUrl: 'https://api.connus.mx',
+  hostUrl:
+    MODE === 'development' ? 'http://localhost:8080' : 'https://api.connus.mx',
   colors: value => {
     if (value > 75) {
       return '#00adee'
