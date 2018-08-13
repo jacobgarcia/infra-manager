@@ -21,7 +21,8 @@ _With Docker_, builds up with **node** and **mongo**
 For production run
 
 ```
-> yarn start:prod
+yarn build:prod
+PORT=8080 NODE_ENV=production HOST=52.72.2.200 pm2 start ecosystem.json
 ```
 
 ## Codes
@@ -53,7 +54,7 @@ For production run
 | Name      | Default     |
 | ---------- | ------------- |
 | MONGODB_URL | mongodb://localhost:27017/kawlantid            |
-| NODE_ENV | none               |
+| NODE_ENV | development               |
 | HOST | 0.0.0.0                  |
 | PORT | 8080            |
 
