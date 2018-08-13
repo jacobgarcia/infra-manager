@@ -14,7 +14,7 @@ request.put(
       winston.error(err)
     }
     if (resp.statusCode === 200) {
-      console.log('Hourly Only Update')
+      winston.log('Hourly Only Update')
     }
   }
 )
