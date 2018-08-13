@@ -48,6 +48,16 @@ For production run
 | 4    | Connus user      |
 | 5    | Connus admin     |
 
+**Environment Variables**
+
+| Name      | Default     |
+| ---------- | ------------- |
+| MONGODB_URL | mongodb://localhost:27017/kawlantid            |
+| NODE_ENV | none               |
+| HOST | 0.0.0.0                  |
+| PORT | 8080            |
+
+
 ## Licence
 
 MIT
