@@ -98,7 +98,7 @@ router.route('/reports/alarms').get((req, res) => {
           alarms.push(currentAlarm)
         })
       })
-      console.log(alarms)
+
       const json2csvParser = new Json2csvParser({ fields })
       const csv = json2csvParser.parse(alarms)
       return fs.writeFile('static/alarms.csv', csv, error => {
@@ -117,71 +117,126 @@ router.route('/reports/alarms').get((req, res) => {
 
 /* GET REPORT FILE OF HOW MANY ALARMS PER SENSOR ACTIVATED */
 router.route('/reports/alarms/count/:key').get((req, res) => {
-  const { key } = req.params
+  const alarms = []
+  const key = req.params
 
-  Site.aggregate(
-    [
-      { $match: { key } },
-      { $project: { alarms: 1 } },
-      { $unwind: '$alarms' },
-      {
-        $group: {
-          _id: { class: '$alarms.class', key: '$alarms.key' },
-          count: { $sum: 1 }
-        }
-      }
-    ],
-    (error, alarms) => {
+  Site.find({ key })
+    .populate('zone', 'name')
+    .select('alarms name zone')
+    .exec((error, sites) => {
       if (error) {
         winston.error({ error })
         return res.status(500).json({ error })
       }
-      // Dismiss all alarms of the specified site
-      return Site.findOneAndUpdate({ key }, { $set: { alarms: [] } }).exec(
-        error => {
-          if (error) {
-            winston.error({ error })
-            return res.status(500).json({ error })
+
+      sites.map(site => {
+        site.alarms.map(alarm => {
+          const currentAlarm = {
+            _id: alarm._id,
+            event: alarm.event,
+            date: new Date(alarm.timestamp).toLocaleDateString(),
+            hour: new Date(alarm.timestamp).toLocaleTimeString(),
+            site: site.name,
+            zone: site.zone.name,
+            risk: alarm.risk,
+            status: alarm.status,
+            key: alarm.key
           }
+          alarms.push(currentAlarm)
+        })
+      })
 
-          const json2csvParser = new Json2csvParser({ fields: alarmFields })
-          const csv = json2csvParser.parse(alarms)
-
-          return fs.writeFile('static/report.csv', csv, error => {
-            if (error) {
-              winston.error({ error })
-              return res.status(500).json({ error })
-            }
-            // Mail options
-            const mailOptions = {
-              from: 'ingenieria@connus.mx',
-              to: 'soporte@connus.mx',
-              subject: 'PUMA - Daily Report',
-              text:
-                'This reports contains an attachment in CSV detailing the sensors activations',
-              attachments: [
-                {
-                  // filename and content type is derived from path
-                  path: 'static/report.csv'
-                }
-              ]
-            }
-
-            transporter.sendMail(mailOptions, (error, info) => {
-              if (error) winston.error(error)
-              else winston.info('First email sent: ' + info.response)
-            })
-
-            return res.status(200).json({
-              success: true,
-              message: 'Successfully generated report',
-              alarms
-            })
-          })
+      const json2csvParser = new Json2csvParser({ fields })
+      const csv = json2csvParser.parse(alarms)
+      return fs.writeFile('static/alarms.csv', csv, error => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({ error })
         }
-      )
-    }
-  )
+
+        // Mail options
+        const mailOptions = {
+          from: 'ingenieria@connus.mx',
+          to: 'soporte@connus.mx',
+          subject: 'PUMA - Daily Report',
+          text:
+            'This reports contains an attachment in CSV detailing the sensors activations',
+          attachments: [
+            {
+              // filename and content type is derived from path
+              path: 'static/alarms.csv'
+            }
+          ]
+        }
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) winston.error(error)
+          else winston.info('First email sent: ' + info.response)
+        })
+
+        return res.status(200).json({
+          success: true,
+          message: 'Successfully generated report',
+          alarms
+        })
+      })
+    })
+  // const { key } = req.params
+  //
+  // Site.aggregate(
+  //   [
+  //     { $match: { key } },
+  //     { $project: { alarms: 1 } },
+  //     { $unwind: '$alarms' },
+  //     {
+  //       $group: {
+  //         _id: { class: '$alarms.class', key: '$alarms.key' },
+  //         count: { $sum: 1 }
+  //       }
+  //     }
+  //   ],
+  //   (error, alarms) => {
+  //     if (error) {
+  //       winston.error({ error })
+  //       return res.status(500).json({ error })
+  //     }
+  //
+  //     const json2csvParser = new Json2csvParser({ fields: alarmFields })
+  //     const csv = json2csvParser.parse(alarms)
+  //
+  //     return fs.writeFile('static/report.csv', csv, error => {
+  //       if (error) {
+  //         winston.error({ error })
+  //         return res.status(500).json({ error })
+  //       }
+  //       // Mail options
+  //       const mailOptions = {
+  //         from: 'ingenieria@connus.mx',
+  //         to: 'soporte@connus.mx',
+  //         subject: 'PUMA - Daily Report',
+  //         text:
+  //           'This reports contains an attachment in CSV detailing the sensors activations',
+  //         attachments: [
+  //           {
+  //             // filename and content type is derived from path
+  //             path: 'static/report.csv'
+  //           }
+  //         ]
+  //       }
+  //
+  //       transporter.sendMail(mailOptions, (error, info) => {
+  //         if (error) winston.error(error)
+  //         else winston.info('First email sent: ' + info.response)
+  //       })
+  //
+  //       return res.status(200).json({
+  //         success: true,
+  //         message: 'Successfully generated report',
+  //         alarms
+  //       })
+  //     })
+  //   }
+  // )
 })
 
 module.exports = router
