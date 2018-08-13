@@ -118,7 +118,7 @@ router.route('/reports/alarms').get((req, res) => {
 /* GET REPORT FILE OF HOW MANY ALARMS PER SENSOR ACTIVATED */
 router.route('/reports/alarms/count/:key').get((req, res) => {
   const alarms = []
-  const key = req.params
+  const { key } = req.params
 
   Site.find({ key })
     .populate('zone', 'name')
