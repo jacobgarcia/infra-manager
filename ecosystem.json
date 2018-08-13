@@ -1,21 +1,30 @@
 {
-  "apps" : [{
-    // Application #1
-    "name"        : "server",
-    "script"      : "server.js",
-    "merge_logs"  : true,
-  },{
-    // Application #2
-    "name"       : "hourly_cron",
-    "script"     : "hourly_cron.js",
-    "merge_logs"  : true,
-    "cron_restart" : "0 * * * *"
-  },
-  {
-    // Application #3
-    "name"       : "daily_cron",
-    "script"     : "daily_cron.js",
-    "merge_logs"  : true,
-    "cron_restart" : "0 0 * * *"
-  }]
+  "apps": [
+    {
+      // Application #1
+      "name": "server",
+      "script": "server.js",
+      "merge_logs": true,
+      "error_file": "server-error.log",
+      "out_file": "server-out.log"
+    },
+    {
+      // Application #2
+      "name": "hourly_cron",
+      "script": "hourly_cron.js",
+      "merge_logs": true,
+      "error_file": "hourly-error.log",
+      "out_file": "hourly-out.log",
+      "cron_restart": "0 * * * *"
+    },
+    {
+      // Application #3
+      "name": "daily_cron",
+      "script": "daily_cron.js",
+      "merge_logs": true,
+      "error_file": "daily-error.log",
+      "out_file": "daily-out.log",
+      "cron_restart": "0 0 * * *"
+    }
+  ]
 }
