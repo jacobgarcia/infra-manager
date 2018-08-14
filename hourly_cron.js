@@ -14,7 +14,7 @@ request.put(
       winston.error(err)
     }
     if (resp.statusCode === 200) {
-      winston.info('Hourly Only Update')
+      winston.info('Updated online Status for: ' + new Date())
     }
   }
 )
