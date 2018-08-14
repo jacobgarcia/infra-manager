@@ -6,7 +6,11 @@
       "script": "server.js",
       "merge_logs": true,
       "error_file": "server-error.log",
-      "out_file": "server-out.log"
+      "out_file": "server-out.log",
+      "env": {
+        "NODE_ENV": "production",
+        "PORT": 8080
+      }
     },
     {
       // Application #2
