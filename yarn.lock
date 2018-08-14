@@ -85,9 +85,9 @@
     call-me-maybe "^1.0.1"
     glob-to-regexp "^0.3.0"
 
-"@pm2/agent@^0.5.4":
-  version "0.5.7"
-  resolved "https://registry.yarnpkg.com/@pm2/agent/-/agent-0.5.7.tgz#35683012ed088ddb16f4794f37fbe8c38b78abe7"
+"@pm2/agent@^0.5.11":
+  version "0.5.13"
+  resolved "https://registry.yarnpkg.com/@pm2/agent/-/agent-0.5.13.tgz#e3778413a01ace791527d66b50ff8c3b7b87bcdc"
   dependencies:
     async "^2.6.0"
     eventemitter2 "^5.0.1"
@@ -100,18 +100,19 @@
     semver "^5.5.0"
     ws "^5.1.0"
 
-"@pm2/io@^2.0.2":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@pm2/io/-/io-2.0.3.tgz#47f71a4603441bae0fdb0a0855a86efad5102dda"
+"@pm2/io@~2.1.0":
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/@pm2/io/-/io-2.1.3.tgz#1e93ff44d26c0da76e3f0ce749852f49442862eb"
   dependencies:
     async "2.6.1"
     debug "3.1.0"
     deep-metrics "0.0.2"
-    deepmerge "2.1.0"
+    deepmerge "2.1.1"
+    event-loop-inspector "1.0.1"
     json-stringify-safe "5.0.1"
     semver "5.5.0"
     signal-exit "3.0.2"
-    tslib "1.9.1"
+    tslib "1.9.3"
     vxx "1.2.2"
 
 "@pm2/js-api@^0.5.15":
@@ -2298,10 +2299,6 @@ code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
 
-coffee-script@^1.12.7:
-  version "1.12.7"
-  resolved "https://registry.yarnpkg.com/coffee-script/-/coffee-script-1.12.7.tgz#c05dae0cb79591d05b3070a8433a98c9a89ccc53"
-
 collection-visit@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/collection-visit/-/collection-visit-1.0.0.tgz#4bc0373c164bc3291b4d368c829cf1a80a59dca0"
@@ -3094,7 +3091,11 @@ deep-metrics@0.0.2:
   dependencies:
     semver "^5.3.0"
 
-deepmerge@2.1.0, deepmerge@^2.0.1:
+deepmerge@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-2.1.1.tgz#e862b4e45ea0555072bf51e7fd0d9845170ae768"
+
+deepmerge@^2.0.1:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-2.1.0.tgz#511a54fff405fc346f0240bb270a3e9533a31102"
 
@@ -3701,6 +3702,10 @@ esutils@^2.0.2:
 etag@~1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
+
+event-loop-inspector@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/event-loop-inspector/-/event-loop-inspector-1.0.1.tgz#ef3632b90e716b2aa14372cb01d1263f51520188"
 
 eventemitter2@5.0.1, eventemitter2@^5.0.1:
   version "5.0.1"
@@ -7980,9 +7985,9 @@ performance-now@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-2.1.0.tgz#6309f4e0e5fa913ec1c69307ae364b4b377c9e7b"
 
-pidusage@^2.0.6:
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/pidusage/-/pidusage-2.0.11.tgz#cd1442c7a2a77ab23be0dea1ca2acfb3799dc806"
+pidusage@2.0.13:
+  version "2.0.13"
+  resolved "https://registry.yarnpkg.com/pidusage/-/pidusage-2.0.13.tgz#2f0492463b09e8179d763e68faa665a1b2fbe11c"
 
 pify@^2.0.0, pify@^2.3.0:
   version "2.3.0"
@@ -8062,19 +8067,18 @@ pm2-multimeter@^0.1.2:
   dependencies:
     charm "~0.1.1"
 
-pm2@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/pm2/-/pm2-3.0.0.tgz#fbbb393bca1225ef5789114bc0c1bfe4f5c4c495"
+pm2@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/pm2/-/pm2-3.0.3.tgz#7115ad916f68b36da3b22f1826463b767e32bcb9"
   dependencies:
-    "@pm2/agent" "^0.5.4"
-    "@pm2/io" "^2.0.2"
+    "@pm2/agent" "^0.5.11"
+    "@pm2/io" "~2.1.0"
     "@pm2/js-api" "^0.5.15"
     async "^2.6.1"
     blessed "^0.1.81"
     chalk "^2.4.1"
     chokidar "^2.0.4"
     cli-table-redemption "^1.0.0"
-    coffee-script "^1.12.7"
     commander "2.15.1"
     cron "^1.3"
     debug "^3.1"
@@ -8084,7 +8088,7 @@ pm2@^3.0.0:
     moment "^2.22.2"
     needle "^2.2.1"
     nssocket "0.6.0"
-    pidusage "^2.0.6"
+    pidusage "2.0.13"
     pm2-axon "3.3.0"
     pm2-axon-rpc "^0.5.1"
     pm2-deploy "^0.3.9"
@@ -10508,9 +10512,9 @@ tryit@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
 
-tslib@1.9.1:
-  version "1.9.1"
-  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.1.tgz#a5d1f0532a49221c87755cfcc89ca37197242ba7"
+tslib@1.9.3:
+  version "1.9.3"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
 
 tslib@^1.9.0:
   version "1.9.2"
