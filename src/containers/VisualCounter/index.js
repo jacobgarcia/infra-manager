@@ -25,7 +25,7 @@ class VideoSurveillance extends Component {
       isPlaying: false,
       iframe: {
         __html:
-          '<iframe src="http://82.223.16.78/vc_dashboard_connus/cms.php" width="540" height="450"></iframe>'
+          '<iframe src="https://www.cracking.com.ar/redir/redir.php?URL=http://82.223.16.78/vc_dashboard_connus/cms.php" width="540" height="450"></iframe>'
       }
     }
 
@@ -86,10 +86,10 @@ class VideoSurveillance extends Component {
     return (
       <div className="app-content small-padding">
         <Helmet>
-          <title>Connus | Video Vigilancia</title>
+          <title>Connus | Visual Counter</title>
         </Helmet>
         <div className="content vertical">
-          <h2>Video Vigilancia</h2>
+          <h2>Visual Counter Dashboard</h2>
           <div dangerouslySetInnerHTML={state.iframe} />
         </div>
       </div>
