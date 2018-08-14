@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "pm2-dev ./config/ecosystem.config.js",
-    "start:prod": "pm2 start ./config/ecosystem.config.js --env production",
+    "start:prod": "pm2 start ecosystem.json",
     "build:prod": "webpack --config ./config/webpack.prod.js",
     "sync:prod":
       "aws s3 sync ./dist s3://connus --delete --exclude .DS_Store --acl public-read ",
