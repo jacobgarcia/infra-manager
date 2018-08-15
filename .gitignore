@@ -10,8 +10,6 @@ static/vehicular-flow
 static/alerts
 static/faces
 
-yarn.lock
-
 # Logs
 logs
 *.log
