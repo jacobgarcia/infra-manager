@@ -72,7 +72,9 @@ class Alarms extends Component {
   onDownload = () => {
     const image = document.getElementById('image')
     domtoimage.toBlob(image).then(photo => {
-      FileSaver.saveAs(photo, 'photo.png')
+      FileSaver.saveAs(photo, `${new Date(
+        this.state.selectedLog.timestamp
+      ).getTime()}.png`)
     })
   }
 
@@ -84,8 +86,10 @@ class Alarms extends Component {
 
   downloadReport = () => {
     NetworkOperation.getAlarmsReports().then(() => {
+      console.log("hello")
       // Download file
-      window.open(`${window.location.origin}/static/alarms.csv`)
+      //let csvData = new Blob(`${window.location.origin}/static/alarms.csv`, )
+      //FileSaver.saveAs(`${window.location.origin}/static/alarms.csv`)
     })
   }
 

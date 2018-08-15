@@ -610,6 +610,38 @@ p span {
       margin-left: 0;
     }
   }
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+    .pagination {
+      list-style: none;
+      position: relative;
+      display: table;
+      width: auto;
+      padding-top: 15px;
+      margin : 0;
+      overflow-x: auto;
+      background: $dark-gray;
+      align-items: center;
+      border-style: solid;
+      border: 2px;
+      border-color: rgba(0,0,0,0.5);
+      > li {
+        position: relative;
+        display: inline;
+        color: $white;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+        .active {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
 }
 .table {
   position: relative;

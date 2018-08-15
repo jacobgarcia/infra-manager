@@ -98,7 +98,6 @@ router.route('/reports/alarms').get((req, res) => {
           alarms.push(currentAlarm)
         })
       })
-
       const json2csvParser = new Json2csvParser({ fields })
       const csv = json2csvParser.parse(alarms)
       return fs.writeFile('static/alarms.csv', csv, error => {
@@ -108,9 +107,9 @@ router.route('/reports/alarms').get((req, res) => {
         }
         return res.status(200).json({
           success: true,
-          message: 'Successfully generated report',
-          alarms
+          message: 'Successfully generated report'
         })
+        .attachment('static/alarms.csv')
       })
     })
 })
