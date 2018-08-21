@@ -4,15 +4,27 @@ services:
   app:
     build: .
     ports:
-    - '8080:8080'
+      - '8080:8080'
+    container_name: 'connus'
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+      - MONGODB_URL=mongodb://mongo:27017/kawlantid
     volumes:
       - './src:/usr/src/app/src'
       - './router:/usr/src/app/router'
       - './server.js:/usr/src/app/server.js'
     links:
-    - node
-    - mongo
-  node:
-    image: node:8
+      - mongo
+    depends_on:
+      - mongo
   mongo:
-    image: mongo:3.6
+    image: mongo:3.4
+    volumes:
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
+    ports:
+      - '27017:27017'
+volumes:
+  mongodb:
+  mongodb_config:
