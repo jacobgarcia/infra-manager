@@ -7,8 +7,12 @@
       "merge_logs": true,
       "error_file": "server-error.log",
       "out_file": "server-out.log",
-      "env": {
+      "env_production": {
         "NODE_ENV": "production",
+        "PORT": 8080
+      },
+      "env_staging": {
+        "NODE_ENV": "staging",
         "PORT": 8080
       }
     },

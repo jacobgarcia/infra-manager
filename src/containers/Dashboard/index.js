@@ -109,10 +109,10 @@ class Dashboard extends Component {
     )
 
     const weeklyAlerts = {
-      alarms: worstSite.alarms.filter(
+      alarms: worstSite && worstSite.alarms.filter(
         $0 => $0.timestamp > Date.now() - 604800000 && $0.timestamp < Date.now()
       ), // 1 week difference
-      key: worstSite.name
+      key: worstSite && worstSite.name
     }
 
     this.setState({
@@ -560,7 +560,9 @@ class Dashboard extends Component {
 
                       <div className="card-footer">
                         <p className="red">
-                          {this.state.worstZone && this.state.worstZone.value}{' '}
+                          {this.state.worstZone
+                            ? this.state.worstZone.value
+                            : 0}{' '}
                           alertas{' '}
                         </p>
                       </div>
@@ -590,6 +592,7 @@ class Dashboard extends Component {
                       full={false}>
                       <h1>
                         {this.state.weeklyAlerts &&
+                          this.state.weeklyAlerts.alarms &&
                         this.state.weeklyAlerts.alarms.length > 0
                           ? this.state.weeklyAlerts.key
                           : 'Ninguno'}
@@ -598,6 +601,7 @@ class Dashboard extends Component {
                       <div className="card-footer">
                         <p className="red">
                           {this.state.weeklyAlerts
+                            && this.state.weeklyAlerts.alarms
                             ? this.state.weeklyAlerts.alarms.length
                             : 0}{' '}
                           alertas{' '}

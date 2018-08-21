@@ -73,7 +73,7 @@ router.route('/users/recognize').post((req, res) => {
   const { pin, photo, event } = req.body
   const company = req._user.cmp
 
-  Company.findOne({ company }).exec((error, company) => {
+  Company.findOne({ _id: company }).exec((error, company) => {
     if (error) {
       winston.error(error)
       return res
@@ -299,7 +299,7 @@ router.route('/users/signup').post((req, res) => {
       if (error) {
         winston.error(error)
         return res.status(400).json({
-          success: 'false',
+          success: false,
           message: 'The specified frmuser does not exist'
         })
       }
@@ -316,7 +316,7 @@ router.route('/users/signup').post((req, res) => {
         if (error) {
           winston.error(error)
           return res.status(400).json({
-            success: 'false',
+            success: false,
             message: 'The specified user is already registered'
           })
         }
@@ -445,7 +445,7 @@ router.route('/users/photo').put((req, res) => {
       .status(400)
       .json({ success: 'false', message: 'Image not found' })
 
-  return Company.findOne({ company }).exec((error, company) => {
+  return Company.findOne({ _id: company }).exec((error, company) => {
     // no image found
     return base64Img.img(
       photo,

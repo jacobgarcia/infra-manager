@@ -71,3 +71,6 @@ typings/
 
 # Generated lock file
 package-lock.json
+
+# Coma separated values
+*.csv

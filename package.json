@@ -5,8 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "pm2-dev ./config/ecosystem.config.js",
-    "start:prod": "pm2 start ecosystem.json",
+    "start:prod": "pm2 start ecosystem.json --env production",
+    "start:dev": "pm2 start ecosystem.json --env staging",
     "build:prod": "webpack --config ./config/webpack.prod.js",
+    "build:dev": "webpack --config ./config/webpack.dev.js",
     "sync:prod":
       "aws s3 sync ./dist s3://connus --delete --exclude .DS_Store --acl public-read ",
     "reload:prod": "pm2 reload all -i max",
