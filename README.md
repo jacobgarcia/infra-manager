@@ -1,8 +1,8 @@
 # Connus
 ## Installation
-  +Clone Repository
-  +install Docker
-  +install nginx (optional) 
+  - Clone Repository
+  - install Docker
+  - install nginx (optional) 
 
 ## Usage
 
