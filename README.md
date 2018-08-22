@@ -1,4 +1,8 @@
 # Connus
+## Installation
+  - Clone Repository
+  - install Docker
+  - install nginx (optional) 
 
 ## Usage
 
@@ -10,12 +14,6 @@ Ensure MongoDB instance is running and run **development mode**
 > yarn start
 ```
 
-_With Docker_, builds up with **node** and **mongo**
-
-```
-> docker-compose up --build # IMPORTANT Omit the --build if not the first build
-```
-
 ### Production
 
 For production run
@@ -25,6 +23,11 @@ yarn build:prod
 PORT=8080 NODE_ENV=production HOST=52.72.2.200 pm2 start ecosystem.json
 ```
 
+_With Docker_, builds up with **node** and **mongo**
+
+```
+> docker-compose up --build # IMPORTANT Omit the --build if not the first build
+```
 ## Codes
 
 **Services**
