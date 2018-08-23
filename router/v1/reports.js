@@ -94,10 +94,7 @@ router.route('/reports/alarms').get((req, res) => {
           winston.error({ error })
           return res.status(500).json({ error })
         }
-        return res.status(200).json({
-          success: true,
-          message: 'Successfully generated report'
-        })
+        return res.status(200).download('static/alarms.csv')
       })
     })
 })

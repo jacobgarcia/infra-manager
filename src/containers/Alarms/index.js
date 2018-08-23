@@ -85,11 +85,9 @@ class Alarms extends Component {
   }
 
   downloadReport = () => {
-    NetworkOperation.getAlarmsReports().then(() => {
-      console.log("hello")
-      // Download file
-      //let csvData = new Blob(`${window.location.origin}/static/alarms.csv`, )
-      //FileSaver.saveAs(`${window.location.origin}/static/alarms.csv`)
+    NetworkOperation.getAlarmsReports().then(response => {
+      const blob = new Blob([response.data], {type: "text/plain;charset=utf-8"})
+      FileSaver.saveAs(blob, new Date().toLocaleDateString() + "report.csv")
     })
   }
 

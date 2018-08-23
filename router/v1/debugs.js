@@ -162,8 +162,7 @@ router.route('/debug/request/multiple').post(upload, (req, res) => {
         v1: v1,
         v2: v2
       }
-      console.log(company.name)
-      console.log(data)
+      
       global.io.to(company.name).emit('debugRequest', data)
       global.io.to('web-platform').emit('debugRequest', data)
 

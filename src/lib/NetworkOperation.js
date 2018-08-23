@@ -9,6 +9,7 @@ axios.interceptors.request.use(
   config => {
     // Add token
     config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+    config.headers['Cache-Control'] = "no-cache"
     // Do something before request is sent
     return config
   },
