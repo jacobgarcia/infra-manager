@@ -111,11 +111,7 @@ router.route('/reports/alarms').get((req, res) => {
           return res.status(500).json({ error })
         }
         console.log("entre a esta mierda")
-        return res.status(200).attachment('static/alarms.csv')
-          .json({
-          success: true,
-          message: 'Successfully generated report'
-        })
+        return res.status(200).download('static/alarms.csv')
       })
     })
 })
