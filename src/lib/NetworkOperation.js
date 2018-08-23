@@ -162,6 +162,10 @@ class NetworkOperation {
   static getAlarmsReports() {
     return axios.get(`${baseUrl}/reports/alarms`)
   }
+
+  static getAlarmsSummery() {
+    return axios.get(`${baseUrl}/reports/alarms/summery`)
+  }
 }
 
 export default NetworkOperation

@@ -91,6 +91,13 @@ class Alarms extends Component {
     })
   }
 
+  downloadSummery = () => {
+    NetworkOperation.getAlarmsSummery().then(response => {
+      const blob = new Blob([response.data], {type: "text/plain;charset=utf-8"})
+      FileSaver.saveAs(blob, new Date().toLocaleDateString() + "resumen.csv")
+    })
+  }
+
   render() {
     const { state, props } = this
 
@@ -188,9 +195,14 @@ class Alarms extends Component {
                 className={`${state.showLogDetail ? 'detailed' : ''}`}
                 selectedElementIndex={state.selectedElementIndex}
                 actionsContainer={
-                  <p className="button action" onClick={this.downloadReport}>
-                    Descargar Reporte
-                  </p>
+                  <div>
+                    <p className="button action" onClick={this.downloadReport}>
+                      Descargar Reporte
+                    </p>
+                    <p className="button action" onClick={this.downloadSummery}>
+                      Descargar Resumen
+                    </p>
+                  </div>
                 }
                 element={(item, index) => (
                   <div

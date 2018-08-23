@@ -238,5 +238,62 @@ router.route('/reports/alarms/count/:key').get((req, res) => {
   //   }
   // )
 })
+router.route('/reports/alarms/summery').get((req, res) => {
+  const { key } = req.params
 
+  Site.aggregate(
+    [
+      { $match: { key } },
+      { $project: { alarms: 1 } },
+      { $unwind: '$alarms' },
+      {
+        $group: {
+          _id: { class: '$alarms.class', key: '$alarms.key'},
+          count: { $sum: 1 }
+        }
+      }
+    ],
+    (error, alarms) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      const json2csvParser = new Json2csvParser({ fields: alarmFields })
+      const csv = json2csvParser.parse(alarms)
+      console.log(alarms)
+      return fs.writeFile('static/report.csv', csv, error => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({ error })
+        }
+        // Mail options
+        const mailOptions = {
+          from: 'ingenieria@connus.mx',
+          to: 'soporte@connus.mx',
+          subject: 'PUMA - Daily Report',
+          text:
+            'This reports contains an attachment in CSV detailing the sensors activations',
+          attachments: [
+            {
+              // filename and content type is derived from path
+              path: 'static/report.csv'
+            }
+          ]
+        }
+
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) winston.error(error)
+          else winston.info('First email sent: ' + info.response)
+        })
+
+        return res.status(200).json({
+          success: true,
+          message: 'Successfully generated report',
+          alarms
+        })
+      })
+    }
+  )
+})
 module.exports = router
