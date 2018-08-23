@@ -89,7 +89,7 @@ class Alarms extends Component {
       console.log("hello")
       // Download file
       //let csvData = new Blob(`${window.location.origin}/static/alarms.csv`, )
-      //FileSaver.saveAs(`${window.location.origin}/static/alarms.csv`)
+      FileSaver.saveAs(`${window.location.origin}/static/alarms.csv`)
     })
   }
 
