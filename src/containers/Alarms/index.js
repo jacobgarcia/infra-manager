@@ -92,7 +92,7 @@ class Alarms extends Component {
   }
 
   downloadSummery = () => {
-    NetworkOperation.getAlarmsSummery().then(response => {
+    NetworkOperation.getAlarmsSummery('PANA-MA').then(response => {
       const blob = new Blob([response.data], {type: "text/plain;charset=utf-8"})
       FileSaver.saveAs(blob, new Date().toLocaleDateString() + "resumen.csv")
     })

@@ -39,6 +39,14 @@ const fields = [
 
 const alarmFields = [
   {
+    label: 'Fecha',
+    value: 'date'
+  },
+  {
+    label: 'Hora',
+    value: 'time'
+  },
+  {
     label: 'Puerta',
     value: '_id.key'
   },
@@ -222,7 +230,7 @@ router.route('/reports/alarms/count/:key').get((req, res) => {
   //   }
   // )
 })
-router.route('/reports/alarms/summery').get((req, res) => {
+router.route('/reports/alarms/summery/:key').get((req, res) => {
   const { key } = req.params
 
   Site.aggregate(
@@ -232,7 +240,7 @@ router.route('/reports/alarms/summery').get((req, res) => {
       { $unwind: '$alarms' },
       {
         $group: {
-          _id: { class: '$alarms.class', key: '$alarms.key'},
+          _id:{ timestamp : { '$subtract' :[ {'$divide' : ['$alarms.timestamp', 3600000 ]}, { '$mod' : [{'$divide' : ['$alarms.timestamp', 3600000 ]},1] } ] }, class: '$alarms.class', key: '$alarms.key'},
           count: { $sum: 1 }
         }
       }
@@ -244,8 +252,11 @@ router.route('/reports/alarms/summery').get((req, res) => {
       }
 
       const json2csvParser = new Json2csvParser({ fields: alarmFields })
+      alarms.map(alarm => {
+        alarm.date = new Date(alarm._id.timestamp * 3600000).toLocaleDateString()
+        alarm.time = new Date(alarm._id.timestamp * 3600000).toLocaleTimeString()
+      })
       const csv = json2csvParser.parse(alarms)
-      console.log(alarms)
       return fs.writeFile('static/report.csv', csv, error => {
         if (error) {
           winston.error({ error })
@@ -271,11 +282,9 @@ router.route('/reports/alarms/summery').get((req, res) => {
           else winston.info('First email sent: ' + info.response)
         })
 
-        return res.status(200).json({
-          success: true,
-          message: 'Successfully generated report',
-          alarms
-        })
+        return res.status(200).download(
+          'static/report.csv'
+        )
       })
     }
   )

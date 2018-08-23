@@ -163,8 +163,8 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/reports/alarms`)
   }
 
-  static getAlarmsSummery() {
-    return axios.get(`${baseUrl}/reports/alarms/summery`)
+  static getAlarmsSummery(key) {
+    return axios.get(`${baseUrl}/reports/alarms/summery/${key}`)
   }
 }
 
