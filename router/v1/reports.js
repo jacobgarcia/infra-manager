@@ -114,7 +114,6 @@ router.route('/reports/alarms').get((req, res) => {
           success: true,
           message: 'Successfully generated report'
         })
-        .attachment('static/alarms.csv')
       })
     })
 })
