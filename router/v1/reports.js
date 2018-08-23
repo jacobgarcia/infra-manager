@@ -12,14 +12,6 @@ const Site = require(path.resolve('models/Site'))
 
 const fields = [
   {
-    label: 'ID',
-    value: '_id'
-  },
-  {
-    label: 'Suceso',
-    value: 'event'
-  },
-  {
     label: 'Fecha',
     value: 'date'
   },
@@ -34,14 +26,6 @@ const fields = [
   {
     label: 'Zona',
     value: 'zone'
-  },
-  {
-    label: 'Riesgo',
-    value: 'risk'
-  },
-  {
-    label: 'Status',
-    value: 'status'
   },
   {
     label: 'Key',
