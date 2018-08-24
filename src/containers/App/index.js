@@ -248,7 +248,7 @@ class App extends Component {
             <Link to={`/alarms/${alert._id}`} key={alert.timestamp}>
               <div
                 className={`alert ${
-                    !alert.isInvalid || alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
+                    alert.isInvalid || alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
                 }`}>
                 <div className="alert__image" />
                 <div className="alert__body">
