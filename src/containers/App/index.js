@@ -249,10 +249,10 @@ class App extends Component {
                 className={`alert ${
                     alert.isInvalid || alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
                 }`}>
-                <div className="alert__image" onClick={() => {
-                    alert.isInvalid = true
-                }}>
-                  <p>
+                <div className="alert__image">
+                  <p onClick={() => {
+                      alert.isInvalid = true
+                  }}>
                     X
                   </p>
                 </div>
