@@ -42,7 +42,8 @@ class App extends Component {
     error: false,
     isLoading: true,
     willCompleteLoad: false,
-    alerts: []
+    alerts: [],
+    isInvalid: false
   }
 
   cleanupAlerts = () => {
@@ -193,6 +194,12 @@ class App extends Component {
     }))
   }
 
+  alertCloseHandling = () => {
+    this.setState({
+      isInvalid: true
+    })
+  }
+
   componentDidCatch(error, info) {
     console.warn('ERROR')
     console.error(error, info)
@@ -241,12 +248,17 @@ class App extends Component {
             <Link to={`/alarms/${alert._id}`} key={alert.timestamp}>
               <div
                 className={`alert ${
-                  alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
+                    alert.isInvalid || alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
                 }`}>
                 <div className="alert__image" />
                 <div className="alert__body">
                   <p>{alert.site}</p>
                   <p>{alert.event}</p>
+                  <button onClick={() => {
+                    alert.isInvalid = true
+                  }}>
+                    Activate Lasers
+                  </button>
                 </div>
               </div>
             </Link>
