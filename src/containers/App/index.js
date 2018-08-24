@@ -245,23 +245,24 @@ class App extends Component {
         </Helmet>
         <div className="alerts__container">
           {this.state.alerts.map(alert => (
-            <Link to={`/alarms/${alert._id}`} key={alert.timestamp}>
-              <div
+              <div key={alert.timestamp}
                 className={`alert ${
                     alert.isInvalid || alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
                 }`}>
-                <div className="alert__image" />
-                <div className="alert__body">
-                  <p>{alert.site}</p>
-                  <p>{alert.event}</p>
+                <div className="alert__image">
                   <button onClick={() => {
                     alert.isInvalid = true
                   }}>
-                    Activate Lasers
+                  Cerrar
                   </button>
                 </div>
-              </div>
+                <Link to={`/alarms/${alert._id}`} >
+                <div className="alert__body">
+                  <p>{alert.site}</p>
+                  <p>{alert.event}</p>
+                  </div>
             </Link>
+            </div>
           ))}
         </div>
         <Navigator credentials={this.props.credentials} />
