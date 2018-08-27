@@ -249,12 +249,10 @@ class App extends Component {
           {this.state.alerts.map(alert => (
               <div key={alert.timestamp}
                 className={`alert ${
-                    alert.isInvalid || alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
+                    alert.isInvalid || alert.timestamp + 10000 < Date.now() ? 'invalid' : ''
                 }`}>
                  <div className="alert__image">
-                  <p onClick={() => this.alertCloseHandling(alert)}>
-                    X
-                  </p>
+                  <image src={"/static/img/icons/close.png"} onClick={() => this.alertCloseHandling(alert)} />
                 </div>
                 <Link to={`/alarms/${alert._id}`} >
                   <div className="alert__body">
