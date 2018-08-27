@@ -194,10 +194,10 @@ class App extends Component {
     }))
   }
 
-  alertCloseHandling = () => {
-    this.setState({
-      isInvalid: true
-    })
+  alertCloseHandling = alert => {
+    this.setState(prev => {
+      alerts: prev.alerts[this.state.alerts.findIndex($0 => $0 == alert)].isInvalid = true
+    }, console.log(this.state.alerts))
   }
 
   componentDidCatch(error, info) {
@@ -250,11 +250,7 @@ class App extends Component {
                     alert.isInvalid || alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
                 }`}>
                 <div className="alert__image">
-                  <p onClick={() => {
-                    this.setState(prev => {
-                      alerts: prev.alerts[this.state.alerts.findIndex($0 => $0 == alert)].isInvalid = true
-                    }, console.log(this.state.alerts))
-                  }}>
+                  <p onClick={this.alertCloseHandling(alert)}>
                     X
                   </p>
                 </div>
