@@ -195,8 +195,10 @@ class App extends Component {
   }
 
   alertCloseHandling = alert => {
+    let newalerts = this.state.alerts
+    newalerts[this.state.alerts.findIndex($0 => $0 == alert)].isInvalid = true
     this.setState(prev => {
-      alerts: prev.alerts[this.state.alerts.findIndex($0 => $0 == alert)].isInvalid = true
+      alerts: newalerts
     }, console.log(this.state.alerts))
   }
 
@@ -220,7 +222,10 @@ class App extends Component {
           <p className="legend">
             Si el problema persiste, favor de reportarlo a{' '}
             <a href="mailto:soporte@connus.mx">soporte@connus.mx</a>
-          </p>
+          </p>    this.setState({
+      isInvalid: true
+    })
+
         </div>
       )
     }
@@ -250,7 +255,7 @@ class App extends Component {
                     alert.isInvalid || alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
                 }`}>
                 <div className="alert__image">
-                  <p onClick={this.alertCloseHandling(alert)}>
+                  <p onClick={() => this.alertCloseHandling(alert)}>
                     X
                   </p>
                 </div>
