@@ -42,7 +42,8 @@ class App extends Component {
     error: false,
     isLoading: true,
     willCompleteLoad: false,
-    alerts: []
+    alerts: [],
+    isInvalid: false
   }
 
   cleanupAlerts = () => {
@@ -193,6 +194,12 @@ class App extends Component {
     }))
   }
 
+  alertCloseHandling = () => {
+    this.setState({
+      isInvalid: true
+    })
+  }
+
   componentDidCatch(error, info) {
     console.warn('ERROR')
     console.error(error, info)
@@ -238,18 +245,25 @@ class App extends Component {
         </Helmet>
         <div className="alerts__container">
           {this.state.alerts.map(alert => (
-            <Link to={`/alarms/${alert._id}`} key={alert.timestamp}>
-              <div
+              <div key={alert.timestamp}
                 className={`alert ${
-                  alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
+                    alert.isInvalid || alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
                 }`}>
-                <div className="alert__image" />
-                <div className="alert__body">
-                  <p>{alert.site}</p>
-                  <p>{alert.event}</p>
+                <div className="alert__image">
+                  <p onClick={() => {
+                      console.log("close")
+                      alert.isInvalid = true
+                  }}>
+                    X
+                  </p>
                 </div>
-              </div>
-            </Link>
+                <Link to={`/alarms/${alert._id}`} >
+                  <div className="alert__body">
+                    <p>{alert.site}</p>
+                    <p>{alert.event}</p>
+                  </div>
+                </Link>
+            </div>
           ))}
         </div>
         <Navigator credentials={this.props.credentials} />
