@@ -181,7 +181,7 @@ class App extends Component {
       this.props.setAlarm(alert)
       // Add alert popup to GUI
       this.setState(prev => ({
-        alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now() }])
+        alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now(), isInvalid: false }])
       }))
     })
   }
@@ -190,14 +190,16 @@ class App extends Component {
   addManualAlert = () => {
     const alert = {}
     this.setState(prev => ({
-      alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now() }])
+      alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now(), isInvalid: false }])
     }))
   }
 
-  alertCloseHandling = () => {
+  alertCloseHandling = alert => {
+    const newalerts = this.state.alerts
+    newalerts[this.state.alerts.findIndex($0 => $0 == alert)].isInvalid = true
     this.setState({
-      isInvalid: true
-    })
+      alerts: newalerts
+    }, this.setState({ state: this.state }))
   }
 
   componentDidCatch(error, info) {
@@ -247,15 +249,10 @@ class App extends Component {
           {this.state.alerts.map(alert => (
               <div key={alert.timestamp}
                 className={`alert ${
-                    alert.isInvalid || alert.timestamp + 5000 < Date.now() ? 'invalid' : ''
+                    alert.isInvalid || alert.timestamp + 10000 < Date.now() ? 'invalid' : ''
                 }`}>
-                <div className="alert__image">
-                  <p onClick={() => {
-                      console.log("close")
-                      alert.isInvalid = true
-                  }}>
-                    X
-                  </p>
+                 <div className="alert__image">
+                  <img src={"/static/img/icons/close.png"} onClick={() => this.alertCloseHandling(alert)} />
                 </div>
                 <Link to={`/alarms/${alert._id}`} >
                   <div className="alert__body">

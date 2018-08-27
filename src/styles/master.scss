@@ -381,6 +381,10 @@ p span {
       width: 40px;
       height: 36px;
       display: block;
+      > img {
+        width: 20px;
+        height: 20px;
+      }
     }
     .alert__body {
       height: 1936;
