@@ -251,6 +251,7 @@ class App extends Component {
                 }`}>
                 <div className="alert__image">
                   <p onClick={() => {
+                      console.log("close")
                       alert.isInvalid = true
                   }}>
                     X
