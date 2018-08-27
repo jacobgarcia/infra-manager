@@ -181,7 +181,7 @@ class App extends Component {
       this.props.setAlarm(alert)
       // Add alert popup to GUI
       this.setState(prev => ({
-        alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now() }])
+        alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now(), isInvalid: false }])
       }))
     })
   }
@@ -190,7 +190,7 @@ class App extends Component {
   addManualAlert = () => {
     const alert = {}
     this.setState(prev => ({
-      alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now() }])
+      alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now(), isInvalid: false }])
     }))
   }
 
@@ -252,8 +252,8 @@ class App extends Component {
                 <div className="alert__image">
                   <p onClick={() => {
                     this.setState(prev => {
-                      alerts: prev.alerts[this.state.alerts.findIndex($0 => $0 === alert)].isInvalid = true
-                    })
+                      alerts: prev.alerts[this.state.alerts.findIndex($0 => $0 == alert)].isInvalid = true
+                    }, console.log(this.state.alerts))
                   }}>
                     X
                   </p>
