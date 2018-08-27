@@ -1,16 +1,16 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { Helmet } from 'react-helmet'
-import { DateUtils } from 'react-day-picker'
-import Slider from 'react-slick'
-import domtoimage from 'dom-to-image'
-import { Table, RiskBar } from 'components'
-import * as FileSaver from 'file-saver'
+import React, { Component } from "react"
+import { connect } from "react-redux"
+import PropTypes from "prop-types"
+import { Helmet } from "react-helmet"
+import { DateUtils } from "react-day-picker"
+import Slider from "react-slick"
+import domtoimage from "dom-to-image"
+import { Table, RiskBar, DateRangePicker } from "components"
+import * as FileSaver from "file-saver"
 
-import { NetworkOperation } from 'lib'
+import { NetworkOperation } from "lib"
 
-import io from 'socket.io-client'
+import io from "socket.io-client"
 
 class Alarms extends Component {
   constructor(props) {
@@ -31,7 +31,9 @@ class Alarms extends Component {
         this.props.alarms.length > 0 && alarmId
           ? [this.props.alarms.findIndex($0 => $0._id === alarmId), 1]
           : [0, 1],
-      showLogDetail: true
+      showLogDetail: true,
+      from: new Date(),
+      to: new Date()
     }
   }
 
@@ -56,8 +58,8 @@ class Alarms extends Component {
   initSockets() {
     this.socket = io()
 
-    this.socket.on('connect', () => {
-      this.socket.emit('join', this.props.credentials.company.name)
+    this.socket.on("connect", () => {
+      this.socket.emit("join", this.props.credentials.company.name)
     })
   }
 
@@ -70,11 +72,12 @@ class Alarms extends Component {
   }
 
   onDownload = () => {
-    const image = document.getElementById('image')
+    const image = document.getElementById("image")
     domtoimage.toBlob(image).then(photo => {
-      FileSaver.saveAs(photo, `${new Date(
-        this.state.selectedLog.timestamp
-      ).getTime()}.png`)
+      FileSaver.saveAs(
+        photo,
+        `${new Date(this.state.selectedLog.timestamp).getTime()}.png`
+      )
     })
   }
 
@@ -86,14 +89,18 @@ class Alarms extends Component {
 
   downloadReport = () => {
     NetworkOperation.getAlarmsReports().then(response => {
-      const blob = new Blob([response.data], {type: "text/plain;charset=utf-8"})
+      const blob = new Blob([response.data], {
+        type: "text/plain;charset=utf-8"
+      })
       FileSaver.saveAs(blob, new Date().toLocaleDateString() + "report.csv")
     })
   }
 
   downloadSummery = () => {
-    NetworkOperation.getAlarmsSummery('PANA-MA').then(response => {
-      const blob = new Blob([response.data], {type: "text/plain;charset=utf-8"})
+    NetworkOperation.getAlarmsSummery("PANA-MA").then(response => {
+      const blob = new Blob([response.data], {
+        type: "text/plain;charset=utf-8"
+      })
       FileSaver.saveAs(blob, new Date().toLocaleDateString() + "resumen.csv")
     })
   }
@@ -111,8 +118,9 @@ class Alarms extends Component {
           <div className="tables-detail__container">
             <div
               className={`log-detail-container ${
-                state.showLogDetail ? '' : 'hidden'
-              }`}>
+                state.showLogDetail ? "" : "hidden"
+              }`}
+            >
               <div className="content">
                 <div className="time-location">
                   <p>
@@ -121,7 +129,7 @@ class Alarms extends Component {
                   </p>
                   {state.selectedLog.zone && (
                     <p>
-                      Zona <span>{state.selectedLog.zone.name}</span> Sitio{' '}
+                      Zona <span>{state.selectedLog.zone.name}</span> Sitio{" "}
                       <span>{state.selectedLog.site}</span>
                     </p>
                   )}
@@ -129,8 +137,9 @@ class Alarms extends Component {
                 <div className="detail">
                   <span>IMAGENES RELACIONADAS</span>
                   <Slider
-                    nextArrow={<button>{'>'}</button>}
-                    prevArrow={<button>{'<'}</button>}>
+                    nextArrow={<button>{">"}</button>}
+                    prevArrow={<button>{"<"}</button>}
+                  >
                     {state.selectedLog.photos &&
                     state.selectedLog.photos.length > 0 ? (
                       state.selectedLog.photos.map((photo, index) => {
@@ -192,7 +201,7 @@ class Alarms extends Component {
             </div>
             <div className="tables-container">
               <Table
-                className={`${state.showLogDetail ? 'detailed' : ''}`}
+                className={`${state.showLogDetail ? "detailed" : ""}`}
                 selectedElementIndex={state.selectedElementIndex}
                 actionsContainer={
                   <div>
@@ -202,6 +211,11 @@ class Alarms extends Component {
                     <p className="button action" onClick={this.downloadSummery}>
                       Descargar Resumen
                     </p>
+                    <DateRangePicker
+                      from={state.from}
+                      to={state.to}
+                      onDayClick={this.onDayClick}
+                    />
                   </div>
                 }
                 element={(item, index) => (
@@ -209,11 +223,12 @@ class Alarms extends Component {
                     className={`table-item ${
                       state.selectedElementIndex[0] === index &&
                       state.selectedElementIndex[1] === 1
-                        ? 'selected'
-                        : ''
+                        ? "selected"
+                        : ""
                     }`}
                     key={index}
-                    onClick={() => this.onLogSelect(item, index, 1)}>
+                    onClick={() => this.onLogSelect(item, index, 1)}
+                  >
                     <div className="medium">
                       {new Date(item.timestamp).toLocaleDateString()}
                     </div>
@@ -230,27 +245,28 @@ class Alarms extends Component {
                 title="Alertas"
                 elements={props.alarms}
                 titles={[
-                  { title: 'Tiempo', className: 'medium' },
-                  { title: 'Suceso', className: 'large' },
-                  { title: 'Sitio', className: 'hiddable' },
-                  { title: 'Riesgo' },
-                  { title: 'Estatus o acción', className: 'large hiddable' },
-                  { title: 'ID', className: 'medium' }
+                  { title: "Tiempo", className: "medium" },
+                  { title: "Suceso", className: "large" },
+                  { title: "Sitio", className: "hiddable" },
+                  { title: "Riesgo" },
+                  { title: "Estatus o acción", className: "large hiddable" },
+                  { title: "ID", className: "medium" }
                 ]}
               />
               <Table
-                className={`${state.showLogDetail ? 'detailed' : ''}`}
+                className={`${state.showLogDetail ? "detailed" : ""}`}
                 selectedElementIndex={state.selectedElementIndex}
                 element={(item, index, sectionIndex) => (
                   <div
                     className={`table-item ${
                       state.selectedElementIndex[0] === index &&
                       state.selectedElementIndex[1] === sectionIndex
-                        ? 'selected'
-                        : ''
+                        ? "selected"
+                        : ""
                     }`}
                     key={index}
-                    onClick={() => this.onLogSelect(item, index, sectionIndex)}>
+                    onClick={() => this.onLogSelect(item, index, sectionIndex)}
+                  >
                     <div className="medium">
                       {new Date(item.timestamp).toLocaleDateString()}
                     </div>
@@ -263,11 +279,11 @@ class Alarms extends Component {
                 title="Historial"
                 elements={props.history}
                 titles={[
-                  { title: 'Tiempo', className: 'medium' },
-                  { title: 'Suceso', className: 'large' },
-                  { title: 'Sitio', className: 'hiddable' },
-                  { title: 'Estatus o acción', className: 'large hiddable' },
-                  { title: 'ID', className: 'medium' }
+                  { title: "Tiempo", className: "medium" },
+                  { title: "Suceso", className: "large" },
+                  { title: "Sitio", className: "hiddable" },
+                  { title: "Estatus o acción", className: "large hiddable" },
+                  { title: "ID", className: "medium" }
                 ]}
               />
             </div>
