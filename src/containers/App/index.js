@@ -252,7 +252,7 @@ class App extends Component {
                     alert.isInvalid || alert.timestamp + 10000 < Date.now() ? 'invalid' : ''
                 }`}>
                  <div className="alert__image">
-                  <image src={"/static/img/icons/close.png"} onClick={() => this.alertCloseHandling(alert)} />
+                  <img src={"/static/img/icons/close.png"} onClick={() => this.alertCloseHandling(alert)} />
                 </div>
                 <Link to={`/alarms/${alert._id}`} >
                   <div className="alert__body">
