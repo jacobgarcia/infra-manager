@@ -222,10 +222,7 @@ class App extends Component {
           <p className="legend">
             Si el problema persiste, favor de reportarlo a{' '}
             <a href="mailto:soporte@connus.mx">soporte@connus.mx</a>
-          </p>    this.setState({
-      isInvalid: true
-    })
-
+          </p>
         </div>
       )
     }
