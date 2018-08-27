@@ -251,9 +251,9 @@ class App extends Component {
                 }`}>
                 <div className="alert__image">
                   <p onClick={() => {
-                    this.setState(prev => ({
-                      alerts: prev.alerts.concat([{ ...alert, isInvalid: true }])
-                    }))
+                    this.setState(prev => {
+                      alerts: prev.alerts[this.state.alerts.findIndex($0 => $0 === alert)].isInvalid = true
+                    })
                   }}>
                     X
                   </p>
