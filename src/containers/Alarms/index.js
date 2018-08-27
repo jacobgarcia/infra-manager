@@ -107,6 +107,21 @@ class Alarms extends Component {
 
   render() {
     const { state, props } = this
+    let elements = null
+    if (!state.to && !state.from) elements = props.alarms
+    else if (!state.to) {
+      elements = props.alarms.filter(
+        $0 =>
+          $0.timestamp >= state.from.getTime() - 43200000 &&
+          $0.timestamp < state.from.getTime() + 43200000
+      )
+    } else {
+      props.alarms.filter(
+        $0 =>
+          $0.timestamp >= state.from.getTime() - 43200000 &&
+          $0.timestamp < state.to.getTime() + 43200000
+      )
+    }
 
     return (
       <div className="app-content facial-recognition small-padding">
@@ -243,7 +258,21 @@ class Alarms extends Component {
                   </div>
                 )}
                 title="Alertas"
-                elements={props.alarms}
+                elements={
+                  !state.to && !state.from
+                    ? props.alarms
+                    : !state.to
+                      ? props.alarms.filter(
+                          $0 =>
+                            $0.timestamp >= state.from.getTime() - 43200000 &&
+                            $0.timestamp < state.from.getTime() + 43200000
+                        )
+                      : props.alarms.filter(
+                          $0 =>
+                            $0.timestamp >= state.from.getTime() - 43200000 &&
+                            $0.timestamp < state.to.getTime() + 43200000
+                        )
+                }
                 titles={[
                   { title: "Tiempo", className: "medium" },
                   { title: "Suceso", className: "large" },
