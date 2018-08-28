@@ -1,7 +1,7 @@
-import React, { Component } from 'react'
-import DayPicker from 'react-day-picker'
+import React, { Component } from "react"
+import DayPicker from "react-day-picker"
 
-import { getFriendlyDateRange } from '../lib/constants'
+import { getFriendlyDateRange } from "../lib/constants"
 
 class DateRangePicker extends Component {
   constructor(props) {
@@ -16,32 +16,34 @@ class DateRangePicker extends Component {
     const { state, props } = this
     return (
       <div
-        className={`range-select-container ${state.isVisible ? '' : 'hidden'}`}>
+        className={`range-select-container ${state.isVisible ? "" : "hidden"}`}
+      >
         <p
-          className="button"
+          className="button action"
           onClick={() =>
             this.setState(prev => ({ isVisible: !prev.isVisible }))
-          }>
+          }
+        >
           {!props.from && !props.to
-            ? 'Seleccionar periodo'
+            ? "Seleccionar periodo"
             : getFriendlyDateRange(props.from, props.to)}
         </p>
         <DayPicker
           months={[
-            'Enero',
-            'Febrero',
-            'Marzo',
-            'Abril',
-            'Mayo',
-            'Junio',
-            'Julio',
-            'Agosto',
-            'Septiembre',
-            'Octubre',
-            'Noviembre',
-            'Diciembre'
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre"
           ]}
-          weekdaysShort={['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab']}
+          weekdaysShort={["Dom", "Lun", "Mar", "Mie", "Jue", "Vie", "Sab"]}
           className="Selectable"
           numberOfMonths={1}
           selectedDays={[props.from, { from: props.from, to: props.to }]}
