@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { Switch, Route, Link } from 'react-router-dom'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Helmet } from 'react-helmet'
-import io from 'socket.io-client'
+import React, { Component } from "react"
+import { Switch, Route, Link } from "react-router-dom"
+import PropTypes from "prop-types"
+import { connect } from "react-redux"
+import { Helmet } from "react-helmet"
+import io from "socket.io-client"
 
 import {
   setCredentials,
@@ -14,29 +14,30 @@ import {
   setVehicleReport,
   setReport,
   setHistory,
-  setAlarm
-} from 'actions'
+  setAlarm,
+  setAlarms
+} from "actions"
 
-import Dashboard from 'containers/Dashboard'
-import Users from 'containers/Users/Loadable'
-import Statistics from 'containers/Statistics/Loadable'
-import Settings from 'containers/Settings/Loadable'
-import Map from 'containers/Map/Loadable'
-import Accesses from 'containers/Accesses/Loadable'
-import VehicularFlow from 'containers/VehicularFlow/Loadable'
-import Perimeter from 'containers/Perimeter/Loadable'
-import FacialRecognition from 'containers/FacialRecognition/Loadable'
-import VideoSurveillance from 'containers/VideoSurveillance/Loadable'
-import VisualCounter from 'containers/VisualCounter'
-import Reports from 'containers/Reports/Loadable'
-import Sensors from 'containers/Sensors'
-import Devices from 'containers/Devices/Loadable'
-import Inventory from 'containers/Inventory/Loadable'
-import Alarms from 'containers/Alarms'
+import Dashboard from "containers/Dashboard"
+import Users from "containers/Users/Loadable"
+import Statistics from "containers/Statistics/Loadable"
+import Settings from "containers/Settings/Loadable"
+import Map from "containers/Map/Loadable"
+import Accesses from "containers/Accesses/Loadable"
+import VehicularFlow from "containers/VehicularFlow/Loadable"
+import Perimeter from "containers/Perimeter/Loadable"
+import FacialRecognition from "containers/FacialRecognition/Loadable"
+import VideoSurveillance from "containers/VideoSurveillance/Loadable"
+import VisualCounter from "containers/VisualCounter"
+import Reports from "containers/Reports/Loadable"
+import Sensors from "containers/Sensors"
+import Devices from "containers/Devices/Loadable"
+import Inventory from "containers/Inventory/Loadable"
+import Alarms from "containers/Alarms"
 
-import Navigator from 'components/Navigator'
+import Navigator from "components/Navigator"
 
-import { NetworkOperation } from 'lib'
+import { NetworkOperation } from "lib"
 class App extends Component {
   state = {
     error: false,
@@ -59,10 +60,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const token = localStorage.getItem('token')
-    let returnPath = ''
+    const token = localStorage.getItem("token")
+    let returnPath = ""
 
-    if (this.props.location.pathname !== '/') {
+    if (this.props.location.pathname !== "/") {
       returnPath = `?return=${this.props.location.pathname}${
         this.props.location.search
       }`
@@ -71,7 +72,7 @@ class App extends Component {
     setInterval(this.cleanupAlerts, 500000)
 
     if (!token) {
-      localStorage.removeItem('token')
+      localStorage.removeItem("token")
       this.props.history.replace(`/login${returnPath}`)
     }
 
@@ -96,11 +97,7 @@ class App extends Component {
           this.props.setHistory(currentHistory)
         })
         // Populate alarms array
-        report.alarms.map(currentAlarm => {
-          currentAlarm.site = report.site.key
-          currentAlarm.zone = report.zone
-          this.props.setAlarm(currentAlarm)
-        })
+        this.props.setAlarms(report.alarms)
       })
     })
 
@@ -173,15 +170,17 @@ class App extends Component {
   initSockets() {
     this.socket = io()
 
-    this.socket.on('connect', () => {
-      this.socket.emit('join', this.props.credentials.company.name)
+    this.socket.on("connect", () => {
+      this.socket.emit("join", this.props.credentials.company.name)
     })
 
-    this.socket.on('alert', alert => {
+    this.socket.on("alert", alert => {
       this.props.setAlarm(alert)
       // Add alert popup to GUI
       this.setState(prev => ({
-        alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now(), isInvalid: false }])
+        alerts: prev.alerts.concat([
+          { ...alert, timestamp: Date.now(), isInvalid: false }
+        ])
       }))
     })
   }
@@ -190,20 +189,25 @@ class App extends Component {
   addManualAlert = () => {
     const alert = {}
     this.setState(prev => ({
-      alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now(), isInvalid: false }])
+      alerts: prev.alerts.concat([
+        { ...alert, timestamp: Date.now(), isInvalid: false }
+      ])
     }))
   }
 
   alertCloseHandling = alert => {
     const newalerts = this.state.alerts
     newalerts[this.state.alerts.findIndex($0 => $0 == alert)].isInvalid = true
-    this.setState({
-      alerts: newalerts
-    }, this.setState({ state: this.state }))
+    this.setState(
+      {
+        alerts: newalerts
+      },
+      this.setState({ state: this.state })
+    )
   }
 
   componentDidCatch(error, info) {
-    console.warn('ERROR')
+    console.warn("ERROR")
     console.error(error, info)
 
     this.setState({
@@ -220,7 +224,7 @@ class App extends Component {
             Favor de recargar la página
           </p>
           <p className="legend">
-            Si el problema persiste, favor de reportarlo a{' '}
+            Si el problema persiste, favor de reportarlo a{" "}
             <a href="mailto:soporte@connus.mx">soporte@connus.mx</a>
           </p>
         </div>
@@ -232,8 +236,9 @@ class App extends Component {
         <div id="app">
           <div
             className={`loading-screen ${
-              this.state.willCompleteLoad ? 'dismissed' : ''
-            }`}>
+              this.state.willCompleteLoad ? "dismissed" : ""
+            }`}
+          >
             <h1>Cargando...</h1>
           </div>
         </div>
@@ -247,19 +252,26 @@ class App extends Component {
         </Helmet>
         <div className="alerts__container">
           {this.state.alerts.map(alert => (
-              <div key={alert.timestamp}
-                className={`alert ${
-                    alert.isInvalid || alert.timestamp + 10000 < Date.now() ? 'invalid' : ''
-                }`}>
-                 <div className="alert__image">
-                  <img src={"/static/img/icons/close.png"} onClick={() => this.alertCloseHandling(alert)} />
+            <div
+              key={alert.timestamp}
+              className={`alert ${
+                alert.isInvalid || alert.timestamp + 10000 < Date.now()
+                  ? "invalid"
+                  : ""
+              }`}
+            >
+              <div className="alert__image">
+                <img
+                  src={"/static/img/icons/close.png"}
+                  onClick={() => this.alertCloseHandling(alert)}
+                />
+              </div>
+              <Link to={`/alarms/${alert._id}`}>
+                <div className="alert__body">
+                  <p>{alert.site}</p>
+                  <p>{alert.event}</p>
                 </div>
-                <Link to={`/alarms/${alert._id}`} >
-                  <div className="alert__body">
-                    <p>{alert.site}</p>
-                    <p>{alert.event}</p>
-                  </div>
-                </Link>
+              </Link>
             </div>
           ))}
         </div>
@@ -303,6 +315,7 @@ App.propTypes = {
   setReport: PropTypes.func,
   setHistory: PropTypes.func,
   setAlarm: PropTypes.func,
+  setAlarms: PropTypes.func,
   alarms: PropTypes.array
 }
 
@@ -313,6 +326,9 @@ function mapDispatchToProps(dispatch) {
     },
     setHistory: history => {
       dispatch(setHistory(history))
+    },
+    setAlarms: alarms => {
+      dispatch(setAlarms(alarms))
     },
     setAlarm: alarm => {
       dispatch(setAlarm(alarm))
@@ -373,4 +389,7 @@ function mapStateToProps({ zones, loading, credentials, alarms }) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)

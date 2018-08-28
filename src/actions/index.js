@@ -5,13 +5,13 @@
  */
 export function setLoading() {
   return {
-    type: 'SET_LOADING'
+    type: "SET_LOADING"
   }
 }
 
 export function setComplete() {
   return {
-    type: 'SET_COMPLETE'
+    type: "SET_COMPLETE"
   }
 }
 
@@ -22,7 +22,7 @@ export function setComplete() {
  */
 export function alert(title, body) {
   return {
-    type: 'SET_ALERT',
+    type: "SET_ALERT",
     title,
     body
   }
@@ -30,7 +30,7 @@ export function alert(title, body) {
 
 export function dismissAlert() {
   return {
-    type: 'DISMISS_ALERT'
+    type: "DISMISS_ALERT"
   }
 }
 
@@ -41,13 +41,13 @@ export function dismissAlert() {
  */
 export function logout() {
   return {
-    type: 'LOG_OUT'
+    type: "LOG_OUT"
   }
 }
 
 export function setCredentials(user, token) {
   return {
-    type: 'SET_USER',
+    type: "SET_USER",
     user,
     token
   }
@@ -55,7 +55,7 @@ export function setCredentials(user, token) {
 
 export function setAlarmAttended(alarm) {
   return {
-    type: 'SET_ATTENDED',
+    type: "SET_ATTENDED",
     alarm
   }
 }
@@ -67,7 +67,7 @@ export function setAlarmAttended(alarm) {
  */
 export function setZone(id, name, positions) {
   return {
-    type: 'SET_ZONE',
+    type: "SET_ZONE",
     id,
     name,
     positions
@@ -76,14 +76,14 @@ export function setZone(id, name, positions) {
 
 export function setExhaustive(zones) {
   return {
-    type: 'SET_EXHAUSTIVE',
+    type: "SET_EXHAUSTIVE",
     zones
   }
 }
 
 export function setSubzone(zoneId, subzoneId, name, positions) {
   return {
-    type: 'SET_SUBZONE',
+    type: "SET_SUBZONE",
     zoneId,
     subzoneId,
     name,
@@ -93,7 +93,7 @@ export function setSubzone(zoneId, subzoneId, name, positions) {
 
 export function setSite(zoneId, subzoneId, siteId, key, name, position) {
   return {
-    type: 'SET_SITE',
+    type: "SET_SITE",
     zoneId,
     subzoneId,
     siteId,
@@ -110,14 +110,14 @@ export function setSite(zoneId, subzoneId, siteId, key, name, position) {
  */
 export function setReport(report) {
   return {
-    type: 'SET_REPORT',
+    type: "SET_REPORT",
     report
   }
 }
 
 export function dismissReport(reportId) {
   return {
-    type: 'DISMISS_REPORT',
+    type: "DISMISS_REPORT",
     report: reportId
   }
 }
@@ -129,7 +129,7 @@ export function dismissReport(reportId) {
  */
 export function setHistory(history) {
   return {
-    type: 'SET_HISTORY',
+    type: "SET_HISTORY",
     history
   }
 }
@@ -141,8 +141,15 @@ export function setHistory(history) {
  */
 export function setAlarm(alarm) {
   return {
-    type: 'SET_ALARM',
+    type: "SET_ALARM",
     alarm
+  }
+}
+
+export function setAlarms(alarms) {
+  return {
+    type: "SET_ALARMS",
+    alarms
   }
 }
 
@@ -160,7 +167,7 @@ export function setFacialReport(
   id
 ) {
   return {
-    type: 'SET_FACIAL_REPORT',
+    type: "SET_FACIAL_REPORT",
     timestamp,
     event,
     success,
@@ -177,14 +184,14 @@ export function setFacialReport(
 
 export function setInventoryReport(report) {
   return {
-    type: 'SET_INVENTORY_REPORT',
+    type: "SET_INVENTORY_REPORT",
     report
   }
 }
 
 export function setVehicleReport(report) {
   return {
-    type: 'SET_VEHICULAR_REPORT',
+    type: "SET_VEHICULAR_REPORT",
     report
   }
 }
@@ -196,7 +203,7 @@ export function setVehicleReport(report) {
  */
 export function setCamera(camera) {
   return {
-    type: 'SET_CAMERA',
+    type: "SET_CAMERA",
     camera
   }
 }

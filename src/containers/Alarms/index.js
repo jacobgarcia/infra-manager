@@ -10,6 +10,8 @@ import * as FileSaver from "file-saver"
 
 import { NetworkOperation } from "lib"
 
+import { setReport, setHistory, setAlarm, setAlarms } from "actions"
+
 import io from "socket.io-client"
 
 class Alarms extends Component {
@@ -53,6 +55,22 @@ class Alarms extends Component {
   componentDidMount() {
     // Start socket connection
     this.initSockets(this.props)
+    const from = new Date(new Date().toLocaleDateString()).getTime()
+    const to = new Date(new Date().toLocaleDateString()).getTime() + 86400000
+
+    NetworkOperation.getReports(from, to).then(({ data }) => {
+      data.reports.map(report => {
+        this.props.setReport(report)
+        // Populate history array
+        report.history.map(currentHistory => {
+          currentHistory.site = report.site.key
+          currentHistory.zone = report.zone
+          this.props.setHistory(currentHistory)
+        })
+        // Populate alarms array
+        this.props.setAlarms(report.alarms)
+      })
+    })
   }
 
   initSockets() {
@@ -80,11 +98,27 @@ class Alarms extends Component {
       )
     })
   }
-
+  getReports = (from, to) => {
+    NetworkOperation.getReports(from, to).then(({ data }) => {
+      data.reports.map(report => {
+        this.props.setReport(report)
+        // Populate history array
+        report.history.map(currentHistory => {
+          currentHistory.site = report.site.key
+          currentHistory.zone = report.zone
+          this.props.setHistory(currentHistory)
+        })
+        // Populate alarms array
+        this.props.setAlarms(report.alarms)
+      })
+    })
+  }
   onDayClick = day => {
     // TODO Network operation for selected period
     const range = DateUtils.addDayToRange(day, this.state)
-    this.setState(range)
+    this.setState(range, () => {
+      this.setTableElements()
+    })
   }
 
   downloadReport = () => {
@@ -106,19 +140,15 @@ class Alarms extends Component {
   }
 
   setTableElements = () => {
-    const { state, props } = this
-    if (!state.to && !state.from) return props.alarms
-    else if (!state.to) {
-      return props.alarms.filter(
-        $0 =>
-          $0.timestamp >= state.from.getTime() - 43200000 &&
-          $0.timestamp < state.from.getTime() + 43200000
+    const { state } = this
+    if (!state.to && !state.from) return this.getReports(null, null)
+    else if (!state.to) return this.getReports(
+        state.from.getTime() - 43200000,
+        state.from.getTime() + 43200000
       )
-    }
-    return props.alarms.filter(
-      $0 =>
-        $0.timestamp >= state.from.getTime() - 43200000 &&
-        $0.timestamp < state.to.getTime() + 43200000
+    return this.getReports(
+      state.from.getTime() - 43200000,
+      state.to.getTime() + 43200000
     )
   }
 
@@ -140,15 +170,23 @@ class Alarms extends Component {
               <div className="content">
                 <div className="time-location">
                   <p>
-                    {state.selectedLog.timestamp &&
+                    {state.selectedLog &&
+                      state.selectedLog.timestamp &&
                       new Date(state.selectedLog.timestamp).toLocaleString()}
                   </p>
-                  {state.selectedLog.zone && (
-                    <p>
-                      Zona <span>{state.selectedLog.zone.name}</span> Sitio{" "}
-                      <span>{state.selectedLog.site}</span>
-                    </p>
-                  )}
+                  {state.selectedLog &&
+                    state.selectedLog.zone && (
+                      <p>
+                        Zona{" "}
+                        <span>
+                          {state.selectedLog && state.selectedLog.zone.name}
+                        </span>{" "}
+                        Sitio{" "}
+                        <span>
+                          {state.selectedLog && state.selectedLog.site}
+                        </span>
+                      </p>
+                    )}
                 </div>
                 <div className="detail">
                   <span>IMAGENES RELACIONADAS</span>
@@ -156,7 +194,8 @@ class Alarms extends Component {
                     nextArrow={<button>{">"}</button>}
                     prevArrow={<button>{"<"}</button>}
                   >
-                    {state.selectedLog.photos &&
+                    {state.selectedLog &&
+                    state.selectedLog.photos &&
                     state.selectedLog.photos.length > 0 ? (
                       state.selectedLog.photos.map((photo, index) => {
                         return (
@@ -186,25 +225,26 @@ class Alarms extends Component {
                   <div className="detail">
                     <span>Hora del suceso</span>
                     <p>
-                      {new Date(
-                        state.selectedLog.timestamp
-                      ).toLocaleTimeString()}
+                      {state.selectedLog &&
+                        new Date(
+                          state.selectedLog.timestamp
+                        ).toLocaleTimeString()}
                     </p>
                   </div>
                   <div className="detail">
                     <span>Tipo de alerta</span>
-                    <p>{state.selectedLog.event}</p>
+                    <p>{state.selectedLog && state.selectedLog.event}</p>
                   </div>
                   <div className="detail">
                     <span>Nivel de Riesgo</span>
-                    <p>{state.selectedLog.risk}</p>
+                    <p>{state.selectedLog && state.selectedLog.risk}</p>
                   </div>
                   <div className="detail">
                     <span>Estatus</span>
-                    <p>{state.selectedLog.status}</p>
+                    <p>{state.selectedLog && state.selectedLog.status}</p>
                   </div>
                   <div className="detail">
-                    <p>{state.selectedLog._id}</p>
+                    <p>{state.selectedLog && state.selectedLog._id}</p>
                     <span>Código único de identificación</span>
                   </div>
                 </div>
@@ -259,7 +299,7 @@ class Alarms extends Component {
                   </div>
                 )}
                 title="Alertas"
-                elements={this.setTableElements()}
+                elements={props.alarms}
                 titles={[
                   { title: "Tiempo", className: "medium" },
                   { title: "Suceso", className: "large" },
@@ -315,7 +355,28 @@ Alarms.propTypes = {
   alarms: PropTypes.array,
   location: PropTypes.object,
   match: PropTypes.string,
-  credentials: PropTypes.object
+  credentials: PropTypes.object,
+  setReport: PropTypes.func,
+  setHistory: PropTypes.func,
+  setAlarm: PropTypes.func,
+  setAlarms: PropTypes.func
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setReport: report => {
+      dispatch(setReport(report))
+    },
+    setHistory: history => {
+      dispatch(setHistory(history))
+    },
+    setAlarm: alarm => {
+      dispatch(setAlarm(alarm))
+    },
+    setAlarms: alarms => {
+      dispatch(setAlarms(alarms))
+    }
+  }
 }
 
 function mapStateToProps({ zones, history, alarms, credentials }) {
@@ -327,4 +388,7 @@ function mapStateToProps({ zones, history, alarms, credentials }) {
   }
 }
 
-export default connect(mapStateToProps)(Alarms)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Alarms)
