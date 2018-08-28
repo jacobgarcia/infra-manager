@@ -384,6 +384,9 @@ p span {
       > img {
         width: 20px;
         height: 20px;
+        &:hover {
+          cursor: pointer;
+        }
       }
     }
     .alert__body {
