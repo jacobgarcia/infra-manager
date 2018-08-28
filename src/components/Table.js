@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
+import ReactPaginate from 'react-paginate'
 
 class Table extends PureComponent {
   constructor(props) {
@@ -9,6 +10,13 @@ class Table extends PureComponent {
     }
   }
 
+
+  handlePageClick = data => {
+    let selected = data.selected
+    let offset = Math.ceil(selected * this.props.perPage)
+
+    console.log(`data sended ${JSON.stringify(data)} `)
+  }
   render() {
     const { state, props } = this
 
@@ -75,6 +83,19 @@ class Table extends PureComponent {
               <p className="no-info">Sin información</p>
             )}
           </div>
+        </div>
+        <div className="pagination-container">
+        <ReactPaginate previousLabel={"<<"}
+                               nextLabel={">>"}
+                               breakLabel={<a href="">...</a>}
+                               breakClassName={"break-me"}
+                               pageCount={this.state.pageCount}
+                               marginPagesDisplayed={2}
+                               pageRangeDisplayed={5}
+                               onPageChange={this.handlePageClick}
+                               containerClassName={"pagination"}
+                               subContainerClassName={"pages pagination"}
+                               activeClassName={"active"} />
         </div>
       </div>
     )

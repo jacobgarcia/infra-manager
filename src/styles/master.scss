@@ -623,31 +623,6 @@ p span {
     justify-content: center;
     position: relative;
     width: 100%;
-    .pagination {
-      list-style: none;
-      position: relative;
-      display: table;
-      width: auto;
-      padding-top: 15px;
-      margin : 0;
-      overflow-x: auto;
-      background: $dark-gray;
-      align-items: center;
-      border-style: solid;
-      border: 2px;
-      border-color: rgba(0,0,0,0.5);
-      > li {
-        position: relative;
-        display: inline;
-        color: $white;
-        float: left;
-        padding: 8px 16px;
-        text-decoration: none;
-        .active {
-          text-decoration: underline;
-        }
-      }
-    }
   }
 }
 .table {
@@ -723,6 +698,36 @@ p span {
         flex-basis: 600px;
         font-weight: 600;
       }
+    }
+  }
+}
+.pagination-container{
+  display: flex;
+  justify-content: center;
+  .pagination {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    border-width: 2px;
+    align-self: center;
+    margin-top: 22px;
+    background-color: transparent;
+    border: 1px solid #00adee;
+    border-radius: 6px;
+    color: #fff;
+    padding: 4px 4px;
+    > li {
+      font-weight: bold;
+      position: relative;
+      display: inline;
+      color: $white;
+      float: left;
+      padding: 8px 16px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .active {
+      text-decoration: underline;
     }
   }
 }

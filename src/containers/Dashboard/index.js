@@ -17,7 +17,6 @@ import {
   Bar,
   Line
 } from 'recharts'
-
 import Card from 'components/Card'
 import Table from 'components/Table'
 import RiskBar from 'components/RiskBar'
