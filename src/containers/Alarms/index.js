@@ -105,24 +105,25 @@ class Alarms extends Component {
     })
   }
 
-  render() {
+  setTableElements = () => {
     const { state, props } = this
-    let elements = null
-    if (!state.to && !state.from) elements = props.alarms
+    if (!state.to && !state.from) return props.alarms
     else if (!state.to) {
-      elements = props.alarms.filter(
+      return props.alarms.filter(
         $0 =>
           $0.timestamp >= state.from.getTime() - 43200000 &&
           $0.timestamp < state.from.getTime() + 43200000
       )
-    } else {
-      props.alarms.filter(
-        $0 =>
-          $0.timestamp >= state.from.getTime() - 43200000 &&
-          $0.timestamp < state.to.getTime() + 43200000
-      )
     }
+    return props.alarms.filter(
+      $0 =>
+        $0.timestamp >= state.from.getTime() - 43200000 &&
+        $0.timestamp < state.to.getTime() + 43200000
+    )
+  }
 
+  render() {
+    const { state, props } = this
     return (
       <div className="app-content facial-recognition small-padding">
         <Helmet>
@@ -258,21 +259,7 @@ class Alarms extends Component {
                   </div>
                 )}
                 title="Alertas"
-                elements={
-                  !state.to && !state.from
-                    ? props.alarms
-                    : !state.to
-                      ? props.alarms.filter(
-                          $0 =>
-                            $0.timestamp >= state.from.getTime() - 43200000 &&
-                            $0.timestamp < state.from.getTime() + 43200000
-                        )
-                      : props.alarms.filter(
-                          $0 =>
-                            $0.timestamp >= state.from.getTime() - 43200000 &&
-                            $0.timestamp < state.to.getTime() + 43200000
-                        )
-                }
+                elements={this.setTableElements()}
                 titles={[
                   { title: "Tiempo", className: "medium" },
                   { title: "Suceso", className: "large" },
