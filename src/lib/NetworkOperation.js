@@ -29,6 +29,10 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/zones/exhaustive`)
   }
 
+  static getAllReports() {
+    return axios.get(`${baseUrl}/sites/reports`)
+  }
+
   static getReports(from, to) {
     return axios.get(`${baseUrl}/sites/reports?from=${from}&to=${to}`)
   }

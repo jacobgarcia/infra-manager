@@ -87,7 +87,8 @@ class App extends Component {
 
     // Get all alarms and history of all sites. But set all sites with this information
     // Reports have all site information
-    NetworkOperation.getReports().then(({ data }) => {
+    NetworkOperation.getAllReports().then(({ data }) => {
+      console.log(data)
       data.reports.map(report => {
         this.props.setReport(report)
         // Populate history array
