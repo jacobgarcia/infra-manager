@@ -1,9 +1,9 @@
-import React, { Component } from "react"
-import { Switch, Route, Link } from "react-router-dom"
-import PropTypes from "prop-types"
-import { connect } from "react-redux"
-import { Helmet } from "react-helmet"
-import io from "socket.io-client"
+import React, { Component } from 'react'
+import { Switch, Route, Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { Helmet } from 'react-helmet'
+import io from 'socket.io-client'
 
 import {
   setCredentials,
@@ -16,28 +16,28 @@ import {
   setHistory,
   setAlarm,
   setAlarms
-} from "actions"
+} from 'actions'
 
-import Dashboard from "containers/Dashboard"
-import Users from "containers/Users/Loadable"
-import Statistics from "containers/Statistics/Loadable"
-import Settings from "containers/Settings/Loadable"
-import Map from "containers/Map/Loadable"
-import Accesses from "containers/Accesses/Loadable"
-import VehicularFlow from "containers/VehicularFlow/Loadable"
-import Perimeter from "containers/Perimeter/Loadable"
-import FacialRecognition from "containers/FacialRecognition/Loadable"
-import VideoSurveillance from "containers/VideoSurveillance/Loadable"
-import VisualCounter from "containers/VisualCounter"
-import Reports from "containers/Reports/Loadable"
-import Sensors from "containers/Sensors"
-import Devices from "containers/Devices/Loadable"
-import Inventory from "containers/Inventory/Loadable"
-import Alarms from "containers/Alarms"
+import Dashboard from 'containers/Dashboard'
+import Users from 'containers/Users/Loadable'
+import Statistics from 'containers/Statistics/Loadable'
+import Settings from 'containers/Settings/Loadable'
+import Map from 'containers/Map/Loadable'
+import Accesses from 'containers/Accesses/Loadable'
+import VehicularFlow from 'containers/VehicularFlow/Loadable'
+import Perimeter from 'containers/Perimeter/Loadable'
+import FacialRecognition from 'containers/FacialRecognition/Loadable'
+import VideoSurveillance from 'containers/VideoSurveillance/Loadable'
+import VisualCounter from 'containers/VisualCounter'
+import Reports from 'containers/Reports/Loadable'
+import Sensors from 'containers/Sensors'
+import Devices from 'containers/Devices/Loadable'
+import Inventory from 'containers/Inventory/Loadable'
+import Alarms from 'containers/Alarms'
 
-import Navigator from "components/Navigator"
+import Navigator from 'components/Navigator'
 
-import { NetworkOperation } from "lib"
+import { NetworkOperation } from 'lib'
 class App extends Component {
   state = {
     error: false,
@@ -49,9 +49,7 @@ class App extends Component {
 
   cleanupAlerts = () => {
     this.setState(prev => ({
-      alerts: prev.alerts.filter(
-        ({ timestamp }) => timestamp + 7000 > Date.now()
-      )
+      alerts: prev.alerts.filter(({ timestamp }) => timestamp + 7000 > Date.now())
     }))
   }
 
@@ -60,19 +58,17 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const token = localStorage.getItem("token")
-    let returnPath = ""
+    const token = localStorage.getItem('token')
+    let returnPath = ''
 
-    if (this.props.location.pathname !== "/") {
-      returnPath = `?return=${this.props.location.pathname}${
-        this.props.location.search
-      }`
+    if (this.props.location.pathname !== '/') {
+      returnPath = `?return=${this.props.location.pathname}${this.props.location.search}`
     }
 
     setInterval(this.cleanupAlerts, 500000)
 
     if (!token) {
-      localStorage.removeItem("token")
+      localStorage.removeItem('token')
       this.props.history.replace(`/login${returnPath}`)
     }
 
@@ -87,7 +83,9 @@ class App extends Component {
 
     // Get all alarms and history of all sites. But set all sites with this information
     // Reports have all site information
-    NetworkOperation.getAllReports().then(({ data }) => {
+    const from = new Date(new Date().toLocaleDateString()).getTime()
+    const to = new Date(new Date().toLocaleDateString()).getTime() + 86400000
+    NetworkOperation.getReports(from, to).then(({ data }) => {
       console.log(data)
       data.reports.map(report => {
         this.props.setReport(report)
@@ -152,11 +150,7 @@ class App extends Component {
       .catch(error => {
         const { response = {} } = error
 
-        if (
-          response.status === 401 ||
-          response.status === 400 ||
-          response.status === 404
-        ) {
+        if (response.status === 401 || response.status === 400 || response.status === 404) {
           this.props.history.replace(`/login${returnPath}`)
         }
       })
@@ -171,17 +165,15 @@ class App extends Component {
   initSockets() {
     this.socket = io()
 
-    this.socket.on("connect", () => {
-      this.socket.emit("join", this.props.credentials.company.name)
+    this.socket.on('connect', () => {
+      this.socket.emit('join', this.props.credentials.company.name)
     })
 
-    this.socket.on("alert", alert => {
+    this.socket.on('alert', alert => {
       this.props.setAlarm(alert)
       // Add alert popup to GUI
       this.setState(prev => ({
-        alerts: prev.alerts.concat([
-          { ...alert, timestamp: Date.now(), isInvalid: false }
-        ])
+        alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now(), isInvalid: false }])
       }))
     })
   }
@@ -190,9 +182,7 @@ class App extends Component {
   addManualAlert = () => {
     const alert = {}
     this.setState(prev => ({
-      alerts: prev.alerts.concat([
-        { ...alert, timestamp: Date.now(), isInvalid: false }
-      ])
+      alerts: prev.alerts.concat([{ ...alert, timestamp: Date.now(), isInvalid: false }])
     }))
   }
 
@@ -208,7 +198,7 @@ class App extends Component {
   }
 
   componentDidCatch(error, info) {
-    console.warn("ERROR")
+    console.warn('ERROR')
     console.error(error, info)
 
     this.setState({
@@ -225,7 +215,7 @@ class App extends Component {
             Favor de recargar la página
           </p>
           <p className="legend">
-            Si el problema persiste, favor de reportarlo a{" "}
+            Si el problema persiste, favor de reportarlo a{' '}
             <a href="mailto:soporte@connus.mx">soporte@connus.mx</a>
           </p>
         </div>
@@ -235,11 +225,7 @@ class App extends Component {
     if (this.state.isLoading) {
       return (
         <div id="app">
-          <div
-            className={`loading-screen ${
-              this.state.willCompleteLoad ? "dismissed" : ""
-            }`}
-          >
+          <div className={`loading-screen ${this.state.willCompleteLoad ? 'dismissed' : ''}`}>
             <h1>Cargando...</h1>
           </div>
         </div>
@@ -256,14 +242,12 @@ class App extends Component {
             <div
               key={alert.timestamp}
               className={`alert ${
-                alert.isInvalid || alert.timestamp + 10000 < Date.now()
-                  ? "invalid"
-                  : ""
+                alert.isInvalid || alert.timestamp + 10000 < Date.now() ? 'invalid' : ''
               }`}
             >
               <div className="alert__image">
                 <img
-                  src={"/static/img/icons/close.png"}
+                  src={'/static/img/icons/close.png'}
                   onClick={() => this.alertCloseHandling(alert)}
                 />
               </div>
@@ -360,19 +344,7 @@ function mapDispatchToProps(dispatch) {
       id
     ) => {
       dispatch(
-        setFacialReport(
-          timestamp,
-          event,
-          success,
-          risk,
-          zone,
-          status,
-          site,
-          access,
-          pin,
-          photo,
-          id
-        )
+        setFacialReport(timestamp, event, success, risk, zone, status, site, access, pin, photo, id)
       )
     },
     setVehicleReport: report => {
