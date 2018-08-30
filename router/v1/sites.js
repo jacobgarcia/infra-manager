@@ -392,11 +392,14 @@ router.route("/sites/reports").get((req, res) => {
                 }))
                 .filter($0 => $0.timestamp >= from && $0.timestamp <= to)
                 .sort(($0, $1) => $1.timestamp - $0.timestamp)
-            : site.alarms.map(alarm => ({
-                ...alarm.toObject(),
-                site: site.key,
-                zone: site.zone
-              })),
+                .slice(0, 100)
+            : site.alarms
+                .map(alarm => ({
+                  ...alarm.toObject(),
+                  site: site.key,
+                  zone: site.zone
+                }))
+                .slice(0, 100),
         history: site.history,
         onlineStatuses: site.onlineStatuses
       }))
