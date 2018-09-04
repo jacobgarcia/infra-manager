@@ -1,9 +1,9 @@
-import { combineReducers } from "redux"
+import { combineReducers } from 'redux'
 
 // Authentication, initial state from localStorage
 function credentials(state = {}, action) {
   switch (action.type) {
-    case "SET_USER":
+    case 'SET_USER':
       return {
         user: {
           _id: action.user._id,
@@ -17,7 +17,7 @@ function credentials(state = {}, action) {
         company: action.user.company,
         authenticated: true
       }
-    case "LOG_OUT":
+    case 'LOG_OUT':
       return {}
     default:
       return state
@@ -27,9 +27,9 @@ function credentials(state = {}, action) {
 // Global alerts (errors)
 function appAlert(state = {}, action) {
   switch (action.type) {
-    case "DISMISS_ALERT":
+    case 'DISMISS_ALERT':
       return {}
-    case "SET_ALERT":
+    case 'SET_ALERT':
       return {
         title: action.title,
         body: action.body
@@ -41,12 +41,10 @@ function appAlert(state = {}, action) {
 
 function reports(state = [], action) {
   switch (action.type) {
-    case "SET_INITIAL_REPORTS":
+    case 'SET_INITIAL_REPORTS':
       return [...action.reports]
-    case "SET_REPORT": {
-      const foundIndex = state.findIndex(
-        ({ site }) => site.key === action.report.site.key
-      )
+    case 'SET_REPORT': {
+      const foundIndex = state.findIndex(({ site }) => site.key === action.report.site.key)
       const newState = [...state] // BUG: It only creates a shallow copy
 
       foundIndex > -1
@@ -81,7 +79,7 @@ function reports(state = [], action) {
           })
       return [...newState]
     }
-    case "SET_ATTENDED": {
+    case 'SET_ATTENDED': {
       return state.map(
         report =>
           report.site._id === action.alarm.site._id
@@ -104,8 +102,8 @@ function reports(state = [], action) {
 
 function history(state = [], action) {
   switch (action.type) {
-    case "SET_HISTORY": {
-      return [action.history, ...state]
+    case 'SET_HISTORY': {
+      return [action.history]
     }
     default:
       return state
@@ -114,11 +112,11 @@ function history(state = [], action) {
 
 function alarms(state = [], action) {
   switch (action.type) {
-    case "SET_ALARM": {
+    case 'SET_ALARM': {
       return [action.alarm, ...state]
     }
-    case "SET_ALARMS":
-      return [...action.alarms]
+    case 'SET_ALARMS':
+      return [...action.alarms, ...state]
     default:
       return state
   }
@@ -126,9 +124,9 @@ function alarms(state = [], action) {
 
 function zones(state = [], action) {
   switch (action.type) {
-    case "SET_EXHAUSTIVE":
+    case 'SET_EXHAUSTIVE':
       return [...action.zones]
-    case "SET_ZONE":
+    case 'SET_ZONE':
       return [
         ...state,
         {
@@ -138,7 +136,7 @@ function zones(state = [], action) {
           subzones: [] // IMPORTANT
         }
       ]
-    case "SET_SITE":
+    case 'SET_SITE':
       return state.map(
         zone =>
           zone._id === action.zoneId
@@ -170,7 +168,7 @@ function administrators(state = [], action) {
 
 function facialReports(state = [], action) {
   switch (action.type) {
-    case "SET_FACIAL_REPORT":
+    case 'SET_FACIAL_REPORT':
       return [
         ...state,
         {
@@ -193,11 +191,11 @@ function facialReports(state = [], action) {
 }
 
 // import facialRecognitionLogs from './facialRecognition'
-import cctvLogs from "./cctv"
-import vehicularFlowLogs from "./vehicularFlow"
-import accessLogs from "./access"
-import perimeterLogs from "./perimeter"
-import inventoryLogs from "./inventory"
+import cctvLogs from './cctv'
+import vehicularFlowLogs from './vehicularFlow'
+import accessLogs from './access'
+import perimeterLogs from './perimeter'
+import inventoryLogs from './inventory'
 
 export default combineReducers({
   credentials,

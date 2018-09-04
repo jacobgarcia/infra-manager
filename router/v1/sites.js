@@ -361,8 +361,8 @@ router.route('/sites/reports').get((req, res) => {
             winston.error({ error })
             return res.status(500).json({ error })
           }
-          const theAlarms = alarms[0].alarms
-          const reports = sites.map(site => ({
+
+          const reports = sites.map((site, index) => ({
             site: {
               _id: site._id,
               key: site.key
@@ -370,7 +370,7 @@ router.route('/sites/reports').get((req, res) => {
             zone: site.zone,
             timestamp: site.timestamp,
             sensors: site.sensors,
-            alarms: theAlarms.map(alarm => ({
+            alarms: alarms[index].alarms.map(alarm => ({
               ...alarm,
               site: site.key,
               zone: site.zone

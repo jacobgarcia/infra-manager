@@ -1,18 +1,18 @@
-import React, { Component } from "react"
-import { connect } from "react-redux"
-import PropTypes from "prop-types"
-import { Helmet } from "react-helmet"
-import { DateUtils } from "react-day-picker"
-import Slider from "react-slick"
-import domtoimage from "dom-to-image"
-import { Table, RiskBar, DateRangePicker } from "components"
-import * as FileSaver from "file-saver"
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
+import { DateUtils } from 'react-day-picker'
+import Slider from 'react-slick'
+import domtoimage from 'dom-to-image'
+import { Table, RiskBar, DateRangePicker } from 'components'
+import * as FileSaver from 'file-saver'
 
-import { NetworkOperation } from "lib"
+import { NetworkOperation } from 'lib'
 
-import { setReport, setHistory, setAlarm, setAlarms } from "actions"
+import { setReport, setHistory, setAlarm, setAlarms } from 'actions'
 
-import io from "socket.io-client"
+import io from 'socket.io-client'
 
 class Alarms extends Component {
   constructor(props) {
@@ -44,8 +44,7 @@ class Alarms extends Component {
       if (nextProps.alarms && nextProps.alarms.length > 0) {
         this.setState({
           selectedLog: nextProps.alarms.length > 0 ? nextProps.alarms[0] : null,
-          selectedElementIndex:
-            nextProps.alarms.length > 0 ? [0, 0] : [null, null],
+          selectedElementIndex: nextProps.alarms.length > 0 ? [0, 0] : [null, null],
           showLogDetail: true
         })
       }
@@ -76,8 +75,8 @@ class Alarms extends Component {
   initSockets() {
     this.socket = io()
 
-    this.socket.on("connect", () => {
-      this.socket.emit("join", this.props.credentials.company.name)
+    this.socket.on('connect', () => {
+      this.socket.emit('join', this.props.credentials.company.name)
     })
   }
 
@@ -90,16 +89,14 @@ class Alarms extends Component {
   }
 
   onDownload = () => {
-    const image = document.getElementById("image")
+    const image = document.getElementById('image')
     domtoimage.toBlob(image).then(photo => {
-      FileSaver.saveAs(
-        photo,
-        `${new Date(this.state.selectedLog.timestamp).getTime()}.png`
-      )
+      FileSaver.saveAs(photo, `${new Date(this.state.selectedLog.timestamp).getTime()}.png`)
     })
   }
   getReports = (from, to) => {
     NetworkOperation.getReports(from, to).then(({ data }) => {
+      console.log(data)
       data.reports.map(report => {
         this.props.setReport(report)
         // Populate history array
@@ -124,32 +121,26 @@ class Alarms extends Component {
   downloadReport = () => {
     NetworkOperation.getAlarmsReports().then(response => {
       const blob = new Blob([response.data], {
-        type: "text/plain;charset=utf-8"
+        type: 'text/plain;charset=utf-8'
       })
-      FileSaver.saveAs(blob, new Date().toLocaleDateString() + "report.csv")
+      FileSaver.saveAs(blob, new Date().toLocaleDateString() + 'report.csv')
     })
   }
 
   downloadSummery = () => {
-    NetworkOperation.getAlarmsSummery("PANA-MA").then(response => {
+    NetworkOperation.getAlarmsSummery('PANA-MA').then(response => {
       const blob = new Blob([response.data], {
-        type: "text/plain;charset=utf-8"
+        type: 'text/plain;charset=utf-8'
       })
-      FileSaver.saveAs(blob, new Date().toLocaleDateString() + "resumen.csv")
+      FileSaver.saveAs(blob, new Date().toLocaleDateString() + 'resumen.csv')
     })
   }
 
   setTableElements = () => {
     const { state } = this
     if (!state.to && !state.from) return this.getReports(null, null)
-    else if (!state.to) return this.getReports(
-        state.from.getTime() - 43200000,
-        state.from.getTime() + 43200000
-      )
-    return this.getReports(
-      state.from.getTime() - 43200000,
-      state.to.getTime() + 43200000
-    )
+    else if (!state.to) return this.getReports(state.from.getTime() - 43200000, state.from.getTime() + 43200000)
+    return this.getReports(state.from.getTime() - 43200000, state.to.getTime() + 43200000)
   }
 
   render() {
@@ -162,11 +153,7 @@ class Alarms extends Component {
         <div className="content">
           <h2>Centro de Alertas</h2>
           <div className="tables-detail__container">
-            <div
-              className={`log-detail-container ${
-                state.showLogDetail ? "" : "hidden"
-              }`}
-            >
+            <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               <div className="content">
                 <div className="time-location">
                   <p>
@@ -177,23 +164,14 @@ class Alarms extends Component {
                   {state.selectedLog &&
                     state.selectedLog.zone && (
                       <p>
-                        Zona{" "}
-                        <span>
-                          {state.selectedLog && state.selectedLog.zone.name}
-                        </span>{" "}
-                        Sitio{" "}
-                        <span>
-                          {state.selectedLog && state.selectedLog.site}
-                        </span>
+                        Zona <span>{state.selectedLog && state.selectedLog.zone.name}</span> Sitio{' '}
+                        <span>{state.selectedLog && state.selectedLog.site}</span>
                       </p>
                     )}
                 </div>
                 <div className="detail">
                   <span>IMAGENES RELACIONADAS</span>
-                  <Slider
-                    nextArrow={<button>{">"}</button>}
-                    prevArrow={<button>{"<"}</button>}
-                  >
+                  <Slider nextArrow={<button>{'>'}</button>} prevArrow={<button>{'<'}</button>}>
                     {state.selectedLog &&
                     state.selectedLog.photos &&
                     state.selectedLog.photos.length > 0 ? (
@@ -204,8 +182,7 @@ class Alarms extends Component {
                             id="image"
                             className="image-slider"
                             style={{
-                              backgroundImage:
-                                `url(https://demo.connus.mx` + photo + `)`
+                              backgroundImage: `url(https://demo.connus.mx` + photo + `)`
                             }}
                           />
                         )
@@ -226,9 +203,7 @@ class Alarms extends Component {
                     <span>Hora del suceso</span>
                     <p>
                       {state.selectedLog &&
-                        new Date(
-                          state.selectedLog.timestamp
-                        ).toLocaleTimeString()}
+                        new Date(state.selectedLog.timestamp).toLocaleTimeString()}
                     </p>
                   </div>
                   <div className="detail">
@@ -257,7 +232,7 @@ class Alarms extends Component {
             </div>
             <div className="tables-container">
               <Table
-                className={`${state.showLogDetail ? "detailed" : ""}`}
+                className={`${state.showLogDetail ? 'detailed' : ''}`}
                 selectedElementIndex={state.selectedElementIndex}
                 actionsContainer={
                   <div>
@@ -267,27 +242,20 @@ class Alarms extends Component {
                     <p className="button action" onClick={this.downloadSummery}>
                       Descargar Resumen
                     </p>
-                    <DateRangePicker
-                      from={state.from}
-                      to={state.to}
-                      onDayClick={this.onDayClick}
-                    />
+                    <DateRangePicker from={state.from} to={state.to} onDayClick={this.onDayClick} />
                   </div>
                 }
                 element={(item, index) => (
                   <div
                     className={`table-item ${
-                      state.selectedElementIndex[0] === index &&
-                      state.selectedElementIndex[1] === 1
-                        ? "selected"
-                        : ""
+                      state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1
+                        ? 'selected'
+                        : ''
                     }`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, 1)}
                   >
-                    <div className="medium">
-                      {new Date(item.timestamp).toLocaleDateString()}
-                    </div>
+                    <div className="medium">{new Date(item.timestamp).toLocaleDateString()}</div>
                     <div className="large">{item.event}</div>
                     {/* <div className="hiddable">{item.zone.name}</div> */}
                     <div className="hiddable">{item.site}</div>
@@ -301,31 +269,29 @@ class Alarms extends Component {
                 title="Alertas"
                 elements={props.alarms}
                 titles={[
-                  { title: "Tiempo", className: "medium" },
-                  { title: "Suceso", className: "large" },
-                  { title: "Sitio", className: "hiddable" },
-                  { title: "Riesgo" },
-                  { title: "Estatus o acción", className: "large hiddable" },
-                  { title: "ID", className: "medium" }
+                  { title: 'Tiempo', className: 'medium' },
+                  { title: 'Suceso', className: 'large' },
+                  { title: 'Sitio', className: 'hiddable' },
+                  { title: 'Riesgo' },
+                  { title: 'Estatus o acción', className: 'large hiddable' },
+                  { title: 'ID', className: 'medium' }
                 ]}
               />
               <Table
-                className={`${state.showLogDetail ? "detailed" : ""}`}
+                className={`${state.showLogDetail ? 'detailed' : ''}`}
                 selectedElementIndex={state.selectedElementIndex}
                 element={(item, index, sectionIndex) => (
                   <div
                     className={`table-item ${
                       state.selectedElementIndex[0] === index &&
                       state.selectedElementIndex[1] === sectionIndex
-                        ? "selected"
-                        : ""
+                        ? 'selected'
+                        : ''
                     }`}
                     key={index}
                     onClick={() => this.onLogSelect(item, index, sectionIndex)}
                   >
-                    <div className="medium">
-                      {new Date(item.timestamp).toLocaleDateString()}
-                    </div>
+                    <div className="medium">{new Date(item.timestamp).toLocaleDateString()}</div>
                     <div className="large">{item.event}</div>
                     <div className="hiddable">{item.site}</div>
                     <div className="large hiddable">{item.status}</div>
@@ -335,11 +301,11 @@ class Alarms extends Component {
                 title="Historial"
                 elements={props.history}
                 titles={[
-                  { title: "Tiempo", className: "medium" },
-                  { title: "Suceso", className: "large" },
-                  { title: "Sitio", className: "hiddable" },
-                  { title: "Estatus o acción", className: "large hiddable" },
-                  { title: "ID", className: "medium" }
+                  { title: 'Tiempo', className: 'medium' },
+                  { title: 'Suceso', className: 'large' },
+                  { title: 'Sitio', className: 'hiddable' },
+                  { title: 'Estatus o acción', className: 'large hiddable' },
+                  { title: 'ID', className: 'medium' }
                 ]}
               />
             </div>
