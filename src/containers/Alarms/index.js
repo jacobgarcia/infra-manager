@@ -10,7 +10,7 @@ import * as FileSaver from 'file-saver'
 
 import { NetworkOperation } from 'lib'
 
-import { setReport, setHistory, setAlarm, setAlarms } from 'actions'
+import { setReport, setHistory, setAlarm, setAlarms, deleteAlarms } from 'actions'
 
 import io from 'socket.io-client'
 
@@ -56,7 +56,8 @@ class Alarms extends Component {
     this.initSockets(this.props)
     const from = new Date(new Date().toLocaleDateString()).getTime()
     const to = new Date(new Date().toLocaleDateString()).getTime() + 86400000
-
+    // Clean alarms array
+    this.props.deleteAlarms()
     NetworkOperation.getReports(from, to).then(({ data }) => {
       data.reports.map(report => {
         this.props.setReport(report)
@@ -96,7 +97,6 @@ class Alarms extends Component {
   }
   getReports = (from, to) => {
     NetworkOperation.getReports(from, to).then(({ data }) => {
-      console.log(data)
       data.reports.map(report => {
         this.props.setReport(report)
         // Populate history array
@@ -138,6 +138,8 @@ class Alarms extends Component {
 
   setTableElements = () => {
     const { state } = this
+    // Clean alarms array
+    this.props.deleteAlarms()
     if (!state.to && !state.from) return this.getReports(null, null)
     else if (!state.to) return this.getReports(state.from.getTime() - 43200000, state.from.getTime() + 43200000)
     return this.getReports(state.from.getTime() - 43200000, state.to.getTime() + 43200000)
@@ -267,7 +269,7 @@ class Alarms extends Component {
                   </div>
                 )}
                 title="Alertas"
-                elements={props.alarms}
+                elements={props.alarms.sort(($0, $1) => $0.timestamp - $1.timestamp)}
                 titles={[
                   { title: 'Tiempo', className: 'medium' },
                   { title: 'Suceso', className: 'large' },
@@ -325,7 +327,8 @@ Alarms.propTypes = {
   setReport: PropTypes.func,
   setHistory: PropTypes.func,
   setAlarm: PropTypes.func,
-  setAlarms: PropTypes.func
+  setAlarms: PropTypes.func,
+  deleteAlarms: PropTypes.func
 }
 
 function mapDispatchToProps(dispatch) {
@@ -341,6 +344,9 @@ function mapDispatchToProps(dispatch) {
     },
     setAlarms: alarms => {
       dispatch(setAlarms(alarms))
+    },
+    deleteAlarms: () => {
+      dispatch(deleteAlarms())
     }
   }
 }

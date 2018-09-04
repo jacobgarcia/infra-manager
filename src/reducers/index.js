@@ -117,6 +117,8 @@ function alarms(state = [], action) {
     }
     case 'SET_ALARMS':
       return [...action.alarms, ...state]
+    case 'DELETE_ALARMS':
+      return []
     default:
       return state
   }
