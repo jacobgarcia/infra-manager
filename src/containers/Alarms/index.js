@@ -127,6 +127,15 @@ class Alarms extends Component {
     })
   }
 
+  downloadOtherReport = () => {
+    NetworkOperation.getOtherReport().then(response => {
+      const blob = new Blob([response.data], {
+        type: 'text/plain;charset=utf-8'
+      })
+      FileSaver.saveAs(blob, new Date().toLocaleDateString() + 'report.csv')
+    })
+  }
+
   downloadSummery = () => {
     NetworkOperation.getAlarmsSummery('PANA-MA').then(response => {
       const blob = new Blob([response.data], {
@@ -238,9 +247,15 @@ class Alarms extends Component {
                 selectedElementIndex={state.selectedElementIndex}
                 actionsContainer={
                   <div>
-                    <p className="button action" onClick={this.downloadReport}>
-                      Descargar Reporte
-                    </p>
+                    {this.props.credentials.company.name === 'Puma' ? (
+                      <p className="button action" onClick={this.downloadReport}>
+                        Descargar Reporte
+                      </p>
+                    ) : (
+                      <p className="button action" onClick={this.downloadOtherReport}>
+                        Descargar Reporte
+                      </p>
+                    )}
                     {this.props.credentials.company.name === 'Puma' && (
                       <p className="button action" onClick={this.downloadSummery}>
                         Descargar Resumen

@@ -1,6 +1,6 @@
-import axios from "axios"
+import axios from 'axios'
 
-import constants from "./constants"
+import constants from './constants'
 
 const baseUrl = `${constants.hostUrl}/v1`
 
@@ -8,8 +8,8 @@ const baseUrl = `${constants.hostUrl}/v1`
 axios.interceptors.request.use(
   config => {
     // Add token
-    config.headers.Authorization = `Bearer ${localStorage.getItem("token")}`
-    config.headers["Cache-Control"] = "no-cache"
+    config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+    config.headers['Cache-Control'] = 'no-cache'
     // Do something before request is sent
     return config
   },
@@ -67,7 +67,7 @@ class NetworkOperation {
 
   static uploadProfilePhoto(photoFile) {
     const formData = new FormData()
-    formData.append("photo", photoFile)
+    formData.append('photo', photoFile)
     return axios.post(`${baseUrl}/users/self/photo`, formData)
   }
 
@@ -131,17 +131,7 @@ class NetworkOperation {
     return axios.get(`${baseUrl}/counter/count`)
   }
 
-  static postStream(
-    core,
-    user,
-    pass,
-    streamid,
-    company,
-    site,
-    name,
-    country,
-    zone
-  ) {
+  static postStream(core, user, pass, streamid, company, site, name, country, zone) {
     return axios.post(`${baseUrl}/stream`, {
       core,
       user,
@@ -165,6 +155,10 @@ class NetworkOperation {
 
   static getAlarmsReports() {
     return axios.get(`${baseUrl}/reports/alarms`)
+  }
+
+  static getOtherReport() {
+    return axios.get(`${baseUrl}/reports/alarms/other`)
   }
 
   static getAlarmsSummery(key) {

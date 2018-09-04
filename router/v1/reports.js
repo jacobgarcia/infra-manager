@@ -37,6 +37,37 @@ const fields = [
   }
 ]
 
+const otherFields = [
+  {
+    label: 'Fecha',
+    value: 'date'
+  },
+  {
+    label: 'Hora',
+    value: 'hour'
+  },
+  {
+    label: 'Sitio',
+    value: 'site'
+  },
+  {
+    label: 'Suceso',
+    value: 'event'
+  },
+  {
+    label: 'Zona',
+    value: 'zone'
+  },
+  {
+    label: 'Key',
+    value: 'key'
+  },
+  {
+    label: 'Fotos',
+    value: 'photos'
+  }
+]
+
 const alarmFields = [
   {
     label: 'Fecha',
@@ -96,6 +127,48 @@ router.route('/reports/alarms').get((req, res) => {
         })
       })
       const json2csvParser = new Json2csvParser({ fields })
+      const csv = json2csvParser.parse(alarms)
+      return fs.writeFile('static/alarms.csv', csv, error => {
+        if (error) {
+          winston.error({ error })
+          return res.status(500).json({ error })
+        }
+        return res.status(200).download('static/alarms.csv')
+      })
+    })
+})
+
+router.route('/reports/alarms/other').get((req, res) => {
+  const company = req._user.cmp
+  const alarms = []
+
+  Site.find({ company })
+    .populate('zone', 'name')
+    .select('alarms name zone')
+    .exec((error, sites) => {
+      if (error) {
+        winston.error({ error })
+        return res.status(500).json({ error })
+      }
+
+      sites.map(site => {
+        site.alarms.map(alarm => {
+          const currentAlarm = {
+            _id: alarm._id,
+            event: alarm.event,
+            date: new Date(alarm.timestamp).toLocaleDateString(),
+            hour: new Date(alarm.timestamp).toLocaleTimeString(),
+            site: site.name,
+            zone: site.zone.name,
+            risk: alarm.risk,
+            status: alarm.status,
+            key: alarm.key,
+            photos: alarm.photos
+          }
+          alarms.push(currentAlarm)
+        })
+      })
+      const json2csvParser = new Json2csvParser({ fields: otherFields })
       const csv = json2csvParser.parse(alarms)
       return fs.writeFile('static/alarms.csv', csv, error => {
         if (error) {
