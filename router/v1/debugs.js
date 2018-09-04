@@ -18,13 +18,7 @@ const storage = multer.diskStorage({
   destination: (req, file, callback) => callback(null, 'static/uploads'),
   filename: (req, file, callback) => {
     crypto.pseudoRandomBytes(16, (error, raw) => {
-      callback(
-        null,
-        raw.toString('hex') +
-          Date.now() +
-          '.' +
-          mime.getExtension(file.mimetype)
-      )
+      callback(null, raw.toString('hex') + Date.now() + '.' + mime.getExtension(file.mimetype))
     })
   }
 })
@@ -52,58 +46,53 @@ router.route('/debug/request').post((req, res) => {
       'static/photos',
       shortid.generate() + Date.now(),
       (error, filename) => {
-        base64Img.img(
-          pc1,
-          'static/photos',
-          shortid.generate() + Date.now(),
-          (error, filename1) => {
-            base64Img.img(
-              pc2,
-              'static/photos',
-              shortid.generate() + Date.now(),
-              (error, filename2) => {
-                new Debug({
-                  camera,
-                  c1,
-                  c2,
-                  v1,
-                  v2,
-                  photo: '/' + filename,
-                  pc1: '/' + filename1,
-                  pc2: '/' + filename2
-                }).save(error => {
-                  // Save debug request
-                  if (error) {
-                    winston.error(error)
-                    return res.status(400).json({
-                      success: 'false',
-                      message: "The specified debug couldn't be created",
-                      error: error
-                    })
-                  }
-                  const data = {
-                    image1: '/' + filename,
-                    image2: '/' + filename1,
-                    image3: '/' + filename2,
-                    c1: c1,
-                    c2: c2,
-                    v1: v1,
-                    v2: v2,
-                    site: camera
-                  }
-
-                  global.io.to(company.name).emit('debugRequest', data)
-                  global.io.to('web-platform').emit('debugRequest', data)
-
-                  return res.status(200).json({
-                    success: true,
-                    message: 'Successfully registered debug'
+        base64Img.img(pc1, 'static/photos', shortid.generate() + Date.now(), (error, filename1) => {
+          base64Img.img(
+            pc2,
+            'static/photos',
+            shortid.generate() + Date.now(),
+            (error, filename2) => {
+              new Debug({
+                camera,
+                c1,
+                c2,
+                v1,
+                v2,
+                photo: '/' + filename,
+                pc1: '/' + filename1,
+                pc2: '/' + filename2
+              }).save(error => {
+                // Save debug request
+                if (error) {
+                  winston.error(error)
+                  return res.status(400).json({
+                    success: 'false',
+                    message: "The specified debug couldn't be created",
+                    error: error
                   })
+                }
+                const data = {
+                  image1: '/' + filename,
+                  image2: '/' + filename1,
+                  image3: '/' + filename2,
+                  c1: c1,
+                  c2: c2,
+                  v1: v1,
+                  v2: v2,
+                  site: camera
+                }
+
+                global.io.to(company.name).emit('debugRequest', data)
+                global.io.to('web-platform').emit('debugRequest', data)
+
+                return res.status(200).json({
+                  success: true,
+                  message: 'Successfully registered debug'
                 })
-              }
-            )
-          }
-        )
+              })
+            }
+          )
+        })
       }
     )
   })
@@ -120,9 +109,7 @@ router.route('/debug/request/:id').get((req, res) => {
       return res.status(200).json({ succes: true, camera })
       // global.io.emit('singleDebug',camera)
     }
-    return res
-      .status(400)
-      .json({ success: 'false', message: 'Error loading data' })
+    return res.status(400).json({ success: 'false', message: 'Error loading data' })
   })
 })
 // post camera debug
@@ -162,13 +149,11 @@ router.route('/debug/request/multiple').post(upload, (req, res) => {
         v1: v1,
         v2: v2
       }
-      
+
       global.io.to(company.name).emit('debugRequest', data)
       global.io.to('web-platform').emit('debugRequest', data)
 
-      return res
-        .status(200)
-        .json({ success: true, message: 'Successfully registered debug' })
+      return res.status(200).json({ success: true, message: 'Successfully registered debug' })
     })
   })
 })
@@ -183,9 +168,7 @@ router.route('/debug/exception').post((req, res) => {
     // Save the log
     if (error) {
       winston.error(error)
-      return res
-        .status(500)
-        .json({ success: 'false', message: 'Could not save exception.' })
+      return res.status(500).json({ success: 'false', message: 'Could not save exception.' })
     }
     return res.status(200).json({ success: true, log })
   })
