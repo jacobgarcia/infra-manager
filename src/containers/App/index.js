@@ -287,7 +287,7 @@ class App extends Component {
 
 App.propTypes = {
   setCredentials: PropTypes.func,
-  history: PropTypes.array,
+  history: PropTypes.object,
   user: PropTypes.object,
   credentials: PropTypes.object,
   zones: PropTypes.array,

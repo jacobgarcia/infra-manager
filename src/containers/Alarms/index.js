@@ -241,9 +241,12 @@ class Alarms extends Component {
                     <p className="button action" onClick={this.downloadReport}>
                       Descargar Reporte
                     </p>
-                    <p className="button action" onClick={this.downloadSummery}>
-                      Descargar Resumen
-                    </p>
+                    {this.props.credentials.company.name === 'Puma' && (
+                      <p className="button action" onClick={this.downloadSummery}>
+                        Descargar Resumen
+                      </p>
+                    )}
+
                     <DateRangePicker from={state.from} to={state.to} onDayClick={this.onDayClick} />
                   </div>
                 }
@@ -319,7 +322,7 @@ class Alarms extends Component {
 }
 
 Alarms.propTypes = {
-  history: PropTypes.array,
+  history: PropTypes.object,
   alarms: PropTypes.array,
   location: PropTypes.object,
   match: PropTypes.string,
