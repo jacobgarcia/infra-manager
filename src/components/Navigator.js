@@ -45,16 +45,12 @@ class Navigator extends Component {
         <ul className="navigator-header">
           <li
             className="sandwitch-icon"
-            onClick={() =>
-              this.setState(prev => ({ isHidden: !prev.isHidden }))
-            }
+            onClick={() => this.setState(prev => ({ isHidden: !prev.isHidden }))}
           />
           <li className="username" onClick={() => this.closeNavigator()}>
             <NavLink to="/settings" className="fade">
               <span className="fade">
-                {getAccessTitle(
-                  props.credentials.user && props.credentials.user.access
-                )}
+                {getAccessTitle(props.credentials.user && props.credentials.user.access)}
               </span>
               {props.credentials.user && props.credentials.user.name}
             </NavLink>
@@ -82,9 +78,7 @@ class Navigator extends Component {
             .filter(
               service =>
                 props.credentials.company
-                  ? props.credentials.company.services.some(
-                      $0 => $0 === service._id
-                    )
+                  ? props.credentials.company.services.some($0 => $0 === service._id)
                   : false
             )
             .map(({ title, name }) => (
@@ -101,6 +95,14 @@ class Navigator extends Component {
               <span className="fade">Alertas</span>
             </NavLink>
           </li>
+          {props.credentials.company.name === 'Puma' && (
+            <li onClick={() => this.closeNavigator()}>
+              <NavLink to="/reports" className="reports">
+                <span className="fade">Alertas</span>
+              </NavLink>
+            </li>
+          )}
+
           <li onClick={() => this.closeNavigator()}>
             <NavLink to="/users" className="users">
               <span className="fade">Usuarios</span>
