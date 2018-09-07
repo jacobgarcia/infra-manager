@@ -61,7 +61,23 @@ _With Docker_, builds up with **node** and **mongo**
 | HOST | 0.0.0.0                  |
 | PORT | 8080            |
 
+**Brief Documentation**
 
+| Folder | Description        |
+| ------ | ------------------ |
+| config | This folder contains all files related to configuration. From database URI, NGINX.conf, webpack configuration for all environments and other server configuration files               |
+| lib   | Files that are used for external services or processes. Rekognition.py is contained in here           |
+| models   | All MongoDB schemas are contained in here    |
+| resources   | Files which help to develop or understand the application          |
+| router   | API's related files |
+| src   | All JS client-source files               |
+| static   | All static files. Images, icons, and other related static files               |
+
+**API**
+https://documenter.getpostman.com/view/596007/RVncdboE
+
+**FRM Mobile**
+https://documenter.getpostman.com/view/596007/RVtvpsRv
 ## Licence
 
 MIT
