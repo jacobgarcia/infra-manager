@@ -1,7 +1,7 @@
 # Bundles
 dist/**
 
-**.DS_Store
+*.DS_Store
 
 # Uploads
 static/uploads/company-logos/**

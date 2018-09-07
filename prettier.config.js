@@ -1,7 +1,15 @@
 // prettier.config.js or .prettierrc.js
 module.exports = {
   printWidth: 100,
-  parser: "flow",
+  parser: 'flow',
   semi: false,
-  singleQuote: true
+  singleQuote: true,
+  overrides: [
+    {
+      files: '*.scss',
+      options: {
+        singleQuote: false
+      }
+    }
+  ]
 }
