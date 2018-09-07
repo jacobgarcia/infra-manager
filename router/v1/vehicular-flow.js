@@ -7,7 +7,7 @@ const mime = require('mime')
 const path = require('path')
 const OpenalprApi = require('openalpr_api')
 const apiInstance = new OpenalprApi.DefaultApi()
-const secretKey = 'sk_00083b316c1a01c22ea1a196'
+const secretKey = 'sk_05468adb39752b42f537ec6a'
 const router = new express.Router()
 
 const VehicularReport = require(path.resolve('models/VehicularReport'))
