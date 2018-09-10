@@ -198,8 +198,7 @@ router.route('/sites/online').put((req, res) => {
 
           room.save(error => {
             if (error) {
-              winston.error(error)
-              return res.status(500).json({ success: false, message: 'Error at finding sites' })
+              console.error(error)
             }
             return null
           })
