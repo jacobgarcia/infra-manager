@@ -8,16 +8,16 @@ const hpp = require('hpp')
 const cors = require('cors')
 const app = express()
 const mongoose = require('mongoose')
+const profiler = require('v8-profiler')
 
-const { databaseUri, project: { name } } = require(path.resolve('config'))
+const {
+  databaseUri,
+  project: { name }
+} = require(path.resolve('config'))
 const webhook = require(path.resolve('lib/webhook'))
 const v1 = require(path.resolve('router/v1'))
 
-const {
-  PORT = 8080,
-  HOST = '0.0.0.0',
-  NODE_ENV: MODE = 'development'
-} = process.env
+const { PORT = 8080, HOST = '0.0.0.0', NODE_ENV: MODE = 'development' } = process.env
 
 mongoose
   .connect(databaseUri)
@@ -50,9 +50,7 @@ app.get('*', (req, res) => res.sendFile(path.resolve('dist/index.html')))
 
 // Start server
 const server = app.listen(PORT, HOST, () =>
-  winston.info(
-    `${name} server is listening\n  Port: ${PORT}\n  Host: ${HOST}\n  Mode: ${MODE}`
-  )
+  winston.info(`${name} server is listening\n  Port: ${PORT}\n  Host: ${HOST}\n  Mode: ${MODE}`)
 )
 
 const io = require('socket.io').listen(server, {
@@ -76,4 +74,38 @@ io.on('connection', socket => {
   })
 })
 
+/**
+ * Simple userland CPU profiler using v8-profiler
+ * Usage: require('[path_to]/CpuProfiler').init('datadir')
+ *
+ * @module CpuProfiler
+ * @type {exports}
+ */
+
+const fs = require('fs')
+
+// setInterval(startProfiling, 30 * 1000)
+
+function startProfiling() {
+  var stamp = Date.now()
+  var id = 'profile-' + stamp
+
+  // Use stdout directly to bypass eventloop
+  fs.writeSync(1, 'Start profiler with Id [' + id + ']\n')
+
+  // Start profiling
+  profiler.startProfiling(id)
+
+  // Schedule stop of profiling in x seconds
+  setTimeout(() => {
+    stopProfiling(id)
+  }, 5000)
+}
+
+function stopProfiling(id) {
+  var profile = profiler.stopProfiling(id)
+  fs.writeFile(id + '.cpuprofile', JSON.stringify(profile), () => {
+    console.log('Profiler data written')
+  })
+}
 global.io = io

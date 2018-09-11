@@ -74,3 +74,6 @@ package-lock.json
 
 # Coma separated values
 *.csv
+
+# CPU Profiles
+*.cpuprofile
