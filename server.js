@@ -8,8 +8,6 @@ const hpp = require('hpp')
 const cors = require('cors')
 const app = express()
 const mongoose = require('mongoose')
-const profiler = require('v8-profiler')
-
 const {
   databaseUri,
   project: { name }
@@ -74,38 +72,4 @@ io.on('connection', socket => {
   })
 })
 
-/**
- * Simple userland CPU profiler using v8-profiler
- * Usage: require('[path_to]/CpuProfiler').init('datadir')
- *
- * @module CpuProfiler
- * @type {exports}
- */
-
-const fs = require('fs')
-
-// setInterval(startProfiling, 30 * 1000)
-
-function startProfiling() {
-  var stamp = Date.now()
-  var id = 'profile-' + stamp
-
-  // Use stdout directly to bypass eventloop
-  fs.writeSync(1, 'Start profiler with Id [' + id + ']\n')
-
-  // Start profiling
-  profiler.startProfiling(id)
-
-  // Schedule stop of profiling in x seconds
-  setTimeout(() => {
-    stopProfiling(id)
-  }, 5000)
-}
-
-function stopProfiling(id) {
-  var profile = profiler.stopProfiling(id)
-  fs.writeFile(id + '.cpuprofile', JSON.stringify(profile), () => {
-    console.log('Profiler data written')
-  })
-}
 global.io = io
