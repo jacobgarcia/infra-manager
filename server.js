@@ -54,7 +54,8 @@ const server = app.listen(PORT, HOST, () =>
 const io = require('socket.io').listen(server, {
   pingInterval: 10000,
   pingTimeout: 80000,
-  transports: ['polling', 'websocket']
+  transports: ['websocket'],
+  rejectUnauthorized: false
 })
 
 io.on('connection', socket => {
