@@ -54,8 +54,7 @@ const server = app.listen(PORT, HOST, () =>
 const io = require('socket.io').listen(server, {
   pingInterval: 10000,
   pingTimeout: 80000,
-  transports: ['websocket'],
-  rejectUnauthorized: false
+  transports: ['polling', 'websocket']
 })
 
 io.on('connection', socket => {
@@ -72,5 +71,38 @@ io.on('connection', socket => {
     io.to('web-platform').emit('refresh')
   })
 })
+
+const mosca = require('mosca')
+
+const ascoltatore = {
+  // using ascoltatore
+  type: 'mongo',
+  url: 'mongodb://localhost:27017/mqtt',
+  pubsubCollection: 'ascoltatori',
+  mongo: {}
+}
+
+const settings = {
+  port: 1883,
+  backend: ascoltatore
+}
+
+const servermqtt = new mosca.Server(settings)
+
+servermqtt.on('clientConnected', client => {
+  console.log('client connected', client.id)
+})
+
+// fired when a message is received
+servermqtt.on('published', (packet, client) => {
+  console.log('Published', packet.topic, client)
+})
+
+servermqtt.on('ready', setup)
+
+// fired when the mqtt server is ready
+function setup() {
+  console.log('Mosca server is up and running')
+}
 
 global.io = io

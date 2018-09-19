@@ -103,6 +103,14 @@ class Navigator extends Component {
             </li>
           )}
 
+          {props.credentials.company.name === 'Puma' && (
+            <li onClick={() => this.closeNavigator()}>
+              <NavLink to="/cbma" className="cbma">
+                <span className="fade">Alertas</span>
+              </NavLink>
+            </li>
+          )}
+
           <li onClick={() => this.closeNavigator()}>
             <NavLink to="/users" className="users">
               <span className="fade">Usuarios</span>

@@ -30,6 +30,7 @@ import FacialRecognition from 'containers/FacialRecognition/Loadable'
 import VideoSurveillance from 'containers/VideoSurveillance/Loadable'
 import VisualCounter from 'containers/VisualCounter'
 import Reports from 'containers/Reports/Loadable'
+import CBMA from 'containers/CBMA/Loadable'
 import Sensors from 'containers/Sensors'
 import Devices from 'containers/Devices/Loadable'
 import Inventory from 'containers/Inventory/Loadable'
@@ -274,6 +275,7 @@ class App extends Component {
           <Route path="/video-surveillance" component={VideoSurveillance} />
           <Route path="/visual-counter" component={VisualCounter} />
           <Route path="/reports" component={Reports} />
+          <Route path="/cbma" component={CBMA} />
           <Route path="/settings" component={Settings} />
           <Route path="/sensors" component={Sensors} />
           <Route path="/devices" component={Devices} />
