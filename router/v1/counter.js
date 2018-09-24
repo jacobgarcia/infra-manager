@@ -13,7 +13,6 @@ router
   .post((req, res) => {
     const { key, company } = req.body
     let { entries, exits } = req.body
-    console.log(entries, exits)
     const start = 83 // 7:00AM
     const end = 238 // 7:00PM
     // Parse since code comes as plain text
@@ -66,31 +65,28 @@ router
         })
       }
 
-      if (!company) return res
-          .status(404)
-          .json({ success: false, message: 'Company was not found' })
+      if (!company) return res.status(404).json({ success: false, message: 'Company was not found' })
       const counter = {
         inputs: filteredEntries,
         outputs: filteredExits
       }
       // Save both arrays to Counter
-      return Site.findOneAndUpdate(
-        { company, key },
-        { $push: { counter } }
-      ).exec(error => {
-        if (error) {
-          winston.error({ error })
-          return res.status(500).json({
-            success: false,
-            message: 'Could not update site with counter information'
+      return Site.findOneAndUpdate({ company, key }, { $push: { counter } })
+        .select('id')
+        .exec(error => {
+          if (error) {
+            winston.error({ error })
+            return res.status(500).json({
+              success: false,
+              message: 'Could not update site with counter information'
+            })
+          }
+          return res.status(200).json({
+            success: true,
+            message: 'Saved counter information',
+            counter
           })
-        }
-        return res.status(200).json({
-          success: true,
-          message: 'Saved counter information',
-          counter
         })
-      })
     })
   })
 
