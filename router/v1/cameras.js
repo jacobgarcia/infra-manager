@@ -4,10 +4,7 @@ const path = require('path')
 const winston = require('winston')
 const router = new express.Router()
 
-const base64Img = require('base64-img')
-const shortid = require('shortid')
 const Battery = require(path.resolve('models/Battery'))
-const Site = require(path.resolve('models/Site'))
 const Report = require(path.resolve('models/Report'))
 const Access = require(path.resolve('models/Access'))
 const Admin = require(path.resolve('models/Admin'))
@@ -20,18 +17,14 @@ router.route('/cameras/logs/:camera').get((req, res) => {
   Battery.find({ camera }).exec((error, batteryLogs) => {
     if (error) {
       winston.error(error)
-      return res
-        .status(500)
-        .json({ success: 'false', message: 'Could not retrieve battery log.' })
+      return res.status(500).json({ success: 'false', message: 'Could not retrieve battery log.' })
     }
 
     // Find Report logs
     return Report.find({ camera }).exec((error, reportLogs) => {
       if (error) {
         winston.error(error)
-        return res
-          .status(500)
-          .json({ success: 'false', message: 'Could not retrieve report log.' })
+        return res.status(500).json({ success: 'false', message: 'Could not retrieve report log.' })
       }
 
       // Find access logs
@@ -44,9 +37,7 @@ router.route('/cameras/logs/:camera').get((req, res) => {
           })
         }
 
-        return res
-          .status(200)
-          .json({ success: true, batteryLogs, reportLogs, accessLogs })
+        return res.status(200).json({ success: true, batteryLogs, reportLogs, accessLogs })
       })
     })
   })
@@ -61,9 +52,7 @@ router.route('/cameras/report/shit/:site').get((req, res) => {
   Report.find({ camera }).exec((error, reportLogs) => {
     if (error) {
       winston.error(error)
-      return res
-        .status(500)
-        .json({ success: 'false', message: 'Could not retrieve report log.' })
+      return res.status(500).json({ success: 'false', message: 'Could not retrieve report log.' })
     }
     if (!reportLogs) return res.status(404).json({
         success: false,
@@ -88,9 +77,7 @@ router.route('/cameras/multi/debug').post((req, res) => {
         success: 'false',
         message: 'The specified admin does not exist'
       })
-    } else if (admin.role !== 'root') return res
-        .status(401)
-        .json({ success: false, message: 'Get outta here you fucking hacker!' })
+    } else if (admin.role !== 'root') return res.status(401).json({ success: false, message: 'Get outta here you fucking hacker!' })
 
     // Notify to all cameras
     global.io.emit('debug')
@@ -121,9 +108,7 @@ router.route('/cameras/single/upgrade').post((req, res) => {
         success: 'false',
         message: 'The specified admin does not exist'
       })
-    } else if (admin.role !== 'root') return res
-        .status(401)
-        .json({ success: false, message: 'Get outta here you fucking hacker!' })
+    } else if (admin.role !== 'root') return res.status(401).json({ success: false, message: 'Get outta here you fucking hacker!' })
 
     // Notify to cameras
     global.io.to(camera).emit('upgrade', site)
@@ -144,9 +129,7 @@ router.route('/cameras/alarm/deactivate').post((req, res) => {
         success: 'false',
         message: 'The specified admin does not exist'
       })
-    } else if (admin.role !== 'root') return res
-        .status(401)
-        .json({ success: false, message: 'Get outta here you fucking hacker!' })
+    } else if (admin.role !== 'root') return res.status(401).json({ success: false, message: 'Get outta here you fucking hacker!' })
 
     // Notify to cameras
     global.io.to(camera).emit('deactivate')
@@ -167,9 +150,7 @@ router.route('/cameras/alarm/photos/activate').post((req, res) => {
         success: 'false',
         message: 'The specified admin does not exist'
       })
-    } else if (admin.role !== 'root') return res
-        .status(401)
-        .json({ success: false, message: 'Get outta here you fucking hacker!' })
+    } else if (admin.role !== 'root') return res.status(401).json({ success: false, message: 'Get outta here you fucking hacker!' })
 
     // Notify to cameras
     global.io.to(camera).emit('activate')
@@ -199,82 +180,9 @@ router.route('/cameras/log/battery').post((req, res) => {
     // Save the log
     if (error) {
       winston.error(error)
-      return res
-        .status(500)
-        .json({ success: 'false', message: 'Could not save log.' })
+      return res.status(500).json({ success: 'false', message: 'Could not save log.' })
     }
     return res.status(200).json({ success: true, log })
-  })
-})
-
-// PATCH: This method is still used in old AT&T cameras. It's marked as UNSAFE and needs to be DEPRECATED
-router.route('/cameras/alarm/photos').post((req, res) => {
-  const { camera, photo, pc1, pc2 } = req.body
-  const photos = []
-
-  Site.findOne({ key: camera }).exec((error, site) => {
-    if (error) {
-      winston.error(error)
-      return res
-        .status(500)
-        .json({ success: false, message: 'Could not find site' })
-    }
-    if (!site) return res
-        .status(404)
-        .json({ success: false, message: 'The specified site was not found' })
-
-    // Sort alarms by timestamp
-    site.alarms.sort(($0, $1) => {
-      return $1.timestamp - $0.timestamp
-    })
-
-    // Generate images in folder
-    // Front photo
-    return base64Img.img(
-      photo,
-      'static/alerts',
-      shortid.generate() + Date.now(),
-      (error, photo1) => {
-        const photo = '/' + photo1
-        photos.push(photo)
-        // Left photo
-        base64Img.img(
-          pc1,
-          'static/alerts',
-          shortid.generate() + Date.now(),
-          (error, photo2) => {
-            const photo = '/' + photo2
-            photos.push(photo)
-            // Right photo
-            base64Img.img(
-              pc2,
-              'static/alerts',
-              shortid.generate() + Date.now(),
-              (error, photo3) => {
-                const photo = '/' + photo3
-                photos.push(photo)
-                // Push photos to latest alarm created
-                site.alarms[0].photos = photos
-
-                // Save site with new urls
-                site.save((error, updatedSite) => {
-                  if (error) {
-                    winston.error(error)
-                    return res
-                      .status(500)
-                      .json({ success: false, message: 'Could not find site' })
-                  }
-
-                  return res
-                    .status(200)
-                    .json({ success: true, message: updatedSite })
-                })
-              }
-            )
-          }
-        )
-      }
-    )
   })
 })
 
@@ -289,9 +197,7 @@ router.route('/cameras/log/battery').post((req, res) => {
     // Save the log
     if (error) {
       winston.error(error)
-      return res
-        .status(500)
-        .json({ success: 'false', message: 'Could not save log.' })
+      return res.status(500).json({ success: 'false', message: 'Could not save log.' })
     }
     return res.status(200).json({ success: true, log })
   })
@@ -320,9 +226,7 @@ router.route('/cameras/log/report').post((req, res) => {
     // Save the log
     if (error) {
       winston.error(error)
-      return res
-        .status(500)
-        .json({ success: 'false', message: 'Could not save log.' })
+      return res.status(500).json({ success: 'false', message: 'Could not save log.' })
     }
     return res.status(200).json({ success: true, log })
   })
@@ -339,9 +243,7 @@ router.route('/cameras/log/access').post((req, res) => {
     // Save the log
     if (error) {
       winston.error(error)
-      return res
-        .status(500)
-        .json({ success: 'false', message: 'Could not save log.' })
+      return res.status(500).json({ success: 'false', message: 'Could not save log.' })
     }
     return res.status(200).json({ success: true, log })
   })
