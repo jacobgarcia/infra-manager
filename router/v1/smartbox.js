@@ -15,13 +15,7 @@ const storage = multer.diskStorage({
   destination: (req, file, callback) => callback(null, 'static/vehicular-flow'),
   filename: (req, file, callback) => {
     crypto.pseudoRandomBytes(16, (error, raw) => {
-      callback(
-        null,
-        raw.toString('hex') +
-          Date.now() +
-          '.' +
-          mime.getExtension(file.mimetype)
-      )
+      callback(null, raw.toString('hex') + Date.now() + '.' + mime.getExtension(file.mimetype))
     })
   }
 })
@@ -35,70 +29,61 @@ const upload = multer({ storage: storage }).fields([
 router.route('/smartbox/exception').post((req, res) => {
   const { id, description } = req.body
   if (!id || !description) return res.status(400).json({})
-  return SmartBox.findOneAndUpdate(
-    { id },
-    { $push: { exceptions: { description } } }
-  ).exec(error => {
-    if (error) {
-      winston.error(error)
-      return res
-        .status(500)
-        .json({ success: false, message: 'Could not save exception' })
+  return SmartBox.findOneAndUpdate({ id }, { $push: { exceptions: { description } } }).exec(
+    error => {
+      if (error) {
+        winston.error(error)
+        return res.status(500).json({ success: false, message: 'Could not save exception' })
+      }
+      return res.status(200).json({ success: true, message: 'Succesfully added exception' })
     }
-    return res
-      .status(200)
-      .json({ success: true, message: 'Succesfully added exception' })
-  })
+  )
 })
 
 /* UPGRADE SMARTBOX. TODO: POST THIS REQUEST */
 router.route('/smartbox/upgrade/:key').get((req, res) => {
   const { key } = req.params
 
-  Site.findOne({ key }).exec((error, smartbox) => {
-    if (error) {
-      winston.error(error)
-      return res
-        .status(500)
-        .json({ success: false, message: 'Could not find Smart Box' })
-    }
+  Site.findOne({ key })
+    .select('key')
+    .exec((error, smartbox) => {
+      if (error) {
+        winston.error(error)
+        return res.status(500).json({ success: false, message: 'Could not find Smart Box' })
+      }
 
-    if (!smartbox) return res
-        .status(404)
-        .json({ success: false, message: 'Specified Smartbox was not found' })
+      if (!smartbox) return res.status(404).json({ success: false, message: 'Specified Smartbox was not found' })
 
-    global.io.to(key).emit('upgrade')
-    return res.status(200).json({
-      success: true,
-      message: 'Initialized Smartbox debugging process',
-      smartbox
+      global.io.to(key).emit('upgrade')
+      return res.status(200).json({
+        success: true,
+        message: 'Initialized Smartbox debugging process',
+        smartbox
+      })
     })
-  })
 })
 
 /* ASK FOR DEBUG TO SMARTBOX */
 router.route('/smartbox/debug/:key').get((req, res) => {
   const { key } = req.params
 
-  Site.findOne({ key }).exec((error, smartbox) => {
-    if (error) {
-      winston.error(error)
-      return res
-        .status(500)
-        .json({ success: false, message: 'Could not find Smart Box' })
-    }
+  Site.findOne({ key })
+    .select('key')
+    .exec((error, smartbox) => {
+      if (error) {
+        winston.error(error)
+        return res.status(500).json({ success: false, message: 'Could not find Smart Box' })
+      }
 
-    if (!smartbox) return res
-        .status(404)
-        .json({ success: false, message: 'Specified Smartbox was not found' })
+      if (!smartbox) return res.status(404).json({ success: false, message: 'Specified Smartbox was not found' })
 
-    global.io.to(key).emit('debug')
-    return res.status(200).json({
-      success: true,
-      message: 'Initialized Smartbox debugging process',
-      smartbox
+      global.io.to(key).emit('debug')
+      return res.status(200).json({
+        success: true,
+        message: 'Initialized Smartbox debugging process',
+        smartbox
+      })
     })
-  })
 })
 
 /* ENDPOINT FOR SMARTBOX TO POST INFORMATION WHEN DEBUGGING */
@@ -107,9 +92,7 @@ router.route('/smartbox/debug').post(upload, (req, res) => {
   const photoFiles = req.files.photos
   const photos = []
 
-  if (!photoFiles) return res
-      .status(400)
-      .json({ success: false, message: 'Malformed request. Empty photos' })
+  if (!photoFiles) return res.status(400).json({ success: false, message: 'Malformed request. Empty photos' })
 
   photoFiles.forEach(photo => {
     photos.push(photo.filename)
@@ -128,9 +111,7 @@ router.route('/smartbox/debug').post(upload, (req, res) => {
       })
     }
 
-    return res
-      .status(200)
-      .json({ success: true, message: 'Succesfully debugged Smartbox' })
+    return res.status(200).json({ success: true, message: 'Succesfully debugged Smartbox' })
   })
 })
 

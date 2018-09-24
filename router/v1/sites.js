@@ -10,7 +10,6 @@ const crypto = require('crypto')
 const ObjectID = mongo.ObjectID
 const mongoose = require('mongoose')
 
-// const Site = require(path.resolve('models/Site'))
 const Zone = require(path.resolve('models/Zone'))
 const Site = require(path.resolve('models/Site'))
 const Company = require(path.resolve('models/Company'))
@@ -145,6 +144,7 @@ router.route('/sites/online').get((req, res) => {
   const online = []
 
   Site.find({ company })
+    .select('key')
     .sort({ key: 1 }) // sort them by key
     .exec((error, sites) => {
       // if there are any errors, return the error
@@ -172,6 +172,7 @@ router.route('/sites/online').put((req, res) => {
   const online = []
 
   Site.find({ company })
+    .select('key onlineStatuses')
     .sort({ key: 1 }) // sort them by key
     .exec((error, sites) => {
       // if there are any errors, return the error
@@ -287,18 +288,20 @@ router.route('/sites/initialize').post((req, res) => {
           return Site.findOneAndUpdate(
             { key, company: company._id },
             { $push: { smartboxes: smartbox._id } }
-          ).exec((error, site) => {
-            if (error) {
-              winston.error(error)
-              return res.status(500).json({
-                success: false,
-                message: 'Could not add the smartbox to the already created site',
-                error
-              })
-            }
-            // Add the new site to the specified subzone
-            return res.status(200).json({ site })
-          })
+          )
+            .select('id')
+            .exec((error, site) => {
+              if (error) {
+                winston.error(error)
+                return res.status(500).json({
+                  success: false,
+                  message: 'Could not add the smartbox to the already created site',
+                  error
+                })
+              }
+              // Add the new site to the specified subzone
+              return res.status(200).json({ site })
+            })
         })
       })
     })
@@ -618,31 +621,33 @@ router.route('/sites/devices').put((req, res) => {
     if (!company) return res.status(404).json({ success: false, message: 'Specified company was not found' })
 
     // Find and update site with new information
-    return Site.findOne({ company, key }).exec((error, site) => {
-      if (error) {
-        winston.error({ error })
-        return res.status(500).json({ error })
-      }
-
-      if (!site) return res.status(404).json({ success: false, message: 'No site found' })
-
-      // Update sensors
-      if (devices.llave === 2) site.devices2 = devices
-      else if (devices.llave === 3) site.devices3 = devices
-      else if (devices.llave === 1) site.devices = devices
-
-      return site.save(error => {
+    return Site.findOne({ company, key })
+      .select('devices devices2 devices3')
+      .exec((error, site) => {
         if (error) {
           winston.error({ error })
           return res.status(500).json({ error })
         }
 
-        return res.status(200).json({
-          success: true,
-          message: 'Updated devices information sucessfully'
+        if (!site) return res.status(404).json({ success: false, message: 'No site found' })
+
+        // Update sensors
+        if (devices.llave === 2) site.devices2 = devices
+        else if (devices.llave === 3) site.devices3 = devices
+        else if (devices.llave === 1) site.devices = devices
+
+        return site.save(error => {
+          if (error) {
+            winston.error({ error })
+            return res.status(500).json({ error })
+          }
+
+          return res.status(200).json({
+            success: true,
+            message: 'Updated devices information sucessfully'
+          })
         })
       })
-    })
   })
 })
 
