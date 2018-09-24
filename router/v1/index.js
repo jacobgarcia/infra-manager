@@ -9,7 +9,6 @@ router.use(require(path.resolve('router/v1/auth')))
 
 // The next things will be protected by auth
 router.use(require(path.resolve('router/v1/access')))
-router.use(require(path.resolve('router/v1/admins')))
 router.use(require(path.resolve('router/v1/alerts')))
 router.use(require(path.resolve('router/v1/cameras')))
 router.use(require(path.resolve('router/v1/counter')))
