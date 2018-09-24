@@ -23,8 +23,6 @@ const FrmUser = require(path.resolve('models/FrmUser'))
 const Access = require(path.resolve('models/Access'))
 const Company = require(path.resolve('models/Company'))
 
-const Admin = require(path.resolve('models/Admin'))
-
 const { hasAccess } = require(path.resolve('router/v1/lib/middleware-functions'))
 
 const storage = multer.diskStorage({
@@ -337,57 +335,57 @@ router.route('/users/logout').post((req, res) => {
     })
 })
 
-// Specify photo update to already registered user
-router.route('/users/update').put((req, res) => {
-  const { pin, privacy, site } = req.body
-  // Validate that no field is empty
-  if (!pin || !privacy || !site) return res.status(400).json({ success: false, message: 'Malformed request' })
-  // Validate that site exists (dumb validation)
-  return Site.findOne({ key: site })
-    .select('id')
-    .exec((error, thesite) => {
-      if (error) {
-        winston.error(error)
-        return res.status(500).json({ success: 'false', message: 'Error finding site' }) // return shit if a server error occurs
-      }
-      if (!thesite) return res
-          .status(406)
-          .json({ success: false, message: 'The specified site does not exist' })
-
-      // Validate that admin has permissions to register new users
-      return Admin.findOne({ _id: req.U_ID }).exec((error, admin) => {
-        if (error) {
-          winston.error(error)
-          return res.status(400).json({
-            success: 'false',
-            message: 'The specified admin does not exist'
-          })
-        } else if (admin.role !== 'registrar' && admin.role !== 'camarabader') return res.status(401).json({
-            success: false,
-            message: "Don't have permission to register new users"
-          })
-
-        // Validate that specified user exists
-        return FrmUser.findOne({ pin }).exec((error, user) => {
-          // if there are any errors, return the error
-          if (error) {
-            winston.error(error)
-            return res.status(500).json({ success: 'false', message: 'Error at finding users' }) // return shit if a server error occurs
-          } else if (!user) return res.status(401).json({
-              success: 'false',
-              message: 'That user is not registered'
-            })
-
-          global.io.to(site).emit('update', user.pin)
-          return res.status(200).json({
-            success: true,
-            message: 'The camera is ready to update the photo of the user. Now take the picture',
-            user
-          })
-        })
-      })
-    })
-})
+// // Specify photo update to already registered user
+// router.route('/users/update').put((req, res) => {
+//   const { pin, privacy, site } = req.body
+//   // Validate that no field is empty
+//   if (!pin || !privacy || !site) return res.status(400).json({ success: false, message: 'Malformed request' })
+//   // Validate that site exists (dumb validation)
+//   return Site.findOne({ key: site })
+//     .select('id')
+//     .exec((error, thesite) => {
+//       if (error) {
+//         winston.error(error)
+//         return res.status(500).json({ success: 'false', message: 'Error finding site' }) // return shit if a server error occurs
+//       }
+//       if (!thesite) return res
+//           .status(406)
+//           .json({ success: false, message: 'The specified site does not exist' })
+//
+//       // Validate that admin has permissions to register new users
+//       return Admin.findOne({ _id: req.U_ID }).exec((error, admin) => {
+//         if (error) {
+//           winston.error(error)
+//           return res.status(400).json({
+//             success: 'false',
+//             message: 'The specified admin does not exist'
+//           })
+//         } else if (admin.role !== 'registrar' && admin.role !== 'camarabader') return res.status(401).json({
+//             success: false,
+//             message: "Don't have permission to register new users"
+//           })
+//
+//         // Validate that specified user exists
+//         return FrmUser.findOne({ pin }).exec((error, user) => {
+//           // if there are any errors, return the error
+//           if (error) {
+//             winston.error(error)
+//             return res.status(500).json({ success: 'false', message: 'Error at finding users' }) // return shit if a server error occurs
+//           } else if (!user) return res.status(401).json({
+//               success: 'false',
+//               message: 'That user is not registered'
+//             })
+//
+//           global.io.to(site).emit('update', user.pin)
+//           return res.status(200).json({
+//             success: true,
+//             message: 'The camera is ready to update the photo of the user. Now take the picture',
+//             user
+//           })
+//         })
+//       })
+//     })
+// })
 
 router.route('/users/photo').put((req, res) => {
   const { pin, photo } = req.body

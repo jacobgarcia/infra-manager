@@ -7,7 +7,6 @@ const router = new express.Router()
 const Battery = require(path.resolve('models/Battery'))
 const Report = require(path.resolve('models/Report'))
 const Access = require(path.resolve('models/Access'))
-const Admin = require(path.resolve('models/Admin'))
 
 // Return all logs from specific site
 router.route('/cameras/logs/:camera').get((req, res) => {
@@ -69,26 +68,6 @@ router.route('/cameras/report/shit/:site').get((req, res) => {
 })
 
 // Get a debug report for all cameras
-router.route('/cameras/multi/debug').post((req, res) => {
-  Admin.findOne({ _id: req.U_ID }).exec((error, admin) => {
-    if (error) {
-      winston.error(error)
-      return res.status(400).json({
-        success: 'false',
-        message: 'The specified admin does not exist'
-      })
-    } else if (admin.role !== 'root') return res.status(401).json({ success: false, message: 'Get outta here you fucking hacker!' })
-
-    // Notify to all cameras
-    global.io.emit('debug')
-    return res.status(200).json({
-      succes: true,
-      message: 'Initiated debugging process to all cameras'
-    })
-  })
-})
-
-// Get a debug report for all cameras
 router.route('/cameras/single/debug').post((req, res) => {
   const { camera } = req.body
   // Notify to all cameras
@@ -96,68 +75,6 @@ router.route('/cameras/single/debug').post((req, res) => {
   return res.status(200).json({
     succes: true,
     message: 'Initiated debugging process to all cameras'
-  })
-})
-
-router.route('/cameras/single/upgrade').post((req, res) => {
-  const { camera, site } = req.body
-  Admin.findOne({ _id: req.U_ID }).exec((error, admin) => {
-    if (error) {
-      winston.error(error)
-      return res.status(400).json({
-        success: 'false',
-        message: 'The specified admin does not exist'
-      })
-    } else if (admin.role !== 'root') return res.status(401).json({ success: false, message: 'Get outta here you fucking hacker!' })
-
-    // Notify to cameras
-    global.io.to(camera).emit('upgrade', site)
-    return res.status(200).json({
-      succes: true,
-      message: 'Initiated upgrading process to camera ' + camera
-    })
-  })
-})
-
-// Deactivate alarm
-router.route('/cameras/alarm/deactivate').post((req, res) => {
-  const { camera } = req.body
-  Admin.findOne({ _id: req.U_ID }).exec((error, admin) => {
-    if (error) {
-      winston.error(error)
-      return res.status(400).json({
-        success: 'false',
-        message: 'The specified admin does not exist'
-      })
-    } else if (admin.role !== 'root') return res.status(401).json({ success: false, message: 'Get outta here you fucking hacker!' })
-
-    // Notify to cameras
-    global.io.to(camera).emit('deactivate')
-    return res.status(200).json({
-      succes: true,
-      message: 'Deactivated alarm for camera ' + camera
-    })
-  })
-})
-
-// Ask for more alarm photos
-router.route('/cameras/alarm/photos/activate').post((req, res) => {
-  const { camera } = req.body
-  Admin.findOne({ _id: req.U_ID }).exec((error, admin) => {
-    if (error) {
-      winston.error(error)
-      return res.status(400).json({
-        success: 'false',
-        message: 'The specified admin does not exist'
-      })
-    } else if (admin.role !== 'root') return res.status(401).json({ success: false, message: 'Get outta here you fucking hacker!' })
-
-    // Notify to cameras
-    global.io.to(camera).emit('activate')
-    return res.status(200).json({
-      succes: true,
-      message: 'Asked for mor photos to camera ' + camera
-    })
   })
 })
 
