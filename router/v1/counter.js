@@ -120,7 +120,7 @@ router
         })
         return res.status(200).json({
           success: true,
-          message: 'Retrieved streaming cameras',
+          message: 'Retrieved counter information',
           counts: sum
         })
       })

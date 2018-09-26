@@ -20,6 +20,7 @@ request.put(
   }
 )
 
+// DEMO
 request.put(
   'https://api.connus.mx/v1/sites/online',
   {
