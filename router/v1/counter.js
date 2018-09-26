@@ -71,7 +71,7 @@ router
         outputs: filteredExits
       }
       // Save both arrays to Counter
-      return Site.findOneAndUpdate({ company, key }, { $push: { counter } })
+      return Site.findOneAndUpdate({ company, key }, { $set: { counter } })
         .select('id')
         .exec(error => {
           if (error) {
