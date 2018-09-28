@@ -55,7 +55,7 @@ class Overall extends PureComponent {
     } else if (zoneId) {
       return `Zona ${name}`
     }
-    return 'Estatus general'
+    return 'Estatus General'
   }
 
   render() {
