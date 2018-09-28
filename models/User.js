@@ -13,7 +13,8 @@ const schema = new Schema({
   photoUrl: { type: String },
   zones: [{ type: Schema.Types.ObjectId, ref: 'Zone' }],
   services: [String],
-  defaultPosition: [String]
+  defaultPosition: [String],
+  phone: Number
 })
 
 module.exports = mongoose.model('User', schema)

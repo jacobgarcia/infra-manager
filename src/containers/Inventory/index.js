@@ -333,6 +333,7 @@ class Inventory extends Component {
                       <input
                         name="filter"
                         type="text"
+                        className="search action"
                         placeholder="Buscar"
                         value={state.filter}
                         onChange={this.onChange}
