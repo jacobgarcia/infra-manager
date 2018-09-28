@@ -16,7 +16,6 @@ function colors(value) {
 
 function ZonePolygon(props) {
   const reports = substractReportValues(props.reports)
-
   const { status, percentage } = getStatus(reports || null)
 
   const alerts = reports.alarms.length
@@ -30,7 +29,8 @@ function ZonePolygon(props) {
       fillOpacity={props.highlighted ? 0.7 : 0.4}
       onMouseOver={() => props.onMouseHover(props.zone._id)}
       onMouseOut={() => props.onMouseHover(null)}
-      onClick={props.onClick}>
+      onClick={props.onClick}
+    >
       <Tooltip permanent opacity={1}>
         <div className={`tooltip ${props.highlighted && 'active'}`}>
           <div className="content">
@@ -49,7 +49,8 @@ function ZonePolygon(props) {
                     animationEase="ease"
                     animationDuration={501}
                     animationBegin={0}
-                    stroke={false}>
+                    stroke={false}
+                  >
                     <Cell fill={colors(percentage)} />
                     <Cell fill="#ed2a20" />
                   </Pie>

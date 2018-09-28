@@ -56,6 +56,7 @@ export function intToRGB(int) {
 export function substractReportValues(reports = []) {
   const alarms = []
   const sensors = []
+
   reports.map(report => {
     alarms.push(...report.alarms)
     sensors.push(...report.sensors[0].values)
@@ -231,6 +232,7 @@ export function itemStatus(item = '', thisArray, option, max, min) {
 export function getStatus(data) {
   let sum = 0
   let counter = 0
+  console.log(data)
   data.sensors.map(current => {
     if (current.class === 'contact' || current.class === 'vibration') {
       sum += current.value
@@ -263,7 +265,7 @@ export function pvAtTime(sites, index) {
   sites.map(site => {
     if (!site[index]) pv -= 1
   })
-  return parseInt(pv / sites.length * 100, 10)
+  return parseInt((pv / sites.length) * 100, 10)
 }
 
 export function dataChart(chart) {

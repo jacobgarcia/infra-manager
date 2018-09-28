@@ -27,7 +27,6 @@ class ElementStatus extends Component {
       else percentage = 'OFF'
     } else percentage = props.percentage
     if (percentage !== 'OFF' && isNaN(percentage)) percentage = 100
-    console.log(props.status)
     return (
       <div
         className="status list"

@@ -1,12 +1,7 @@
 /* eslint max-statements: ["error", 15] */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import {
-  Map,
-  TileLayer,
-  Polygon as LeafletPolygon,
-  Circle
-} from 'react-leaflet'
+import { Map, TileLayer, Polygon as LeafletPolygon, Circle } from 'react-leaflet'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 
@@ -25,8 +20,7 @@ class MapContainer extends Component {
 
     let { defaultPosition = [] } = props.credentials.user
 
-    defaultPosition =
-      defaultPosition.length > 0 ? defaultPosition : [23.2096057, -101.6139503]
+    defaultPosition = defaultPosition.length > 0 ? defaultPosition : [23.2096057, -101.6139503]
 
     this.state = {
       currentPosition: defaultPosition,
@@ -97,9 +91,7 @@ class MapContainer extends Component {
 
     // If we have the same paramters dont update the state
     if (zoneId === null && siteId === null) {
-      const { elements = [], shadow = null } = this.getElementsToRender(
-        nextProps
-      )
+      const { elements = [], shadow = null } = this.getElementsToRender(nextProps)
       this.setState({
         elements,
         shadow,
@@ -115,11 +107,7 @@ class MapContainer extends Component {
       },
       () => {
         // Get elements to render and the shadow polygon
-        const {
-          elements = [],
-          element = null,
-          shadow = null
-        } = this.getElementsToRender(nextProps)
+        const { elements = [], element = null, shadow = null } = this.getElementsToRender(nextProps)
 
         // Get currentPosition in map
         let currentPosition = 0
@@ -179,9 +167,7 @@ class MapContainer extends Component {
     if (!this.props.zones || this.props.zones.length === 0) return { elements: [], shadow: null }
 
     if (siteId) {
-      const { sites = [], positions } = this.props.zones.find(
-        ({ _id }) => _id === zoneId
-      )
+      const { sites = [], positions } = this.props.zones.find(({ _id }) => _id === zoneId)
       const element = sites.find(({ _id }) => _id === siteId)
       const availableSites = arrayDifference(this.state.availableSites, sites)
 
@@ -203,15 +189,13 @@ class MapContainer extends Component {
     }
 
     return {
-      elements: this.props.zones.map(
-        ({ name, positions, _id, sites = [] }) => ({
-          name,
-          positions,
-          _id,
-          elements: sites.length,
-          type: 'ZONE'
-        })
-      ),
+      elements: this.props.zones.map(({ name, positions, _id, sites = [] }) => ({
+        name,
+        positions,
+        _id,
+        elements: sites.length,
+        type: 'ZONE'
+      })),
       shadow: null,
       element: null
     }
@@ -239,8 +223,7 @@ class MapContainer extends Component {
     if (value.length > 0) value = value.match(/[-\d.]/g).join('')
 
     // Update the last position, since this is the one we're usingto display
-    const positions =
-      this.state.newPositions.length > 0 ? this.state.newPositions : [[]]
+    const positions = this.state.newPositions.length > 0 ? this.state.newPositions : [[]]
 
     if (name === 'lat') {
       positions[positions.length - 1][0]
@@ -254,8 +237,7 @@ class MapContainer extends Component {
 
     this.setState({
       newPositions: positions,
-      isNewElementValid:
-        this.state.newElementName.length > 0 && positions.length > 0
+      isNewElementValid: this.state.newElementName.length > 0 && positions.length > 0
     })
   }
 
@@ -349,10 +331,7 @@ class MapContainer extends Component {
       return null
     }
 
-    const {
-      zoneId: selectedZone = null,
-      siteId: selectedSite = null
-    } = props.match.params
+    const { zoneId: selectedZone = null, siteId: selectedSite = null } = props.match.params
 
     // selectedType
     let selectedType = null
@@ -365,9 +344,7 @@ class MapContainer extends Component {
     }
 
     return (
-      <div
-        id="map-container"
-        className={state.isCreating ? 'creating-element' : ''}>
+      <div id="map-container" className={state.isCreating ? 'creating-element' : ''}>
         <Helmet>
           <title>Connus | Sitios</title>
         </Helmet>
@@ -399,15 +376,14 @@ class MapContainer extends Component {
           onClick={this.onMapClick}
           onViewportChanged={this.onViewportChanged}
           onMouseMove={({ latlng = {} }) =>
-            state.isCreating === true &&
-            this.setState({ hoverPosition: [latlng.lat, latlng.lng] })
+            state.isCreating === true && this.setState({ hoverPosition: [latlng.lat, latlng.lng] })
           }
-          animate>
+          animate
+        >
           <div
             className="bar-actions"
-            onMouseMove={() =>
-              state.isCreating && this.setState({ hoverPosition: null })
-            }>
+            onMouseMove={() => state.isCreating && this.setState({ hoverPosition: null })}
+          >
             <div>
               {selectedZone &&
                 state.showing !== 'OVERALL' &&
@@ -418,7 +394,8 @@ class MapContainer extends Component {
                       if (state.isCreating) this.toggleCreate()
                       if (selectedSite) props.history.push(`/sites/${selectedZone}`)
                       else if (selectedZone) props.history.push('/sites')
-                    }}>
+                    }}
+                  >
                     Regresar <span>{selectedSite ? 'zona' : 'general'}</span>
                   </span>
                 )}
@@ -430,18 +407,14 @@ class MapContainer extends Component {
                 </li>
                 {!selectedSite && (
                   <li className="button create" onClick={this.toggleCreate}>
-                    <span className="create">
-                      {selectedZone ? 'Sitio' : 'Zona'}
-                    </span>
+                    <span className="create">{selectedZone ? 'Sitio' : 'Zona'}</span>
                   </li>
                 )}
               </ul>
             }
             <div>
               {state.isCreating && (
-                <span
-                  className="button huge cancel destructive"
-                  onClick={this.toggleCreate}>
+                <span className="button huge cancel destructive" onClick={this.toggleCreate}>
                   Cancelar
                 </span>
               )}
@@ -496,13 +469,7 @@ class MapContainer extends Component {
                   key={element._id}
                   zone={element}
                   reports={(() => {
-                    let reports = []
-                    if (selectedZone) {
-                      reports = props.reports.filter(
-                        ({ zone }) => zone._id === element._id
-                      )
-                    }
-                    return reports
+                    return props.reports
                   })()}
                   highlighted={element._id === state.hoverElement}
                   onMouseHover={this.onElementOver}
@@ -608,4 +575,7 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MapContainer)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MapContainer)
