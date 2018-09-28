@@ -1661,7 +1661,7 @@ img {
     }
     .search {
       cursor: default;
-      max-height: 80%;
+      max-height: 90%;
       border-radius: 3px;
       border: 1px solid $gray;
       background-color: $dark-gray;
@@ -1669,7 +1669,7 @@ img {
       display: flex;
       flex-direction: column;
       .header {
-        background: url('assets/icons/alert.svg') no-repeat 20px center;
+        background: url('assets/icons/search.svg') no-repeat 15px center;
         background-color: $darker-gray;
         background-size: 20px;
         border-bottom: 1px solid $gray;
