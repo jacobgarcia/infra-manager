@@ -144,7 +144,7 @@ button,
   position: relative;
   width: 100px;
   &.add {
-    transform: translateX(-22px);
+    transform: translateX(-20px);
   }
   &.add,
   &.search input[type].action {
@@ -162,10 +162,10 @@ button,
     width: 26px;
   }
   &.add::before {
-    background-position: -275px;
+    background-position: -250px;
   }
   &.search::before {
-    background-position: -300px;
+    background-position: -275px;
   }
 }
 button,
@@ -1668,7 +1668,7 @@ img {
       display: flex;
       flex-direction: column;
       .header {
-        background: url('assets/icons/search.svg') no-repeat 20px center;
+        background: url('assets/icons/alert.svg') no-repeat 20px center;
         background-color: $darker-gray;
         background-size: 20px;
         border-bottom: 1px solid $gray;

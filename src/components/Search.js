@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
 import { ElementStatus, Prompt } from './'
-import {
-  getFilteredReports,
-  substractReportValues,
-  getStatus
-} from '../lib/specialFunctions'
+import { getFilteredReports, substractReportValues, getStatus } from '../lib/specialFunctions'
 
 class Search extends PureComponent {
   constructor(props) {
@@ -30,15 +26,12 @@ class Search extends PureComponent {
     this.setElements(this.props)
   }
 
-  componentWillReceiveProps(nextProps) {
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setElements(nextProps)
   }
 
   setElements(nextProps) {
-    if (
-      JSON.stringify(nextProps.zones) ===
-      JSON.stringify(this.props.zones.length)
-    ) return
+    if (JSON.stringify(nextProps.zones) === JSON.stringify(this.props.zones.length)) return
 
     const zones = nextProps.zones.map(({ _id: zoneId, name, sites }) => ({
       _id: zoneId,
@@ -120,9 +113,7 @@ class Search extends PureComponent {
     const { state, props } = this
 
     return (
-      <Prompt
-        className={props.isVisible ? 'search-container' : 'hidden'}
-        onDismiss={props.onClose}>
+      <Prompt className={props.isVisible ? 'search-container' : 'hidden'} onDismiss={props.onClose}>
         <div className="search" onClick={evt => evt.stopPropagation()}>
           <div className="header">
             <input
@@ -149,9 +140,7 @@ class Search extends PureComponent {
                   const { status, percentage } = getStatus(reports || null)
 
                   return (
-                    <Link
-                      key={element._id}
-                      to={this.getLink('SUBZONE', element)}>
+                    <Link key={element._id} to={this.getLink('SUBZONE', element)}>
                       <ElementStatus
                         id={element._id}
                         title={this.getElementTitle('SUBZONE')}
@@ -180,9 +169,7 @@ class Search extends PureComponent {
                   const { status, percentage } = getStatus(reports || null)
 
                   return (
-                    <Link
-                      key={element._id}
-                      to={this.getLink('GENERAL', element)}>
+                    <Link key={element._id} to={this.getLink('GENERAL', element)}>
                       <ElementStatus
                         id={element._id}
                         title={this.getElementTitle('GENERAL')}
