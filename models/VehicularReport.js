@@ -9,7 +9,6 @@ const schema = new Schema({
   site: String,
   front: String,
   back: String,
-  video: String,
   brand: String,
   model: String,
   color: String,

@@ -14,13 +14,9 @@ class VehicularFlow extends Component {
     this.state = {
       logs: this.props.vehicularReports,
       alerts: [0, 0, 0, 0, 0],
-      selectedLog:
-        this.props.vehicularReports.length > 0
-          ? this.props.vehicularReports[0]
-          : null,
+      selectedLog: this.props.vehicularReports.length > 0 ? this.props.vehicularReports[0] : null,
       showLogDetail: true,
-      selectedElementIndex:
-        this.props.vehicularReports.length > 0 ? [0, 0] : [null, null],
+      selectedElementIndex: this.props.vehicularReports.length > 0 ? [0, 0] : [null, null],
       from: new Date(),
       to: new Date()
     }
@@ -82,10 +78,7 @@ class VehicularFlow extends Component {
         <div className="content">
           <h2>Flujo Vehicular</h2>
           <div className="tables-detail__container">
-            <div
-              className={`log-detail-container ${
-                state.showLogDetail ? '' : 'hidden'
-              }`}>
+            <div className={`log-detail-container ${state.showLogDetail ? '' : 'hidden'}`}>
               {state.selectedLog && (
                 <div className="content">
                   {/* <span onClick={() => this.setState({ showLogDetail: false, selectedElementIndex: [null,null] })} className="close">Cerrar</span> */}
@@ -99,13 +92,12 @@ class VehicularFlow extends Component {
                       <span>{state.selectedLog.site}</span>
                     </p>
                   </div>
-                  <Slider
-                    nextArrow={<button>{'>'}</button>}
-                    prevArrow={<button>{'<'}</button>}>
+                  <Slider nextArrow={<button>{'>'}</button>} prevArrow={<button>{'<'}</button>}>
                     <div
                       className="image-slider"
                       style={{
-                        backgroundImage: `url(https://demo.connus.mx` + state.selectedLog.front + `)`
+                        backgroundImage:
+                          `url(https://demo.connus.mx` + state.selectedLog.front + `)`
                       }}
                     />
                     <div
@@ -116,11 +108,6 @@ class VehicularFlow extends Component {
                     />
                     {/* <div className="image-slider 5"></div> */}
                   </Slider>
-                  <div className="car-details">
-                    <video width="340" height="240" controls muted>
-                      <source src={state.selectedLog.video} type="video/mp4" />
-                    </video>
-                  </div>
                   <div className="action">
                     <p className="authorized">Informacion Detallada</p>
                   </div>
@@ -160,16 +147,15 @@ class VehicularFlow extends Component {
                 element={(item, index) => (
                   <div
                     className={`table-item ${
-                      state.selectedElementIndex[0] === index &&
-                      state.selectedElementIndex[1] === 0
+                      state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 0
                         ? 'selected'
                         : ''
                     }`}
                     key={index}
-                    onClick={() => this.onLogSelect(item, index, 0)}>
+                    onClick={() => this.onLogSelect(item, index, 0)}
+                  >
                     <div className="medium">
-                      {item.timestamp &&
-                        `${new Date(item.timestamp).toLocaleDateString()}`}
+                      {item.timestamp && `${new Date(item.timestamp).toLocaleDateString()}`}
                     </div>
                     <div>{item.plate}</div>
                     <div className="hiddable">{item.brand}</div>
@@ -193,16 +179,15 @@ class VehicularFlow extends Component {
                 element={(item, index) => (
                   <div
                     className={`table-item ${
-                      state.selectedElementIndex[0] === index &&
-                      state.selectedElementIndex[1] === 1
+                      state.selectedElementIndex[0] === index && state.selectedElementIndex[1] === 1
                         ? 'selected'
                         : ''
                     }`}
                     key={index}
-                    onClick={() => this.onLogSelect(item, index, 1)}>
+                    onClick={() => this.onLogSelect(item, index, 1)}
+                  >
                     <div className="medium">
-                      {item.timestamp &&
-                        `${new Date(item.timestamp).toLocaleDateString()}`}
+                      {item.timestamp && `${new Date(item.timestamp).toLocaleDateString()}`}
                     </div>
                     <div className="hiddable">{item.site}</div>
                     <div>
@@ -242,4 +227,7 @@ function mapDispatchToProps(dispatch) {
   return {}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(VehicularFlow)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(VehicularFlow)

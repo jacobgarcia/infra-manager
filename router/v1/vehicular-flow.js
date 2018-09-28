@@ -26,8 +26,7 @@ const storage = multer.diskStorage({
 // Upload object specs
 const upload = multer({ storage: storage }).fields([
   { name: 'front', maxCount: 1 },
-  { name: 'back', maxCount: 1 },
-  { name: 'video', maxCount: 2 }
+  { name: 'back', maxCount: 1 }
 ])
 const file = multer({ storage: storage }).single('file')
 
@@ -74,7 +73,6 @@ router.route('/vehicular-flow/recognize').post(upload, (req, res) => {
             site: key,
             front: '/static/vehicular-flow/' + req.files.front[0].filename,
             back: '/static/vehicular-flow/' + req.files.back[0].filename,
-            video: '/static/vehicular-flow/' + req.files.video[0].filename,
             company,
             risk: 1,
             event: 'No se encontraron resultados de análisis'
@@ -96,7 +94,6 @@ router.route('/vehicular-flow/recognize').post(upload, (req, res) => {
           site: key,
           front: '/static/vehicular-flow/' + req.files.front[0].filename,
           back: '/static/vehicular-flow/' + req.files.back[0].filename,
-          video: '/static/vehicular-flow/' + req.files.video[0].filename,
           brand: data.results[0].vehicle.make[0].name,
           model: data.results[0].vehicle.make_model[0].name,
           color: data.results[0].vehicle.color[0].name,
