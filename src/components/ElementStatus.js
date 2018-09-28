@@ -26,12 +26,14 @@ class ElementStatus extends Component {
       if (props.isOnline) percentage = props.percentage
       else percentage = 'OFF'
     } else percentage = props.percentage
-
+    if (percentage !== 'OFF' && isNaN(percentage)) percentage = 100
+    console.log(props.status)
     return (
       <div
         className="status list"
         onMouseOver={() => props.onHover(props.id)}
-        onMouseOut={() => props.onHover(null)}>
+        onMouseOut={() => props.onHover(null)}
+      >
         <div className="status-text">
           <span className="main">
             {props.title} {props.name} <span> {props.siteKey}</span>
@@ -57,10 +59,9 @@ class ElementStatus extends Component {
               animationEase="ease"
               animationDuration={500}
               animationBegin={0}
-              strokeWidth={0}>
-              <Cell
-                fill={props.isOnline ? colors(props.percentage) : colors(0)}
-              />
+              strokeWidth={0}
+            >
+              <Cell fill={props.isOnline ? colors(percentage) : colors(0)} />
               <Cell fill="#303640" />
             </Pie>
           </PieChart>
