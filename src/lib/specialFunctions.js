@@ -232,7 +232,7 @@ export function itemStatus(item = '', thisArray, option, max, min) {
 export function getStatus(data) {
   let sum = 0
   let counter = 0
-  console.log(data)
+
   data.sensors.map(current => {
     if (current.class === 'contact' || current.class === 'vibration') {
       sum += current.value

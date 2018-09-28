@@ -21,15 +21,14 @@ class Overall extends PureComponent {
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (!this.props.reports) return
-
-    if (nextProps.reports.length !== this.props.reports.length) {
+    if (nextProps.reports.length === this.props.reports.length && this.props.reports.length > 1) {
       this.setState(
         {
           data: substractReportValues(nextProps.reports)
         },
         () => {
           const { status, percentage } = getStatus(this.state.data || null)
-
+          console.log('percentage', percentage)
           this.setState({
             status,
             percentage
@@ -68,10 +67,7 @@ class Overall extends PureComponent {
     } else elements = props.elements
 
     return (
-      <div
-        className={`overall ${
-          state.isHidden || props.isCreating ? 'hidden' : ''
-        }`}>
+      <div className={`overall ${state.isHidden || props.isCreating ? 'hidden' : ''}`}>
         <div
           className="tooltip"
           onClick={() => this.setState(prev => ({ isHidden: !prev.isHidden }))}
@@ -86,9 +82,7 @@ class Overall extends PureComponent {
             {/* <span className="pop-window">Hacer ventana</span> */}
           </div>
           <div className="overall-header">
-            <h3>
-              {this.getTitle(props.params, props.element && props.element.name)}
-            </h3>
+            <h3>{this.getTitle(props.params, props.element && props.element.name)}</h3>
             <span className="leyend">{state.percentage}%</span>
             <div className="bar-container">
               <div
@@ -98,10 +92,7 @@ class Overall extends PureComponent {
                   backgroundColor: Constants.colors(state.percentage)
                 }}
               />
-              <div
-                className="alert"
-                style={{ width: `${100 - state.percentage}%` }}
-              />
+              <div className="alert" style={{ width: `${100 - state.percentage}%` }} />
             </div>
           </div>
           <StatusesContainer
