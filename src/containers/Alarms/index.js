@@ -287,7 +287,7 @@ class Alarms extends Component {
                   </div>
                 )}
                 title="Alertas"
-                elements={props.alarms.sort(($0, $1) => $0.timestamp - $1.timestamp)}
+                elements={props.alarms.sort(($0, $1) => $1.timestamp - $0.timestamp)}
                 titles={[
                   { title: 'Tiempo', className: 'medium' },
                   { title: 'Suceso', className: 'large' },
