@@ -28,7 +28,7 @@ function ZonePolygon(props) {
       positions={props.zone.positions || [[]]}
       fillOpacity={props.highlighted ? 0.7 : 0.4}
       onMouseOver={() => props.onMouseHover(props.zone._id)}
-      onMouseOut={() => props.onMouseHover(null)}
+      onMouseOut={() => null}
       onClick={props.onClick}
     >
       <Tooltip permanent opacity={1}>

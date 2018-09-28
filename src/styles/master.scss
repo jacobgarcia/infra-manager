@@ -1961,6 +1961,10 @@ img {
   }
   .content .hidable {
     display: none;
+    p {
+      margin-top: 28px;
+      margin-left: 3px;
+    }
     &.sensors {
       width: 100%;
       height: 100%;
