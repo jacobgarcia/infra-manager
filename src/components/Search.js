@@ -151,6 +151,7 @@ class Search extends PureComponent {
                         status={status} // Zone
                         alarms={reports ? reports.alarms.length : 0}
                         elements={element.elements} // Subzones or sites
+                        isOnline={true}
                       />
                     </Link>
                   )
@@ -180,6 +181,7 @@ class Search extends PureComponent {
                         status={status} // Zone
                         alarms={reports ? reports.alarms.length : 0}
                         elements={element.elements} // Subzones or sites
+                        isOnline={true}
                       />
                     </Link>
                   )
