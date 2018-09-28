@@ -22,6 +22,7 @@ class ElementStatus extends Component {
   render() {
     const { props } = this
     let percentage = ''
+    console.log('online', props.elements)
     if (props.type === 'ZONE') {
       if (props.isOnline) percentage = props.percentage
       else percentage = 'OFF'

@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import {
-  substractReportValues,
-  getStatus,
-  getFilteredReports
-} from '../lib/specialFunctions'
+import { substractReportValues, getStatus, getFilteredReports } from '../lib/specialFunctions'
 import { ElementStatus } from './'
 import { NetworkOperation } from '../lib'
 import io from 'socket.io-client'
@@ -93,9 +89,7 @@ class StatusesContainer extends PureComponent {
       case 'SENSORS':
         return props.elements && props.elements.length > 0 ? (
           props.elements.map(element => {
-            const reports = substractReportValues(
-              getFilteredReports(props.reports, element)
-            )
+            const reports = substractReportValues(getFilteredReports(props.reports, element))
             let { status, percentage, name } = getStatus(reports || null)
 
             if (props.type === 'SITE') {
@@ -170,7 +164,7 @@ class StatusesContainer extends PureComponent {
                   elements={element.elements} // Subzones or sites
                   onHover={props.onHover}
                   nonPercentage={props.type === 'SITE'}
-                  isOnline={element.isOnline}
+                  isOnline={element.isOnline || element.elements > 0}
                 />
               </Link>
             )
@@ -236,16 +230,12 @@ class StatusesContainer extends PureComponent {
                 <label htmlFor="">Latitud</label>
                 <input
                   type="text"
-                  value={
-                    props.element.position ? props.element.position[0] : ''
-                  }
+                  value={props.element.position ? props.element.position[0] : ''}
                 />
                 <label htmlFor="">Longitud</label>
                 <input
                   type="text"
-                  value={
-                    props.element.position ? props.element.position[1] : ''
-                  }
+                  value={props.element.position ? props.element.position[1] : ''}
                 />
               </div>
               <div>
@@ -271,17 +261,20 @@ class StatusesContainer extends PureComponent {
           <ul className="statuses-container-nav">
             <li
               onClick={() => this.setState({ show: 'SENSORS' })}
-              className={state.show === 'SENSORS' ? 'active' : ''}>
+              className={state.show === 'SENSORS' ? 'active' : ''}
+            >
               Sensores
             </li>
             <li
               onClick={() => this.setState({ show: 'CAMERAS' })}
-              className={state.show === 'CAMERAS' ? 'active' : ''}>
+              className={state.show === 'CAMERAS' ? 'active' : ''}
+            >
               Cámaras
             </li>
             <li
               onClick={() => this.setState({ show: 'INFO' })}
-              className={state.show === 'INFO' ? 'active' : ''}>
+              className={state.show === 'INFO' ? 'active' : ''}
+            >
               Información
             </li>
           </ul>

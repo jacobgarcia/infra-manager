@@ -28,7 +28,6 @@ class Overall extends PureComponent {
         },
         () => {
           const { status, percentage } = getStatus(this.state.data || null)
-          console.log('percentage', percentage)
           this.setState({
             status,
             percentage
