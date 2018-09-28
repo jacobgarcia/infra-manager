@@ -333,7 +333,7 @@ class Inventory extends Component {
                       <input
                         name="filter"
                         type="text"
-                        placeholder="Filtrar por sitio"
+                        placeholder="Buscar"
                         value={state.filter}
                         onChange={this.onChange}
                       />
@@ -360,7 +360,12 @@ class Inventory extends Component {
                   title="Registros"
                   elements={
                     state.filter
-                      ? props.inventoryReports.filter($0 => !$0.site.indexOf(state.filter))
+                      ? props.inventoryReports.filter(
+                          $0 =>
+                            JSON.stringify($0)
+                              .toLowerCase()
+                              .search(new RegExp(state.filter.toLowerCase())) >= 0
+                        )
                       : props.inventoryReports
                   }
                   titles={[
